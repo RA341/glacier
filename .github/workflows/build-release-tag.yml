@@ -1,0 +1,65 @@
+name: Release-Tag
+
+on:
+  push:
+    branches:
+      - release
+    paths:
+      - Dockerfile
+      - Dockerfile.updater
+      - .github/workflows/action-docker.yml
+      - .github/workflows/build-release-tag.yml
+      - .github/workflows/build-release.yml
+      - build-dev.yml
+      - core/**
+      - ui/**
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  tag-release:
+    name: Create Release Tag
+    runs-on: ubuntu-latest
+    outputs:
+      new_tag: ${{ steps.get_tag.outputs.tag }}
+      major_version: ${{ steps.major_version.outputs.major }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "lts/*"
+
+      - name: Install semantic-release plugins
+        run: |
+          npm install --no-save \
+            @semantic-release/git \
+            @semantic-release/changelog -D
+
+      - name: Generate Release Tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
+
+      - name: Get Release Tag
+        id: get_tag
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+
+      - name: Trigger docker.yml workflow
+        env:
+          GH_TOKEN: ${{ secrets.DISPATCH_TOKEN }}
+        if: ${{ steps.get_tag.outputs.tag != '' }}
+        # ref_name will be release
+        run: |
+          gh workflow run release-build.yml \
+            --repo ${{ github.repository }} \
+            --ref ${{ github.ref_name }} \
+            -f tag_name=${{ steps.get_tag.outputs.tag }}

@@ -1,0 +1,135 @@
+version: '3'
+
+vars:
+  CORE_DIR: core
+  UI_DIR: frost
+  DOCKER_IMG: glacier
+
+  # Directory for Go source commands
+  GO_CMD_DIR: cmd
+  # Directory for build output
+  BUILD_DIR: .build
+  DEV: dev
+
+tasks:
+  default:
+    desc: "Lists all available tasks"
+    cmds:
+      - task --list --sort=alphanumeric
+
+  ####################################################################################################
+  # .build
+  bddr:
+    vars:
+      DEFAULT_OUT: '{{.BUILD_DIR}}'
+      TARG: '{{.TARG| default .DEFAULT_TARG}}'
+    cmds:
+      - 'mkdir -p {{.BUILD_DIR}}/{{.TARG}}'
+
+  ui:
+    vars:
+      TARGET: '{{.DEV}}'
+      DEST_DIR: '{{.BUILD_DIR}}/{{.TARGET}}'
+    cmds:
+      - 'task bddr TARG={{.TARGET}}'
+      - "task ui:bd:web -- --wasm"
+      - 'cp -r {{.UI_DIR}}/build/web {{ .DEST_DIR }}/'
+
+  ui:bd:*:
+    dir: '{{.UI_DIR}}'
+    vars:
+      tg: "{{index .MATCH 0}}"
+    cmds:
+      - 'flutter build {{.tg}} {{.CLI_ARGS}}'
+    sources:
+      - '**/*.dart'
+      - 'pubspec*'
+      - 'windows'
+      - 'macos'
+      - 'linux'
+      - 'web'
+      - 'ios'
+      - 'android'
+
+  go:b:*:
+    dir: "{{.CORE_DIR}}"
+    desc: "Builds a Go target. Usage: task go:<target>"
+    vars:
+      CMD_NAME: "{{index .MATCH 0}}"
+      EXE_EXT: '{{if eq OS "windows"}}.exe{{end}}'
+
+      DEFAULT_OUT: ../{{.BUILD_DIR}}/{{.CMD_NAME}}
+      OUT: '{{.OUT| default .DEFAULT_OUT}}'
+
+      DEFAULT_OUT_EXE: '{{.OUT}}/{{.CMD_NAME}}{{.EXE_EXT}}'
+      OUT_EXE: '{{.OUT_EXE| default .DEFAULT_OUT_EXE}}'
+
+      INFO_PACKAGE: "github.com/RA341/dockman/internal/info"
+
+      VERSION:
+        sh: git describe --tags --abbrev=0 2>/dev/null || echo "canary"
+      COMMIT:
+        sh: git rev-parse HEAD
+      BUILD_DATE:
+        sh: date -u +'%Y-%m-%dT%H:%M:%SZ'
+      BRANCH:
+        sh: git rev-parse --abbrev-ref HEAD
+
+      LDFLAGS: >-
+        {{if .PROD}}-s -w{{end}} 
+        -X {{.INFO_PACKAGE}}.Version={{.VERSION}}
+        -X {{.INFO_PACKAGE}}.CommitInfo={{.COMMIT}}
+        -X {{.INFO_PACKAGE}}.BuildDate={{.BUILD_DATE}}
+        -X {{.INFO_PACKAGE}}.Branch={{.BRANCH}}
+
+    sources:
+      - "**/*.go"
+      - "go.*"
+
+    cmds:
+      - '{{if eq .OUT_EXE .DEFAULT_OUT_EXE}} mkdir -p {{.OUT}} {{end}}'
+      - CGO_ENABLED=1 go build -ldflags "{{.LDFLAGS}}" -v
+        -o {{ .OUT_EXE }}
+        ./{{.GO_CMD_DIR}}/{{.CMD_NAME}}
+
+  ggen:
+    dir: "{{.CORE_DIR}}"
+    cmds:
+      - go generate ./...
+
+  go:*:
+    dir: "{{.BUILD_DIR}}"
+    desc: "Builds and runs a Go target. Usage: task go:r:<target>"
+    vars:
+      CMD_NAME: "{{index .MATCH 0}}"
+      EXE_EXT: '{{if eq OS "windows"}}.exe{{end}}'
+      ARGS: '{{if eq .CMD_NAME "updater"}} 
+              -cr={{.CMD_NAME}}/compose {{else}} 
+              -conf={{.CMD_NAME}}/config 
+              -cr={{.CMD_NAME}}/compose{{end}}'
+    cmds:
+      - task: go:b:{{.CMD_NAME}}
+      - ../{{.BUILD_DIR}}/{{.CMD_NAME}}/{{.CMD_NAME}}{{.EXE_EXT}}{{.ARGS}}
+
+  dk:
+    desc: "Builds and runs the main dockman image. Usage: task dk"
+    cmds:
+      - task dk:r
+
+  dk:r:
+    desc: "Builds and runs the main dockman image for a specific target. Usage: task dk:r:<target>"
+    cmds:
+      - task dk:b
+      - docker run --rm
+        -e TZ=America/New_York
+          -e DOCKMAN_COMPOSE_ROOT=/.build/docker/compose
+        -v /var/run/docker.sock:/var/run/docker.sock
+        -v ./.build/docker/compose:/.build/docker/compose
+        -v ./.build/docker/config:/config
+        -p 6691:6699
+        {{.DOCKER_IMG}}
+
+  dk:b:
+    desc: "Builds the main docker image"
+    cmds:
+      - docker build -f pkg/docker/Dockerfile . -t {{.DOCKER_IMG}}
