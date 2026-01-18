@@ -7,8 +7,25 @@ option go_package = "github.com/ra341/glacier/generated/library/v1";
 import "search/v1/search.proto";
 
 service LibraryService {
+  rpc List(ListRequest) returns (ListResponse) {}
+  rpc TriggerTracker(TriggerTrackerRequest) returns (TriggerTrackerResponse) {}
+
   rpc Add(AddRequest) returns (AddResponse) {}
   rpc GetGameType(GetGameTypeRequest) returns (GetGameTypeResponse) {}
+}
+
+message TriggerTrackerRequest {}
+
+message TriggerTrackerResponse {}
+
+message ListRequest {
+  string query = 1;
+  uint32 offset = 2;
+  uint32 limit = 3;
+ }
+
+message ListResponse {
+  repeated Game gameList = 1;
 }
 
 message GetGameTypeRequest {}
@@ -26,7 +43,7 @@ message AddRequest {
   Game game = 1;
 }
 
-message Game{
+message Game {
   uint64 ID = 1;
   string CreatedAt = 2;
   string EditedAt = 3;

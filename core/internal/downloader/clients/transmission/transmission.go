@@ -54,7 +54,6 @@ func New(config types.ClientConfig) (types.Downloader, error) {
 
 	_, _, err = transmission.test()
 	if err != nil {
-		log.Error().Err(err).Msg("Transmission client check failed")
 		return nil, fmt.Errorf("transmission client health check failed: %s", err)
 	}
 
@@ -133,12 +132,12 @@ func (tm *Client) Progress(ctx context.Context, download *types.Download) (err e
 	}
 
 	for _, info := range infos {
-		download.State = types.DownloadDownloading
+		download.State = types.Downloading
 		if info.Status.String() == "seeding" {
-			download.State = types.DownloadComplete
+			download.State = types.Complete
 		} else if info.Status.String() == "error" ||
 			info.Status.String() == "stopped" {
-			download.State = types.DownloadError
+			download.State = types.Error
 		}
 
 		download.Progress = fmt.Sprintf(

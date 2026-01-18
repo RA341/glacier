@@ -61,7 +61,7 @@ func (s *Service) LoadEnabledProviders() {
 
 		err = s.LoadClientFromConfig(clientType, config)
 		if err != nil {
-			log.Warn().Err(err).Str("name", key).Msg("failed to load provider config")
+			log.Warn().Err(err).Str("name", key).Msg("failed to load provider")
 			continue
 		}
 	}

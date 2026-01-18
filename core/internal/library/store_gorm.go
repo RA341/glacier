@@ -33,6 +33,15 @@ func (s *StoreGorm) Add(ctx context.Context, game *Game) error {
 	return s.Q(ctx).Save(game).Error
 }
 
+func (s *StoreGorm) List(ctx context.Context, limit uint, offset uint) ([]Game, error) {
+	var games []Game
+	err := s.Q(ctx).
+		Order("updated_at desc").Offset(int(offset)).
+		Limit(int(limit)).Find(&games).
+		Error
+	return games, err
+}
+
 func (s *StoreGorm) UpdateDownloadProgress(ctx context.Context, id uint, download types.Download) error {
 	return s.gormDB.
 		Model(&Game{
@@ -54,11 +63,6 @@ func (s *StoreGorm) GetById(ctx context.Context, id uint) (Game, error) {
 }
 
 func (s *StoreGorm) DeleteGame(ctx context.Context, id uint) error {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (s *StoreGorm) List(ctx context.Context, limit uint, offset uint) ([]Game, error) {
 	//TODO implement me
 	panic("implement me")
 }

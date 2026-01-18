@@ -6,12 +6,12 @@ import "context"
 type DownloadState int
 
 const (
-	// DownloadUnknown this should only happen in serialization when an invalid external value is received
-	DownloadUnknown DownloadState = iota
-	DownloadQueued
-	DownloadDownloading
-	DownloadComplete
-	DownloadError
+	// Unknown this should only happen in serialization when an invalid external value is received
+	Unknown DownloadState = iota
+	Queued
+	Downloading
+	Complete
+	Error
 )
 
 // Download todo add download client type

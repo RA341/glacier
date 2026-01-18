@@ -9,6 +9,7 @@ import (
 
 type Downloader interface {
 	Add(ctx context.Context, gameId uint, download types.Download) (err error)
+	TriggerTracker()
 }
 
 type Service struct {
@@ -27,12 +28,12 @@ func New(store Store, downloader Downloader, config ConfigLoader) *Service {
 	}
 }
 
-func (s *Service) List(ctx context.Context, offset, limit uint) ([]Game, error) {
+func (s *Service) List(ctx context.Context, query string, offset, limit uint) ([]Game, error) {
 	return s.store.List(ctx, limit, offset)
 }
 
 func (s *Service) Add(ctx context.Context, game *Game) error {
-	game.Download.State = types.DownloadQueued
+	game.Download.State = types.Queued
 	game.Download.DownloadPath = filepath.Join(
 		s.config().GameDir,
 		filepath.Clean(game.Meta.Name),

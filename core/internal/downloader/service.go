@@ -18,9 +18,9 @@ type Service struct {
 	store library.Store
 	conf  ConfigLoader
 
-	// these fields are handled internally no need to passed in constructor
 	isDownloadTrackerRunning atomic.Bool
 	trackerCtxCancelFn       context.CancelFunc
+	triggerChan              chan struct{}
 }
 
 func New(cli GetCli, store library.Store, conf ConfigLoader) *Service {
@@ -45,7 +45,7 @@ func (s *Service) Add(ctx context.Context, gameId uint, download types.Download)
 	err = s.store.UpdateDownloadProgress(ctx, gameId,
 		types.Download{
 			DownloadId: downloadId,
-			State:      types.DownloadDownloading,
+			State:      types.Downloading,
 		},
 	)
 	if err != nil {
@@ -73,8 +73,18 @@ func (s *Service) StartTracker() {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	s.trackerCtxCancelFn = cancel
+	s.triggerChan = make(chan struct{}, 1)
 
 	go s.downloadTracker(ctx)
+}
+
+func (s *Service) TriggerTracker() {
+	select {
+	case s.triggerChan <- struct{}{}:
+		log.Debug().Msg("tracker triggered")
+	default:
+		log.Debug().Msg("tracker is already triggered")
+	}
 }
 
 func (s *Service) StopTracker() {
@@ -98,36 +108,49 @@ func (s *Service) downloadTracker(ctx context.Context) {
 	defer timer.Stop()
 
 	errTries := 0
+	var done bool
 
 	for {
 		select {
 		case t := <-timer.C:
 			log.Debug().Time("time", t).Msg("checking downloads")
-
-			downloading, err := s.store.ListDownloadState(ctx, types.DownloadDownloading)
-			if err != nil {
-				log.Warn().Err(err).Msg("could not check downloads")
-				errTries++
-				if errTries > 10 {
-					log.Warn().Msg("could not list downloads, something is wrong with the DB")
-					return
-				}
-			}
-			errTries = 0
-
-			if len(downloading) < 1 {
-				log.Warn().Msg("no active downloads found")
+			errTries, done = s.trackDownloader(ctx, errTries)
+			if done {
 				return
 			}
-
-			for _, dn := range downloading {
-				s.checkDownload(ctx, &dn)
+		case <-s.triggerChan:
+			errTries, done = s.trackDownloader(ctx, errTries)
+			if done {
+				return
 			}
-
 		case <-ctx.Done():
 			return
 		}
 	}
+}
+
+func (s *Service) trackDownloader(ctx context.Context, errTries int) (int, bool) {
+	downloading, err := s.store.ListDownloadState(ctx, types.Downloading)
+	if err != nil {
+		log.Warn().Err(err).Msg("could not check downloads")
+		errTries++
+		if errTries > 10 {
+			log.Warn().Msg("could not list downloads, something is wrong with the DB")
+			return errTries, true
+		}
+	}
+	errTries = 0
+
+	if len(downloading) < 1 {
+		log.Warn().Msg("no active downloads found")
+		return errTries, true
+	}
+
+	for _, dn := range downloading {
+		s.checkDownload(ctx, &dn)
+	}
+
+	return errTries, false
 }
 
 // checks a single download
@@ -136,14 +159,14 @@ func (s *Service) checkDownload(ctx context.Context, dn *library.Game) {
 
 	downloader, err := s.cli(download.Client)
 	if err != nil {
-		dn.Download.State = types.DownloadError
+		dn.Download.State = types.Error
 		dn.Download.Progress = fmt.Sprintf("%v", err)
 	}
 
 	downId := download.DownloadId
 	err = downloader.Progress(ctx, &dn.Download)
 	if err != nil {
-		dn.Download.State = types.DownloadDownloading
+		dn.Download.State = types.Downloading
 		dn.Download.Progress = fmt.Sprintf("unable to get progress: %v", err)
 	}
 

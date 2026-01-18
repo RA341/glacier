@@ -2,13 +2,14 @@
     import './layout.css';
     import {page} from '$app/state';
     import favicon from '$lib/assets/favicon.svg';
-    import {LibraryIcon, SearchIcon, SettingsIcon, UserIcon} from "@lucide/svelte";
+    import {DownloadIcon, LibraryIcon, SearchIcon, SettingsIcon, UserIcon} from "@lucide/svelte";
 
     let {children} = $props();
 
     const links = [
         {label: 'Library', href: '/library', icon: LibraryIcon},
-        {label: 'Search', href: '/search', icon: SearchIcon}
+        {label: 'Search', href: '/search', icon: SearchIcon},
+        {label: 'Downloads', href: '/downloads', icon: DownloadIcon},
     ];
 
     const footerLinks = [

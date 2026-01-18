@@ -8,11 +8,11 @@ import (
 	"strings"
 )
 
-const _DownloadStateName = "DownloadUnknownDownloadQueuedDownloadDownloadingDownloadCompleteDownloadError"
+const _DownloadStateName = "UnknownQueuedDownloadingCompleteError"
 
-var _DownloadStateIndex = [...]uint8{0, 15, 29, 48, 64, 77}
+var _DownloadStateIndex = [...]uint8{0, 7, 13, 24, 32, 37}
 
-const _DownloadStateLowerName = "downloadunknowndownloadqueueddownloaddownloadingdownloadcompletedownloaderror"
+const _DownloadStateLowerName = "unknownqueueddownloadingcompleteerror"
 
 func (i DownloadState) String() string {
 	if i < 0 || i >= DownloadState(len(_DownloadStateIndex)-1) {
@@ -25,34 +25,34 @@ func (i DownloadState) String() string {
 // Re-run the stringer command to generate them again.
 func _DownloadStateNoOp() {
 	var x [1]struct{}
-	_ = x[DownloadUnknown-(0)]
-	_ = x[DownloadQueued-(1)]
-	_ = x[DownloadDownloading-(2)]
-	_ = x[DownloadComplete-(3)]
-	_ = x[DownloadError-(4)]
+	_ = x[Unknown-(0)]
+	_ = x[Queued-(1)]
+	_ = x[Downloading-(2)]
+	_ = x[Complete-(3)]
+	_ = x[Error-(4)]
 }
 
-var _DownloadStateValues = []DownloadState{DownloadUnknown, DownloadQueued, DownloadDownloading, DownloadComplete, DownloadError}
+var _DownloadStateValues = []DownloadState{Unknown, Queued, Downloading, Complete, Error}
 
 var _DownloadStateNameToValueMap = map[string]DownloadState{
-	_DownloadStateName[0:15]:       DownloadUnknown,
-	_DownloadStateLowerName[0:15]:  DownloadUnknown,
-	_DownloadStateName[15:29]:      DownloadQueued,
-	_DownloadStateLowerName[15:29]: DownloadQueued,
-	_DownloadStateName[29:48]:      DownloadDownloading,
-	_DownloadStateLowerName[29:48]: DownloadDownloading,
-	_DownloadStateName[48:64]:      DownloadComplete,
-	_DownloadStateLowerName[48:64]: DownloadComplete,
-	_DownloadStateName[64:77]:      DownloadError,
-	_DownloadStateLowerName[64:77]: DownloadError,
+	_DownloadStateName[0:7]:        Unknown,
+	_DownloadStateLowerName[0:7]:   Unknown,
+	_DownloadStateName[7:13]:       Queued,
+	_DownloadStateLowerName[7:13]:  Queued,
+	_DownloadStateName[13:24]:      Downloading,
+	_DownloadStateLowerName[13:24]: Downloading,
+	_DownloadStateName[24:32]:      Complete,
+	_DownloadStateLowerName[24:32]: Complete,
+	_DownloadStateName[32:37]:      Error,
+	_DownloadStateLowerName[32:37]: Error,
 }
 
 var _DownloadStateNames = []string{
-	_DownloadStateName[0:15],
-	_DownloadStateName[15:29],
-	_DownloadStateName[29:48],
-	_DownloadStateName[48:64],
-	_DownloadStateName[64:77],
+	_DownloadStateName[0:7],
+	_DownloadStateName[7:13],
+	_DownloadStateName[13:24],
+	_DownloadStateName[24:32],
+	_DownloadStateName[32:37],
 }
 
 // DownloadStateString retrieves an enum value from the enum constants string name.

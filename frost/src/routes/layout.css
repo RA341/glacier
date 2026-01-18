@@ -54,13 +54,10 @@
 }
 
 @layer components {
-    /* Example of a Frost themed button */
     .btn-frost {
         @apply bg-frost-500 hover:bg-frost-400 text-background px-4 py-2 rounded-lg
         font-medium transition-all duration-200 shadow-frost active:scale-95;
     }
-
-    /* Example of a SaaS Card */
     .card-saas {
         @apply bg-surface border border-border rounded-xl p-6 shadow-sm;
     }
