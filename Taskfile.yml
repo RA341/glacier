@@ -133,3 +133,7 @@ tasks:
     desc: "Builds the main docker image"
     cmds:
       - docker build -f pkg/docker/Dockerfile . -t {{.DOCKER_IMG}}
+
+  cli:
+    cmds:
+      - docker compose up

@@ -1,3 +1,5 @@
 .idea
 .build
 .task
+/**/tmp/
+/**/*.env

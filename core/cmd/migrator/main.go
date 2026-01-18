@@ -11,7 +11,11 @@ import (
 )
 
 func main() {
-	stmts, err := gormschema.New("sqlite").Load(&library.Game{})
+	stmts, err := gormschema.
+		New("sqlite").
+		Load(
+			&library.Game{},
+		)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to load gorm schema: %v\n", err)
 		os.Exit(1)

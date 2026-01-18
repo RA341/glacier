@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package search.v1;
+
+option go_package = "github.com/ra341/glacier/generated/search/v1";
+
+service SearchService {
+  rpc Search(SearchRequest) returns (SearchResponse) {}
+  rpc Match(MatchRequest) returns (MatchResponse) {}
+}
+
+
+message MatchRequest {
+  string query = 1;
+}
+
+message MatchResponse {
+  repeated GameMetadata metadata = 1;
+}
+
+message GameMetadata {
+  string ProviderType = 15;
+  string ID = 14;
+  string Name = 1;
+  string Summary = 2;
+  string Description = 3;
+  string URL = 4;
+  string ThumbnailURL = 5;
+  repeated string Videos = 6;
+  repeated string Platforms = 7;
+  repeated string Genres = 8;
+  string Rating = 9;
+  uint32 RatingCount = 10;
+  string ReleaseDate = 11;
+  string ReleaseStatus = 12;
+  string Category = 13;
+}
+
+message SearchRequest {
+  string query = 1;
+}
+
+message SearchResponse {
+  repeated GameSearchResult results = 1;
+}
+
+message GameSearchResult {
+  string name = 1;
+  string downloadUrl = 2;
+  string size = 3;
+  string uploadDate = 4;
+}

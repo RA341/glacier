@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package downloader.v1;
+
+option go_package = "github.com/ra341/glacier/generated/downloader/v1";
+
+service DownloaderService {
+  rpc GetActiveClients(GetActiveClientsRequest) returns (GetActiveClientsResponse) {}
+}
+
+message Client {
+  string name = 1;
+}
+
+message GetActiveClientsRequest {}
+
+message GetActiveClientsResponse {
+  repeated Client clients = 1;
+}

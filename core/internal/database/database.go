@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"path/filepath"
 
-	_ "github.com/mattn/go-sqlite3" // Required driver for sql.Open
+	_ "github.com/mattn/go-sqlite3"
 	"github.com/pressly/goose/v3"
 	"github.com/rs/zerolog/log"
 	"gorm.io/driver/sqlite"
@@ -14,12 +14,11 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-//go:generate go run gorm.io/cli/gorm@latest gen -i .. -o ./generated/queries
+////go:generate go run gorm.io/cli/gorm@latest gen -i .. -o ./generated/queries
 
 //go:embed generated/migrations/*.sql
 var migrationDir embed.FS
 
-// Define the relative path to the migrations within the embed FS
 const migrationPath = "generated/migrations"
 
 const dbName = "glacier.db"
@@ -73,8 +72,8 @@ func connect(basepath string, devMode bool) (*gorm.DB, error) {
 func migrate(db *sql.DB) error {
 	goose.SetBaseFS(migrationDir)
 
-	// todo use zerolog
-	// goose.SetLogger()
+	gzlog := GooseZerolog{}
+	goose.SetLogger(gzlog)
 
 	if err := goose.SetDialect("sqlite3"); err != nil {
 		return err
@@ -87,4 +86,14 @@ func migrate(db *sql.DB) error {
 	}
 
 	return nil
+}
+
+type GooseZerolog struct{}
+
+func (g GooseZerolog) Fatalf(format string, v ...interface{}) {
+	log.Fatal().Msgf(format, v...)
+}
+
+func (g GooseZerolog) Printf(format string, v ...interface{}) {
+	log.Info().Msgf(format, v...)
 }

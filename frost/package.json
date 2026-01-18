@@ -11,23 +11,16 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"format": "prettier --write .",
-		"lint": "prettier --check . && eslint ."
+		"lint": "prettier --check ."
 	},
 	"devDependencies": {
-		"@eslint/compat": "^1.4.0",
-		"@eslint/js": "^9.39.1",
-		"@inlang/paraglide-js": "^2.6.0",
 		"@sveltejs/adapter-static": "^3.0.10",
 		"@sveltejs/kit": "^2.49.1",
 		"@sveltejs/vite-plugin-svelte": "^6.2.1",
-		"@tailwindcss/forms": "^0.5.10",
-		"@tailwindcss/typography": "^0.5.19",
 		"@tailwindcss/vite": "^4.1.17",
-		"@types/node": "^24",
-		"eslint": "^9.39.1",
-		"eslint-config-prettier": "^10.1.8",
-		"eslint-plugin-svelte": "^3.13.1",
-		"globals": "^16.5.0",
+		"flowbite": "^4.0.1",
+		"flowbite-svelte": "^1.31.0",
+		"flowbite-svelte-icons": "^3.1.0",
 		"prettier": "^3.7.4",
 		"prettier-plugin-svelte": "^3.4.0",
 		"prettier-plugin-tailwindcss": "^0.7.2",
@@ -35,7 +28,12 @@
 		"svelte-check": "^4.3.4",
 		"tailwindcss": "^4.1.17",
 		"typescript": "^5.9.3",
-		"typescript-eslint": "^8.48.1",
 		"vite": "^7.2.6"
+	},
+	"dependencies": {
+		"@bufbuild/protobuf": "^2.10.2",
+		"@connectrpc/connect": "^2.1.1",
+		"@connectrpc/connect-web": "^2.1.1",
+		"@lucide/svelte": "^0.562.0"
 	}
 }

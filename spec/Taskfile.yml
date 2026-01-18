@@ -1,0 +1,102 @@
+# https://taskfile.dev
+version: '3'
+
+vars:
+  WORKING_DIR:
+    sh: pwd
+
+  IMAGE_NAME: protobuilder/gonode
+  CORE_DIR: ../core/generated
+  UI_DIR: ../frost/src/lib/gen
+  GENERATED_DIR: generated
+  PROTODIR: protos
+  GO_PACKAGE_BASE: "github.com/ra341/glacier/generated"
+
+tasks:
+  proto:*:*:
+    desc: "Creates a new proto file with a custom version. Usage: task proto:<package>[:version]"
+    vars:
+      PROTO_PACKAGE: "{{ index .MATCH 0 }}"
+      VERSION: '{{ index .MATCH 1 }}'
+      PACKAGE_PATH: "{{ .PROTODIR }}/{{ .PROTO_PACKAGE }}/{{ .VERSION }}"
+      FILE_PATH: "{{ .PACKAGE_PATH }}/{{ .PROTO_PACKAGE }}.proto"
+    cmds:
+      - mkdir -p {{ .PACKAGE_PATH }}
+      - |
+        cat <<EOF > {{ .FILE_PATH }}
+        syntax = "proto3";
+
+        package {{ .PROTO_PACKAGE }}.{{ .VERSION }};
+
+        option go_package = "{{ .GO_PACKAGE_BASE }}/{{ .PROTO_PACKAGE }}/{{ .VERSION }}";
+        
+        service {{ .PROTO_PACKAGE }}Service {
+        }
+        EOF
+
+  proto:*:
+    desc: "Creates a new v1 proto file. Usage: task proto:<package>"
+    vars:
+      PROTO_PACKAGE: "{{ index .MATCH 0 }}"
+      VERSION: "v1"
+      PACKAGE_PATH: "{{ .PROTODIR }}/{{ .PROTO_PACKAGE }}/{{ .VERSION }}"
+      FILE_PATH: "{{ .PACKAGE_PATH }}/{{ .PROTO_PACKAGE }}.proto"
+    cmds:
+      - task: proto:{{ .PROTO_PACKAGE }}:{{ .VERSION }}
+
+  build:
+    desc: Build the Docker image used for proto generation
+    cmds:
+      - docker build . -t {{ .IMAGE_NAME}}
+
+  geno:
+    desc: Generate files (no move)
+    deps: [ build ]
+    cmds:
+      - docker run --rm -v "{{.WORKING_DIR}}:/workspace" {{ .IMAGE_NAME}}
+
+  gen:
+    desc: generate and copy out generated files and remove source generated dir
+    deps: [ geno ]
+    cmds:
+      - task: go
+      - task: web
+
+  go:
+    desc: Copy generated Go files to core directory
+    cmds:
+      - task: _copy
+        vars:
+          TARGET_DIR: '{{.CORE_DIR}}'
+          SOURCE_PATTERN: '{{.GENERATED_DIR}}/go/*'
+
+  web:
+    desc: Copy generated web files to UI directory
+    cmds:
+      - task: _copy
+        vars:
+          TARGET_DIR: '{{.UI_DIR}}'
+          SOURCE_PATTERN: '{{.GENERATED_DIR}}/web/*'
+
+  _copy:
+    internal: true
+    vars:
+      TARGET_DIR: '{{.TARGET_DIR}}'
+      SOURCE_PATTERN: '{{.SOURCE_PATTERN}}'
+    cmds:
+      - rm -f -r {{.TARGET_DIR}}/*
+      - mkdir -p {{.TARGET_DIR}}
+      - cp -r {{.SOURCE_PATTERN}} {{.TARGET_DIR}}/
+
+  it:
+    desc: drop into a shell and interact with the image. CTRL+D to exit
+    deps: [ build ]
+    cmds:
+      - docker run --rm --name gouda_grpc_shell -v "{{.WORKING_DIR}}:/workspace" -it protobuilder:latest /bin/bash
+
+
+  bpsh:
+    desc: build and push
+    cmds:
+      - make build
+      - make push

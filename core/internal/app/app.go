@@ -1,23 +1,99 @@
 package app
 
 import (
+	"fmt"
+	"reflect"
+
 	"github.com/ra341/glacier/internal/database"
-	libraryquery "github.com/ra341/glacier/internal/database/generated/queries/library"
+	"github.com/ra341/glacier/internal/downloader"
+	downloadManager "github.com/ra341/glacier/internal/downloader/manager"
+	"github.com/ra341/glacier/internal/indexer"
+	indexerManager "github.com/ra341/glacier/internal/indexer/manager"
 	"github.com/ra341/glacier/internal/library"
+	"github.com/ra341/glacier/internal/metadata"
+	metadataManager "github.com/ra341/glacier/internal/metadata/manager"
+	"github.com/ra341/glacier/internal/search"
+	sc "github.com/ra341/glacier/internal/server_config"
+	"github.com/ra341/glacier/pkg/logger"
+
+	"github.com/rs/zerolog/log"
 )
 
+func init() {
+	logger.InitConsole("debug", true)
+}
+
 type App struct {
-	Conf    *Config
+	Conf *sc.Service
+
 	Library *library.Service
+
+	DownloadSrv           *downloader.Service
+	DownloadClientManager *downloadManager.Service
+
+	Search          *search.Service
+	MetadataManager *metadataManager.Service
 }
 
 func NewApp() *App {
-	db := database.New(".", false)
-
-	sd := libraryquery.Store[library.Game](db)
-	libMan := library.NewApp(sd)
-
-	return &App{
-		Library: libMan,
+	config := sc.New()
+	get := config.Get()
+	if get == nil {
+		log.Fatal().Msg("config is nil THIS SHOULD NEVER HAPPEN")
 	}
+
+	db := database.New(config.Get().Files.ConfigDir, false)
+
+	libDb := library.NewStoreGorm(db)
+
+	clientMan := downloadManager.New(config)
+	downSrv := downloader.New(
+		clientMan.Get,
+		libDb,
+		func() *downloader.Config {
+			return &config.Get().Download
+		},
+	)
+	downSrv.StartTracker() // check for previous incomplete downloads
+
+	libSrv := library.New(libDb, downSrv)
+
+	metaMan := metadataManager.New(config)
+	metaSrv := metadata.New(metaMan)
+
+	indexerMan := indexerManager.New(config)
+	indexerSrv := indexer.New(indexerMan)
+
+	searchSrv := search.New(metaSrv, indexerSrv)
+
+	a := &App{
+		Conf:                  config,
+		Library:               libSrv,
+		DownloadSrv:           downSrv,
+		DownloadClientManager: clientMan,
+		MetadataManager:       metaMan,
+		Search:                searchSrv,
+	}
+
+	err := a.VerifyServices()
+	if err != nil {
+		log.Fatal().Err(err).Msg("could not verify services")
+	}
+	return a
+}
+
+func (a *App) VerifyServices() error {
+	val := reflect.ValueOf(a).Elem()
+	typ := val.Type()
+
+	for i := 0; i < val.NumField(); i++ {
+		field := val.Field(i)
+		fieldName := typ.Field(i).Name
+
+		// We only care about pointers (services)
+		if field.Kind() == reflect.Ptr && field.IsNil() {
+			return fmt.Errorf("critical error: service '%s' was not initialized", fieldName)
+		}
+	}
+	return nil
 }

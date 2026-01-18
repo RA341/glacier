@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package library.v1;
+
+option go_package = "github.com/ra341/glacier/generated/library/v1";
+
+import "search/v1/search.proto";
+
+service LibraryService {
+  rpc Add(AddRequest) returns (AddResponse) {}
+
+}
+
+message AddRequest {
+  Game game = 1;
+}
+
+message Game{
+  uint64 ID = 1;
+  string CreatedAt = 2;
+  string EditedAt = 3;
+
+  search.v1.GameMetadata Meta = 4;
+
+  string GameType = 5;
+
+  Download DownloadState = 7;
+}
+
+message Download {
+  string Client = 1;
+  string DownloadId = 2;
+  string State = 3;
+  string Progress = 4;
+  string DownloadPath = 5;
+  string DownloadUrl = 6;
+}
+
+message AddResponse {}
+

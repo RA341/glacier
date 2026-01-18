@@ -3,32 +3,40 @@ package library
 import (
 	"context"
 
+	download "github.com/ra341/glacier/internal/downloader/types"
+	metadata "github.com/ra341/glacier/internal/metadata/types"
+
 	"gorm.io/gorm"
 )
 
-//go:generate go run github.com/dmarkham/enumer@latest -type=GameType -output=enum_gametype.go
+//go:generate go run github.com/dmarkham/enumer@latest -sql -type=GameType -output=enum_gametype.go
+
+// GameType identifies the type of files downloaded
 type GameType int
 
 const (
 	// GameTypeUnknown is the default zero-value
 	GameTypeUnknown GameType = iota
 
-	// GameTypeInstaller means the file is an installer and must be installed after downloaded
+	// GameTypeInstaller means the files must be installed after download
 	GameTypeInstaller
 
-	// GameTypeStandalone means the files are ready-to-run after download
+	// GameTypeStandalone means the files are ready-to-play after download
 	GameTypeStandalone
 )
 
 type Game struct {
 	gorm.Model
-
-	Name           string
-	GameType       GameType
-	DownloadedPath string
+	GameType GameType
+	Meta     metadata.Meta     `gorm:"embedded"`
+	Download download.Download `gorm:"embedded"`
 }
 
 type Store interface {
-	// GetByDownload SELECT * FROM @@table WHERE downloaded_path=@path
-	GetByDownload(ctx context.Context, path string) (Game, error)
+	Add(ctx context.Context, game *Game) error
+	UpdateDownloadProgress(ctx context.Context, id uint, download download.Download) error
+	GetById(ctx context.Context, id uint) (Game, error)
+	DeleteGame(ctx context.Context, id uint) error
+	List(ctx context.Context, limit uint, offset uint) ([]Game, error)
+	ListDownloadState(ctx context.Context, state download.DownloadState) ([]Game, error)
 }

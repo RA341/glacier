@@ -1,3 +1,67 @@
-@import 'tailwindcss';
-@plugin '@tailwindcss/forms';
-@plugin '@tailwindcss/typography';
+@import "tailwindcss";
+
+@theme {
+    /* Primary Dark Palette (SaaS Backgrounds/Surfaces) */
+    --color-background: #09090b; /* Zinc 950 */
+    --color-surface: #18181b;    /* Zinc 900 */
+    --color-panel: #27272a;     /* Zinc 800 */
+
+    /* Secondary Frost Palette (Brand/Actions) */
+    --color-frost-50: #f0f9ff;
+    --color-frost-100: #e0f2fe;
+    --color-frost-200: #bae6fd;
+    --color-frost-300: #7dd3fc;
+    --color-frost-400: #38bdf8;
+    --color-frost-500: #0ea5e9;
+
+    /* UI Borders & Text */
+    --color-border: #27272a;
+    --color-muted: #a1a1aa;
+    --color-foreground: #ffffff;
+
+    /* Custom Shadow for SaaS depth */
+    --shadow-frost: 0 0 20px -5px rgba(56, 189, 248, 0.15);
+}
+
+/* Global Base Styles */
+@layer base {
+    html {
+        background-color: var(--color-background);
+        color: var(--color-foreground);
+        /* Modern SaaS fonts usually look better with antialiasing */
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+        @apply bg-background text-foreground;
+    }
+
+    /* Custom scrollbar to match dark theme */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+        background: var(--color-background);
+    }
+    ::-webkit-scrollbar-thumb {
+        background: var(--color-panel);
+        border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--color-muted);
+    }
+}
+
+@layer components {
+    /* Example of a Frost themed button */
+    .btn-frost {
+        @apply bg-frost-500 hover:bg-frost-400 text-background px-4 py-2 rounded-lg
+        font-medium transition-all duration-200 shadow-frost active:scale-95;
+    }
+
+    /* Example of a SaaS Card */
+    .card-saas {
+        @apply bg-surface border border-border rounded-xl p-6 shadow-sm;
+    }
+}

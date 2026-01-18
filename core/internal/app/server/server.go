@@ -8,6 +8,9 @@ import (
 	"time"
 
 	"github.com/ra341/glacier/internal/app"
+	downloadManager "github.com/ra341/glacier/internal/downloader/manager"
+	"github.com/ra341/glacier/internal/library"
+	"github.com/ra341/glacier/internal/search"
 
 	connectcors "connectrpc.com/cors"
 	"github.com/rs/cors"
@@ -27,12 +30,13 @@ func NewServer(uiDir string) {
 		App:   app.NewApp(),
 		uiDir: uiDir,
 	}
+	config := server.App.Conf.Get().Server
 
 	router := http.NewServeMux()
 	server.RegisterRoutes(router)
 
 	corsConfig := cors.New(cors.Options{
-		AllowedOrigins:      []string{"*"}, // todo load from config
+		AllowedOrigins:      config.AllowedOrigins,
 		AllowPrivateNetwork: true,
 		AllowedMethods:      connectcors.AllowedMethods(),
 		AllowedHeaders:      connectcors.AllowedHeaders(),
@@ -41,8 +45,7 @@ func NewServer(uiDir string) {
 
 	finalMux := corsConfig.Handler(router)
 
-	portNum := 6699 // todo load from config
-	port := fmt.Sprintf(":%d", portNum)
+	port := fmt.Sprintf(":%d", config.Port)
 	log.Info().Str("port", port).Msg("Starting server...")
 
 	srv := &http.Server{
@@ -77,9 +80,20 @@ func NewServer(uiDir string) {
 }
 
 func (s *Server) RegisterRoutes(mux *http.ServeMux) {
+	s.registerRoutes(mux)
+
 	s.registerUI(mux)
 }
 
 func (s *Server) registerUI(mux *http.ServeMux) {
 	mux.Handle("/", http.FileServer(http.Dir(s.uiDir)))
+}
+
+func (s *Server) registerRoutes(mux *http.ServeMux) {
+	mux.Handle(search.NewHandler(s.Search))
+
+	mux.Handle(library.NewHandler(s.Library))
+
+	mux.Handle(downloadManager.NewHandler(s.DownloadClientManager))
+
 }
