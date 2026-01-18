@@ -3,6 +3,7 @@ package server_config
 import (
 	"github.com/ra341/glacier/internal/downloader"
 	"github.com/ra341/glacier/internal/indexer"
+	"github.com/ra341/glacier/internal/library"
 	"github.com/ra341/glacier/internal/metadata"
 )
 
@@ -11,6 +12,7 @@ type Config struct {
 	Logger Logger `yaml:"logger"`
 	Files  Files  `yaml:"files"`
 
+	Library  library.Config    `yaml:"library"`
 	Indexer  indexer.Config    `yaml:"indexer"`
 	Download downloader.Config `yaml:"downloader"`
 	Metadata metadata.Config   `yaml:"metadata"`
@@ -19,7 +21,6 @@ type Config struct {
 type Files struct {
 	// holds db and the yml file
 	ConfigDir string `yaml:"config" env:"CONFIG_DIR" default:"./config"`
-	GameDir   string `yaml:"game" env:"GAME_DIR" default:"./gamestop"`
 }
 
 type Server struct {

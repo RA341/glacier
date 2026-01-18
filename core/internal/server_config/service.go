@@ -39,8 +39,9 @@ func (s *Service) Init() {
 	SetDefaultsFromTags(&conf, rnFn)
 
 	pathsToResolve := []*string{
+		&conf.Download.IncompleteDownloadPath,
 		&conf.Files.ConfigDir,
-		&conf.Files.GameDir,
+		&conf.Library.GameDir,
 	}
 	resolvePaths(pathsToResolve)
 

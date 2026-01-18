@@ -2,7 +2,6 @@ package library
 
 import (
 	"context"
-	"fmt"
 	"path/filepath"
 
 	"github.com/ra341/glacier/internal/downloader/types"
@@ -13,14 +12,18 @@ type Downloader interface {
 }
 
 type Service struct {
+	config     ConfigLoader
 	downloader Downloader
 	store      Store
 }
 
-func New(store Store, downloader Downloader) *Service {
+type ConfigLoader func() *Config
+
+func New(store Store, downloader Downloader, config ConfigLoader) *Service {
 	return &Service{
 		downloader: downloader,
 		store:      store,
+		config:     config,
 	}
 }
 
@@ -30,13 +33,12 @@ func (s *Service) List(ctx context.Context, offset, limit uint) ([]Game, error) 
 
 func (s *Service) Add(ctx context.Context, game *Game) error {
 	game.Download.State = types.DownloadQueued
-	abs, err := filepath.Abs(game.Download.DownloadPath)
-	if err != nil {
-		return fmt.Errorf("could not resolve absolute path for download: %w", err)
-	}
-	game.Download.DownloadPath = abs
+	game.Download.DownloadPath = filepath.Join(
+		s.config().GameDir,
+		filepath.Clean(game.Meta.Name),
+	)
 
-	err = s.store.Add(ctx, game)
+	err := s.store.Add(ctx, game)
 	if err != nil {
 		return err
 	}

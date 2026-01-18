@@ -35,11 +35,15 @@ const (
 const (
 	// LibraryServiceAddProcedure is the fully-qualified name of the LibraryService's Add RPC.
 	LibraryServiceAddProcedure = "/library.v1.LibraryService/Add"
+	// LibraryServiceGetGameTypeProcedure is the fully-qualified name of the LibraryService's
+	// GetGameType RPC.
+	LibraryServiceGetGameTypeProcedure = "/library.v1.LibraryService/GetGameType"
 )
 
 // LibraryServiceClient is a client for the library.v1.LibraryService service.
 type LibraryServiceClient interface {
 	Add(context.Context, *connect.Request[v1.AddRequest]) (*connect.Response[v1.AddResponse], error)
+	GetGameType(context.Context, *connect.Request[v1.GetGameTypeRequest]) (*connect.Response[v1.GetGameTypeResponse], error)
 }
 
 // NewLibraryServiceClient constructs a client for the library.v1.LibraryService service. By
@@ -59,12 +63,19 @@ func NewLibraryServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(libraryServiceMethods.ByName("Add")),
 			connect.WithClientOptions(opts...),
 		),
+		getGameType: connect.NewClient[v1.GetGameTypeRequest, v1.GetGameTypeResponse](
+			httpClient,
+			baseURL+LibraryServiceGetGameTypeProcedure,
+			connect.WithSchema(libraryServiceMethods.ByName("GetGameType")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // libraryServiceClient implements LibraryServiceClient.
 type libraryServiceClient struct {
-	add *connect.Client[v1.AddRequest, v1.AddResponse]
+	add         *connect.Client[v1.AddRequest, v1.AddResponse]
+	getGameType *connect.Client[v1.GetGameTypeRequest, v1.GetGameTypeResponse]
 }
 
 // Add calls library.v1.LibraryService.Add.
@@ -72,9 +83,15 @@ func (c *libraryServiceClient) Add(ctx context.Context, req *connect.Request[v1.
 	return c.add.CallUnary(ctx, req)
 }
 
+// GetGameType calls library.v1.LibraryService.GetGameType.
+func (c *libraryServiceClient) GetGameType(ctx context.Context, req *connect.Request[v1.GetGameTypeRequest]) (*connect.Response[v1.GetGameTypeResponse], error) {
+	return c.getGameType.CallUnary(ctx, req)
+}
+
 // LibraryServiceHandler is an implementation of the library.v1.LibraryService service.
 type LibraryServiceHandler interface {
 	Add(context.Context, *connect.Request[v1.AddRequest]) (*connect.Response[v1.AddResponse], error)
+	GetGameType(context.Context, *connect.Request[v1.GetGameTypeRequest]) (*connect.Response[v1.GetGameTypeResponse], error)
 }
 
 // NewLibraryServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -90,10 +107,18 @@ func NewLibraryServiceHandler(svc LibraryServiceHandler, opts ...connect.Handler
 		connect.WithSchema(libraryServiceMethods.ByName("Add")),
 		connect.WithHandlerOptions(opts...),
 	)
+	libraryServiceGetGameTypeHandler := connect.NewUnaryHandler(
+		LibraryServiceGetGameTypeProcedure,
+		svc.GetGameType,
+		connect.WithSchema(libraryServiceMethods.ByName("GetGameType")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/library.v1.LibraryService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case LibraryServiceAddProcedure:
 			libraryServiceAddHandler.ServeHTTP(w, r)
+		case LibraryServiceGetGameTypeProcedure:
+			libraryServiceGetGameTypeHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -105,4 +130,8 @@ type UnimplementedLibraryServiceHandler struct{}
 
 func (UnimplementedLibraryServiceHandler) Add(context.Context, *connect.Request[v1.AddRequest]) (*connect.Response[v1.AddResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("library.v1.LibraryService.Add is not implemented"))
+}
+
+func (UnimplementedLibraryServiceHandler) GetGameType(context.Context, *connect.Request[v1.GetGameTypeRequest]) (*connect.Response[v1.GetGameTypeResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("library.v1.LibraryService.GetGameType is not implemented"))
 }

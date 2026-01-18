@@ -5,16 +5,36 @@ package search.v1;
 option go_package = "github.com/ra341/glacier/generated/search/v1";
 
 service SearchService {
-  rpc Search(SearchRequest) returns (SearchResponse) {}
-  rpc Match(MatchRequest) returns (MatchResponse) {}
+  rpc SearchIndexers(SearchIndexersRequest) returns (SearchIndexersResponse) {}
+  rpc SearchMetadata(SearchMetadataRequest) returns (SearchMetadataResponse) {}
 }
 
-
-message MatchRequest {
+message Query {
   string query = 1;
+  string indexer = 2;
 }
 
-message MatchResponse {
+message SearchIndexersRequest {
+  Query q = 1;
+}
+
+message SearchIndexersResponse {
+  repeated GameIndexer results = 1;
+}
+
+message GameIndexer {
+  string Title = 1;
+  string DownloadUrl = 2;
+  string ImageURL = 3;
+  string FileSize = 4;
+  string CreatedISO = 5;
+}
+
+message SearchMetadataRequest {
+  Query q = 1;
+}
+
+message SearchMetadataResponse {
   repeated GameMetadata metadata = 1;
 }
 
@@ -34,19 +54,4 @@ message GameMetadata {
   string ReleaseDate = 11;
   string ReleaseStatus = 12;
   string Category = 13;
-}
-
-message SearchRequest {
-  string query = 1;
-}
-
-message SearchResponse {
-  repeated GameSearchResult results = 1;
-}
-
-message GameSearchResult {
-  string name = 1;
-  string downloadUrl = 2;
-  string size = 3;
-  string uploadDate = 4;
 }

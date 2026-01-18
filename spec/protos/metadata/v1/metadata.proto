@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package metadata.v1;
+
+option go_package = "github.com/ra341/glacier/generated/metadata/v1";
+
+service MetadataService {
+  rpc GetMetadataProviders(MetadataProviderRequest) returns (MetadataProviderResponse) {}
+
+}
+
+message Provider {
+  string Name = 1;
+}
+
+message MetadataProviderRequest {}
+
+message MetadataProviderResponse {
+  repeated Provider providers = 1;
+}

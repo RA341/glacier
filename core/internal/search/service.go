@@ -19,15 +19,27 @@ func New(metaSrv *metadata.Service, indexer *indexer.Service) *Service {
 	}
 }
 
-func (s *Service) Match(query string) ([]metaTypes.Meta, error) {
-	// todo factor out provider
-	return s.metaSrv.Match(metaTypes.ProviderIGDB, query)
-}
-
-func (s *Service) Search(query string) ([]indexerTypes.IndexerGame, error) {
+func (s *Service) GetMetadataResults(providerStr string, query string) ([]metaTypes.Meta, error) {
 	if query == "" {
 		return nil, nil
 	}
 
-	panic("IMPLEMENT ME")
+	prov, err := metaTypes.ProviderTypeString(providerStr)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.metaSrv.Match(prov, query)
+}
+
+func (s *Service) GetIndexerResults(indexerStr string, query string) ([]indexerTypes.IndexerGame, error) {
+	if query == "" {
+		return []indexerTypes.IndexerGame{}, nil
+	}
+	ind, err := indexerTypes.IndexerTypeString(indexerStr)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.indexer.Search(ind, query)
 }

@@ -3,6 +3,7 @@ package search
 import (
 	"context"
 	"net/http"
+	"strings"
 
 	v1 "github.com/ra341/glacier/generated/search/v1"
 	"github.com/ra341/glacier/generated/search/v1/v1connect"
@@ -23,37 +24,39 @@ func NewHandler(srv *Service) (string, http.Handler) {
 	return v1connect.NewSearchServiceHandler(h)
 }
 
-func (h *Handler) Search(ctx context.Context, req *connect.Request[v1.SearchRequest]) (*connect.Response[v1.SearchResponse], error) {
-	search, err := h.srv.Search(req.Msg.Query)
+func (h *Handler) SearchIndexers(ctx context.Context, req *connect.Request[v1.SearchIndexersRequest]) (*connect.Response[v1.SearchIndexersResponse], error) {
+	search, err := h.srv.GetIndexerResults(req.Msg.Q.Indexer, req.Msg.Q.Query)
 	if err != nil {
 		return nil, err
 	}
 
-	resu := listutils.ToMap(search, func(t indexTypes.IndexerGame) *v1.GameSearchResult {
-		return &v1.GameSearchResult{
-			Name:        t.Title,
+	res := listutils.ToMap(search, func(t indexTypes.IndexerGame) *v1.GameIndexer {
+		return &v1.GameIndexer{
+			Title:       t.Title,
 			DownloadUrl: t.DownloadUrl,
-			Size:        t.FileSize,
-			UploadDate:  t.CreatedISO,
+			ImageURL:    t.ImageURL,
+			FileSize:    t.FileSize,
+			CreatedISO:  t.CreatedISO,
 		}
 	})
 
-	return connect.NewResponse(&v1.SearchResponse{
-		Results: resu,
+	return connect.NewResponse(&v1.SearchIndexersResponse{
+		Results: res,
 	}), nil
 }
 
-func (h *Handler) Match(ctx context.Context, req *connect.Request[v1.MatchRequest]) (*connect.Response[v1.MatchResponse], error) {
-	search, err := h.srv.Match(req.Msg.Query)
+func (h *Handler) SearchMetadata(ctx context.Context, req *connect.Request[v1.SearchMetadataRequest]) (*connect.Response[v1.SearchMetadataResponse], error) {
+	search, err := h.srv.GetMetadataResults(req.Msg.Q.Indexer, req.Msg.Q.Query)
 	if err != nil {
 		return nil, err
 	}
 
-	resu := listutils.ToMap(search, func(t metaTypes.Meta) *v1.GameMetadata {
+	res := listutils.ToMap(search, func(t metaTypes.Meta) *v1.GameMetadata {
+		t.ThumbnailURL = strings.Replace(t.ThumbnailURL, "t_thumb", "t_cover_big", 1)
 		return t.ToProto()
 	})
 
-	return connect.NewResponse(&v1.MatchResponse{
-		Metadata: resu,
+	return connect.NewResponse(&v1.SearchMetadataResponse{
+		Metadata: res,
 	}), nil
 }

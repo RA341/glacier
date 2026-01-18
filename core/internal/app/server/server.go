@@ -9,7 +9,9 @@ import (
 
 	"github.com/ra341/glacier/internal/app"
 	downloadManager "github.com/ra341/glacier/internal/downloader/manager"
+	indexerManager "github.com/ra341/glacier/internal/indexer/manager"
 	"github.com/ra341/glacier/internal/library"
+	metadataManager "github.com/ra341/glacier/internal/metadata/manager"
 	"github.com/ra341/glacier/internal/search"
 
 	connectcors "connectrpc.com/cors"
@@ -91,9 +93,9 @@ func (s *Server) registerUI(mux *http.ServeMux) {
 
 func (s *Server) registerRoutes(mux *http.ServeMux) {
 	mux.Handle(search.NewHandler(s.Search))
-
 	mux.Handle(library.NewHandler(s.Library))
 
 	mux.Handle(downloadManager.NewHandler(s.DownloadClientManager))
-
+	mux.Handle(metadataManager.NewHandler(s.MetadataManager))
+	mux.Handle(indexerManager.NewHandler(s.IndexerManager))
 }

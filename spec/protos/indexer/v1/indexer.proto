@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package indexer.v1;
+
+option go_package = "github.com/ra341/glacier/generated/indexer/v1";
+
+service IndexerService {
+  rpc GetActiveIndexers(GetActiveIndexersRequest) returns (GetActiveIndexersResponse) {}
+
+}
+
+message Indexer {
+  string Name = 1;
+}
+
+message GetActiveIndexersRequest {}
+
+message GetActiveIndexersResponse {
+  repeated Indexer indexers = 1;
+}

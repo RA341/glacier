@@ -30,9 +30,9 @@ type App struct {
 
 	DownloadSrv           *downloader.Service
 	DownloadClientManager *downloadManager.Service
-
-	Search          *search.Service
-	MetadataManager *metadataManager.Service
+	IndexerManager        *indexerManager.Service
+	Search                *search.Service
+	MetadataManager       *metadataManager.Service
 }
 
 func NewApp() *App {
@@ -56,7 +56,11 @@ func NewApp() *App {
 	)
 	downSrv.StartTracker() // check for previous incomplete downloads
 
-	libSrv := library.New(libDb, downSrv)
+	libSrv := library.New(libDb, downSrv,
+		func() *library.Config {
+			return &config.Get().Library
+		},
+	)
 
 	metaMan := metadataManager.New(config)
 	metaSrv := metadata.New(metaMan)
@@ -69,6 +73,7 @@ func NewApp() *App {
 	a := &App{
 		Conf:                  config,
 		Library:               libSrv,
+		IndexerManager:        indexerMan,
 		DownloadSrv:           downSrv,
 		DownloadClientManager: clientMan,
 		MetadataManager:       metaMan,

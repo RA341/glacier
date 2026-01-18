@@ -8,8 +8,19 @@ import "search/v1/search.proto";
 
 service LibraryService {
   rpc Add(AddRequest) returns (AddResponse) {}
-
+  rpc GetGameType(GetGameTypeRequest) returns (GetGameTypeResponse) {}
 }
+
+message GetGameTypeRequest {}
+
+message GameType {
+  string Name = 1;
+}
+
+message GetGameTypeResponse {
+  repeated GameType gameTypes = 1;
+}
+
 
 message AddRequest {
   Game game = 1;

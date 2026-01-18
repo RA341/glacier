@@ -12,7 +12,54 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file library/v1/library.proto.
  */
 export const file_library_v1_library: GenFile = /*@__PURE__*/
-  fileDesc("ChhsaWJyYXJ5L3YxL2xpYnJhcnkucHJvdG8SCmxpYnJhcnkudjEiLAoKQWRkUmVxdWVzdBIeCgRnYW1lGAEgASgLMhAubGlicmFyeS52MS5HYW1lIp0BCgRHYW1lEgoKAklEGAEgASgEEhEKCUNyZWF0ZWRBdBgCIAEoCRIQCghFZGl0ZWRBdBgDIAEoCRIlCgRNZXRhGAQgASgLMhcuc2VhcmNoLnYxLkdhbWVNZXRhZGF0YRIQCghHYW1lVHlwZRgFIAEoCRIrCg1Eb3dubG9hZFN0YXRlGAcgASgLMhQubGlicmFyeS52MS5Eb3dubG9hZCJ6CghEb3dubG9hZBIOCgZDbGllbnQYASABKAkSEgoKRG93bmxvYWRJZBgCIAEoCRINCgVTdGF0ZRgDIAEoCRIQCghQcm9ncmVzcxgEIAEoCRIUCgxEb3dubG9hZFBhdGgYBSABKAkSEwoLRG93bmxvYWRVcmwYBiABKAkiDQoLQWRkUmVzcG9uc2UySgoOTGlicmFyeVNlcnZpY2USOAoDQWRkEhYubGlicmFyeS52MS5BZGRSZXF1ZXN0GhcubGlicmFyeS52MS5BZGRSZXNwb25zZSIAQpYBCg5jb20ubGlicmFyeS52MUIMTGlicmFyeVByb3RvUAFaLWdpdGh1Yi5jb20vcmEzNDEvZ2xhY2llci9nZW5lcmF0ZWQvbGlicmFyeS92MaICA0xYWKoCCkxpYnJhcnkuVjHKAgpMaWJyYXJ5XFYx4gIWTGlicmFyeVxWMVxHUEJNZXRhZGF0YeoCC0xpYnJhcnk6OlYxYgZwcm90bzM", [file_search_v1_search]);
+  fileDesc("ChhsaWJyYXJ5L3YxL2xpYnJhcnkucHJvdG8SCmxpYnJhcnkudjEiFAoSR2V0R2FtZVR5cGVSZXF1ZXN0IhgKCEdhbWVUeXBlEgwKBE5hbWUYASABKAkiPgoTR2V0R2FtZVR5cGVSZXNwb25zZRInCglnYW1lVHlwZXMYASADKAsyFC5saWJyYXJ5LnYxLkdhbWVUeXBlIiwKCkFkZFJlcXVlc3QSHgoEZ2FtZRgBIAEoCzIQLmxpYnJhcnkudjEuR2FtZSKdAQoER2FtZRIKCgJJRBgBIAEoBBIRCglDcmVhdGVkQXQYAiABKAkSEAoIRWRpdGVkQXQYAyABKAkSJQoETWV0YRgEIAEoCzIXLnNlYXJjaC52MS5HYW1lTWV0YWRhdGESEAoIR2FtZVR5cGUYBSABKAkSKwoNRG93bmxvYWRTdGF0ZRgHIAEoCzIULmxpYnJhcnkudjEuRG93bmxvYWQiegoIRG93bmxvYWQSDgoGQ2xpZW50GAEgASgJEhIKCkRvd25sb2FkSWQYAiABKAkSDQoFU3RhdGUYAyABKAkSEAoIUHJvZ3Jlc3MYBCABKAkSFAoMRG93bmxvYWRQYXRoGAUgASgJEhMKC0Rvd25sb2FkVXJsGAYgASgJIg0KC0FkZFJlc3BvbnNlMpwBCg5MaWJyYXJ5U2VydmljZRI4CgNBZGQSFi5saWJyYXJ5LnYxLkFkZFJlcXVlc3QaFy5saWJyYXJ5LnYxLkFkZFJlc3BvbnNlIgASUAoLR2V0R2FtZVR5cGUSHi5saWJyYXJ5LnYxLkdldEdhbWVUeXBlUmVxdWVzdBofLmxpYnJhcnkudjEuR2V0R2FtZVR5cGVSZXNwb25zZSIAQpYBCg5jb20ubGlicmFyeS52MUIMTGlicmFyeVByb3RvUAFaLWdpdGh1Yi5jb20vcmEzNDEvZ2xhY2llci9nZW5lcmF0ZWQvbGlicmFyeS92MaICA0xYWKoCCkxpYnJhcnkuVjHKAgpMaWJyYXJ5XFYx4gIWTGlicmFyeVxWMVxHUEJNZXRhZGF0YeoCC0xpYnJhcnk6OlYxYgZwcm90bzM", [file_search_v1_search]);
+
+/**
+ * @generated from message library.v1.GetGameTypeRequest
+ */
+export type GetGameTypeRequest = Message<"library.v1.GetGameTypeRequest"> & {
+};
+
+/**
+ * Describes the message library.v1.GetGameTypeRequest.
+ * Use `create(GetGameTypeRequestSchema)` to create a new message.
+ */
+export const GetGameTypeRequestSchema: GenMessage<GetGameTypeRequest> = /*@__PURE__*/
+  messageDesc(file_library_v1_library, 0);
+
+/**
+ * @generated from message library.v1.GameType
+ */
+export type GameType = Message<"library.v1.GameType"> & {
+  /**
+   * @generated from field: string Name = 1;
+   */
+  Name: string;
+};
+
+/**
+ * Describes the message library.v1.GameType.
+ * Use `create(GameTypeSchema)` to create a new message.
+ */
+export const GameTypeSchema: GenMessage<GameType> = /*@__PURE__*/
+  messageDesc(file_library_v1_library, 1);
+
+/**
+ * @generated from message library.v1.GetGameTypeResponse
+ */
+export type GetGameTypeResponse = Message<"library.v1.GetGameTypeResponse"> & {
+  /**
+   * @generated from field: repeated library.v1.GameType gameTypes = 1;
+   */
+  gameTypes: GameType[];
+};
+
+/**
+ * Describes the message library.v1.GetGameTypeResponse.
+ * Use `create(GetGameTypeResponseSchema)` to create a new message.
+ */
+export const GetGameTypeResponseSchema: GenMessage<GetGameTypeResponse> = /*@__PURE__*/
+  messageDesc(file_library_v1_library, 2);
 
 /**
  * @generated from message library.v1.AddRequest
@@ -29,7 +76,7 @@ export type AddRequest = Message<"library.v1.AddRequest"> & {
  * Use `create(AddRequestSchema)` to create a new message.
  */
 export const AddRequestSchema: GenMessage<AddRequest> = /*@__PURE__*/
-  messageDesc(file_library_v1_library, 0);
+  messageDesc(file_library_v1_library, 3);
 
 /**
  * @generated from message library.v1.Game
@@ -71,7 +118,7 @@ export type Game = Message<"library.v1.Game"> & {
  * Use `create(GameSchema)` to create a new message.
  */
 export const GameSchema: GenMessage<Game> = /*@__PURE__*/
-  messageDesc(file_library_v1_library, 1);
+  messageDesc(file_library_v1_library, 4);
 
 /**
  * @generated from message library.v1.Download
@@ -113,7 +160,7 @@ export type Download = Message<"library.v1.Download"> & {
  * Use `create(DownloadSchema)` to create a new message.
  */
 export const DownloadSchema: GenMessage<Download> = /*@__PURE__*/
-  messageDesc(file_library_v1_library, 2);
+  messageDesc(file_library_v1_library, 5);
 
 /**
  * @generated from message library.v1.AddResponse
@@ -126,7 +173,7 @@ export type AddResponse = Message<"library.v1.AddResponse"> & {
  * Use `create(AddResponseSchema)` to create a new message.
  */
 export const AddResponseSchema: GenMessage<AddResponse> = /*@__PURE__*/
-  messageDesc(file_library_v1_library, 3);
+  messageDesc(file_library_v1_library, 6);
 
 /**
  * @generated from service library.v1.LibraryService
@@ -139,6 +186,14 @@ export const LibraryService: GenService<{
     methodKind: "unary";
     input: typeof AddRequestSchema;
     output: typeof AddResponseSchema;
+  },
+  /**
+   * @generated from rpc library.v1.LibraryService.GetGameType
+   */
+  getGameType: {
+    methodKind: "unary";
+    input: typeof GetGameTypeRequestSchema;
+    output: typeof GetGameTypeResponseSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_library_v1_library, 0);

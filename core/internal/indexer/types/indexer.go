@@ -25,10 +25,9 @@ type IndexerGame struct {
 	DownloadUrl string
 
 	// optional
-	ImageURL    string
-	Description string
-	FileSize    string
-	CreatedISO  string
+	ImageURL   string
+	FileSize   string
+	CreatedISO string
 }
 
 type DownloadInfo struct {

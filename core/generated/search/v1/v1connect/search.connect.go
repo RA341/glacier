@@ -33,16 +33,18 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
-	// SearchServiceSearchProcedure is the fully-qualified name of the SearchService's Search RPC.
-	SearchServiceSearchProcedure = "/search.v1.SearchService/Search"
-	// SearchServiceMatchProcedure is the fully-qualified name of the SearchService's Match RPC.
-	SearchServiceMatchProcedure = "/search.v1.SearchService/Match"
+	// SearchServiceSearchIndexersProcedure is the fully-qualified name of the SearchService's
+	// SearchIndexers RPC.
+	SearchServiceSearchIndexersProcedure = "/search.v1.SearchService/SearchIndexers"
+	// SearchServiceSearchMetadataProcedure is the fully-qualified name of the SearchService's
+	// SearchMetadata RPC.
+	SearchServiceSearchMetadataProcedure = "/search.v1.SearchService/SearchMetadata"
 )
 
 // SearchServiceClient is a client for the search.v1.SearchService service.
 type SearchServiceClient interface {
-	Search(context.Context, *connect.Request[v1.SearchRequest]) (*connect.Response[v1.SearchResponse], error)
-	Match(context.Context, *connect.Request[v1.MatchRequest]) (*connect.Response[v1.MatchResponse], error)
+	SearchIndexers(context.Context, *connect.Request[v1.SearchIndexersRequest]) (*connect.Response[v1.SearchIndexersResponse], error)
+	SearchMetadata(context.Context, *connect.Request[v1.SearchMetadataRequest]) (*connect.Response[v1.SearchMetadataResponse], error)
 }
 
 // NewSearchServiceClient constructs a client for the search.v1.SearchService service. By default,
@@ -56,16 +58,16 @@ func NewSearchServiceClient(httpClient connect.HTTPClient, baseURL string, opts 
 	baseURL = strings.TrimRight(baseURL, "/")
 	searchServiceMethods := v1.File_search_v1_search_proto.Services().ByName("SearchService").Methods()
 	return &searchServiceClient{
-		search: connect.NewClient[v1.SearchRequest, v1.SearchResponse](
+		searchIndexers: connect.NewClient[v1.SearchIndexersRequest, v1.SearchIndexersResponse](
 			httpClient,
-			baseURL+SearchServiceSearchProcedure,
-			connect.WithSchema(searchServiceMethods.ByName("Search")),
+			baseURL+SearchServiceSearchIndexersProcedure,
+			connect.WithSchema(searchServiceMethods.ByName("SearchIndexers")),
 			connect.WithClientOptions(opts...),
 		),
-		match: connect.NewClient[v1.MatchRequest, v1.MatchResponse](
+		searchMetadata: connect.NewClient[v1.SearchMetadataRequest, v1.SearchMetadataResponse](
 			httpClient,
-			baseURL+SearchServiceMatchProcedure,
-			connect.WithSchema(searchServiceMethods.ByName("Match")),
+			baseURL+SearchServiceSearchMetadataProcedure,
+			connect.WithSchema(searchServiceMethods.ByName("SearchMetadata")),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -73,24 +75,24 @@ func NewSearchServiceClient(httpClient connect.HTTPClient, baseURL string, opts 
 
 // searchServiceClient implements SearchServiceClient.
 type searchServiceClient struct {
-	search *connect.Client[v1.SearchRequest, v1.SearchResponse]
-	match  *connect.Client[v1.MatchRequest, v1.MatchResponse]
+	searchIndexers *connect.Client[v1.SearchIndexersRequest, v1.SearchIndexersResponse]
+	searchMetadata *connect.Client[v1.SearchMetadataRequest, v1.SearchMetadataResponse]
 }
 
-// Search calls search.v1.SearchService.Search.
-func (c *searchServiceClient) Search(ctx context.Context, req *connect.Request[v1.SearchRequest]) (*connect.Response[v1.SearchResponse], error) {
-	return c.search.CallUnary(ctx, req)
+// SearchIndexers calls search.v1.SearchService.SearchIndexers.
+func (c *searchServiceClient) SearchIndexers(ctx context.Context, req *connect.Request[v1.SearchIndexersRequest]) (*connect.Response[v1.SearchIndexersResponse], error) {
+	return c.searchIndexers.CallUnary(ctx, req)
 }
 
-// Match calls search.v1.SearchService.Match.
-func (c *searchServiceClient) Match(ctx context.Context, req *connect.Request[v1.MatchRequest]) (*connect.Response[v1.MatchResponse], error) {
-	return c.match.CallUnary(ctx, req)
+// SearchMetadata calls search.v1.SearchService.SearchMetadata.
+func (c *searchServiceClient) SearchMetadata(ctx context.Context, req *connect.Request[v1.SearchMetadataRequest]) (*connect.Response[v1.SearchMetadataResponse], error) {
+	return c.searchMetadata.CallUnary(ctx, req)
 }
 
 // SearchServiceHandler is an implementation of the search.v1.SearchService service.
 type SearchServiceHandler interface {
-	Search(context.Context, *connect.Request[v1.SearchRequest]) (*connect.Response[v1.SearchResponse], error)
-	Match(context.Context, *connect.Request[v1.MatchRequest]) (*connect.Response[v1.MatchResponse], error)
+	SearchIndexers(context.Context, *connect.Request[v1.SearchIndexersRequest]) (*connect.Response[v1.SearchIndexersResponse], error)
+	SearchMetadata(context.Context, *connect.Request[v1.SearchMetadataRequest]) (*connect.Response[v1.SearchMetadataResponse], error)
 }
 
 // NewSearchServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -100,24 +102,24 @@ type SearchServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewSearchServiceHandler(svc SearchServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	searchServiceMethods := v1.File_search_v1_search_proto.Services().ByName("SearchService").Methods()
-	searchServiceSearchHandler := connect.NewUnaryHandler(
-		SearchServiceSearchProcedure,
-		svc.Search,
-		connect.WithSchema(searchServiceMethods.ByName("Search")),
+	searchServiceSearchIndexersHandler := connect.NewUnaryHandler(
+		SearchServiceSearchIndexersProcedure,
+		svc.SearchIndexers,
+		connect.WithSchema(searchServiceMethods.ByName("SearchIndexers")),
 		connect.WithHandlerOptions(opts...),
 	)
-	searchServiceMatchHandler := connect.NewUnaryHandler(
-		SearchServiceMatchProcedure,
-		svc.Match,
-		connect.WithSchema(searchServiceMethods.ByName("Match")),
+	searchServiceSearchMetadataHandler := connect.NewUnaryHandler(
+		SearchServiceSearchMetadataProcedure,
+		svc.SearchMetadata,
+		connect.WithSchema(searchServiceMethods.ByName("SearchMetadata")),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/search.v1.SearchService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
-		case SearchServiceSearchProcedure:
-			searchServiceSearchHandler.ServeHTTP(w, r)
-		case SearchServiceMatchProcedure:
-			searchServiceMatchHandler.ServeHTTP(w, r)
+		case SearchServiceSearchIndexersProcedure:
+			searchServiceSearchIndexersHandler.ServeHTTP(w, r)
+		case SearchServiceSearchMetadataProcedure:
+			searchServiceSearchMetadataHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -127,10 +129,10 @@ func NewSearchServiceHandler(svc SearchServiceHandler, opts ...connect.HandlerOp
 // UnimplementedSearchServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedSearchServiceHandler struct{}
 
-func (UnimplementedSearchServiceHandler) Search(context.Context, *connect.Request[v1.SearchRequest]) (*connect.Response[v1.SearchResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("search.v1.SearchService.Search is not implemented"))
+func (UnimplementedSearchServiceHandler) SearchIndexers(context.Context, *connect.Request[v1.SearchIndexersRequest]) (*connect.Response[v1.SearchIndexersResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("search.v1.SearchService.SearchIndexers is not implemented"))
 }
 
-func (UnimplementedSearchServiceHandler) Match(context.Context, *connect.Request[v1.MatchRequest]) (*connect.Response[v1.MatchResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("search.v1.SearchService.Match is not implemented"))
+func (UnimplementedSearchServiceHandler) SearchMetadata(context.Context, *connect.Request[v1.SearchMetadataRequest]) (*connect.Response[v1.SearchMetadataResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("search.v1.SearchService.SearchMetadata is not implemented"))
 }
