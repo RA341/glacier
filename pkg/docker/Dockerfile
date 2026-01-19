@@ -47,6 +47,9 @@ COPY --from=go_builder build/glacier glacier
 
 COPY --from=web_ui /web/build/ web
 
+ENV GLACIER_CONFIG_DIR="/config"
+ENV GLACIER_GAME_DIR="/gamestop"
+
 ENTRYPOINT ["entrypoint.sh"]
 
 CMD ["./glacier"]

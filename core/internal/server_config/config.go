@@ -8,9 +8,9 @@ import (
 )
 
 type Config struct {
-	Server Server `yaml:"server"`
-	Logger Logger `yaml:"logger"`
-	Files  Files  `yaml:"files"`
+	Glacier Glacier `yaml:"glacier"`
+	Server  Server  `yaml:"server"`
+	Logger  Logger  `yaml:"logger"`
 
 	Library  library.Config    `yaml:"library"`
 	Indexer  indexer.Config    `yaml:"indexer"`
@@ -18,9 +18,9 @@ type Config struct {
 	Metadata metadata.Config   `yaml:"metadata"`
 }
 
-type Files struct {
+type Glacier struct {
 	// holds db and the yml file
-	ConfigDir string `yaml:"config" env:"CONFIG_DIR" default:"./config"`
+	ConfigDir string `yaml:"config" env:"CONFIG_DIR" default:"./config" help:"path to the config dir"`
 }
 
 type Server struct {

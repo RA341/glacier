@@ -28,7 +28,7 @@ if ! getent passwd appuser >/dev/null; then
 fi
 
 # todo load any appdirs
-APP_DIRS=""
+APP_DIRS="GLACIER_CONFIG_DIR GLACIER_GAME_DIR"
 
 # Initialize Directories
 # loop through the env variables

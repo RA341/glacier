@@ -9,6 +9,7 @@ import (
 	downloadManager "github.com/ra341/glacier/internal/downloader/manager"
 	"github.com/ra341/glacier/internal/indexer"
 	indexerManager "github.com/ra341/glacier/internal/indexer/manager"
+	"github.com/ra341/glacier/internal/info"
 	"github.com/ra341/glacier/internal/library"
 	"github.com/ra341/glacier/internal/metadata"
 	metadataManager "github.com/ra341/glacier/internal/metadata/manager"
@@ -21,6 +22,12 @@ import (
 
 func init() {
 	logger.InitConsole("debug", true)
+}
+
+func InitMeta(flavour info.FlavourType) {
+	info.SetFlavour(flavour)
+	info.PrintInfo()
+	logger.InitDefault()
 }
 
 type App struct {
@@ -42,7 +49,7 @@ func NewApp() *App {
 		log.Fatal().Msg("config is nil THIS SHOULD NEVER HAPPEN")
 	}
 
-	db := database.New(config.Get().Files.ConfigDir, false)
+	db := database.New(config.Get().Glacier.ConfigDir, false)
 
 	libDb := library.NewStoreGorm(db)
 

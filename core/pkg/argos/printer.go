@@ -22,124 +22,175 @@ const (
 	ColorCyan    = "\033[36m"
 )
 
-// KeyValue A simple struct to hold our flattened key-value pairs before formatting.
-type KeyValue struct {
-	Key         string
-	Value       string
-	HelpMessage string
-	EnvName     string
+type FieldPrintConfig struct {
+	TagName string
+	// TagName is the same as the one passed above
+	PrintConfig func(TagName string, val *FieldVal)
+
+	// max length of value for this tag
+	maxTagLength int
 }
 
-func PrettyPrint(c interface{}, baseEnv string) {
-	// Flatten the struct into a list of KeyValue pairs.
-	// We start with an empty prefix for the top-level keys.
-	pairs := flattenStruct(reflect.ValueOf(c), "", baseEnv)
+func PrintInfo(c interface{}, footer string, opts ...FieldPrintConfig) {
+	var tags = make([]string, len(opts))
+	for i, opt := range opts {
+		tags[i] = opt.TagName
+	}
+
+	// start with an empty structPrefix since its at tippity top
+	pairs := flattenStruct(
+		reflect.ValueOf(c),
+		"",
+		tags...,
+	)
 
 	// Find the length of the longest key for alignment.
 	maxKeyLength := 0
 	maxValueLength := 0
-	maxHelpLength := 0
-	for _, p := range pairs {
-		if len(p.Key) > maxKeyLength {
-			maxKeyLength = len(p.Key)
+	//maxHelpLength := 0
+	for _, val := range pairs {
+		if len(val.Key) > maxKeyLength {
+			maxKeyLength = len(val.Key)
 		}
 
 		// strip ANSI color codes to get the true visible length of the value.
-		cleanValue := ansiRegex.ReplaceAllString(p.Value, "")
+		cleanValue := ansiRegex.ReplaceAllString(val.Value, "")
 		if len(cleanValue) > maxValueLength {
 			maxValueLength = len(cleanValue)
 		}
 
-		cleanHelpValue := ansiRegex.ReplaceAllString(p.HelpMessage, "")
-		if len(cleanHelpValue) > maxHelpLength {
-			maxHelpLength = len(cleanHelpValue)
+		for i, o := range opts {
+			// apply any config the client could make
+			o.PrintConfig(o.TagName, &val)
+
+			src := val.Tags[o.TagName]
+			cleanTag := ansiRegex.ReplaceAllString(src, "")
+			if len(cleanTag) > o.maxTagLength {
+				o.maxTagLength = len(cleanTag)
+				opts[i] = o
+			}
 		}
 	}
 
-	// Format each pair into a colored, aligned string.
-	redEnvLabel := Colorize("Env:", ColorRed+ColorUnderline)
 	var contentBuilder strings.Builder
-	for i, p := range pairs {
-		// Calculate padding for the key column
-		keyPadding := strings.Repeat(" ", maxKeyLength-len(p.Key))
+	for i, val := range pairs {
+		if val.Value == "" {
+			// empty imply a map type
+			continue
+		}
 
-		// Calculate padding for the value column
-		cleanValue := ansiRegex.ReplaceAllString(p.Value, "")
+		// padding for the key column
+		keyPadding := strings.Repeat(" ", maxKeyLength-len(val.Key))
+
+		// padding for the value column
+		cleanValue := ansiRegex.ReplaceAllString(val.Value, "")
 		valuePadding := strings.Repeat(" ", maxValueLength-len(cleanValue))
 
 		// Colorize parts for readability
-		coloredKey := Colorize(p.Key, ColorBlue+ColorBold)
-
-		cleanHelp := ansiRegex.ReplaceAllString(p.HelpMessage, "")
-		helpPadding := strings.Repeat(" ", maxHelpLength-len(cleanHelp))
+		coloredKey := Colorize(val.Key, ColorBlue+ColorBold)
 
 		// Assemble the line with calculated padding
-		// Format: [Key]:[Padding]  [Value][Padding]   [Help]
+		// Format: [Key]:[Padding]  [Value][Padding]   [....tags]
 		contentBuilder.WriteString(coloredKey)
 		contentBuilder.WriteString(":")
 		contentBuilder.WriteString(keyPadding)
-		contentBuilder.WriteString("  ") // Separator between key and value
+		contentBuilder.WriteString("  ") // Separator
 
-		contentBuilder.WriteString(p.Value)
+		contentBuilder.WriteString(val.Value)
 		contentBuilder.WriteString(valuePadding)
-		contentBuilder.WriteString("  ") // Separator between value and help
+		contentBuilder.WriteString("  ")
 
-		contentBuilder.WriteString(p.HelpMessage)
-		contentBuilder.WriteString(helpPadding)
-		contentBuilder.WriteString("  ") // Separator between help and env
+		// tags
+		for j, o := range opts {
+			tagToPrint := val.Tags[o.TagName]
 
-		contentBuilder.WriteString(fmt.Sprintf("%s %s", redEnvLabel, p.EnvName))
+			cleanTagVal := ansiRegex.ReplaceAllString(tagToPrint, "")
+			tagPadding := ""
+			if o.maxTagLength > 0 {
+				tagPadding = strings.Repeat(" ", o.maxTagLength-len(cleanTagVal))
+			}
+
+			contentBuilder.WriteString(tagToPrint)
+			// we dont need padding for that last column
+			if j < len(opts)-1 {
+				contentBuilder.WriteString(tagPadding)
+			}
+			contentBuilder.WriteString("  ")
+		}
 
 		if i < len(pairs)-1 {
 			contentBuilder.WriteString("\n")
 		}
 	}
 
-	ms := Colorize("To modify config, set the respective", ColorMagenta+ColorBold)
-	contentBuilder.WriteString(fmt.Sprintf("\n\n%s %s", ms, redEnvLabel))
+	contentBuilder.WriteString(fmt.Sprintf("\n\n%s", footer))
 
 	printInBox("Config", contentBuilder.String())
 }
 
+func WithUnderLine(value string) string {
+	return Colorize(value, ColorRed+ColorUnderline)
+}
+
+// FieldVal
+//
+//	{
+//		structKey: {
+//			tag1: val1,
+//			tag2: val2,
+//			tag3: val3,
+//		},
+//	    structKey2: {
+//				tag1: val1,
+//				tag2: val2,
+//				tag3: val3,
+//			},
+//		}
+type FieldVal struct {
+	Key   string
+	Value string
+	Tags  map[string]string
+}
+
 // flattenStruct recursively traverses a struct and returns a flat list of KeyValue pairs.
-func flattenStruct(v reflect.Value, prefix, baseEnv string) []KeyValue {
+func flattenStruct(v reflect.Value, structPrefix string, tags ...string) []FieldVal {
 	// If it's a pointer, dereference it.
 	if v.Kind() == reflect.Ptr {
 		v = v.Elem()
 	}
-	prefixer := Prefixer(baseEnv)
 
-	var pairs []KeyValue
+	var topPairs []FieldVal
+
 	t := v.Type()
 	for i := 0; i < v.NumField(); i++ {
 		fieldT := t.Field(i)
 		fieldV := v.Field(i)
 
 		keyName := fieldT.Name
-		configTag, ok := fieldT.Tag.Lookup("config")
-		if !ok {
-			continue // Skip fields without the config tag
-		}
-
-		// Create the full key path (e.g., "database.host")
+		// full path (e.g., "database.host")
 		fullKey := keyName
-		if prefix != "" {
-			fullKey = prefix + "." + keyName
+		if structPrefix != "" {
+			fullKey = structPrefix + "." + keyName
 		}
 
 		if fieldV.Kind() == reflect.Struct {
-			nestedPairs := flattenStruct(fieldV, fullKey, baseEnv)
-			pairs = append(pairs, nestedPairs...)
-			continue // Important: move to the next field after handling the struct
+			nestedPairs := flattenStruct(fieldV, fullKey, tags...)
+			topPairs = append(topPairs, nestedPairs...)
+			continue
 		}
 
-		configTags := parseTag(configTag)
-		usage := configTags["usage"]
-		hide := configTags["hide"]
-		envName := Colorize(prefixer(configTags["env"]), ColorCyan)
-		message := fmt.Sprintf("%s", Colorize(usage, ColorBlue))
+		fieldVal := FieldVal{
+			Key:  fullKey,
+			Tags: make(map[string]string),
+		}
+		for _, tag := range tags {
+			tagValue, ok := fieldT.Tag.Lookup(tag)
+			if !ok {
+				continue
+			}
+			fieldVal.Tags[tag] = tagValue
+		}
 
-		var val KeyValue
 		switch fieldV.Kind() {
 		case reflect.Slice:
 			// Format slices as comma-separated strings
@@ -147,34 +198,15 @@ func flattenStruct(v reflect.Value, prefix, baseEnv string) []KeyValue {
 			for j := 0; j < fieldV.Len(); j++ {
 				sliceItems = append(sliceItems, formatSimpleValue(fieldV.Index(j)))
 			}
-			val = KeyValue{
-				Key:         fullKey,
-				Value:       strings.Join(sliceItems, ", "),
-				HelpMessage: message,
-				EnvName:     envName,
-			}
+			fieldVal.Value = strings.Join(sliceItems, ", ")
 		default:
-			// Handle simple types
-			val = KeyValue{
-				Key:         fullKey,
-				Value:       formatSimpleValue(fieldV),
-				HelpMessage: message,
-				EnvName:     envName,
-			}
+			fieldVal.Value = formatSimpleValue(fieldV)
 		}
 
-		if hide != "" {
-			val.Value = Colorize("*REDACTED* ^_^", ColorRed)
-		}
-		pairs = append(pairs, val)
+		topPairs = append(topPairs, fieldVal)
 	}
-	return pairs
-}
 
-func Prefixer(baseEnv string) func(env string) string {
-	return func(env string) string {
-		return fmt.Sprintf("%s_%s", baseEnv, env)
-	}
+	return topPairs
 }
 
 // formatSimpleValue converts a reflect.Value of a simple type to a colored string.
@@ -187,10 +219,12 @@ func formatSimpleValue(v reflect.Value) string {
 	case reflect.Bool:
 		return Colorize(strconv.FormatBool(v.Bool()), ColorYellow)
 	default:
-		if v.IsValid() {
-			return v.String()
-		}
-		return Colorize("null", "red") // Should not happen with valid structs
+		// this indicates that the value is not printable
+		return ""
+		//if v.IsValid() {
+		//	return v.String()
+		//}
+		//return Colorize("null", "red") // Should not happen with valid structs
 	}
 }
 

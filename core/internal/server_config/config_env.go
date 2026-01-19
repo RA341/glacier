@@ -2,10 +2,10 @@ package server_config
 
 type Prefixer func(in string) string
 
-const defaultPrefix = "GLACIER"
+const EnvPrefix = "GLACIER"
 
 func DefaultPrefixer() Prefixer {
-	return WithPrefixer(defaultPrefix)
+	return WithPrefixer(EnvPrefix)
 }
 
 func WithPrefixer(envPrefix string) Prefixer {

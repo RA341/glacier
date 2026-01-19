@@ -1,11 +1,13 @@
 package server_config
 
 import (
+	"fmt"
 	"sync/atomic"
 
 	downloaderTypes "github.com/ra341/glacier/internal/downloader/types"
 	"github.com/ra341/glacier/internal/indexer/types"
 	metadataTypes "github.com/ra341/glacier/internal/metadata/types"
+	"github.com/ra341/glacier/pkg/argos"
 	"github.com/rs/zerolog/log"
 )
 
@@ -40,15 +42,49 @@ func (s *Service) Init() {
 
 	pathsToResolve := []*string{
 		&conf.Download.IncompleteDownloadPath,
-		&conf.Files.ConfigDir,
+		&conf.Glacier.ConfigDir,
 		&conf.Library.GameDir,
 	}
 	resolvePaths(pathsToResolve)
+
+	printConfig(defaultPrefixer, &conf)
 
 	err = s.storeAndLoad(&conf)
 	if err != nil {
 		log.Fatal().Err(err).Msg("can't init config file")
 	}
+}
+
+func printConfig(defaultPrefixer Prefixer, conf *Config) {
+	envDisplay := argos.WithUnderLine("Env:")
+	envTag := argos.FieldPrintConfig{
+		TagName: "env",
+		PrintConfig: func(TagName string, val *argos.FieldVal) {
+			v, ok := val.Tags[TagName]
+			if ok {
+				val.Tags[TagName] = envDisplay + " " +
+					argos.Colorize(defaultPrefixer(v), argos.ColorCyan)
+			}
+		},
+	}
+	helpTag := argos.FieldPrintConfig{
+		TagName: "help",
+		PrintConfig: func(TagName string, val *argos.FieldVal) {
+			v, ok := val.Tags[TagName]
+			if ok {
+				val.Tags[TagName] = argos.Colorize(v, argos.ColorYellow)
+			}
+		},
+	}
+
+	ms := argos.Colorize("To modify config, set the respective", argos.ColorMagenta+argos.ColorBold)
+	footer := fmt.Sprintf("%s %s", ms, envDisplay)
+
+	argos.PrintInfo(
+		conf,
+		footer,
+		helpTag, envTag,
+	)
 }
 
 func (s *Service) Get() *Config {
