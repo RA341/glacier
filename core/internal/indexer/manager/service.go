@@ -24,7 +24,7 @@ func New(df Config) *Service {
 	s := &Service{
 		cf: df,
 	}
-	s.LoadEnabledIndexers()
+	go s.LoadEnabledIndexers()
 	return s
 }
 

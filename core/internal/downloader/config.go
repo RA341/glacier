@@ -11,8 +11,8 @@ import (
 type ConfigLoader func() *Config
 
 type Config struct {
-	IncompleteDownloadPath string `yaml:"incompleteDownloadPath" default:"./incomplete" env:"INCOMPLETE_DOWNLOAD_DIR"`
-	CheckInterval          string `yaml:"checkInterval" default:"30m" env:"DOWNLOAD_CHECK_INTERVAL"`
+	CheckInterval  string `yaml:"checkInterval" default:"30m" env:"DOWNLOAD_CHECK_TIME" help:"time between checking games status"`
+	IncompletePath string `yaml:"incompletePath" default:"./incomplete" env:"INCOMPLETE_DIR" help:"places downloading games here"`
 
 	// client_name: map[...client]...conf
 	Clients map[string]types.ClientConfig `yaml:"clients"`

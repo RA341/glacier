@@ -37,7 +37,7 @@ func (s *Service) Add(ctx context.Context, gameId uint, download types.Download)
 		return err
 	}
 
-	downloadId, err := downloader.Download(ctx, download.DownloadUrl, s.conf().IncompleteDownloadPath)
+	downloadId, err := downloader.Download(ctx, download.DownloadUrl, s.conf().IncompletePath)
 	if err != nil {
 		return err
 	}

@@ -25,7 +25,7 @@ func New(cf Config) *Service {
 	s := &Service{
 		cf: cf,
 	}
-	s.LoadEnabledProviders()
+	go s.LoadEnabledProviders()
 	return s
 }
 

@@ -20,10 +20,6 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func init() {
-	logger.InitConsole("debug", true)
-}
-
 func InitMeta(flavour info.FlavourType) {
 	info.SetFlavour(flavour)
 	info.PrintInfo()
@@ -48,6 +44,7 @@ func NewApp() *App {
 	if get == nil {
 		log.Fatal().Msg("config is nil THIS SHOULD NEVER HAPPEN")
 	}
+	logger.InitConsole(get.Logger.Level, get.Logger.Verbose)
 
 	db := database.New(config.Get().Glacier.ConfigDir, false)
 

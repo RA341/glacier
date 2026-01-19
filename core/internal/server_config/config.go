@@ -24,11 +24,11 @@ type Glacier struct {
 }
 
 type Server struct {
-	Port           int      `yaml:"port" default:"6699" env:"SERVER_PORT"`
-	AllowedOrigins []string `yaml:"allowedOrigins" default:"*"`
+	Port           int      `yaml:"port" default:"6699" env:"SERVER_PORT" help:"server port"`
+	AllowedOrigins []string `yaml:"allowedOrigins" default:"*" env:"ALLOWED_ORIGINS" help:"allowed origins in CSV"`
 }
 
 type Logger struct {
-	Verbose bool `yaml:"verbose" default:"false"`
-	Level   int  `yaml:"level" default:"info"`
+	Verbose bool   `yaml:"verbose" default:"false" env:"LOGGER_VERBOSE" help:"add more info"`
+	Level   string `yaml:"level" default:"info" env:"LOGGER_LEVEL" help:"disabled|debug|info|warn|error|fatal"`
 }

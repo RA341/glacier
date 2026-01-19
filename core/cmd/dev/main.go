@@ -17,6 +17,8 @@ func init() {
 func main() {
 	prefixer := server_config.DefaultPrefixer()
 	envs := map[string]string{
+		"LOGGER_VERBOSE":  "true",
+		"LOGGER_LEVEL":    "debug",
 		"SERVER_PORT":     "6699",
 		"CONFIG_DIR":      "./config",
 		"GAME_DIR":        "./gamestop",
