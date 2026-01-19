@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"reflect"
 
+	"github.com/ra341/glacier/internal/config"
 	"github.com/ra341/glacier/internal/database"
 	"github.com/ra341/glacier/internal/downloader"
 	downloadManager "github.com/ra341/glacier/internal/downloader/manager"
@@ -14,7 +15,6 @@ import (
 	"github.com/ra341/glacier/internal/metadata"
 	metadataManager "github.com/ra341/glacier/internal/metadata/manager"
 	"github.com/ra341/glacier/internal/search"
-	sc "github.com/ra341/glacier/internal/server_config"
 	"github.com/ra341/glacier/pkg/logger"
 
 	"github.com/rs/zerolog/log"
@@ -27,7 +27,7 @@ func InitMeta(flavour info.FlavourType) {
 }
 
 type App struct {
-	Conf *sc.Service
+	Conf *config.Service
 
 	Library *library.Service
 
@@ -39,43 +39,44 @@ type App struct {
 }
 
 func NewApp() *App {
-	config := sc.New()
-	get := config.Get()
+	conf := config.New()
+	get := conf.Get()
 	if get == nil {
 		log.Fatal().Msg("config is nil THIS SHOULD NEVER HAPPEN")
+		return nil
 	}
 	logger.InitConsole(get.Logger.Level, get.Logger.Verbose)
 
-	db := database.New(config.Get().Glacier.ConfigDir, false)
+	db := database.New(conf.Get().Glacier.ConfigDir, false)
 
 	libDb := library.NewStoreGorm(db)
 
-	clientMan := downloadManager.New(config)
+	clientMan := downloadManager.New(conf)
 	downSrv := downloader.New(
 		clientMan.Get,
 		libDb,
 		func() *downloader.Config {
-			return &config.Get().Download
+			return &conf.Get().Download
 		},
 	)
 	downSrv.StartTracker() // check for previous incomplete downloads
 
 	libSrv := library.New(libDb, downSrv,
 		func() *library.Config {
-			return &config.Get().Library
+			return &conf.Get().Library
 		},
 	)
 
-	metaMan := metadataManager.New(config)
+	metaMan := metadataManager.New(conf)
 	metaSrv := metadata.New(metaMan)
 
-	indexerMan := indexerManager.New(config)
+	indexerMan := indexerManager.New(conf)
 	indexerSrv := indexer.New(indexerMan)
 
 	searchSrv := search.New(metaSrv, indexerSrv)
 
 	a := &App{
-		Conf:                  config,
+		Conf:                  conf,
 		Library:               libSrv,
 		IndexerManager:        indexerMan,
 		DownloadSrv:           downSrv,

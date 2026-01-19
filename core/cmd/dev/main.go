@@ -6,8 +6,8 @@ import (
 
 	"github.com/ra341/glacier/internal/app"
 	"github.com/ra341/glacier/internal/app/server"
+	"github.com/ra341/glacier/internal/config"
 	"github.com/ra341/glacier/internal/info"
-	"github.com/ra341/glacier/internal/server_config"
 )
 
 func init() {
@@ -15,7 +15,7 @@ func init() {
 }
 
 func main() {
-	prefixer := server_config.DefaultPrefixer()
+	prefixer := config.DefaultPrefixer()
 	envs := map[string]string{
 		"LOGGER_VERBOSE":  "true",
 		"LOGGER_LEVEL":    "debug",

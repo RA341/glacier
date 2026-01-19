@@ -1,8 +1,9 @@
 <script lang="ts">
     import {cli} from "$lib/api/api";
-    import {LibraryService} from "$lib/gen/library/v1/library_pb";
+    import {type Game, LibraryService} from "$lib/gen/library/v1/library_pb";
     import {createRPCRunner} from "$lib/api/svelte-api.svelte";
     import {onMount} from "svelte";
+    import {goto} from "$app/navigation";
 
     const libSrv = cli(LibraryService)
 
@@ -18,6 +19,10 @@
 
     function search() {
         libRpc.runner()
+    }
+
+    function select(game: Game) {
+        goto(`/library/${game.ID}`)
     }
 
     $effect(() => {
@@ -64,7 +69,7 @@
         <div class="flex items-center justify-center h-64 border border-red-900/50 bg-red-950/20 rounded-xl text-red-400">
             <p>Error: {libRpc.error}</p>
         </div>
-    {:else if libRpc.loading && !libRpc.value}
+    {:else if libRpc.loading && !libRpc.value && !libRpc.error}
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             {#each Array(10) as _}
                 <div class="animate-pulse bg-surface border border-border rounded-2xl overflow-hidden h-80">
@@ -87,7 +92,10 @@
                             <span class="text-muted text-sm font-medium uppercase tracking-widest">Game Photo</span>
                         {/if}
                         <div class="absolute inset-0 bg-linear-to-t from-background/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
-                            <button class="w-full py-2 bg-frost-500 text-white rounded-lg text-sm font-bold shadow-lg">
+                            <button
+                                    onclick={() => select(ga)}
+                                    class="w-full py-2 bg-frost-500 text-white rounded-lg text-sm font-bold shadow-lg"
+                            >
                                 View Details
                             </button>
                         </div>

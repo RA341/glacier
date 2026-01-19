@@ -23,8 +23,9 @@ type Download struct {
 	// Progress progressString contains any message from the client of the download
 	Progress string
 
-	DownloadUrl  string
-	DownloadPath string
+	DownloadUrl    string
+	DownloadPath   string
+	IncompletePath string
 }
 
 // Downloader generic interface that any downloader must implement

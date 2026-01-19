@@ -10,7 +10,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file search/v1/search.proto.
  */
 export const file_search_v1_search: GenFile = /*@__PURE__*/
-  fileDesc("ChZzZWFyY2gvdjEvc2VhcmNoLnByb3RvEglzZWFyY2gudjEiJwoFUXVlcnkSDQoFcXVlcnkYASABKAkSDwoHaW5kZXhlchgCIAEoCSI0ChVTZWFyY2hJbmRleGVyc1JlcXVlc3QSGwoBcRgBIAEoCzIQLnNlYXJjaC52MS5RdWVyeSJBChZTZWFyY2hJbmRleGVyc1Jlc3BvbnNlEicKB3Jlc3VsdHMYASADKAsyFi5zZWFyY2gudjEuR2FtZUluZGV4ZXIiaQoLR2FtZUluZGV4ZXISDQoFVGl0bGUYASABKAkSEwoLRG93bmxvYWRVcmwYAiABKAkSEAoISW1hZ2VVUkwYAyABKAkSEAoIRmlsZVNpemUYBCABKAkSEgoKQ3JlYXRlZElTTxgFIAEoCSI0ChVTZWFyY2hNZXRhZGF0YVJlcXVlc3QSGwoBcRgBIAEoCzIQLnNlYXJjaC52MS5RdWVyeSJDChZTZWFyY2hNZXRhZGF0YVJlc3BvbnNlEikKCG1ldGFkYXRhGAEgAygLMhcuc2VhcmNoLnYxLkdhbWVNZXRhZGF0YSKdAgoMR2FtZU1ldGFkYXRhEhQKDFByb3ZpZGVyVHlwZRgPIAEoCRIKCgJJRBgOIAEoCRIMCgROYW1lGAEgASgJEg8KB1N1bW1hcnkYAiABKAkSEwoLRGVzY3JpcHRpb24YAyABKAkSCwoDVVJMGAQgASgJEhQKDFRodW1ibmFpbFVSTBgFIAEoCRIOCgZWaWRlb3MYBiADKAkSEQoJUGxhdGZvcm1zGAcgAygJEg4KBkdlbnJlcxgIIAMoCRIOCgZSYXRpbmcYCSABKAkSEwoLUmF0aW5nQ291bnQYCiABKA0SEwoLUmVsZWFzZURhdGUYCyABKAkSFQoNUmVsZWFzZVN0YXR1cxgMIAEoCRIQCghDYXRlZ29yeRgNIAEoCTLBAQoNU2VhcmNoU2VydmljZRJXCg5TZWFyY2hJbmRleGVycxIgLnNlYXJjaC52MS5TZWFyY2hJbmRleGVyc1JlcXVlc3QaIS5zZWFyY2gudjEuU2VhcmNoSW5kZXhlcnNSZXNwb25zZSIAElcKDlNlYXJjaE1ldGFkYXRhEiAuc2VhcmNoLnYxLlNlYXJjaE1ldGFkYXRhUmVxdWVzdBohLnNlYXJjaC52MS5TZWFyY2hNZXRhZGF0YVJlc3BvbnNlIgBCjwEKDWNvbS5zZWFyY2gudjFCC1NlYXJjaFByb3RvUAFaLGdpdGh1Yi5jb20vcmEzNDEvZ2xhY2llci9nZW5lcmF0ZWQvc2VhcmNoL3YxogIDU1hYqgIJU2VhcmNoLlYxygIJU2VhcmNoXFYx4gIVU2VhcmNoXFYxXEdQQk1ldGFkYXRh6gIKU2VhcmNoOjpWMWIGcHJvdG8z");
+  fileDesc("ChZzZWFyY2gvdjEvc2VhcmNoLnByb3RvEglzZWFyY2gudjEiJwoFUXVlcnkSDQoFcXVlcnkYASABKAkSDwoHaW5kZXhlchgCIAEoCSI0ChVTZWFyY2hJbmRleGVyc1JlcXVlc3QSGwoBcRgBIAEoCzIQLnNlYXJjaC52MS5RdWVyeSJAChZTZWFyY2hJbmRleGVyc1Jlc3BvbnNlEiYKB3Jlc3VsdHMYASADKAsyFS5zZWFyY2gudjEuR2FtZVNvdXJjZSKPAQoKR2FtZVNvdXJjZRITCgtJbmRleGVyVHlwZRgGIAEoCRIQCghHYW1lVHlwZRgHIAEoCRINCgVUaXRsZRgBIAEoCRITCgtEb3dubG9hZFVybBgCIAEoCRIQCghJbWFnZVVSTBgDIAEoCRIQCghGaWxlU2l6ZRgEIAEoCRISCgpDcmVhdGVkSVNPGAUgASgJIjQKFVNlYXJjaE1ldGFkYXRhUmVxdWVzdBIbCgFxGAEgASgLMhAuc2VhcmNoLnYxLlF1ZXJ5IkMKFlNlYXJjaE1ldGFkYXRhUmVzcG9uc2USKQoIbWV0YWRhdGEYASADKAsyFy5zZWFyY2gudjEuR2FtZU1ldGFkYXRhIp0CCgxHYW1lTWV0YWRhdGESFAoMUHJvdmlkZXJUeXBlGA8gASgJEgoKAklEGA4gASgJEgwKBE5hbWUYASABKAkSDwoHU3VtbWFyeRgCIAEoCRITCgtEZXNjcmlwdGlvbhgDIAEoCRILCgNVUkwYBCABKAkSFAoMVGh1bWJuYWlsVVJMGAUgASgJEg4KBlZpZGVvcxgGIAMoCRIRCglQbGF0Zm9ybXMYByADKAkSDgoGR2VucmVzGAggAygJEg4KBlJhdGluZxgJIAEoCRITCgtSYXRpbmdDb3VudBgKIAEoDRITCgtSZWxlYXNlRGF0ZRgLIAEoCRIVCg1SZWxlYXNlU3RhdHVzGAwgASgJEhAKCENhdGVnb3J5GA0gASgJMsEBCg1TZWFyY2hTZXJ2aWNlElcKDlNlYXJjaEluZGV4ZXJzEiAuc2VhcmNoLnYxLlNlYXJjaEluZGV4ZXJzUmVxdWVzdBohLnNlYXJjaC52MS5TZWFyY2hJbmRleGVyc1Jlc3BvbnNlIgASVwoOU2VhcmNoTWV0YWRhdGESIC5zZWFyY2gudjEuU2VhcmNoTWV0YWRhdGFSZXF1ZXN0GiEuc2VhcmNoLnYxLlNlYXJjaE1ldGFkYXRhUmVzcG9uc2UiAEKPAQoNY29tLnNlYXJjaC52MUILU2VhcmNoUHJvdG9QAVosZ2l0aHViLmNvbS9yYTM0MS9nbGFjaWVyL2dlbmVyYXRlZC9zZWFyY2gvdjGiAgNTWFiqAglTZWFyY2guVjHKAglTZWFyY2hcVjHiAhVTZWFyY2hcVjFcR1BCTWV0YWRhdGHqAgpTZWFyY2g6OlYxYgZwcm90bzM");
 
 /**
  * @generated from message search.v1.Query
@@ -56,9 +56,9 @@ export const SearchIndexersRequestSchema: GenMessage<SearchIndexersRequest> = /*
  */
 export type SearchIndexersResponse = Message<"search.v1.SearchIndexersResponse"> & {
   /**
-   * @generated from field: repeated search.v1.GameIndexer results = 1;
+   * @generated from field: repeated search.v1.GameSource results = 1;
    */
-  results: GameIndexer[];
+  results: GameSource[];
 };
 
 /**
@@ -69,9 +69,19 @@ export const SearchIndexersResponseSchema: GenMessage<SearchIndexersResponse> = 
   messageDesc(file_search_v1_search, 2);
 
 /**
- * @generated from message search.v1.GameIndexer
+ * @generated from message search.v1.GameSource
  */
-export type GameIndexer = Message<"search.v1.GameIndexer"> & {
+export type GameSource = Message<"search.v1.GameSource"> & {
+  /**
+   * @generated from field: string IndexerType = 6;
+   */
+  IndexerType: string;
+
+  /**
+   * @generated from field: string GameType = 7;
+   */
+  GameType: string;
+
   /**
    * @generated from field: string Title = 1;
    */
@@ -99,10 +109,10 @@ export type GameIndexer = Message<"search.v1.GameIndexer"> & {
 };
 
 /**
- * Describes the message search.v1.GameIndexer.
- * Use `create(GameIndexerSchema)` to create a new message.
+ * Describes the message search.v1.GameSource.
+ * Use `create(GameSourceSchema)` to create a new message.
  */
-export const GameIndexerSchema: GenMessage<GameIndexer> = /*@__PURE__*/
+export const GameSourceSchema: GenMessage<GameSource> = /*@__PURE__*/
   messageDesc(file_search_v1_search, 3);
 
 /**

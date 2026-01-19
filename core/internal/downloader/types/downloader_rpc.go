@@ -25,7 +25,7 @@ func (g *Download) FromProto(rpcDownload *v1.Download) {
 		clientType = ClientUnknown
 	}
 
-	downloadType, err := DownloadStateString(rpcDownload.Client)
+	downloadType, err := DownloadStateString(rpcDownload.State)
 	if err != nil {
 		log.Warn().Err(err).Msg("Failed to parse download type")
 		downloadType = Unknown

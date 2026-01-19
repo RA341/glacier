@@ -9,10 +9,21 @@ import "search/v1/search.proto";
 service LibraryService {
   rpc List(ListRequest) returns (ListResponse) {}
   rpc TriggerTracker(TriggerTrackerRequest) returns (TriggerTrackerResponse) {}
+  rpc GetGame(GetGameRequest) returns (GetGameResponse) {}
+
 
   rpc Add(AddRequest) returns (AddResponse) {}
-  rpc GetGameType(GetGameTypeRequest) returns (GetGameTypeResponse) {}
 }
+
+
+message GetGameRequest {
+  uint64 gameId = 1;
+}
+
+message GetGameResponse {
+    Game game = 1;
+}
+
 
 message TriggerTrackerRequest {}
 
@@ -22,22 +33,11 @@ message ListRequest {
   string query = 1;
   uint32 offset = 2;
   uint32 limit = 3;
- }
+}
 
 message ListResponse {
   repeated Game gameList = 1;
 }
-
-message GetGameTypeRequest {}
-
-message GameType {
-  string Name = 1;
-}
-
-message GetGameTypeResponse {
-  repeated GameType gameTypes = 1;
-}
-
 
 message AddRequest {
   Game game = 1;
@@ -47,12 +47,9 @@ message Game {
   uint64 ID = 1;
   string CreatedAt = 2;
   string EditedAt = 3;
-
-  search.v1.GameMetadata Meta = 4;
-
-  string GameType = 5;
-
   Download DownloadState = 7;
+  search.v1.GameMetadata Meta = 4;
+  search.v1.GameSource Source = 8;
 }
 
 message Download {

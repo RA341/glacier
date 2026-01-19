@@ -1,15 +1,15 @@
-package server_config
+package config
 
 import (
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
 	"strings"
 	"sync"
 
-	"github.com/ra341/glacier/pkg/fileutil"
-
 	"github.com/goccy/go-yaml"
+	"github.com/ra341/glacier/pkg/fileutil"
 	"github.com/rs/zerolog/log"
 )
 
@@ -77,6 +77,26 @@ func (cy *ConfigYml) writeYml(conf *Config) error {
 	}
 
 	return os.WriteFile(cy.path, contents, os.ModePerm)
+}
+func (cy *ConfigYml) backupCurrent() error {
+	src, err := os.OpenFile(cy.path, os.O_RDONLY|os.O_CREATE, os.ModePerm)
+	if err != nil {
+		return err
+	}
+	defer fileutil.Close(src)
+
+	backFilename := fmt.Sprintf("%s.%s", GlacierYml, "bak")
+	backupFilePath := filepath.Join(filepath.Dir(cy.path), backFilename)
+	dst, err := os.OpenFile(backupFilePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, os.ModePerm)
+	defer fileutil.Close(dst)
+
+	_, err = io.Copy(dst, src)
+	if err != nil {
+		return err
+	}
+
+	log.Info().Str("path", backupFilePath).Msg("completed config backup")
+	return nil
 }
 
 func (cy *ConfigYml) loadYml(conf *Config) error {

@@ -30,14 +30,8 @@ func (h *Handler) SearchIndexers(ctx context.Context, req *connect.Request[v1.Se
 		return nil, err
 	}
 
-	res := listutils.ToMap(search, func(t indexTypes.IndexerGame) *v1.GameIndexer {
-		return &v1.GameIndexer{
-			Title:       t.Title,
-			DownloadUrl: t.DownloadUrl,
-			ImageURL:    t.ImageURL,
-			FileSize:    t.FileSize,
-			CreatedISO:  t.CreatedISO,
-		}
+	res := listutils.ToMap(search, func(t indexTypes.Source) *v1.GameSource {
+		return t.ToProto()
 	})
 
 	return connect.NewResponse(&v1.SearchIndexersResponse{

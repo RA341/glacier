@@ -19,10 +19,12 @@ message SearchIndexersRequest {
 }
 
 message SearchIndexersResponse {
-  repeated GameIndexer results = 1;
+  repeated GameSource results = 1;
 }
 
-message GameIndexer {
+message GameSource {
+  string IndexerType = 6;
+  string GameType = 7;
   string Title = 1;
   string DownloadUrl = 2;
   string ImageURL = 3;

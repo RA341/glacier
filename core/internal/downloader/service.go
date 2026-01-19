@@ -3,6 +3,9 @@ package downloader
 import (
 	"context"
 	"fmt"
+	"io/fs"
+	"os"
+	"path/filepath"
 	"sync/atomic"
 	"time"
 
@@ -31,28 +34,30 @@ func New(cli GetCli, store library.Store, conf ConfigLoader) *Service {
 	}
 }
 
-func (s *Service) Add(ctx context.Context, gameId uint, download types.Download) (err error) {
-	downloader, err := s.cli(download.Client)
+func (s *Service) Add(ctx context.Context, game *library.Game) (err error) {
+	downloader, err := s.cli(game.Download.Client)
 	if err != nil {
 		return err
 	}
 
-	downloadId, err := downloader.Download(ctx, download.DownloadUrl, s.conf().IncompletePath)
-	if err != nil {
-		return err
-	}
-
-	err = s.store.UpdateDownloadProgress(ctx, gameId,
-		types.Download{
-			DownloadId: downloadId,
-			State:      types.Downloading,
-		},
+	downloadId, err := downloader.Download(
+		ctx,
+		game.Download.DownloadUrl,
+		s.conf().IncompletePath,
 	)
+	if err != nil {
+		return err
+	}
+	game.Download.State = types.Downloading
+	game.Download.DownloadId = downloadId
+
+	err = s.store.UpdateDownloadProgress(ctx, game.ID, game.Download)
 	if err != nil {
 		return err
 	}
 
 	s.StartTracker()
+	s.TriggerTracker() // get the initial status
 
 	return err
 }
@@ -170,8 +175,67 @@ func (s *Service) checkDownload(ctx context.Context, dn *library.Game) {
 		dn.Download.Progress = fmt.Sprintf("unable to get progress: %v", err)
 	}
 
+	if dn.Download.State == types.Complete {
+		s.completeGameDownload(dn)
+	}
+
 	err = s.store.UpdateDownloadProgress(ctx, dn.ID, dn.Download)
 	if err != nil {
 		log.Warn().Err(err).Str("download", downId).Msg("failed to update download state")
 	}
+}
+
+func (s *Service) completeGameDownload(game *library.Game) {
+	err := os.MkdirAll(game.Download.DownloadPath, os.ModePerm)
+	if err != nil {
+		game.Download.State = types.Error
+		game.Download.Progress = fmt.Sprintf("%v", err)
+		return
+	}
+
+	err = filepath.WalkDir(game.Download.IncompletePath, func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+
+		if game.Download.IncompletePath == path {
+			return nil
+		}
+
+		// relative path from src dir
+		relPath, err := filepath.Rel(game.Download.IncompletePath, path)
+		if err != nil {
+			return err
+		}
+
+		targetPath := filepath.Join(game.Download.DownloadPath, relPath)
+
+		if d.IsDir() {
+			err := os.MkdirAll(targetPath, os.ModePerm)
+			if err != nil {
+				return err
+			}
+			return nil
+		}
+
+		parentDir := filepath.Dir(targetPath)
+		err = os.MkdirAll(parentDir, os.ModePerm)
+		if err != nil {
+			return err
+		}
+
+		err = os.Link(path, targetPath)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+	if err != nil {
+		game.Download.State = types.Error
+		game.Download.Progress = fmt.Sprintf("could link file: %v", err)
+		return
+	}
+
+	log.Debug().Str("title", game.Meta.Name[:24]).Msg("download complete with no errors")
 }

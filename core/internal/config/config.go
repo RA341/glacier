@@ -1,4 +1,4 @@
-package server_config
+package config
 
 import (
 	"github.com/ra341/glacier/internal/downloader"

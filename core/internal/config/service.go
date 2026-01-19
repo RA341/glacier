@@ -1,4 +1,4 @@
-package server_config
+package config
 
 import (
 	"fmt"
@@ -29,9 +29,13 @@ const GlacierYmlPathEnv = "GLACIER_CONFIG_YML_PATH"
 
 func (s *Service) Init() {
 	s.cy = NewYml()
+	err := s.cy.backupCurrent()
+	if err != nil {
+		log.Fatal().Err(err).Msg("could not backup current config")
+	}
 
 	var conf Config
-	err := s.cy.loadYml(&conf)
+	err = s.cy.loadYml(&conf)
 	if err != nil {
 		log.Fatal().Err(err).Msg("can't load config file")
 	}

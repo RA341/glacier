@@ -15,17 +15,18 @@
     import {cli} from "$lib/api/api";
     import {IndexerService} from "$lib/gen/indexer/v1/indexer_pb";
     import {createRPCRunner} from "$lib/api/svelte-api.svelte";
-    import {type GameIndexer, SearchService} from "$lib/gen/search/v1/search_pb";
+    import {type GameSource, GameSourceSchema, SearchService} from "$lib/gen/search/v1/search_pb";
     import {DownloaderService} from "$lib/gen/downloader/v1/downloader_pb";
     import {DownloadSchema, type Game, GameSchema, LibraryService} from "$lib/gen/library/v1/library_pb";
-    import {create} from "@bufbuild/protobuf";
+    import {create,} from "@bufbuild/protobuf";
+
 
     let game = $derived(transferStore.data);
     let selectedGameType = $state("");
 
     let searchQuery = $state("");
-    let search = cli(SearchService)
-    let indexerSearchRpc = createRPCRunner(() => search.searchIndexers({
+    let searchService = cli(SearchService)
+    let indexerSearchRpc = createRPCRunner(() => searchService.searchIndexers({
         q: {
             indexer: selectedIndexer,
             query: searchQuery,
@@ -44,41 +45,43 @@
 
     let selectedIndexer = $state("");
 
-    let selectedGameIndex = $state(null as GameIndexer | null);
+    let selectedSource = $state(null as GameSource | null);
 
-    function handleMatch(item: GameIndexer) {
-        if (selectedGameIndex?.Title === item.Title) {
-            selectedGameIndex = null
+    function handleMatch(item: GameSource) {
+        if (selectedSource?.Title === item.Title) {
+            selectedSource = null
         } else {
-            selectedGameIndex = item
+            selectedSource = item
         }
     }
 
     let downloader = cli(DownloaderService)
     let activeClientsRpc = createRPCRunner(() => downloader.getActiveClients({}))
 
-    let downloadPath = $state("");
-
     let selectedClient = $state("");
     let libraryService = cli(LibraryService)
-    let libraryGameTypeRpc = createRPCRunner(() => libraryService.getGameType({}))
+    let libraryGameTypeRpc = createRPCRunner(() => indexerManagerService.getGameType({}))
 
     function onAddGame() {
+        const {...pureData} = selectedSource;
+
         libraryService.add({
             game: create(GameSchema, {
-                GameType: selectedGameType,
                 Meta: game ?? {},
                 DownloadState: create(DownloadSchema, {
-                    DownloadUrl: selectedGameIndex?.DownloadUrl,
+                    DownloadUrl: selectedSource?.DownloadUrl,
                     Client: selectedClient,
+
                 }),
+                Source: create(GameSourceSchema, {
+                    ...pureData
+                })
             })
         })
     }
 
-
-    let indexerManager = cli(IndexerService)
-    let activeIndexerRpc = createRPCRunner(() => indexerManager.getActiveIndexers({}))
+    let indexerManagerService = cli(IndexerService)
+    let activeIndexerRpc = createRPCRunner(() => indexerManagerService.getActiveIndexers({}))
     $effect(() => {
         if (game) {
             searchQuery = game.Name
@@ -273,7 +276,7 @@
                             <button
                                     onclick={() => handleMatch(item)}
                                     class="px-4 py-1.5 bg-panel border border-border rounded-lg text-xs font-bold hover:border-frost-500 transition-colors">
-                                {selectedGameIndex?.Title === item.Title ? "Selected" : "Select"}
+                                {selectedSource?.Title === item.Title ? "Selected" : "Select"}
                             </button>
                         </div>
                     {/each}
@@ -291,8 +294,8 @@
             <div class="p-5 bg-panel border border-border rounded-2xl flex items-center justify-between">
                 <div class="space-y-1">
                     <p class="text-[10px] font-bold text-muted uppercase tracking-widest">Selected Release</p>
-                    <h3 class="font-bold text-foreground">{selectedGameIndex ? selectedGameIndex.Title : "Waiting for selection..."}</h3>
-                    {#if !selectedGameIndex}
+                    <h3 class="font-bold text-foreground">{selectedSource ? selectedSource.Title : "Waiting for selection..."}</h3>
+                    {#if !selectedSource}
                         <p class="text-xs text-muted italic">No release matched yet</p>
                     {/if}
                 </div>
@@ -320,7 +323,7 @@
                     <div class="relative">
                         <LinkIcon size={14} class="absolute left-4 top-1/2 -translate-y-1/2 text-muted"/>
                         <input type="text" placeholder="Magnet link or URL..."
-                               value={selectedGameIndex?.DownloadUrl ?? ""}
+                               value={selectedSource?.DownloadUrl ?? ""}
                                class="w-full bg-panel border border-border rounded-xl py-2.5 pl-10 pr-4 outline-none text-sm"/>
                     </div>
                 </div>

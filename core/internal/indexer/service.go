@@ -15,7 +15,7 @@ func New(indexer *manager.Service) *Service {
 	}
 }
 
-func (s *Service) Search(indexerType types.IndexerType, searchTerm string) ([]types.IndexerGame, error) {
+func (s *Service) Search(indexerType types.IndexerType, searchTerm string) ([]types.Source, error) {
 	get, err := s.manager.Get(indexerType)
 	if err != nil {
 		return nil, err

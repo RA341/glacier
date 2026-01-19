@@ -89,17 +89,20 @@ func (h *Hydra) Close() {
 ////////////////////////////////////////////////////////////
 // search stuff
 
-func (h *Hydra) Search(query string) ([]types.IndexerGame, error) {
+func (h *Hydra) Search(query string) ([]types.Source, error) {
 	index, err := h.loadIndex()
 	if err != nil {
 		return nil, err
 	}
 
-	var infos []types.IndexerGame
+	var infos []types.Source
 	for _, d := range index.Downloads {
 		contains := strings.Contains(strings.ToLower(d.Title), strings.ToLower(query))
 		if contains {
-			infos = append(infos, types.IndexerGame{
+			infos = append(infos, types.Source{
+				IndexerType: types.IndexerHydra,
+				// todo allow from each source
+				GameType:    types.GameTypeInstaller,
 				Title:       d.Title,
 				DownloadUrl: d.Uris[0],
 				FileSize:    d.FileSize,

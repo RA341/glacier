@@ -43,7 +43,7 @@ func (s *StoreGorm) List(ctx context.Context, limit uint, offset uint) ([]Game, 
 }
 
 func (s *StoreGorm) UpdateDownloadProgress(ctx context.Context, id uint, download types.Download) error {
-	return s.gormDB.
+	return s.Q(ctx).
 		Model(&Game{
 			Model: gorm.Model{ID: id},
 		}).
@@ -51,6 +51,7 @@ func (s *StoreGorm) UpdateDownloadProgress(ctx context.Context, id uint, downloa
 			`download_id`,
 			`state`,
 			`progress`,
+			`incomplete_path`,
 		).
 		UpdateColumns(Game{
 			Download: download,
@@ -58,8 +59,9 @@ func (s *StoreGorm) UpdateDownloadProgress(ctx context.Context, id uint, downloa
 }
 
 func (s *StoreGorm) GetById(ctx context.Context, id uint) (Game, error) {
-	//TODO implement me
-	panic("implement me")
+	var game Game
+	err := s.Q(ctx).First(&game, id).Error
+	return game, err
 }
 
 func (s *StoreGorm) DeleteGame(ctx context.Context, id uint) error {

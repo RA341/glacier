@@ -33,8 +33,9 @@ type Meta struct {
 	// A longer description of the game's plot.
 	Description string
 	//  The direct link to the game's page on metadata provider.
-	URL          string
-	ThumbnailURL string
+	URL string
+	// todo download the iamge
+	ThumbnailURL string   // struct Image {local, remote string}
 	Videos       []string `gorm:"serializer:json"`
 	Platforms    []string `gorm:"serializer:json"`
 	Genres       []string `gorm:"serializer:json"`

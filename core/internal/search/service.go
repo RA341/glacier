@@ -32,9 +32,9 @@ func (s *Service) GetMetadataResults(providerStr string, query string) ([]metaTy
 	return s.metaSrv.Match(prov, query)
 }
 
-func (s *Service) GetIndexerResults(indexerStr string, query string) ([]indexerTypes.IndexerGame, error) {
+func (s *Service) GetIndexerResults(indexerStr string, query string) ([]indexerTypes.Source, error) {
 	if query == "" {
-		return []indexerTypes.IndexerGame{}, nil
+		return []indexerTypes.Source{}, nil
 	}
 	ind, err := indexerTypes.IndexerTypeString(indexerStr)
 	if err != nil {

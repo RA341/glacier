@@ -5,7 +5,6 @@ CREATE TABLE `games` (
   `created_at` datetime NULL,
   `updated_at` datetime NULL,
   `deleted_at` datetime NULL,
-  `game_type` text NULL,
   `provider_type` text NULL,
   `game_db_id` text NULL,
   `name` text NULL,
@@ -26,7 +25,14 @@ CREATE TABLE `games` (
   `state` text NULL,
   `progress` text NULL,
   `download_url` text NULL,
-  `download_path` text NULL
+  `download_path` text NULL,
+  `incomplete_path` text NULL,
+  `indexer_type` text NULL,
+  `game_type` text NULL,
+  `title` text NULL,
+  `image_url` text NULL,
+  `file_size` text NULL,
+  `created_iso` text NULL
 );
 -- create index "idx_games_deleted_at" to table: "games"
 CREATE INDEX `idx_games_deleted_at` ON `games` (`deleted_at`);

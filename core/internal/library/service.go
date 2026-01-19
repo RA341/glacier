@@ -8,7 +8,7 @@ import (
 )
 
 type Downloader interface {
-	Add(ctx context.Context, gameId uint, download types.Download) (err error)
+	Add(ctx context.Context, gameId *Game) (err error)
 	TriggerTracker()
 }
 
@@ -44,7 +44,7 @@ func (s *Service) Add(ctx context.Context, game *Game) error {
 		return err
 	}
 
-	return s.downloader.Add(ctx, game.ID, game.Download)
+	return s.downloader.Add(ctx, game)
 }
 
 func (s *Service) Delete(ctx context.Context, id uint) error {

@@ -1,4 +1,4 @@
-package server_config
+package config
 
 type Prefixer func(in string) string
 

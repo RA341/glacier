@@ -4,32 +4,20 @@ import (
 	"context"
 
 	download "github.com/ra341/glacier/internal/downloader/types"
+	indexer "github.com/ra341/glacier/internal/indexer/types"
 	metadata "github.com/ra341/glacier/internal/metadata/types"
 
 	"gorm.io/gorm"
 )
 
-//go:generate go run github.com/dmarkham/enumer@latest -sql -type=GameType -output=enum_gametype.go
-
-// GameType identifies the type of files downloaded
-type GameType int
-
-const (
-	// GameTypeUnknown is the default zero-value
-	GameTypeUnknown GameType = iota
-
-	// GameTypeInstaller means the files must be installed after download
-	GameTypeInstaller
-
-	// GameTypeStandalone means the files are ready-to-play after download
-	GameTypeStandalone
-)
-
 type Game struct {
 	gorm.Model
-	GameType GameType
-	Meta     metadata.Meta     `gorm:"embedded"`
+	// metadata of the Game
+	Meta metadata.Meta `gorm:"embedded"`
+	// client where the source is getting downloaded
 	Download download.Download `gorm:"embedded"`
+	// Source of the Indexer
+	Source indexer.Source `gorm:"embedded"`
 }
 
 type Store interface {

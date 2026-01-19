@@ -10,6 +10,6 @@ services:
       - PASS=admin
     volumes:
       - .build/transmission/config:/config
-      - .build/transmission/downloads:/media
+      - /home/ra341/Dev/Go/glacier/.build/dev/incomplete:/home/ra341/Dev/Go/glacier/.build/dev/incomplete
     ports:
       - "9091:9091"

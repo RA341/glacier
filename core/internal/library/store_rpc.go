@@ -4,9 +4,9 @@ import (
 	"time"
 
 	v1 "github.com/ra341/glacier/generated/library/v1"
-	types2 "github.com/ra341/glacier/internal/downloader/types"
-	"github.com/ra341/glacier/internal/metadata/types"
-	"github.com/rs/zerolog/log"
+	downloaderTypes "github.com/ra341/glacier/internal/downloader/types"
+	indexTypes "github.com/ra341/glacier/internal/indexer/types"
+	metaTypes "github.com/ra341/glacier/internal/metadata/types"
 )
 
 func (g *Game) ToProto() *v1.Game {
@@ -15,30 +15,27 @@ func (g *Game) ToProto() *v1.Game {
 		CreatedAt:     g.CreatedAt.Format(time.RFC3339),
 		EditedAt:      g.UpdatedAt.Format(time.RFC3339),
 		Meta:          g.Meta.ToProto(),
-		GameType:      g.GameType.String(),
 		DownloadState: g.Download.ToProto(),
+		Source:        g.Source.ToProto(),
 	}
 }
 
 func (g *Game) FromProto(rpcGame *v1.Game) {
-	// do not update this it should be handle by DB
+	// do not update this it should be handled by DB
 	//g.UpdatedAt
 	//g.CreatedAt
 
-	meta := &types.Meta{}
+	meta := &metaTypes.Meta{}
 	meta.FromProto(rpcGame.Meta)
 
-	gameType, err := GameTypeString(rpcGame.GameType)
-	if err != nil {
-		log.Warn().Err(err).Msg("Failed to parse game type")
-		gameType = GameTypeUnknown
-	}
-
-	down := &types2.Download{}
+	down := &downloaderTypes.Download{}
 	down.FromProto(rpcGame.DownloadState)
 
+	src := &indexTypes.Source{}
+	src.FromProto(rpcGame.Source)
+
 	g.ID = uint(rpcGame.ID)
-	g.GameType = gameType
 	g.Meta = *meta
 	g.Download = *down
+	g.Source = *src
 }

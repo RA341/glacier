@@ -38,19 +38,18 @@ const (
 	// LibraryServiceTriggerTrackerProcedure is the fully-qualified name of the LibraryService's
 	// TriggerTracker RPC.
 	LibraryServiceTriggerTrackerProcedure = "/library.v1.LibraryService/TriggerTracker"
+	// LibraryServiceGetGameProcedure is the fully-qualified name of the LibraryService's GetGame RPC.
+	LibraryServiceGetGameProcedure = "/library.v1.LibraryService/GetGame"
 	// LibraryServiceAddProcedure is the fully-qualified name of the LibraryService's Add RPC.
 	LibraryServiceAddProcedure = "/library.v1.LibraryService/Add"
-	// LibraryServiceGetGameTypeProcedure is the fully-qualified name of the LibraryService's
-	// GetGameType RPC.
-	LibraryServiceGetGameTypeProcedure = "/library.v1.LibraryService/GetGameType"
 )
 
 // LibraryServiceClient is a client for the library.v1.LibraryService service.
 type LibraryServiceClient interface {
 	List(context.Context, *connect.Request[v1.ListRequest]) (*connect.Response[v1.ListResponse], error)
 	TriggerTracker(context.Context, *connect.Request[v1.TriggerTrackerRequest]) (*connect.Response[v1.TriggerTrackerResponse], error)
+	GetGame(context.Context, *connect.Request[v1.GetGameRequest]) (*connect.Response[v1.GetGameResponse], error)
 	Add(context.Context, *connect.Request[v1.AddRequest]) (*connect.Response[v1.AddResponse], error)
-	GetGameType(context.Context, *connect.Request[v1.GetGameTypeRequest]) (*connect.Response[v1.GetGameTypeResponse], error)
 }
 
 // NewLibraryServiceClient constructs a client for the library.v1.LibraryService service. By
@@ -76,16 +75,16 @@ func NewLibraryServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(libraryServiceMethods.ByName("TriggerTracker")),
 			connect.WithClientOptions(opts...),
 		),
+		getGame: connect.NewClient[v1.GetGameRequest, v1.GetGameResponse](
+			httpClient,
+			baseURL+LibraryServiceGetGameProcedure,
+			connect.WithSchema(libraryServiceMethods.ByName("GetGame")),
+			connect.WithClientOptions(opts...),
+		),
 		add: connect.NewClient[v1.AddRequest, v1.AddResponse](
 			httpClient,
 			baseURL+LibraryServiceAddProcedure,
 			connect.WithSchema(libraryServiceMethods.ByName("Add")),
-			connect.WithClientOptions(opts...),
-		),
-		getGameType: connect.NewClient[v1.GetGameTypeRequest, v1.GetGameTypeResponse](
-			httpClient,
-			baseURL+LibraryServiceGetGameTypeProcedure,
-			connect.WithSchema(libraryServiceMethods.ByName("GetGameType")),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -95,8 +94,8 @@ func NewLibraryServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 type libraryServiceClient struct {
 	list           *connect.Client[v1.ListRequest, v1.ListResponse]
 	triggerTracker *connect.Client[v1.TriggerTrackerRequest, v1.TriggerTrackerResponse]
+	getGame        *connect.Client[v1.GetGameRequest, v1.GetGameResponse]
 	add            *connect.Client[v1.AddRequest, v1.AddResponse]
-	getGameType    *connect.Client[v1.GetGameTypeRequest, v1.GetGameTypeResponse]
 }
 
 // List calls library.v1.LibraryService.List.
@@ -109,22 +108,22 @@ func (c *libraryServiceClient) TriggerTracker(ctx context.Context, req *connect.
 	return c.triggerTracker.CallUnary(ctx, req)
 }
 
+// GetGame calls library.v1.LibraryService.GetGame.
+func (c *libraryServiceClient) GetGame(ctx context.Context, req *connect.Request[v1.GetGameRequest]) (*connect.Response[v1.GetGameResponse], error) {
+	return c.getGame.CallUnary(ctx, req)
+}
+
 // Add calls library.v1.LibraryService.Add.
 func (c *libraryServiceClient) Add(ctx context.Context, req *connect.Request[v1.AddRequest]) (*connect.Response[v1.AddResponse], error) {
 	return c.add.CallUnary(ctx, req)
-}
-
-// GetGameType calls library.v1.LibraryService.GetGameType.
-func (c *libraryServiceClient) GetGameType(ctx context.Context, req *connect.Request[v1.GetGameTypeRequest]) (*connect.Response[v1.GetGameTypeResponse], error) {
-	return c.getGameType.CallUnary(ctx, req)
 }
 
 // LibraryServiceHandler is an implementation of the library.v1.LibraryService service.
 type LibraryServiceHandler interface {
 	List(context.Context, *connect.Request[v1.ListRequest]) (*connect.Response[v1.ListResponse], error)
 	TriggerTracker(context.Context, *connect.Request[v1.TriggerTrackerRequest]) (*connect.Response[v1.TriggerTrackerResponse], error)
+	GetGame(context.Context, *connect.Request[v1.GetGameRequest]) (*connect.Response[v1.GetGameResponse], error)
 	Add(context.Context, *connect.Request[v1.AddRequest]) (*connect.Response[v1.AddResponse], error)
-	GetGameType(context.Context, *connect.Request[v1.GetGameTypeRequest]) (*connect.Response[v1.GetGameTypeResponse], error)
 }
 
 // NewLibraryServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -146,16 +145,16 @@ func NewLibraryServiceHandler(svc LibraryServiceHandler, opts ...connect.Handler
 		connect.WithSchema(libraryServiceMethods.ByName("TriggerTracker")),
 		connect.WithHandlerOptions(opts...),
 	)
+	libraryServiceGetGameHandler := connect.NewUnaryHandler(
+		LibraryServiceGetGameProcedure,
+		svc.GetGame,
+		connect.WithSchema(libraryServiceMethods.ByName("GetGame")),
+		connect.WithHandlerOptions(opts...),
+	)
 	libraryServiceAddHandler := connect.NewUnaryHandler(
 		LibraryServiceAddProcedure,
 		svc.Add,
 		connect.WithSchema(libraryServiceMethods.ByName("Add")),
-		connect.WithHandlerOptions(opts...),
-	)
-	libraryServiceGetGameTypeHandler := connect.NewUnaryHandler(
-		LibraryServiceGetGameTypeProcedure,
-		svc.GetGameType,
-		connect.WithSchema(libraryServiceMethods.ByName("GetGameType")),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/library.v1.LibraryService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -164,10 +163,10 @@ func NewLibraryServiceHandler(svc LibraryServiceHandler, opts ...connect.Handler
 			libraryServiceListHandler.ServeHTTP(w, r)
 		case LibraryServiceTriggerTrackerProcedure:
 			libraryServiceTriggerTrackerHandler.ServeHTTP(w, r)
+		case LibraryServiceGetGameProcedure:
+			libraryServiceGetGameHandler.ServeHTTP(w, r)
 		case LibraryServiceAddProcedure:
 			libraryServiceAddHandler.ServeHTTP(w, r)
-		case LibraryServiceGetGameTypeProcedure:
-			libraryServiceGetGameTypeHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -185,10 +184,10 @@ func (UnimplementedLibraryServiceHandler) TriggerTracker(context.Context, *conne
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("library.v1.LibraryService.TriggerTracker is not implemented"))
 }
 
-func (UnimplementedLibraryServiceHandler) Add(context.Context, *connect.Request[v1.AddRequest]) (*connect.Response[v1.AddResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("library.v1.LibraryService.Add is not implemented"))
+func (UnimplementedLibraryServiceHandler) GetGame(context.Context, *connect.Request[v1.GetGameRequest]) (*connect.Response[v1.GetGameResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("library.v1.LibraryService.GetGame is not implemented"))
 }
 
-func (UnimplementedLibraryServiceHandler) GetGameType(context.Context, *connect.Request[v1.GetGameTypeRequest]) (*connect.Response[v1.GetGameTypeResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("library.v1.LibraryService.GetGameType is not implemented"))
+func (UnimplementedLibraryServiceHandler) Add(context.Context, *connect.Request[v1.AddRequest]) (*connect.Response[v1.AddResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("library.v1.LibraryService.Add is not implemented"))
 }

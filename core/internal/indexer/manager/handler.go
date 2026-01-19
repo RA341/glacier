@@ -7,6 +7,8 @@ import (
 	"connectrpc.com/connect"
 	v1 "github.com/ra341/glacier/generated/indexer/v1"
 	"github.com/ra341/glacier/generated/indexer/v1/v1connect"
+	"github.com/ra341/glacier/internal/indexer/types"
+	"github.com/ra341/glacier/pkg/listutils"
 )
 
 type Handler struct {
@@ -31,4 +33,18 @@ func (h *Handler) GetActiveIndexers(context.Context, *connect.Request[v1.GetActi
 	return connect.NewResponse(&v1.GetActiveIndexersResponse{
 		Indexers: indexers,
 	}), nil
+}
+
+func (h *Handler) GetGameType(ctx context.Context, c *connect.Request[v1.GetGameTypeRequest]) (*connect.Response[v1.GetGameTypeResponse], error) {
+	res := listutils.ToMap(types.GameTypeStrings(), func(t string) *v1.GameType {
+		return &v1.GameType{
+			Name: t,
+		}
+	})
+
+	return connect.NewResponse(
+		&v1.GetGameTypeResponse{
+			GameTypes: res,
+		},
+	), nil
 }

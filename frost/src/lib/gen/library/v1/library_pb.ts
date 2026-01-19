@@ -4,7 +4,7 @@
 
 import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
 import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
-import type { GameMetadata } from "../../search/v1/search_pb";
+import type { GameMetadata, GameSource } from "../../search/v1/search_pb";
 import { file_search_v1_search } from "../../search/v1/search_pb";
 import type { Message } from "@bufbuild/protobuf";
 
@@ -12,7 +12,41 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file library/v1/library.proto.
  */
 export const file_library_v1_library: GenFile = /*@__PURE__*/
-  fileDesc("ChhsaWJyYXJ5L3YxL2xpYnJhcnkucHJvdG8SCmxpYnJhcnkudjEiFwoVVHJpZ2dlclRyYWNrZXJSZXF1ZXN0IhgKFlRyaWdnZXJUcmFja2VyUmVzcG9uc2UiOwoLTGlzdFJlcXVlc3QSDQoFcXVlcnkYASABKAkSDgoGb2Zmc2V0GAIgASgNEg0KBWxpbWl0GAMgASgNIjIKDExpc3RSZXNwb25zZRIiCghnYW1lTGlzdBgBIAMoCzIQLmxpYnJhcnkudjEuR2FtZSIUChJHZXRHYW1lVHlwZVJlcXVlc3QiGAoIR2FtZVR5cGUSDAoETmFtZRgBIAEoCSI+ChNHZXRHYW1lVHlwZVJlc3BvbnNlEicKCWdhbWVUeXBlcxgBIAMoCzIULmxpYnJhcnkudjEuR2FtZVR5cGUiLAoKQWRkUmVxdWVzdBIeCgRnYW1lGAEgASgLMhAubGlicmFyeS52MS5HYW1lIp0BCgRHYW1lEgoKAklEGAEgASgEEhEKCUNyZWF0ZWRBdBgCIAEoCRIQCghFZGl0ZWRBdBgDIAEoCRIlCgRNZXRhGAQgASgLMhcuc2VhcmNoLnYxLkdhbWVNZXRhZGF0YRIQCghHYW1lVHlwZRgFIAEoCRIrCg1Eb3dubG9hZFN0YXRlGAcgASgLMhQubGlicmFyeS52MS5Eb3dubG9hZCJ6CghEb3dubG9hZBIOCgZDbGllbnQYASABKAkSEgoKRG93bmxvYWRJZBgCIAEoCRINCgVTdGF0ZRgDIAEoCRIQCghQcm9ncmVzcxgEIAEoCRIUCgxEb3dubG9hZFBhdGgYBSABKAkSEwoLRG93bmxvYWRVcmwYBiABKAkiDQoLQWRkUmVzcG9uc2UytAIKDkxpYnJhcnlTZXJ2aWNlEjsKBExpc3QSFy5saWJyYXJ5LnYxLkxpc3RSZXF1ZXN0GhgubGlicmFyeS52MS5MaXN0UmVzcG9uc2UiABJZCg5UcmlnZ2VyVHJhY2tlchIhLmxpYnJhcnkudjEuVHJpZ2dlclRyYWNrZXJSZXF1ZXN0GiIubGlicmFyeS52MS5UcmlnZ2VyVHJhY2tlclJlc3BvbnNlIgASOAoDQWRkEhYubGlicmFyeS52MS5BZGRSZXF1ZXN0GhcubGlicmFyeS52MS5BZGRSZXNwb25zZSIAElAKC0dldEdhbWVUeXBlEh4ubGlicmFyeS52MS5HZXRHYW1lVHlwZVJlcXVlc3QaHy5saWJyYXJ5LnYxLkdldEdhbWVUeXBlUmVzcG9uc2UiAEKWAQoOY29tLmxpYnJhcnkudjFCDExpYnJhcnlQcm90b1ABWi1naXRodWIuY29tL3JhMzQxL2dsYWNpZXIvZ2VuZXJhdGVkL2xpYnJhcnkvdjGiAgNMWFiqAgpMaWJyYXJ5LlYxygIKTGlicmFyeVxWMeICFkxpYnJhcnlcVjFcR1BCTWV0YWRhdGHqAgtMaWJyYXJ5OjpWMWIGcHJvdG8z", [file_search_v1_search]);
+  fileDesc("ChhsaWJyYXJ5L3YxL2xpYnJhcnkucHJvdG8SCmxpYnJhcnkudjEiIAoOR2V0R2FtZVJlcXVlc3QSDgoGZ2FtZUlkGAEgASgEIjEKD0dldEdhbWVSZXNwb25zZRIeCgRnYW1lGAEgASgLMhAubGlicmFyeS52MS5HYW1lIhcKFVRyaWdnZXJUcmFja2VyUmVxdWVzdCIYChZUcmlnZ2VyVHJhY2tlclJlc3BvbnNlIjsKC0xpc3RSZXF1ZXN0Eg0KBXF1ZXJ5GAEgASgJEg4KBm9mZnNldBgCIAEoDRINCgVsaW1pdBgDIAEoDSIyCgxMaXN0UmVzcG9uc2USIgoIZ2FtZUxpc3QYASADKAsyEC5saWJyYXJ5LnYxLkdhbWUiLAoKQWRkUmVxdWVzdBIeCgRnYW1lGAEgASgLMhAubGlicmFyeS52MS5HYW1lIrIBCgRHYW1lEgoKAklEGAEgASgEEhEKCUNyZWF0ZWRBdBgCIAEoCRIQCghFZGl0ZWRBdBgDIAEoCRIrCg1Eb3dubG9hZFN0YXRlGAcgASgLMhQubGlicmFyeS52MS5Eb3dubG9hZBIlCgRNZXRhGAQgASgLMhcuc2VhcmNoLnYxLkdhbWVNZXRhZGF0YRIlCgZTb3VyY2UYCCABKAsyFS5zZWFyY2gudjEuR2FtZVNvdXJjZSJ6CghEb3dubG9hZBIOCgZDbGllbnQYASABKAkSEgoKRG93bmxvYWRJZBgCIAEoCRINCgVTdGF0ZRgDIAEoCRIQCghQcm9ncmVzcxgEIAEoCRIUCgxEb3dubG9hZFBhdGgYBSABKAkSEwoLRG93bmxvYWRVcmwYBiABKAkiDQoLQWRkUmVzcG9uc2UyqAIKDkxpYnJhcnlTZXJ2aWNlEjsKBExpc3QSFy5saWJyYXJ5LnYxLkxpc3RSZXF1ZXN0GhgubGlicmFyeS52MS5MaXN0UmVzcG9uc2UiABJZCg5UcmlnZ2VyVHJhY2tlchIhLmxpYnJhcnkudjEuVHJpZ2dlclRyYWNrZXJSZXF1ZXN0GiIubGlicmFyeS52MS5UcmlnZ2VyVHJhY2tlclJlc3BvbnNlIgASRAoHR2V0R2FtZRIaLmxpYnJhcnkudjEuR2V0R2FtZVJlcXVlc3QaGy5saWJyYXJ5LnYxLkdldEdhbWVSZXNwb25zZSIAEjgKA0FkZBIWLmxpYnJhcnkudjEuQWRkUmVxdWVzdBoXLmxpYnJhcnkudjEuQWRkUmVzcG9uc2UiAEKWAQoOY29tLmxpYnJhcnkudjFCDExpYnJhcnlQcm90b1ABWi1naXRodWIuY29tL3JhMzQxL2dsYWNpZXIvZ2VuZXJhdGVkL2xpYnJhcnkvdjGiAgNMWFiqAgpMaWJyYXJ5LlYxygIKTGlicmFyeVxWMeICFkxpYnJhcnlcVjFcR1BCTWV0YWRhdGHqAgtMaWJyYXJ5OjpWMWIGcHJvdG8z", [file_search_v1_search]);
+
+/**
+ * @generated from message library.v1.GetGameRequest
+ */
+export type GetGameRequest = Message<"library.v1.GetGameRequest"> & {
+  /**
+   * @generated from field: uint64 gameId = 1;
+   */
+  gameId: bigint;
+};
+
+/**
+ * Describes the message library.v1.GetGameRequest.
+ * Use `create(GetGameRequestSchema)` to create a new message.
+ */
+export const GetGameRequestSchema: GenMessage<GetGameRequest> = /*@__PURE__*/
+  messageDesc(file_library_v1_library, 0);
+
+/**
+ * @generated from message library.v1.GetGameResponse
+ */
+export type GetGameResponse = Message<"library.v1.GetGameResponse"> & {
+  /**
+   * @generated from field: library.v1.Game game = 1;
+   */
+  game?: Game;
+};
+
+/**
+ * Describes the message library.v1.GetGameResponse.
+ * Use `create(GetGameResponseSchema)` to create a new message.
+ */
+export const GetGameResponseSchema: GenMessage<GetGameResponse> = /*@__PURE__*/
+  messageDesc(file_library_v1_library, 1);
 
 /**
  * @generated from message library.v1.TriggerTrackerRequest
@@ -25,7 +59,7 @@ export type TriggerTrackerRequest = Message<"library.v1.TriggerTrackerRequest"> 
  * Use `create(TriggerTrackerRequestSchema)` to create a new message.
  */
 export const TriggerTrackerRequestSchema: GenMessage<TriggerTrackerRequest> = /*@__PURE__*/
-  messageDesc(file_library_v1_library, 0);
+  messageDesc(file_library_v1_library, 2);
 
 /**
  * @generated from message library.v1.TriggerTrackerResponse
@@ -38,7 +72,7 @@ export type TriggerTrackerResponse = Message<"library.v1.TriggerTrackerResponse"
  * Use `create(TriggerTrackerResponseSchema)` to create a new message.
  */
 export const TriggerTrackerResponseSchema: GenMessage<TriggerTrackerResponse> = /*@__PURE__*/
-  messageDesc(file_library_v1_library, 1);
+  messageDesc(file_library_v1_library, 3);
 
 /**
  * @generated from message library.v1.ListRequest
@@ -65,7 +99,7 @@ export type ListRequest = Message<"library.v1.ListRequest"> & {
  * Use `create(ListRequestSchema)` to create a new message.
  */
 export const ListRequestSchema: GenMessage<ListRequest> = /*@__PURE__*/
-  messageDesc(file_library_v1_library, 2);
+  messageDesc(file_library_v1_library, 4);
 
 /**
  * @generated from message library.v1.ListResponse
@@ -82,54 +116,7 @@ export type ListResponse = Message<"library.v1.ListResponse"> & {
  * Use `create(ListResponseSchema)` to create a new message.
  */
 export const ListResponseSchema: GenMessage<ListResponse> = /*@__PURE__*/
-  messageDesc(file_library_v1_library, 3);
-
-/**
- * @generated from message library.v1.GetGameTypeRequest
- */
-export type GetGameTypeRequest = Message<"library.v1.GetGameTypeRequest"> & {
-};
-
-/**
- * Describes the message library.v1.GetGameTypeRequest.
- * Use `create(GetGameTypeRequestSchema)` to create a new message.
- */
-export const GetGameTypeRequestSchema: GenMessage<GetGameTypeRequest> = /*@__PURE__*/
-  messageDesc(file_library_v1_library, 4);
-
-/**
- * @generated from message library.v1.GameType
- */
-export type GameType = Message<"library.v1.GameType"> & {
-  /**
-   * @generated from field: string Name = 1;
-   */
-  Name: string;
-};
-
-/**
- * Describes the message library.v1.GameType.
- * Use `create(GameTypeSchema)` to create a new message.
- */
-export const GameTypeSchema: GenMessage<GameType> = /*@__PURE__*/
   messageDesc(file_library_v1_library, 5);
-
-/**
- * @generated from message library.v1.GetGameTypeResponse
- */
-export type GetGameTypeResponse = Message<"library.v1.GetGameTypeResponse"> & {
-  /**
-   * @generated from field: repeated library.v1.GameType gameTypes = 1;
-   */
-  gameTypes: GameType[];
-};
-
-/**
- * Describes the message library.v1.GetGameTypeResponse.
- * Use `create(GetGameTypeResponseSchema)` to create a new message.
- */
-export const GetGameTypeResponseSchema: GenMessage<GetGameTypeResponse> = /*@__PURE__*/
-  messageDesc(file_library_v1_library, 6);
 
 /**
  * @generated from message library.v1.AddRequest
@@ -146,7 +133,7 @@ export type AddRequest = Message<"library.v1.AddRequest"> & {
  * Use `create(AddRequestSchema)` to create a new message.
  */
 export const AddRequestSchema: GenMessage<AddRequest> = /*@__PURE__*/
-  messageDesc(file_library_v1_library, 7);
+  messageDesc(file_library_v1_library, 6);
 
 /**
  * @generated from message library.v1.Game
@@ -168,19 +155,19 @@ export type Game = Message<"library.v1.Game"> & {
   EditedAt: string;
 
   /**
+   * @generated from field: library.v1.Download DownloadState = 7;
+   */
+  DownloadState?: Download;
+
+  /**
    * @generated from field: search.v1.GameMetadata Meta = 4;
    */
   Meta?: GameMetadata;
 
   /**
-   * @generated from field: string GameType = 5;
+   * @generated from field: search.v1.GameSource Source = 8;
    */
-  GameType: string;
-
-  /**
-   * @generated from field: library.v1.Download DownloadState = 7;
-   */
-  DownloadState?: Download;
+  Source?: GameSource;
 };
 
 /**
@@ -188,7 +175,7 @@ export type Game = Message<"library.v1.Game"> & {
  * Use `create(GameSchema)` to create a new message.
  */
 export const GameSchema: GenMessage<Game> = /*@__PURE__*/
-  messageDesc(file_library_v1_library, 8);
+  messageDesc(file_library_v1_library, 7);
 
 /**
  * @generated from message library.v1.Download
@@ -230,7 +217,7 @@ export type Download = Message<"library.v1.Download"> & {
  * Use `create(DownloadSchema)` to create a new message.
  */
 export const DownloadSchema: GenMessage<Download> = /*@__PURE__*/
-  messageDesc(file_library_v1_library, 9);
+  messageDesc(file_library_v1_library, 8);
 
 /**
  * @generated from message library.v1.AddResponse
@@ -243,7 +230,7 @@ export type AddResponse = Message<"library.v1.AddResponse"> & {
  * Use `create(AddResponseSchema)` to create a new message.
  */
 export const AddResponseSchema: GenMessage<AddResponse> = /*@__PURE__*/
-  messageDesc(file_library_v1_library, 10);
+  messageDesc(file_library_v1_library, 9);
 
 /**
  * @generated from service library.v1.LibraryService
@@ -266,20 +253,20 @@ export const LibraryService: GenService<{
     output: typeof TriggerTrackerResponseSchema;
   },
   /**
+   * @generated from rpc library.v1.LibraryService.GetGame
+   */
+  getGame: {
+    methodKind: "unary";
+    input: typeof GetGameRequestSchema;
+    output: typeof GetGameResponseSchema;
+  },
+  /**
    * @generated from rpc library.v1.LibraryService.Add
    */
   add: {
     methodKind: "unary";
     input: typeof AddRequestSchema;
     output: typeof AddResponseSchema;
-  },
-  /**
-   * @generated from rpc library.v1.LibraryService.GetGameType
-   */
-  getGameType: {
-    methodKind: "unary";
-    input: typeof GetGameTypeRequestSchema;
-    output: typeof GetGameTypeResponseSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_library_v1_library, 0);

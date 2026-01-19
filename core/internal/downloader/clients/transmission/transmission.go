@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -141,9 +142,13 @@ func (tm *Client) Progress(ctx context.Context, download *types.Download) (err e
 		}
 
 		download.Progress = fmt.Sprintf(
-			"%s\nprogress:%v",
+			"%s\nprogress:%2f",
 			info.Status.String(),
-			info.PercentDone,
+			*info.PercentComplete,
+		)
+		download.IncompletePath = filepath.Join(
+			*info.DownloadDir,
+			*info.Name,
 		)
 
 		break
