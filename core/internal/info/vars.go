@@ -23,7 +23,7 @@ const (
 	FlavourDevelop FlavourType = "develop"
 	FlavourServer  FlavourType = "server"
 	FlavourDocker  FlavourType = "docker"
-	FlavourDesktop FlavourType = "desktop"
+	FlavourFrost   FlavourType = "frost"
 )
 
 var (
@@ -54,5 +54,5 @@ func IsDev() bool {
 }
 
 func IsDesktop() bool {
-	return Flavour == FlavourDesktop
+	return Flavour == FlavourFrost
 }

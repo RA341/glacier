@@ -1,15 +1,9 @@
 package config
 
-type Prefixer func(in string) string
+import "github.com/ra341/glacier/pkg/argos"
 
 const EnvPrefix = "GLACIER"
 
-func DefaultPrefixer() Prefixer {
-	return WithPrefixer(EnvPrefix)
-}
-
-func WithPrefixer(envPrefix string) Prefixer {
-	return func(in string) string {
-		return envPrefix + "_" + in
-	}
+func DefaultPrefixer() argos.Prefixer {
+	return argos.WithPrefixer(EnvPrefix)
 }

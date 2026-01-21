@@ -7,23 +7,36 @@ import { browser } from '$app/environment';
 const mode = import.meta.env.MODE;
 
 const devServer = 'http://localhost:6699';
-export const API_BASE_URL =
-	mode === 'development' || mode === 'electron'
-		? devServer
-		: browser
-			? window.location.origin
-			: devServer;
+const frostServer = 'http://localhost:9966';
+
+const isFrostDev = mode === 'frostdev';
+export const isFrost = mode === 'frost' || isFrostDev;
+console.log(`Is frost ${isFrost}`);
+
+const getBase = () => {
+	if (mode === 'development') {
+		return devServer;
+	}
+
+	if (isFrostDev) {
+		return frostServer;
+	}
+
+	return '/';
+};
+
+export const HOST = getBase();
+
+export const API_BASE_URL = `${HOST}/api/server`;
 
 console.log(`API url: ${API_BASE_URL} `);
 export const transport = createConnectTransport({
-	baseUrl: API_BASE_URL,
+	baseUrl: `${API_BASE_URL}`,
 	useBinaryFormat: true,
 	interceptors: []
 });
 
-export function cli<T extends DescService>(
-	service: T,
-): Client<T> {
+export function cli<T extends DescService>(service: T): Client<T> {
 	return createClient(service, transport);
 }
 

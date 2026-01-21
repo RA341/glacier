@@ -3,14 +3,14 @@ data "external_schema" "gorm" {
     "go",
     "run",
     "-mod=mod",
-    "./cmd/migrator",
+    "../cmd/migrator",
   ]
 }
 env "gorm" {
   src = data.external_schema.gorm.url
   dev = "sqlite://file?mode=memory&_fk=1"
   migration {
-    dir = "file://internal/database/generated/migrations?format=goose"
+    dir = "file://database/generated/migrations?format=goose"
   }
   format {
     migrate {

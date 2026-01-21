@@ -4,7 +4,7 @@
     import ManageTab from "./ManageTab.svelte";
     import {DownloadIcon, RefreshCwIcon} from '@lucide/svelte';
     import {type Game, LibraryService} from "$lib/gen/library/v1/library_pb";
-    import {cli} from "$lib/api/api";
+    import {cli, isFrost} from "$lib/api/api";
     import {createRPCRunner} from "$lib/api/svelte-api.svelte";
     import {onMount} from "svelte";
     import {page} from "$app/state";
@@ -78,10 +78,12 @@
                     <RefreshCwIcon size={16}/>
                     Update
                 </button>
-                <button class="px-8 py-2 bg-frost-500 text-background rounded-xl text-sm font-bold hover:bg-frost-400 transition-all flex items-center gap-2 shadow-lg shadow-frost-500/20">
-                    <DownloadIcon size={16}/>
-                    Download
-                </button>
+                {#if isFrost}
+                    <button class="px-8 py-2 bg-frost-500 text-background rounded-xl text-sm font-bold hover:bg-frost-400 transition-all flex items-center gap-2 shadow-lg shadow-frost-500/20">
+                        <DownloadIcon size={16}/>
+                        Download
+                    </button>
+                {/if}
             </div>
         </div>
 

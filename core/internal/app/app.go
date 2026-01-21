@@ -60,8 +60,9 @@ func NewApp() *App {
 		},
 	)
 	downSrv.StartTracker() // check for previous incomplete downloads
-
-	libSrv := library.New(libDb, downSrv,
+	folderMetaDb := library.NewStoreFolderMetadataGorm(db)
+	libSrv := library.New(libDb, folderMetaDb,
+		downSrv,
 		func() *library.Config {
 			return &conf.Get().Library
 		},

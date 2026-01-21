@@ -1,4 +1,4 @@
-package config
+package argos
 
 import (
 	"os"
@@ -11,7 +11,7 @@ import (
 
 type FieldProcessor func(field reflect.Value, fieldType reflect.StructField)
 
-func SetDefaultsFromTags(ptr interface{}, functor FieldProcessor) {
+func LoadStruct(ptr interface{}, functor FieldProcessor) {
 	v := reflect.ValueOf(ptr).Elem()
 	t := v.Type()
 
@@ -36,7 +36,7 @@ func SetDefaultsFromTags(ptr interface{}, functor FieldProcessor) {
 			fVal = fVal.Elem()
 		}
 		if fVal.Kind() == reflect.Struct {
-			SetDefaultsFromTags(fVal.Addr().Interface(), functor)
+			LoadStruct(fVal.Addr().Interface(), functor)
 			continue
 		}
 

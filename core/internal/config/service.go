@@ -11,7 +11,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-// todo likely this is not concurrent safe when reading
+// todo this is likely not concurrent safe
 
 type Service struct {
 	cy   ConfigYml
@@ -41,8 +41,8 @@ func (s *Service) Init() {
 	}
 
 	defaultPrefixer := DefaultPrefixer()
-	rnFn := FieldProcessorTag(defaultPrefixer)
-	SetDefaultsFromTags(&conf, rnFn)
+	rnFn := argos.FieldProcessorTag(defaultPrefixer)
+	argos.LoadStruct(&conf, rnFn)
 
 	pathsToResolve := []*string{
 		&conf.Download.IncompletePath,
@@ -59,7 +59,7 @@ func (s *Service) Init() {
 	}
 }
 
-func printConfig(defaultPrefixer Prefixer, conf *Config) {
+func printConfig(defaultPrefixer argos.Prefixer, conf *Config) {
 	envDisplay := argos.WithUnderLine("Env:")
 	envTag := argos.FieldPrintConfig{
 		TagName: "env",

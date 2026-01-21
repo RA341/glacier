@@ -36,8 +36,30 @@ CREATE TABLE `games` (
 );
 -- create index "idx_games_deleted_at" to table: "games"
 CREATE INDEX `idx_games_deleted_at` ON `games` (`deleted_at`);
+-- create "folder_metadata" table
+CREATE TABLE `folder_metadata` (
+  `id` integer NULL PRIMARY KEY AUTOINCREMENT,
+  `created_at` datetime NULL,
+  `updated_at` datetime NULL,
+  `deleted_at` datetime NULL,
+  `game_id` integer NULL,
+  `total_size` integer NULL,
+  `available_exe_paths` text NULL,
+  `file_info` text NULL,
+  CONSTRAINT `fk_folder_metadata_game` FOREIGN KEY (`game_id`) REFERENCES `games` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+);
+-- create index "idx_folder_metadata_game_id" to table: "folder_metadata"
+CREATE INDEX `idx_folder_metadata_game_id` ON `folder_metadata` (`game_id`);
+-- create index "idx_folder_metadata_deleted_at" to table: "folder_metadata"
+CREATE INDEX `idx_folder_metadata_deleted_at` ON `folder_metadata` (`deleted_at`);
 
 -- +goose Down
+-- reverse: create index "idx_folder_metadata_deleted_at" to table: "folder_metadata"
+DROP INDEX `idx_folder_metadata_deleted_at`;
+-- reverse: create index "idx_folder_metadata_game_id" to table: "folder_metadata"
+DROP INDEX `idx_folder_metadata_game_id`;
+-- reverse: create "folder_metadata" table
+DROP TABLE `folder_metadata`;
 -- reverse: create index "idx_games_deleted_at" to table: "games"
 DROP INDEX `idx_games_deleted_at`;
 -- reverse: create "games" table

@@ -1,20 +1,17 @@
-package server
+package app
 
 import (
 	"context"
 	"errors"
 	"fmt"
-	log2 "log"
 	"net/http"
+	"net/http/httputil"
+	"net/url"
 	"strings"
 	"time"
 
-	"github.com/ra341/glacier/internal/app"
-	downloadManager "github.com/ra341/glacier/internal/downloader/manager"
-	indexerManager "github.com/ra341/glacier/internal/indexer/manager"
-	"github.com/ra341/glacier/internal/library"
-	metadataManager "github.com/ra341/glacier/internal/metadata/manager"
-	"github.com/ra341/glacier/internal/search"
+	"github.com/ra341/glacier/internal/info"
+	"github.com/ra341/glacier/pkg/logger"
 
 	connectcors "connectrpc.com/cors"
 	"github.com/rs/cors"
@@ -23,24 +20,34 @@ import (
 	"golang.org/x/net/http2/h2c"
 )
 
+func InitMeta(flavour info.FlavourType) {
+	info.SetFlavour(flavour)
+	info.PrintInfo()
+	logger.InitDefault()
+}
+
+func init() {
+	InitMeta(info.FlavourFrost)
+}
+
 type Server struct {
-	*app.App
+	app *App
 
 	uiDir string
 }
 
 func NewServer(uiDir string) {
 	server := &Server{
-		App:   app.NewApp(),
+		app:   New(),
 		uiDir: uiDir,
 	}
-	config := server.App.Conf.Get().Server
+	conf := server.app.Conf.Get().Server
 
 	router := http.NewServeMux()
 	server.RegisterRoutes(router)
 
 	corsConfig := cors.New(cors.Options{
-		AllowedOrigins:      config.AllowedOrigins,
+		AllowedOrigins:      conf.Origins,
 		AllowPrivateNetwork: true,
 		AllowedMethods:      connectcors.AllowedMethods(),
 		AllowedHeaders:      connectcors.AllowedHeaders(),
@@ -49,7 +56,7 @@ func NewServer(uiDir string) {
 
 	finalMux := corsConfig.Handler(router)
 
-	port := fmt.Sprintf(":%d", config.Port)
+	port := fmt.Sprintf(":%d", conf.Port)
 	log.Info().Str("port", port).Msg("Starting server...")
 
 	srv := &http.Server{
@@ -84,39 +91,63 @@ func NewServer(uiDir string) {
 }
 
 func (s *Server) RegisterRoutes(mux *http.ServeMux) {
-	apiRouter := http.NewServeMux()
-	s.registerRoutes(apiRouter)
-	withSubRouter(mux, "/api/server", apiRouter)
+	s.registerRoutes(mux)
 
 	s.registerUI(mux)
 }
 
 func (s *Server) registerUI(mux *http.ServeMux) {
-	mux.Handle("/", http.FileServer(http.Dir(s.uiDir)))
+	if s.uiDir != "" {
+		mux.Handle("/", http.FileServer(http.Dir(s.uiDir)))
+	}
+
+	apiMux := http.NewServeMux()
+	s.registerRoutes(apiMux)
+	withSubRouter(mux, "/api/frost", apiMux)
+
+	glacierProxy := http.NewServeMux()
+	s.registerGlacierProxy(glacierProxy)
+	mux.Handle("/api/server/", glacierProxy)
+}
+
+func (s *Server) registerGlacierProxy(mux *http.ServeMux) {
+	target, err := url.Parse("http://localhost:6699")
+	if err != nil {
+		log.Fatal().Err(err).Msg("Error parsing url")
+	}
+
+	proxy := httputil.NewSingleHostReverseProxy(target)
+	originalDirector := proxy.Director
+	proxy.Director = func(req *http.Request) {
+		originalDirector(req)
+		req.Host = target.Host
+	}
+
+	proxy.ModifyResponse = func(resp *http.Response) error {
+		// server already has CORS middleware, remove the
+		// headers coming from the backend to prevent multiple value errors.
+		resp.Header.Del("Access-Control-Allow-Origin")
+		resp.Header.Del("Access-Control-Allow-Credentials")
+		resp.Header.Del("Access-Control-Allow-Methods")
+		resp.Header.Del("Access-Control-Allow-Headers")
+		return nil
+	}
+
+	mux.Handle("/", proxy)
 }
 
 func (s *Server) registerRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("/hello", func(writer http.ResponseWriter, request *http.Request) {
 		writer.Header().Set("Content-Type", "text/plain")
 		writer.WriteHeader(http.StatusOK)
-		_, _ = writer.Write([]byte("fuck off"))
+		_, _ = writer.Write([]byte("Hello from frost"))
 	})
 
-	mux.Handle(search.NewHandler(s.Search))
-	mux.Handle(library.NewHandler(s.Library))
-	withSubRouter(mux,
-		"/library/download",
-		library.NewHandlerHttp(s.Library),
-	)
-
-	mux.Handle(downloadManager.NewHandler(s.DownloadClientManager))
-	mux.Handle(metadataManager.NewHandler(s.MetadataManager))
-	mux.Handle(indexerManager.NewHandler(s.IndexerManager))
 }
 
 func withSubRouter(parent *http.ServeMux, path string, child http.Handler) {
 	if strings.HasSuffix(path, "/") {
-		log2.Fatal("path must not end with /: ", path)
+		panic(fmt.Sprintf("path must not end with /: %s", path))
 	}
 
 	basepath := path + "/"
