@@ -8,7 +8,7 @@ import (
 )
 
 func init() {
-	logger.InitDefault()
+	logger.InitConsole("debug", true)
 }
 
 func TestDownload(t *testing.T) {
