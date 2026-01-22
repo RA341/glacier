@@ -11,7 +11,7 @@
         XIcon,
     } from '@lucide/svelte';
     import {fade, fly} from 'svelte/transition';
-    import {callRPC, cli} from "$lib/api/api";
+    import {callRPC, glacierCli} from "$lib/api/api";
     import {type GameMetadata, type GameSearchResult, SearchService} from "$lib/gen/search/v1/search_pb";
     import {createRPCRunner} from "$lib/api/svelte-api.svelte";
     import {GameSchema, LibraryService} from "$lib/gen/library/v1/library_pb";
@@ -28,7 +28,7 @@
         localGame,
     }: Props = $props();
 
-    const searchClient = cli(SearchService);
+    const searchClient = glacierCli(SearchService);
 
     let searchQuery = $state("");
     let matchedMetadata = $state<GameMetadata>();
@@ -56,11 +56,11 @@
         }
     }
 
-    const downClientManger = cli(DownloaderService)
+    const downClientManger = glacierCli(DownloaderService)
     const clientRpc = createRPCRunner(() => downClientManger.getActiveClients({}))
 
 
-    const libClient = cli(LibraryService)
+    const libClient = glacierCli(LibraryService)
 
     let downloadClient = $state("")
     let downloadUrl = $derived(localGame?.downloadUrl ?? "")

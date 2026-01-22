@@ -8,11 +8,30 @@ import "search/v1/search.proto";
 
 service LibraryService {
   rpc List(ListRequest) returns (ListResponse) {}
+  rpc ListWithState(ListWithStateRequest) returns (ListWithStateResponse) {}
+  rpc Delete(DeleteRequest) returns (DeleteResponse) {}
+
   rpc TriggerTracker(TriggerTrackerRequest) returns (TriggerTrackerResponse) {}
   rpc GetGame(GetGameRequest) returns (GetGameResponse) {}
 
 
   rpc Add(AddRequest) returns (AddResponse) {}
+}
+
+
+message DeleteRequest {
+  int64 gameId = 1;
+}
+
+message DeleteResponse {}
+
+
+message ListWithStateRequest {
+  string state  = 1;
+}
+
+message ListWithStateResponse {
+  repeated Game game = 1;
 }
 
 

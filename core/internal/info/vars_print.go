@@ -5,7 +5,7 @@ import (
 )
 
 // headers
-// generated from https://patorjk.com/software/taag/#p=testall&f=Graffiti&t=dockman%0A
+// generated from https://patorjk.com/software/taag/#p=testall&f=Graffiti&t=glacier%0A
 var headers = []string{
 	`
                     $$\           $$\                     

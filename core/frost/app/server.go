@@ -7,11 +7,12 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
-	"strings"
 	"time"
 
+	ll "github.com/ra341/glacier/frost/local_library"
 	"github.com/ra341/glacier/internal/info"
 	"github.com/ra341/glacier/pkg/logger"
+	"github.com/ra341/glacier/shared/api"
 
 	connectcors "connectrpc.com/cors"
 	"github.com/rs/cors"
@@ -103,7 +104,7 @@ func (s *Server) registerUI(mux *http.ServeMux) {
 
 	apiMux := http.NewServeMux()
 	s.registerRoutes(apiMux)
-	withSubRouter(mux, "/api/frost", apiMux)
+	api.WithSubRouter(mux, "/api/frost", apiMux)
 
 	glacierProxy := http.NewServeMux()
 	s.registerGlacierProxy(glacierProxy)
@@ -143,16 +144,5 @@ func (s *Server) registerRoutes(mux *http.ServeMux) {
 		_, _ = writer.Write([]byte("Hello from frost"))
 	})
 
-}
-
-func withSubRouter(parent *http.ServeMux, path string, child http.Handler) {
-	if strings.HasSuffix(path, "/") {
-		panic(fmt.Sprintf("path must not end with /: %s", path))
-	}
-
-	basepath := path + "/"
-	parent.Handle(
-		basepath,
-		http.StripPrefix(path, child),
-	)
+	mux.Handle(ll.NewHandler(s.app.LocalLibrarySrv))
 }

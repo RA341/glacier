@@ -26,6 +26,56 @@ func (c *CacheStoreBadger) Close() error {
 	return c.db.Close()
 }
 
+type FileProgress struct {
+	Name     string
+	Complete int64
+	Left     int64
+}
+
+func (c *CacheStoreBadger) Progress() ([]FileProgress, error) {
+	var results []FileProgress
+
+	filenames, err := c.GetFileList()
+	if err != nil {
+		return nil, err
+	}
+
+	err = c.db.View(func(txn *badger.Txn) error {
+		for _, name := range filenames {
+			prog := FileProgress{Name: name}
+
+			// iterator to scan only chunks for file
+			it := txn.NewIterator(badger.DefaultIteratorOptions)
+			prefix := []byte(fmt.Sprintf("c:%s:", name))
+
+			for it.Seek(prefix); it.ValidForPrefix(prefix); it.Next() {
+				var chunk Chunk
+				err := it.Item().Value(func(val []byte) error {
+					return json.Unmarshal(val, &chunk)
+				})
+				if err != nil {
+					it.Close()
+					return err
+				}
+
+				// size is inclusive (End - Start + 1) instead of End - Start
+				chunkSize := chunk.End - chunk.Start + 1
+
+				if chunk.State == ChunkComplete {
+					prog.Complete += chunkSize
+				} else {
+					prog.Left += chunkSize
+				}
+			}
+			it.Close()
+			results = append(results, prog)
+		}
+		return nil
+	})
+
+	return results, err
+}
+
 // GetFileList returns all unique filenames stored
 func (c *CacheStoreBadger) GetFileList() ([]string, error) {
 	var files []string

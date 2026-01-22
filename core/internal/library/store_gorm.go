@@ -65,6 +65,5 @@ func (s *StoreGorm) GetById(ctx context.Context, id uint) (Game, error) {
 }
 
 func (s *StoreGorm) DeleteGame(ctx context.Context, id uint) error {
-	//TODO implement me
-	panic("implement me")
+	return s.Q(ctx).Unscoped().Delete(&Game{}, id).Error
 }

@@ -19,6 +19,45 @@ func NewHandler(srv *Service) (string, http.Handler) {
 	return v1connect.NewLibraryServiceHandler(svc)
 }
 
+func (h *Handler) ListWithState(ctx context.Context, c *connect.Request[v1.ListWithStateRequest]) (*connect.Response[v1.ListWithStateResponse], error) {
+	list, err := h.srv.ListDownloading(ctx, c.Msg.State)
+	if err != nil {
+		return nil, err
+	}
+
+	res := listutils.ToMap(list, func(t Game) *v1.Game {
+		return t.ToProto()
+	})
+
+	return connect.NewResponse(&v1.ListWithStateResponse{
+		Game: res,
+	}), nil
+}
+
+func (h *Handler) List(ctx context.Context, c *connect.Request[v1.ListRequest]) (*connect.Response[v1.ListResponse], error) {
+	list, err := h.srv.List(ctx, c.Msg.Query, uint(c.Msg.Offset), uint(c.Msg.Limit))
+	if err != nil {
+		return nil, err
+	}
+
+	res := listutils.ToMap(list, func(t Game) *v1.Game {
+		return t.ToProto()
+	})
+
+	return connect.NewResponse(&v1.ListResponse{
+		GameList: res,
+	}), nil
+}
+
+func (h *Handler) Delete(ctx context.Context, c *connect.Request[v1.DeleteRequest]) (*connect.Response[v1.DeleteResponse], error) {
+	err := h.srv.Delete(ctx, uint(c.Msg.GameId))
+	if err != nil {
+		return nil, err
+	}
+
+	return connect.NewResponse(&v1.DeleteResponse{}), nil
+}
+
 func (h *Handler) TriggerTracker(ctx context.Context, req *connect.Request[v1.TriggerTrackerRequest]) (*connect.Response[v1.TriggerTrackerResponse], error) {
 	h.srv.downloader.TriggerTracker()
 	return connect.NewResponse(&v1.TriggerTrackerResponse{}), nil
@@ -45,19 +84,4 @@ func (h *Handler) Add(ctx context.Context, req *connect.Request[v1.AddRequest]) 
 	}
 
 	return connect.NewResponse(&v1.AddResponse{}), nil
-}
-
-func (h *Handler) List(ctx context.Context, c *connect.Request[v1.ListRequest]) (*connect.Response[v1.ListResponse], error) {
-	list, err := h.srv.List(ctx, c.Msg.Query, uint(c.Msg.Offset), uint(c.Msg.Limit))
-	if err != nil {
-		return nil, err
-	}
-
-	res := listutils.ToMap(list, func(t Game) *v1.Game {
-		return t.ToProto()
-	})
-
-	return connect.NewResponse(&v1.ListResponse{
-		GameList: res,
-	}), nil
 }

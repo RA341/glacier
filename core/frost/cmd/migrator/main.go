@@ -5,17 +5,15 @@ import (
 	"io"
 	"os"
 
-	"github.com/ra341/glacier/internal/library"
-
 	"ariga.io/atlas-provider-gorm/gormschema"
+	ll "github.com/ra341/glacier/frost/local_library"
 )
 
 func main() {
 	stmts, err := gormschema.
 		New("sqlite").
 		Load(
-			&library.Game{},
-			&library.FolderMetadata{},
+			&ll.LocalGame{},
 		)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to load gorm schema: %v\n", err)

@@ -51,6 +51,15 @@ func (s *Service) List(ctx context.Context, query string, offset, limit uint) ([
 	return s.store.List(ctx, limit, offset)
 }
 
+func (s *Service) ListDownloading(ctx context.Context, state string) ([]Game, error) {
+	dState, err := types.DownloadStateString(state)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.store.ListDownloadState(ctx, dState)
+}
+
 func (s *Service) Add(ctx context.Context, game *Game) error {
 	game.Download.State = types.Queued
 	game.Download.DownloadPath = filepath.Join(

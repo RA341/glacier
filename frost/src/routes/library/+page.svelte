@@ -1,11 +1,11 @@
 <script lang="ts">
-    import {cli} from "$lib/api/api";
+    import {glacierCli} from "$lib/api/api";
     import {type Game, LibraryService} from "$lib/gen/library/v1/library_pb";
     import {createRPCRunner} from "$lib/api/svelte-api.svelte";
     import {onMount} from "svelte";
     import {goto} from "$app/navigation";
 
-    const libSrv = cli(LibraryService)
+    const libSrv = glacierCli(LibraryService)
 
     let query = $state("")
     let offset = $state(0)

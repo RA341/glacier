@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	log2 "log"
+
 	"net/http"
-	"strings"
+
 	"time"
 
 	"github.com/ra341/glacier/internal/app"
@@ -15,6 +15,7 @@ import (
 	"github.com/ra341/glacier/internal/library"
 	metadataManager "github.com/ra341/glacier/internal/metadata/manager"
 	"github.com/ra341/glacier/internal/search"
+	"github.com/ra341/glacier/shared/api"
 
 	connectcors "connectrpc.com/cors"
 	"github.com/rs/cors"
@@ -86,7 +87,7 @@ func NewServer(uiDir string) {
 func (s *Server) RegisterRoutes(mux *http.ServeMux) {
 	apiRouter := http.NewServeMux()
 	s.registerRoutes(apiRouter)
-	withSubRouter(mux, "/api/server", apiRouter)
+	api.WithSubRouter(mux, "/api/server", apiRouter)
 
 	s.registerUI(mux)
 }
@@ -104,7 +105,7 @@ func (s *Server) registerRoutes(mux *http.ServeMux) {
 
 	mux.Handle(search.NewHandler(s.Search))
 	mux.Handle(library.NewHandler(s.Library))
-	withSubRouter(mux,
+	api.WithSubRouter(mux,
 		"/library/download",
 		library.NewHandlerHttp(s.Library),
 	)
@@ -112,16 +113,4 @@ func (s *Server) registerRoutes(mux *http.ServeMux) {
 	mux.Handle(downloadManager.NewHandler(s.DownloadClientManager))
 	mux.Handle(metadataManager.NewHandler(s.MetadataManager))
 	mux.Handle(indexerManager.NewHandler(s.IndexerManager))
-}
-
-func withSubRouter(parent *http.ServeMux, path string, child http.Handler) {
-	if strings.HasSuffix(path, "/") {
-		log2.Fatal("path must not end with /: ", path)
-	}
-
-	basepath := path + "/"
-	parent.Handle(
-		basepath,
-		http.StripPrefix(path, child),
-	)
 }

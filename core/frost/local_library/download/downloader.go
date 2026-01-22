@@ -2,6 +2,7 @@ package download
 
 import (
 	"context"
+	"encoding/gob"
 	"fmt"
 	"io"
 	"net/http"
@@ -25,22 +26,29 @@ type Config interface {
 	getHttpClient() *http.Client
 }
 
+type ProgressUpdater interface {
+	EditStatus(ctx context.Context, id int, Status Status, StatusMessage string) error
+}
+
 type Download struct {
 	ctx    context.Context
 	cancel context.CancelFunc
 
-	conf           Config
-	gameId         int
-	baseUrl        string
+	conf   Config
+	gameId int
+
+	metadataUrlBase string
+	downloadUrlBase string
+
 	downloadFolder string
-	met            *library.FolderMetadata
 
 	cacheStore CacheStore
+	progress   ProgressUpdater
 }
 
 const MetadataFolder = ".frost.metadata"
 
-func NewDownload(config Config, baseUrl string, gameId int, downloadFolder string, met *library.FolderMetadata) (*Download, error) {
+func NewDownload(config Config, progress ProgressUpdater, baseUrl, downloadFolder string, gameId int) (*Download, error) {
 	metaPath := filepath.Join(downloadFolder, MetadataFolder)
 	db, err := NewCacheStoreBadger(metaPath)
 	if err != nil {
@@ -49,17 +57,20 @@ func NewDownload(config Config, baseUrl string, gameId int, downloadFolder strin
 
 	ctx, cancel := context.WithCancel(context.Background())
 	d := &Download{
-		ctx:     ctx,
-		cancel:  cancel,
-		baseUrl: fmt.Sprintf("%s/load/%d", baseUrl, gameId),
-		gameId:  gameId,
-		met:     met,
-		conf:    config,
+		ctx:    ctx,
+		cancel: cancel,
 
-		cacheStore:     db,
-		downloadFolder: downloadFolder,
+		downloadUrlBase: fmt.Sprintf("%s/load/%d", baseUrl, gameId),
+		metadataUrlBase: fmt.Sprintf("%s/meta/%d", baseUrl, gameId),
+		gameId:          gameId,
+		downloadFolder:  downloadFolder,
+
+		conf:     config,
+		progress: progress,
+
+		cacheStore: db,
 	}
-	d.Start()
+	go d.Start()
 
 	return d, nil
 }
@@ -69,14 +80,25 @@ func (d *Download) Start() {
 
 	start := time.Now()
 
+	warnIfErr(d.progress.EditStatus(d.ctx, d.gameId, StatusMetadata, "Downloading Metadata"))
+
+	var meta library.FolderMetadata
+	err := d.downloadMetadata(&meta)
+	if err != nil {
+		warnIfErr(d.progress.EditStatus(d.ctx, d.gameId, StatusError, "could not download metadata"))
+		return
+	}
+
+	warnIfErr(d.progress.EditStatus(d.ctx, d.gameId, StatusDownloading, "starting file download"))
+
 	eg := errgroup.Group{}
 	eg.SetLimit(d.conf.getMaxConcurrentFileChunks())
 
-	for _, fi := range d.met.FileInfo {
+	for _, fi := range meta.FileInfo {
 		eg.Go(func() error {
-			err := d.gatherMeta(&fi)
+			err := d.setupFile(&fi)
 			if err != nil {
-				log.Error().Err(err).Str("file", fi.RelPath).Msg("metadata cache err")
+				log.Error().Err(err).Str("file", fi.RelPath).Msg("")
 				// todo how to handle err
 			}
 
@@ -89,9 +111,11 @@ func (d *Download) Start() {
 			return nil
 		})
 	}
-	err := eg.Wait()
+
+	err = eg.Wait()
 	if err != nil {
-		log.Info().Err(err).Msg("download err")
+		log.Error().Err(err).Msg("error downloading")
+		warnIfErr(d.progress.EditStatus(d.ctx, d.gameId, StatusError, "error downloading: "+err.Error()))
 	}
 
 	elapsed := time.Since(start)
@@ -99,6 +123,19 @@ func (d *Download) Start() {
 		Str("elapsed", elapsed.String()).
 		Int("game", d.gameId).
 		Msg("download finished")
+
+	warnIfErr(d.progress.EditStatus(d.ctx, d.gameId, StatusComplete, "Completed Downloading"))
+
+}
+
+func (d *Download) Progress() (complete []FileProgress, total error) {
+	return d.cacheStore.Progress()
+}
+
+func warnIfErr(err error) {
+	if err != nil {
+		log.Warn().Err(err).Msg("error occurred while updating db")
+	}
 }
 
 func (d *Download) Close() {
@@ -108,7 +145,23 @@ func (d *Download) Close() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // metadata step
 
-func (d *Download) gatherMeta(fm *library.FileMetadata) error {
+func (d *Download) downloadMetadata(meta *library.FolderMetadata) error {
+	resp, err := d.conf.getHttpClient().Get(d.metadataUrlBase)
+	if err != nil {
+		return err
+	}
+	defer fileutil.Close(resp.Body)
+
+	err = checkHttpErr(resp)
+	if err != nil {
+		return err
+	}
+
+	decoder := gob.NewDecoder(resp.Body)
+	return decoder.Decode(meta)
+}
+
+func (d *Download) setupFile(fm *library.FileMetadata) error {
 	started := time.Now()
 
 	fullPath := filepath.Join(d.downloadFolder, fm.RelPath)
@@ -162,7 +215,7 @@ func (d *Download) gatherMeta(fm *library.FileMetadata) error {
 		chunk := Chunk{
 			Start: start,
 			End:   end,
-			State: Queued,
+			State: ChunkQueued,
 		}
 
 		chunkList = append(chunkList, chunk)
@@ -183,7 +236,7 @@ func (d *Download) gatherMeta(fm *library.FileMetadata) error {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// downloads
+// download step
 
 func (d *Download) downloadFile(fm *library.FileMetadata) error {
 	//log.Info().
@@ -210,14 +263,14 @@ func (d *Download) downloadFile(fm *library.FileMetadata) error {
 	defer fileutil.Close(file)
 
 	escaped := url.PathEscape(fm.RelPath)
-	fileUrl := fmt.Sprintf("%s/%s", d.baseUrl, escaped)
+	fileUrl := fmt.Sprintf("%s/%s", d.downloadUrlBase, escaped)
 
 	eg := errgroup.Group{}
 	eg.SetLimit(d.conf.getMaxConcurrentFileChunks())
 
 	for i, chunk := range chunks {
 		eg.Go(func() error {
-			if chunk.State == Complete {
+			if chunk.State == ChunkComplete {
 				log.Debug().Str("file", filepath.Base(fullPath)).
 					Any("chunk", chunks).
 					Msg("chunk complete")
@@ -229,9 +282,9 @@ func (d *Download) downloadFile(fm *library.FileMetadata) error {
 				log.Error().Err(errInner).
 					Int64("start", chunk.Start).Int64("end", chunk.End).
 					Msg("could not download chunk")
-				chunk.State = Error
+				chunk.State = ChunkError
 			} else {
-				chunk.State = Complete
+				chunk.State = ChunkComplete
 			}
 
 			err := d.cacheStore.Update(fullPath, i, &chunk)
@@ -290,12 +343,10 @@ func (d *Download) downloadWithRange(url string, chunk *Chunk, writer io.WriterA
 	}
 	// ensure body is closed to return connection to the pool
 	defer fileutil.Close(resp.Body)
-	if resp.StatusCode >= 400 {
-		all, err2 := io.ReadAll(resp.Body)
-		if err2 != nil {
-			return fmt.Errorf("could not load body to get error message: %w", err2)
-		}
-		return fmt.Errorf("error downloading: %d: %s", resp.StatusCode, string(all))
+
+	err = checkHttpErr(resp)
+	if err != nil {
+		return err
 	}
 
 	if resp.StatusCode != http.StatusPartialContent {
@@ -303,8 +354,19 @@ func (d *Download) downloadWithRange(url string, chunk *Chunk, writer io.WriterA
 	}
 
 	_, err = io.Copy(NewOffsetWriter(writer, chunk.Start), resp.Body)
-
 	return err
+}
+
+func checkHttpErr(resp *http.Response) error {
+	if resp.StatusCode < 400 {
+		return nil
+	}
+
+	all, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return fmt.Errorf("could not load body to get error message: %w", err)
+	}
+	return fmt.Errorf("error downloading: %d: %s", resp.StatusCode, string(all))
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

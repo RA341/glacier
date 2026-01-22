@@ -160,28 +160,31 @@ func (s *Service) trackDownloader(ctx context.Context, errTries int) (int, bool)
 
 // checks a single download
 func (s *Service) checkDownload(ctx context.Context, dn *library.Game) {
+	defer func() {
+		err := s.store.UpdateDownloadProgress(ctx, dn.ID, dn.Download)
+		if err != nil {
+			log.Warn().Err(err).Str("download", dn.Download.DownloadId).Msg("failed to update download state")
+		}
+	}()
 	download := dn.Download
 
 	downloader, err := s.cli(download.Client)
 	if err != nil {
 		dn.Download.State = types.Error
 		dn.Download.Progress = fmt.Sprintf("%v", err)
+		return
 	}
 
-	downId := download.DownloadId
 	err = downloader.Progress(ctx, &dn.Download)
 	if err != nil {
 		dn.Download.State = types.Downloading
 		dn.Download.Progress = fmt.Sprintf("unable to get progress: %v", err)
+		return
 	}
 
 	if dn.Download.State == types.Complete {
 		s.completeGameDownload(dn)
-	}
-
-	err = s.store.UpdateDownloadProgress(ctx, dn.ID, dn.Download)
-	if err != nil {
-		log.Warn().Err(err).Str("download", downId).Msg("failed to update download state")
+		return
 	}
 }
 

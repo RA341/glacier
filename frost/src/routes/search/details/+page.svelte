@@ -12,7 +12,7 @@
         StarIcon
     } from '@lucide/svelte';
     import {transferStore} from "../selectedGame.svelte";
-    import {cli} from "$lib/api/api";
+    import {glacierCli} from "$lib/api/api";
     import {IndexerService} from "$lib/gen/indexer/v1/indexer_pb";
     import {createRPCRunner} from "$lib/api/svelte-api.svelte";
     import {type GameSource, GameSourceSchema, SearchService} from "$lib/gen/search/v1/search_pb";
@@ -25,7 +25,7 @@
     let selectedGameType = $state("");
 
     let searchQuery = $state("");
-    let searchService = cli(SearchService)
+    let searchService = glacierCli(SearchService)
     let indexerSearchRpc = createRPCRunner(() => searchService.searchIndexers({
         q: {
             indexer: selectedIndexer,
@@ -55,11 +55,11 @@
         }
     }
 
-    let downloader = cli(DownloaderService)
+    let downloader = glacierCli(DownloaderService)
     let activeClientsRpc = createRPCRunner(() => downloader.getActiveClients({}))
 
     let selectedClient = $state("");
-    let libraryService = cli(LibraryService)
+    let libraryService = glacierCli(LibraryService)
     let libraryGameTypeRpc = createRPCRunner(() => indexerManagerService.getGameType({}))
 
     function onAddGame() {
@@ -80,7 +80,7 @@
         })
     }
 
-    let indexerManagerService = cli(IndexerService)
+    let indexerManagerService = glacierCli(IndexerService)
     let activeIndexerRpc = createRPCRunner(() => indexerManagerService.getActiveIndexers({}))
     $effect(() => {
         if (game) {

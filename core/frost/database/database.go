@@ -16,7 +16,7 @@ var migrationDir embed.FS
 
 const migrationPath = "generated/migrations"
 
-const dbName = "glacier.db"
+const dbName = "frost.db"
 
 func New(basepath string, devMode bool) *gorm.DB {
 	fullPath := filepath.Join(basepath, dbName)

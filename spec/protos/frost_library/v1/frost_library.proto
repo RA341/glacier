@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package frost_library.v1;
+
+option go_package = "github.com/ra341/glacier/generated/frost_library/v1";
+
+service FrostLibraryService {
+  rpc ListDownloading(ListDownloadingRequest) returns (ListDownloadingResponse) {}
+  rpc Download(DownloadRequest) returns (DownloadResponse) {}
+}
+
+message DownloadRequest {
+  int64 gameId = 1;
+  string downloadFolder = 2;
+}
+
+message DownloadResponse {}
+
+
+message ListDownloadingRequest {}
+
+message FileProgress {
+  string Name = 1;
+  uint64 Complete = 2;
+  uint64 Left = 3;
+}
+
+message FolderProgress {
+  repeated FileProgress files = 1;
+}
+
+message ListDownloadingResponse {
+  map<uint64, FolderProgress> downloads = 1;
+}

@@ -1,7 +1,7 @@
 <script lang="ts">
     import {createRPCRunner} from "$lib/api/svelte-api.svelte";
     import {type GameMetadata, SearchService} from "$lib/gen/search/v1/search_pb";
-    import {cli} from "$lib/api/api";
+    import {glacierCli} from "$lib/api/api";
     import {CircleAlert, HardDriveIcon, ImageIcon, LoaderIcon, PlusIcon, SearchIcon, SearchXIcon} from '@lucide/svelte';
 
     import MatchMetadataModal from "./MatchMetadataModal.svelte";
@@ -14,7 +14,7 @@
     const searchQueryParam = 'q';
     let query = $state(page.url.searchParams.get(searchQueryParam) || "");
 
-    let metaClients = cli(MetadataService)
+    let metaClients = glacierCli(MetadataService)
     let metadataRpc = createRPCRunner(() => metaClients.getMetadataProviders({}))
 
     async function loadProviders() {
@@ -49,7 +49,7 @@
         }
     });
 
-    const searchClient = cli(SearchService);
+    const searchClient = glacierCli(SearchService);
     const searchRpc = createRPCRunner(() => searchClient.searchMetadata({
         q: {
             query: query,

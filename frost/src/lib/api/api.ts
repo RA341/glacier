@@ -26,19 +26,41 @@ const getBase = () => {
 };
 
 export const HOST = getBase();
+console.log("HOST", HOST);
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// glacier client init
+const GLACIER_API = "/api/server"
+export const GLACIER_API_BASE = HOST === '/' ? GLACIER_API : `${HOST}${GLACIER_API}`;
+console.log(`API url: ${GLACIER_API_BASE} `);
 
-export const API_BASE_URL = `${HOST}/api/server`;
-
-console.log(`API url: ${API_BASE_URL} `);
-export const transport = createConnectTransport({
-	baseUrl: `${API_BASE_URL}`,
+export const glacierTransport = createConnectTransport({
+	baseUrl: GLACIER_API_BASE,
 	useBinaryFormat: true,
 	interceptors: []
 });
 
-export function cli<T extends DescService>(service: T): Client<T> {
-	return createClient(service, transport);
+export function glacierCli<T extends DescService>(service: T): Client<T> {
+	return createClient(service, glacierTransport);
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// frost client init
+
+const FROST_API = `/api/frost`;
+export const FROST_API_BASE = HOST === '/' ? FROST_API : `${HOST}${FROST_API}`;
+console.log(`API url: ${FROST_API_BASE} `);
+
+export const frostTransport = createConnectTransport({
+	baseUrl: FROST_API_BASE,
+	useBinaryFormat: true,
+	interceptors: []
+});
+
+export function frostCli<T extends DescService>(service: T): Client<T> {
+	return createClient(service, frostTransport);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export async function callRPC<T>(exec: () => Promise<T>): Promise<{ val: T | null; err: string }> {
 	try {
