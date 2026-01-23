@@ -2,7 +2,7 @@ version: '3'
 
 vars:
   CORE_DIR: core
-  UI_DIR: frost
+  UI_DIR: ui
   DOCKER_IMG: glacier
 
   # Directory for Go source commands
@@ -50,6 +50,12 @@ tasks:
       - 'web'
       - 'ios'
       - 'android'
+
+
+  go:download:
+    dir: "{{.CORE_DIR}}"
+    cmds:
+      - go mod download
 
   go:b:*:
     dir: "{{.CORE_DIR}}"

@@ -2,11 +2,11 @@ FROM node:25-alpine AS web_ui
 
 WORKDIR /web/
 
-COPY frost/package.* .
+COPY ui/package.* .
 
 RUN npm i
 
-COPY frost/ .
+COPY ui/ .
 
 RUN npm run build
 
