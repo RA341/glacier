@@ -10,12 +10,13 @@
     import {onMount} from "svelte";
     import {MetadataService} from "$lib/gen/metadata/v1/metadata_pb";
     import {transferStore} from "./selectedGame.svelte";
+    import {ServiceConfigService} from "$lib/gen/service_config/v1/service_config_pb";
 
     const searchQueryParam = 'q';
     let query = $state(page.url.searchParams.get(searchQueryParam) || "");
 
-    let metaClients = glacierCli(MetadataService)
-    let metadataRpc = createRPCRunner(() => metaClients.getMetadataProviders({}))
+    let srvConfig = glacierCli(ServiceConfigService)
+    let metadataRpc = createRPCRunner(() => srvConfig.getActiveService({serviceType: "Metadata"}))
 
     async function loadProviders() {
         await metadataRpc.runner()
@@ -43,8 +44,8 @@
     }
 
     $effect(() => {
-        if (metadataRpc.value?.providers && !selectedMetadataProvider) {
-            selectedMetadataProvider = metadataRpc.value.providers[0].Name;
+        if (metadataRpc.value?.names && !selectedMetadataProvider) {
+            selectedMetadataProvider = metadataRpc.value.names[0].Name;
             if (query) handleSearch();
         }
     });
@@ -84,8 +85,8 @@
                     >
                         {#if metadataRpc.loading}
                             <option disabled>Loading indexers...</option>
-                        {:else if metadataRpc.value?.providers}
-                            {#each metadataRpc.value.providers as indexer}
+                        {:else if metadataRpc.value?.names}
+                            {#each metadataRpc.value.names as indexer}
                                 <option value={indexer.Name}>{indexer.Name}</option>
                             {/each}
                         {/if}

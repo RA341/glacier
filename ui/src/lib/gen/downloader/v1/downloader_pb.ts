@@ -2,75 +2,19 @@
 // @generated from file downloader/v1/downloader.proto (package downloader.v1, syntax proto3)
 /* eslint-disable */
 
-import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
-import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
-import type { Message } from "@bufbuild/protobuf";
+import type { GenFile, GenService } from "@bufbuild/protobuf/codegenv2";
+import { fileDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
 
 /**
  * Describes the file downloader/v1/downloader.proto.
  */
 export const file_downloader_v1_downloader: GenFile = /*@__PURE__*/
-  fileDesc("Ch5kb3dubG9hZGVyL3YxL2Rvd25sb2FkZXIucHJvdG8SDWRvd25sb2FkZXIudjEiFgoGQ2xpZW50EgwKBG5hbWUYASABKAkiGQoXR2V0QWN0aXZlQ2xpZW50c1JlcXVlc3QiQgoYR2V0QWN0aXZlQ2xpZW50c1Jlc3BvbnNlEiYKB2NsaWVudHMYASADKAsyFS5kb3dubG9hZGVyLnYxLkNsaWVudDJ6ChFEb3dubG9hZGVyU2VydmljZRJlChBHZXRBY3RpdmVDbGllbnRzEiYuZG93bmxvYWRlci52MS5HZXRBY3RpdmVDbGllbnRzUmVxdWVzdBonLmRvd25sb2FkZXIudjEuR2V0QWN0aXZlQ2xpZW50c1Jlc3BvbnNlIgBCqwEKEWNvbS5kb3dubG9hZGVyLnYxQg9Eb3dubG9hZGVyUHJvdG9QAVowZ2l0aHViLmNvbS9yYTM0MS9nbGFjaWVyL2dlbmVyYXRlZC9kb3dubG9hZGVyL3YxogIDRFhYqgINRG93bmxvYWRlci5WMcoCDURvd25sb2FkZXJcVjHiAhlEb3dubG9hZGVyXFYxXEdQQk1ldGFkYXRh6gIORG93bmxvYWRlcjo6VjFiBnByb3RvMw");
-
-/**
- * @generated from message downloader.v1.Client
- */
-export type Client = Message<"downloader.v1.Client"> & {
-  /**
-   * @generated from field: string name = 1;
-   */
-  name: string;
-};
-
-/**
- * Describes the message downloader.v1.Client.
- * Use `create(ClientSchema)` to create a new message.
- */
-export const ClientSchema: GenMessage<Client> = /*@__PURE__*/
-  messageDesc(file_downloader_v1_downloader, 0);
-
-/**
- * @generated from message downloader.v1.GetActiveClientsRequest
- */
-export type GetActiveClientsRequest = Message<"downloader.v1.GetActiveClientsRequest"> & {
-};
-
-/**
- * Describes the message downloader.v1.GetActiveClientsRequest.
- * Use `create(GetActiveClientsRequestSchema)` to create a new message.
- */
-export const GetActiveClientsRequestSchema: GenMessage<GetActiveClientsRequest> = /*@__PURE__*/
-  messageDesc(file_downloader_v1_downloader, 1);
-
-/**
- * @generated from message downloader.v1.GetActiveClientsResponse
- */
-export type GetActiveClientsResponse = Message<"downloader.v1.GetActiveClientsResponse"> & {
-  /**
-   * @generated from field: repeated downloader.v1.Client clients = 1;
-   */
-  clients: Client[];
-};
-
-/**
- * Describes the message downloader.v1.GetActiveClientsResponse.
- * Use `create(GetActiveClientsResponseSchema)` to create a new message.
- */
-export const GetActiveClientsResponseSchema: GenMessage<GetActiveClientsResponse> = /*@__PURE__*/
-  messageDesc(file_downloader_v1_downloader, 2);
+  fileDesc("Ch5kb3dubG9hZGVyL3YxL2Rvd25sb2FkZXIucHJvdG8SDWRvd25sb2FkZXIudjEyEwoRRG93bmxvYWRlclNlcnZpY2VCqwEKEWNvbS5kb3dubG9hZGVyLnYxQg9Eb3dubG9hZGVyUHJvdG9QAVowZ2l0aHViLmNvbS9yYTM0MS9nbGFjaWVyL2dlbmVyYXRlZC9kb3dubG9hZGVyL3YxogIDRFhYqgINRG93bmxvYWRlci5WMcoCDURvd25sb2FkZXJcVjHiAhlEb3dubG9hZGVyXFYxXEdQQk1ldGFkYXRh6gIORG93bmxvYWRlcjo6VjFiBnByb3RvMw");
 
 /**
  * @generated from service downloader.v1.DownloaderService
  */
 export const DownloaderService: GenService<{
-  /**
-   * @generated from rpc downloader.v1.DownloaderService.GetActiveClients
-   */
-  getActiveClients: {
-    methodKind: "unary";
-    input: typeof GetActiveClientsRequestSchema;
-    output: typeof GetActiveClientsResponseSchema;
-  },
 }> = /*@__PURE__*/
   serviceDesc(file_downloader_v1_downloader, 0);
 

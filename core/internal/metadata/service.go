@@ -1,23 +1,24 @@
 package metadata
 
 import (
-	"github.com/ra341/glacier/internal/metadata/manager"
 	"github.com/ra341/glacier/internal/metadata/types"
 )
 
+type Get func(name string) (types.Provider, error)
+
 type Service struct {
 	// manager the providers config
-	pm *manager.Service
+	get Get
 }
 
-func New(man *manager.Service) *Service {
+func New(get Get) *Service {
 	return &Service{
-		pm: man,
+		get: get,
 	}
 }
 
-func (s *Service) Match(provider types.ProviderType, query string) ([]types.Meta, error) {
-	val, err := s.pm.Get(provider)
+func (s *Service) Match(provider string, query string) ([]types.Meta, error) {
+	val, err := s.get(provider)
 	if err != nil {
 		return nil, err
 	}

@@ -5,15 +5,13 @@ import (
 	"reflect"
 
 	"github.com/ra341/glacier/internal/config"
+	"github.com/ra341/glacier/internal/config/config_manager"
 	"github.com/ra341/glacier/internal/database"
 	"github.com/ra341/glacier/internal/downloader"
-	downloadManager "github.com/ra341/glacier/internal/downloader/manager"
 	"github.com/ra341/glacier/internal/indexer"
-	indexerManager "github.com/ra341/glacier/internal/indexer/manager"
 	"github.com/ra341/glacier/internal/info"
 	"github.com/ra341/glacier/internal/library"
 	"github.com/ra341/glacier/internal/metadata"
-	metadataManager "github.com/ra341/glacier/internal/metadata/manager"
 	"github.com/ra341/glacier/internal/search"
 	"github.com/ra341/glacier/pkg/logger"
 
@@ -27,15 +25,11 @@ func InitMeta(flavour info.FlavourType) {
 }
 
 type App struct {
-	Conf *config.Service
-
-	Library *library.Service
-
-	DownloadSrv           *downloader.Service
-	DownloadClientManager *downloadManager.Service
-	IndexerManager        *indexerManager.Service
-	Search                *search.Service
-	MetadataManager       *metadataManager.Service
+	Conf          *config.Service
+	Library       *library.Service
+	DownloadSrv   *downloader.Service
+	Search        *search.Service
+	ConfigManager *config_manager.Service
 }
 
 func NewApp() *App {
@@ -51,9 +45,11 @@ func NewApp() *App {
 
 	libDb := library.NewStoreGorm(db)
 
-	clientMan := downloadManager.New(conf)
+	confDb := config_manager.NewStore(db)
+	configManager := config_manager.New(confDb)
+
 	downSrv := downloader.New(
-		clientMan.Get,
+		configManager.Downloader.LoadService,
 		libDb,
 		func() *downloader.Config {
 			return &conf.Get().Download
@@ -68,22 +64,17 @@ func NewApp() *App {
 		},
 	)
 
-	metaMan := metadataManager.New(conf)
-	metaSrv := metadata.New(metaMan)
-
-	indexerMan := indexerManager.New(conf)
-	indexerSrv := indexer.New(indexerMan)
+	metaSrv := metadata.New(configManager.Meta.LoadService)
+	indexerSrv := indexer.New(configManager.Indexer.LoadService)
 
 	searchSrv := search.New(metaSrv, indexerSrv)
 
 	a := &App{
-		Conf:                  conf,
-		Library:               libSrv,
-		IndexerManager:        indexerMan,
-		DownloadSrv:           downSrv,
-		DownloadClientManager: clientMan,
-		MetadataManager:       metaMan,
-		Search:                searchSrv,
+		Conf:          conf,
+		Library:       libSrv,
+		DownloadSrv:   downSrv,
+		Search:        searchSrv,
+		ConfigManager: configManager,
 	}
 
 	err := a.VerifyServices()

@@ -21,130 +21,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type Indexer struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          string                 `protobuf:"bytes,1,opt,name=Name,proto3" json:"Name,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *Indexer) Reset() {
-	*x = Indexer{}
-	mi := &file_indexer_v1_indexer_proto_msgTypes[0]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *Indexer) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Indexer) ProtoMessage() {}
-
-func (x *Indexer) ProtoReflect() protoreflect.Message {
-	mi := &file_indexer_v1_indexer_proto_msgTypes[0]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Indexer.ProtoReflect.Descriptor instead.
-func (*Indexer) Descriptor() ([]byte, []int) {
-	return file_indexer_v1_indexer_proto_rawDescGZIP(), []int{0}
-}
-
-func (x *Indexer) GetName() string {
-	if x != nil {
-		return x.Name
-	}
-	return ""
-}
-
-type GetActiveIndexersRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *GetActiveIndexersRequest) Reset() {
-	*x = GetActiveIndexersRequest{}
-	mi := &file_indexer_v1_indexer_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GetActiveIndexersRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetActiveIndexersRequest) ProtoMessage() {}
-
-func (x *GetActiveIndexersRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_indexer_v1_indexer_proto_msgTypes[1]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetActiveIndexersRequest.ProtoReflect.Descriptor instead.
-func (*GetActiveIndexersRequest) Descriptor() ([]byte, []int) {
-	return file_indexer_v1_indexer_proto_rawDescGZIP(), []int{1}
-}
-
-type GetActiveIndexersResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Indexers      []*Indexer             `protobuf:"bytes,1,rep,name=indexers,proto3" json:"indexers,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *GetActiveIndexersResponse) Reset() {
-	*x = GetActiveIndexersResponse{}
-	mi := &file_indexer_v1_indexer_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GetActiveIndexersResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetActiveIndexersResponse) ProtoMessage() {}
-
-func (x *GetActiveIndexersResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_indexer_v1_indexer_proto_msgTypes[2]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetActiveIndexersResponse.ProtoReflect.Descriptor instead.
-func (*GetActiveIndexersResponse) Descriptor() ([]byte, []int) {
-	return file_indexer_v1_indexer_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *GetActiveIndexersResponse) GetIndexers() []*Indexer {
-	if x != nil {
-		return x.Indexers
-	}
-	return nil
-}
-
 type GetGameTypeRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
@@ -153,7 +29,7 @@ type GetGameTypeRequest struct {
 
 func (x *GetGameTypeRequest) Reset() {
 	*x = GetGameTypeRequest{}
-	mi := &file_indexer_v1_indexer_proto_msgTypes[3]
+	mi := &file_indexer_v1_indexer_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -165,7 +41,7 @@ func (x *GetGameTypeRequest) String() string {
 func (*GetGameTypeRequest) ProtoMessage() {}
 
 func (x *GetGameTypeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_indexer_v1_indexer_proto_msgTypes[3]
+	mi := &file_indexer_v1_indexer_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -178,7 +54,7 @@ func (x *GetGameTypeRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetGameTypeRequest.ProtoReflect.Descriptor instead.
 func (*GetGameTypeRequest) Descriptor() ([]byte, []int) {
-	return file_indexer_v1_indexer_proto_rawDescGZIP(), []int{3}
+	return file_indexer_v1_indexer_proto_rawDescGZIP(), []int{0}
 }
 
 type GetGameTypeResponse struct {
@@ -190,7 +66,7 @@ type GetGameTypeResponse struct {
 
 func (x *GetGameTypeResponse) Reset() {
 	*x = GetGameTypeResponse{}
-	mi := &file_indexer_v1_indexer_proto_msgTypes[4]
+	mi := &file_indexer_v1_indexer_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -202,7 +78,7 @@ func (x *GetGameTypeResponse) String() string {
 func (*GetGameTypeResponse) ProtoMessage() {}
 
 func (x *GetGameTypeResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_indexer_v1_indexer_proto_msgTypes[4]
+	mi := &file_indexer_v1_indexer_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -215,7 +91,7 @@ func (x *GetGameTypeResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetGameTypeResponse.ProtoReflect.Descriptor instead.
 func (*GetGameTypeResponse) Descriptor() ([]byte, []int) {
-	return file_indexer_v1_indexer_proto_rawDescGZIP(), []int{4}
+	return file_indexer_v1_indexer_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *GetGameTypeResponse) GetGameTypes() []*GameType {
@@ -234,7 +110,7 @@ type GameType struct {
 
 func (x *GameType) Reset() {
 	*x = GameType{}
-	mi := &file_indexer_v1_indexer_proto_msgTypes[5]
+	mi := &file_indexer_v1_indexer_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -246,7 +122,7 @@ func (x *GameType) String() string {
 func (*GameType) ProtoMessage() {}
 
 func (x *GameType) ProtoReflect() protoreflect.Message {
-	mi := &file_indexer_v1_indexer_proto_msgTypes[5]
+	mi := &file_indexer_v1_indexer_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -259,7 +135,7 @@ func (x *GameType) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GameType.ProtoReflect.Descriptor instead.
 func (*GameType) Descriptor() ([]byte, []int) {
-	return file_indexer_v1_indexer_proto_rawDescGZIP(), []int{5}
+	return file_indexer_v1_indexer_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *GameType) GetName() string {
@@ -274,19 +150,13 @@ var File_indexer_v1_indexer_proto protoreflect.FileDescriptor
 const file_indexer_v1_indexer_proto_rawDesc = "" +
 	"\n" +
 	"\x18indexer/v1/indexer.proto\x12\n" +
-	"indexer.v1\"\x1d\n" +
-	"\aIndexer\x12\x12\n" +
-	"\x04Name\x18\x01 \x01(\tR\x04Name\"\x1a\n" +
-	"\x18GetActiveIndexersRequest\"L\n" +
-	"\x19GetActiveIndexersResponse\x12/\n" +
-	"\bindexers\x18\x01 \x03(\v2\x13.indexer.v1.IndexerR\bindexers\"\x14\n" +
+	"indexer.v1\"\x14\n" +
 	"\x12GetGameTypeRequest\"I\n" +
 	"\x13GetGameTypeResponse\x122\n" +
 	"\tgameTypes\x18\x01 \x03(\v2\x14.indexer.v1.GameTypeR\tgameTypes\"\x1e\n" +
 	"\bGameType\x12\x12\n" +
-	"\x04Name\x18\x01 \x01(\tR\x04Name2\xc6\x01\n" +
-	"\x0eIndexerService\x12b\n" +
-	"\x11GetActiveIndexers\x12$.indexer.v1.GetActiveIndexersRequest\x1a%.indexer.v1.GetActiveIndexersResponse\"\x00\x12P\n" +
+	"\x04Name\x18\x01 \x01(\tR\x04Name2b\n" +
+	"\x0eIndexerService\x12P\n" +
 	"\vGetGameType\x12\x1e.indexer.v1.GetGameTypeRequest\x1a\x1f.indexer.v1.GetGameTypeResponse\"\x00B\x96\x01\n" +
 	"\x0ecom.indexer.v1B\fIndexerProtoP\x01Z-github.com/ra341/glacier/generated/indexer/v1\xa2\x02\x03IXX\xaa\x02\n" +
 	"Indexer.V1\xca\x02\n" +
@@ -304,27 +174,21 @@ func file_indexer_v1_indexer_proto_rawDescGZIP() []byte {
 	return file_indexer_v1_indexer_proto_rawDescData
 }
 
-var file_indexer_v1_indexer_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_indexer_v1_indexer_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_indexer_v1_indexer_proto_goTypes = []any{
-	(*Indexer)(nil),                   // 0: indexer.v1.Indexer
-	(*GetActiveIndexersRequest)(nil),  // 1: indexer.v1.GetActiveIndexersRequest
-	(*GetActiveIndexersResponse)(nil), // 2: indexer.v1.GetActiveIndexersResponse
-	(*GetGameTypeRequest)(nil),        // 3: indexer.v1.GetGameTypeRequest
-	(*GetGameTypeResponse)(nil),       // 4: indexer.v1.GetGameTypeResponse
-	(*GameType)(nil),                  // 5: indexer.v1.GameType
+	(*GetGameTypeRequest)(nil),  // 0: indexer.v1.GetGameTypeRequest
+	(*GetGameTypeResponse)(nil), // 1: indexer.v1.GetGameTypeResponse
+	(*GameType)(nil),            // 2: indexer.v1.GameType
 }
 var file_indexer_v1_indexer_proto_depIdxs = []int32{
-	0, // 0: indexer.v1.GetActiveIndexersResponse.indexers:type_name -> indexer.v1.Indexer
-	5, // 1: indexer.v1.GetGameTypeResponse.gameTypes:type_name -> indexer.v1.GameType
-	1, // 2: indexer.v1.IndexerService.GetActiveIndexers:input_type -> indexer.v1.GetActiveIndexersRequest
-	3, // 3: indexer.v1.IndexerService.GetGameType:input_type -> indexer.v1.GetGameTypeRequest
-	2, // 4: indexer.v1.IndexerService.GetActiveIndexers:output_type -> indexer.v1.GetActiveIndexersResponse
-	4, // 5: indexer.v1.IndexerService.GetGameType:output_type -> indexer.v1.GetGameTypeResponse
-	4, // [4:6] is the sub-list for method output_type
-	2, // [2:4] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	2, // 0: indexer.v1.GetGameTypeResponse.gameTypes:type_name -> indexer.v1.GameType
+	0, // 1: indexer.v1.IndexerService.GetGameType:input_type -> indexer.v1.GetGameTypeRequest
+	1, // 2: indexer.v1.IndexerService.GetGameType:output_type -> indexer.v1.GetGameTypeResponse
+	2, // [2:3] is the sub-list for method output_type
+	1, // [1:2] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_indexer_v1_indexer_proto_init() }
@@ -338,7 +202,7 @@ func file_indexer_v1_indexer_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_indexer_v1_indexer_proto_rawDesc), len(file_indexer_v1_indexer_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

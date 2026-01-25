@@ -6,11 +6,8 @@ package v1connect
 
 import (
 	connect "connectrpc.com/connect"
-	context "context"
-	errors "errors"
-	v1 "github.com/ra341/glacier/generated/downloader/v1"
+	_ "github.com/ra341/glacier/generated/downloader/v1"
 	http "net/http"
-	strings "strings"
 )
 
 // This is a compile-time assertion to ensure that this generated file and the connect package are
@@ -25,22 +22,8 @@ const (
 	DownloaderServiceName = "downloader.v1.DownloaderService"
 )
 
-// These constants are the fully-qualified names of the RPCs defined in this package. They're
-// exposed at runtime as Spec.Procedure and as the final two segments of the HTTP route.
-//
-// Note that these are different from the fully-qualified method names used by
-// google.golang.org/protobuf/reflect/protoreflect. To convert from these constants to
-// reflection-formatted method names, remove the leading slash and convert the remaining slash to a
-// period.
-const (
-	// DownloaderServiceGetActiveClientsProcedure is the fully-qualified name of the DownloaderService's
-	// GetActiveClients RPC.
-	DownloaderServiceGetActiveClientsProcedure = "/downloader.v1.DownloaderService/GetActiveClients"
-)
-
 // DownloaderServiceClient is a client for the downloader.v1.DownloaderService service.
 type DownloaderServiceClient interface {
-	GetActiveClients(context.Context, *connect.Request[v1.GetActiveClientsRequest]) (*connect.Response[v1.GetActiveClientsResponse], error)
 }
 
 // NewDownloaderServiceClient constructs a client for the downloader.v1.DownloaderService service.
@@ -51,31 +34,15 @@ type DownloaderServiceClient interface {
 // The URL supplied here should be the base URL for the Connect or gRPC server (for example,
 // http://api.acme.com or https://acme.com/grpc).
 func NewDownloaderServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) DownloaderServiceClient {
-	baseURL = strings.TrimRight(baseURL, "/")
-	downloaderServiceMethods := v1.File_downloader_v1_downloader_proto.Services().ByName("DownloaderService").Methods()
-	return &downloaderServiceClient{
-		getActiveClients: connect.NewClient[v1.GetActiveClientsRequest, v1.GetActiveClientsResponse](
-			httpClient,
-			baseURL+DownloaderServiceGetActiveClientsProcedure,
-			connect.WithSchema(downloaderServiceMethods.ByName("GetActiveClients")),
-			connect.WithClientOptions(opts...),
-		),
-	}
+	return &downloaderServiceClient{}
 }
 
 // downloaderServiceClient implements DownloaderServiceClient.
 type downloaderServiceClient struct {
-	getActiveClients *connect.Client[v1.GetActiveClientsRequest, v1.GetActiveClientsResponse]
-}
-
-// GetActiveClients calls downloader.v1.DownloaderService.GetActiveClients.
-func (c *downloaderServiceClient) GetActiveClients(ctx context.Context, req *connect.Request[v1.GetActiveClientsRequest]) (*connect.Response[v1.GetActiveClientsResponse], error) {
-	return c.getActiveClients.CallUnary(ctx, req)
 }
 
 // DownloaderServiceHandler is an implementation of the downloader.v1.DownloaderService service.
 type DownloaderServiceHandler interface {
-	GetActiveClients(context.Context, *connect.Request[v1.GetActiveClientsRequest]) (*connect.Response[v1.GetActiveClientsResponse], error)
 }
 
 // NewDownloaderServiceHandler builds an HTTP handler from the service implementation. It returns
@@ -84,17 +51,8 @@ type DownloaderServiceHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewDownloaderServiceHandler(svc DownloaderServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
-	downloaderServiceMethods := v1.File_downloader_v1_downloader_proto.Services().ByName("DownloaderService").Methods()
-	downloaderServiceGetActiveClientsHandler := connect.NewUnaryHandler(
-		DownloaderServiceGetActiveClientsProcedure,
-		svc.GetActiveClients,
-		connect.WithSchema(downloaderServiceMethods.ByName("GetActiveClients")),
-		connect.WithHandlerOptions(opts...),
-	)
 	return "/downloader.v1.DownloaderService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
-		case DownloaderServiceGetActiveClientsProcedure:
-			downloaderServiceGetActiveClientsHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -103,7 +61,3 @@ func NewDownloaderServiceHandler(svc DownloaderServiceHandler, opts ...connect.H
 
 // UnimplementedDownloaderServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedDownloaderServiceHandler struct{}
-
-func (UnimplementedDownloaderServiceHandler) GetActiveClients(context.Context, *connect.Request[v1.GetActiveClientsRequest]) (*connect.Response[v1.GetActiveClientsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("downloader.v1.DownloaderService.GetActiveClients is not implemented"))
-}

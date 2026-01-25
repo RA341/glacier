@@ -4,9 +4,6 @@ import (
 	"fmt"
 	"sync/atomic"
 
-	downloaderTypes "github.com/ra341/glacier/internal/downloader/types"
-	"github.com/ra341/glacier/internal/indexer/types"
-	metadataTypes "github.com/ra341/glacier/internal/metadata/types"
 	"github.com/ra341/glacier/pkg/argos"
 	"github.com/rs/zerolog/log"
 )
@@ -118,57 +115,4 @@ func (s *Service) storeAndLoad(loadCopy *Config) error {
 
 func (s *Service) loadCopy() Config {
 	return *s.conf.Load()
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// downloader
-
-func (s *Service) LoadDownloader(cli downloaderTypes.ClientType) (downloaderTypes.ClientConfig, error) {
-	return s.conf.Load().Download.GetClient(cli)
-}
-
-func (s *Service) SetDownloader(cli downloaderTypes.ClientType, conf downloaderTypes.ClientConfig) error {
-	loadCopy := s.loadCopy()
-	loadCopy.Download.SetClient(cli, conf)
-	return s.storeAndLoad(&loadCopy)
-}
-
-func (s *Service) LoadAllClients() map[string]downloaderTypes.ClientConfig {
-	return s.conf.Load().Download.Clients
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// providers
-
-func (s *Service) LoadMetaProvider(cli metadataTypes.ProviderType) (metadataTypes.ProviderConfig, error) {
-	return s.conf.Load().Metadata.GetCli(cli)
-}
-
-func (s *Service) SetMetaProvider(cli metadataTypes.ProviderType, conf metadataTypes.ProviderConfig) error {
-	loadCopy := s.loadCopy()
-	loadCopy.Metadata.SetCli(cli, conf)
-
-	return s.storeAndLoad(&loadCopy)
-}
-
-func (s *Service) LoadAllProviders() map[string]metadataTypes.ProviderConfig {
-	return s.conf.Load().Metadata.Providers
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// indexer
-
-func (s *Service) LoadIndexer(cli types.IndexerType) (types.IndexerConfig, error) {
-	return s.conf.Load().Indexer.GetCli(cli)
-}
-
-func (s *Service) SetIndexer(cli types.IndexerType, conf types.IndexerConfig) error {
-	loadCopy := s.loadCopy()
-	loadCopy.Indexer.SetCli(cli, conf)
-
-	return s.storeAndLoad(&loadCopy)
-}
-
-func (s *Service) LoadAllIndexers() map[string]types.IndexerConfig {
-	return s.conf.Load().Indexer.Indexers
 }

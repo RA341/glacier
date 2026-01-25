@@ -2,75 +2,19 @@
 // @generated from file metadata/v1/metadata.proto (package metadata.v1, syntax proto3)
 /* eslint-disable */
 
-import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
-import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
-import type { Message } from "@bufbuild/protobuf";
+import type { GenFile, GenService } from "@bufbuild/protobuf/codegenv2";
+import { fileDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
 
 /**
  * Describes the file metadata/v1/metadata.proto.
  */
 export const file_metadata_v1_metadata: GenFile = /*@__PURE__*/
-  fileDesc("ChptZXRhZGF0YS92MS9tZXRhZGF0YS5wcm90bxILbWV0YWRhdGEudjEiGAoIUHJvdmlkZXISDAoETmFtZRgBIAEoCSIZChdNZXRhZGF0YVByb3ZpZGVyUmVxdWVzdCJEChhNZXRhZGF0YVByb3ZpZGVyUmVzcG9uc2USKAoJcHJvdmlkZXJzGAEgAygLMhUubWV0YWRhdGEudjEuUHJvdmlkZXIyeAoPTWV0YWRhdGFTZXJ2aWNlEmUKFEdldE1ldGFkYXRhUHJvdmlkZXJzEiQubWV0YWRhdGEudjEuTWV0YWRhdGFQcm92aWRlclJlcXVlc3QaJS5tZXRhZGF0YS52MS5NZXRhZGF0YVByb3ZpZGVyUmVzcG9uc2UiAEKdAQoPY29tLm1ldGFkYXRhLnYxQg1NZXRhZGF0YVByb3RvUAFaLmdpdGh1Yi5jb20vcmEzNDEvZ2xhY2llci9nZW5lcmF0ZWQvbWV0YWRhdGEvdjGiAgNNWFiqAgtNZXRhZGF0YS5WMcoCC01ldGFkYXRhXFYx4gIXTWV0YWRhdGFcVjFcR1BCTWV0YWRhdGHqAgxNZXRhZGF0YTo6VjFiBnByb3RvMw");
-
-/**
- * @generated from message metadata.v1.Provider
- */
-export type Provider = Message<"metadata.v1.Provider"> & {
-  /**
-   * @generated from field: string Name = 1;
-   */
-  Name: string;
-};
-
-/**
- * Describes the message metadata.v1.Provider.
- * Use `create(ProviderSchema)` to create a new message.
- */
-export const ProviderSchema: GenMessage<Provider> = /*@__PURE__*/
-  messageDesc(file_metadata_v1_metadata, 0);
-
-/**
- * @generated from message metadata.v1.MetadataProviderRequest
- */
-export type MetadataProviderRequest = Message<"metadata.v1.MetadataProviderRequest"> & {
-};
-
-/**
- * Describes the message metadata.v1.MetadataProviderRequest.
- * Use `create(MetadataProviderRequestSchema)` to create a new message.
- */
-export const MetadataProviderRequestSchema: GenMessage<MetadataProviderRequest> = /*@__PURE__*/
-  messageDesc(file_metadata_v1_metadata, 1);
-
-/**
- * @generated from message metadata.v1.MetadataProviderResponse
- */
-export type MetadataProviderResponse = Message<"metadata.v1.MetadataProviderResponse"> & {
-  /**
-   * @generated from field: repeated metadata.v1.Provider providers = 1;
-   */
-  providers: Provider[];
-};
-
-/**
- * Describes the message metadata.v1.MetadataProviderResponse.
- * Use `create(MetadataProviderResponseSchema)` to create a new message.
- */
-export const MetadataProviderResponseSchema: GenMessage<MetadataProviderResponse> = /*@__PURE__*/
-  messageDesc(file_metadata_v1_metadata, 2);
+  fileDesc("ChptZXRhZGF0YS92MS9tZXRhZGF0YS5wcm90bxILbWV0YWRhdGEudjEyEQoPTWV0YWRhdGFTZXJ2aWNlQp0BCg9jb20ubWV0YWRhdGEudjFCDU1ldGFkYXRhUHJvdG9QAVouZ2l0aHViLmNvbS9yYTM0MS9nbGFjaWVyL2dlbmVyYXRlZC9tZXRhZGF0YS92MaICA01YWKoCC01ldGFkYXRhLlYxygILTWV0YWRhdGFcVjHiAhdNZXRhZGF0YVxWMVxHUEJNZXRhZGF0YeoCDE1ldGFkYXRhOjpWMWIGcHJvdG8z");
 
 /**
  * @generated from service metadata.v1.MetadataService
  */
 export const MetadataService: GenService<{
-  /**
-   * @generated from rpc metadata.v1.MetadataService.GetMetadataProviders
-   */
-  getMetadataProviders: {
-    methodKind: "unary";
-    input: typeof MetadataProviderRequestSchema;
-    output: typeof MetadataProviderResponseSchema;
-  },
 }> = /*@__PURE__*/
   serviceDesc(file_metadata_v1_metadata, 0);
 

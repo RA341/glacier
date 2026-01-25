@@ -18,10 +18,8 @@ type App struct {
 func New() *App {
 	conf := config.New()
 
-	base := "http://localhost:6699"
-	configBase := "./config"
-
-	abs, err := filepath.Abs(configBase)
+	get := conf.Get()
+	abs, err := filepath.Abs(get.Files.ConfigDir)
 	if err != nil {
 		log.Fatal().Err(err).Msg("could not get config path")
 	}
@@ -30,9 +28,9 @@ func New() *App {
 		log.Fatal().Err(err).Msg("could create config path")
 	}
 
-	db := database.New(configBase, false)
+	db := database.New(get.Files.ConfigDir, false)
 	llStore := ll.NewStoreGorm(db)
-	llibSrv := ll.New(base, llStore)
+	llibSrv := ll.New(get.Server.GlacierUrl, llStore)
 
 	return &App{
 		Conf:            conf,

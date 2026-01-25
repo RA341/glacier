@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/ra341/glacier/internal/app"
-	"github.com/ra341/glacier/internal/app/server"
 	"github.com/ra341/glacier/internal/config"
 	"github.com/ra341/glacier/internal/info"
 )
@@ -32,5 +31,12 @@ func main() {
 		}
 	}
 
-	server.NewServer("./web")
+	//file, err := app.LoadUIFromDir("./web")
+	//if err != nil {
+	//	log.Fatalf("could not load UI from file:%s\nerr:%v", file, err)
+	//	return
+	//}
+	//app.NewServer(app.WithUIFS(file))
+
+	app.NewServer()
 }

@@ -10,6 +10,18 @@ func ToMap[T any, Q any](input []T, mapper func(T) Q) []Q {
 	return result
 }
 
+func ToMapErr[T any, Q any](input []T, mapper func(T) (Q, error)) ([]Q, error) {
+	var result = make([]Q, 0, len(input))
+	for _, t := range input {
+		q, err := mapper(t)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, q)
+	}
+	return result, nil
+}
+
 func ParallelLoop[T any, R any](input []R, mapper func(R) (T, bool)) []T {
 	contChan := make(chan T, len(input))
 

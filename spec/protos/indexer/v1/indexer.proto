@@ -5,19 +5,7 @@ package indexer.v1;
 option go_package = "github.com/ra341/glacier/generated/indexer/v1";
 
 service IndexerService {
-  rpc GetActiveIndexers(GetActiveIndexersRequest) returns (GetActiveIndexersResponse) {}
   rpc GetGameType(GetGameTypeRequest) returns (GetGameTypeResponse) {}
-
-}
-
-message Indexer {
-  string Name = 1;
-}
-
-message GetActiveIndexersRequest {}
-
-message GetActiveIndexersResponse {
-  repeated Indexer indexers = 1;
 }
 
 message GetGameTypeRequest {}

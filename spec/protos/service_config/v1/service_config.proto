@@ -1,0 +1,99 @@
+syntax = "proto3";
+
+package service_config.v1;
+
+option go_package = "github.com/ra341/glacier/generated/service_config/v1";
+
+service ServiceConfigService {
+  rpc GetSupportedValues(GetSupportedValuesRequest) returns (GetSupportedValuesResponse) {}
+  rpc GetSchema(GetSchemaRequest) returns (GetSchemaResponse) {}
+  rpc GetActiveService(GetActiveServiceRequest) returns (GetActiveServiceResponse) {}
+
+  rpc New(NewConfigRequest) returns (NewConfigResponse) {}
+  rpc Delete(DeleteRequest) returns (DeleteResponse) {}
+  rpc Edit(EditRequest) returns (EditResponse) {}
+  rpc Get(GetRequest) returns (GetResponse) {}
+
+  rpc List(ListRequest) returns (ListResponse) {}
+  rpc ListEnabled(ListRequest) returns (ListResponse) {}
+
+}
+
+message GetActiveServiceRequest {
+  string serviceType = 1;
+}
+
+message GetActiveServiceResponse {
+  repeated ServiceConfig names = 1;
+}
+
+message GetRequest {
+  int64 id = 1;
+}
+
+message GetResponse {
+  ServiceConfig conf = 1;
+}
+
+message ListRequest {
+  string serviceType = 1;
+}
+
+message ListResponse {
+  repeated ServiceConfig conf = 1;
+}
+
+
+message EditRequest {
+  ServiceConfig conf = 1;
+}
+
+message EditResponse {}
+
+message DeleteRequest {
+  uint64 id = 1;
+}
+
+message DeleteResponse {}
+
+message ServiceConfig {
+  uint64 ID = 1;
+  string ServiceType = 2;
+  string Name = 3;
+  bool Enabled = 4;
+  string Flavour = 5;
+  bytes Config = 6;
+}
+
+message NewConfigRequest {
+  ServiceConfig conf = 1;
+}
+
+message NewConfigResponse {}
+
+
+message GetSchemaRequest {
+  string ServiceType = 1;
+  string Flavour = 2;
+}
+
+message GetSchemaResponse {
+  repeated FieldSchema fields = 1;
+}
+
+message FieldSchema {
+  string Name = 1;
+  string Type = 2;
+  string InsertKey = 3;
+  string KeyType = 5;
+  string ValueType = 4;
+}
+
+message GetSupportedValuesRequest {
+  string ServiceType = 1;
+}
+
+message GetSupportedValuesResponse {
+  repeated string values = 1;
+}
+  

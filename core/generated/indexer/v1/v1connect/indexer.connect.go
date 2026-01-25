@@ -33,9 +33,6 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
-	// IndexerServiceGetActiveIndexersProcedure is the fully-qualified name of the IndexerService's
-	// GetActiveIndexers RPC.
-	IndexerServiceGetActiveIndexersProcedure = "/indexer.v1.IndexerService/GetActiveIndexers"
 	// IndexerServiceGetGameTypeProcedure is the fully-qualified name of the IndexerService's
 	// GetGameType RPC.
 	IndexerServiceGetGameTypeProcedure = "/indexer.v1.IndexerService/GetGameType"
@@ -43,7 +40,6 @@ const (
 
 // IndexerServiceClient is a client for the indexer.v1.IndexerService service.
 type IndexerServiceClient interface {
-	GetActiveIndexers(context.Context, *connect.Request[v1.GetActiveIndexersRequest]) (*connect.Response[v1.GetActiveIndexersResponse], error)
 	GetGameType(context.Context, *connect.Request[v1.GetGameTypeRequest]) (*connect.Response[v1.GetGameTypeResponse], error)
 }
 
@@ -58,12 +54,6 @@ func NewIndexerServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 	baseURL = strings.TrimRight(baseURL, "/")
 	indexerServiceMethods := v1.File_indexer_v1_indexer_proto.Services().ByName("IndexerService").Methods()
 	return &indexerServiceClient{
-		getActiveIndexers: connect.NewClient[v1.GetActiveIndexersRequest, v1.GetActiveIndexersResponse](
-			httpClient,
-			baseURL+IndexerServiceGetActiveIndexersProcedure,
-			connect.WithSchema(indexerServiceMethods.ByName("GetActiveIndexers")),
-			connect.WithClientOptions(opts...),
-		),
 		getGameType: connect.NewClient[v1.GetGameTypeRequest, v1.GetGameTypeResponse](
 			httpClient,
 			baseURL+IndexerServiceGetGameTypeProcedure,
@@ -75,13 +65,7 @@ func NewIndexerServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 
 // indexerServiceClient implements IndexerServiceClient.
 type indexerServiceClient struct {
-	getActiveIndexers *connect.Client[v1.GetActiveIndexersRequest, v1.GetActiveIndexersResponse]
-	getGameType       *connect.Client[v1.GetGameTypeRequest, v1.GetGameTypeResponse]
-}
-
-// GetActiveIndexers calls indexer.v1.IndexerService.GetActiveIndexers.
-func (c *indexerServiceClient) GetActiveIndexers(ctx context.Context, req *connect.Request[v1.GetActiveIndexersRequest]) (*connect.Response[v1.GetActiveIndexersResponse], error) {
-	return c.getActiveIndexers.CallUnary(ctx, req)
+	getGameType *connect.Client[v1.GetGameTypeRequest, v1.GetGameTypeResponse]
 }
 
 // GetGameType calls indexer.v1.IndexerService.GetGameType.
@@ -91,7 +75,6 @@ func (c *indexerServiceClient) GetGameType(ctx context.Context, req *connect.Req
 
 // IndexerServiceHandler is an implementation of the indexer.v1.IndexerService service.
 type IndexerServiceHandler interface {
-	GetActiveIndexers(context.Context, *connect.Request[v1.GetActiveIndexersRequest]) (*connect.Response[v1.GetActiveIndexersResponse], error)
 	GetGameType(context.Context, *connect.Request[v1.GetGameTypeRequest]) (*connect.Response[v1.GetGameTypeResponse], error)
 }
 
@@ -102,12 +85,6 @@ type IndexerServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewIndexerServiceHandler(svc IndexerServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	indexerServiceMethods := v1.File_indexer_v1_indexer_proto.Services().ByName("IndexerService").Methods()
-	indexerServiceGetActiveIndexersHandler := connect.NewUnaryHandler(
-		IndexerServiceGetActiveIndexersProcedure,
-		svc.GetActiveIndexers,
-		connect.WithSchema(indexerServiceMethods.ByName("GetActiveIndexers")),
-		connect.WithHandlerOptions(opts...),
-	)
 	indexerServiceGetGameTypeHandler := connect.NewUnaryHandler(
 		IndexerServiceGetGameTypeProcedure,
 		svc.GetGameType,
@@ -116,8 +93,6 @@ func NewIndexerServiceHandler(svc IndexerServiceHandler, opts ...connect.Handler
 	)
 	return "/indexer.v1.IndexerService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
-		case IndexerServiceGetActiveIndexersProcedure:
-			indexerServiceGetActiveIndexersHandler.ServeHTTP(w, r)
 		case IndexerServiceGetGameTypeProcedure:
 			indexerServiceGetGameTypeHandler.ServeHTTP(w, r)
 		default:
@@ -128,10 +103,6 @@ func NewIndexerServiceHandler(svc IndexerServiceHandler, opts ...connect.Handler
 
 // UnimplementedIndexerServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedIndexerServiceHandler struct{}
-
-func (UnimplementedIndexerServiceHandler) GetActiveIndexers(context.Context, *connect.Request[v1.GetActiveIndexersRequest]) (*connect.Response[v1.GetActiveIndexersResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("indexer.v1.IndexerService.GetActiveIndexers is not implemented"))
-}
 
 func (UnimplementedIndexerServiceHandler) GetGameType(context.Context, *connect.Request[v1.GetGameTypeRequest]) (*connect.Response[v1.GetGameTypeResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("indexer.v1.IndexerService.GetGameType is not implemented"))

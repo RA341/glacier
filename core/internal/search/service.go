@@ -19,27 +19,18 @@ func New(metaSrv *metadata.Service, indexer *indexer.Service) *Service {
 	}
 }
 
-func (s *Service) GetMetadataResults(providerStr string, query string) ([]metaTypes.Meta, error) {
+func (s *Service) GetMetadataResults(name string, query string) ([]metaTypes.Meta, error) {
 	if query == "" {
 		return nil, nil
 	}
 
-	prov, err := metaTypes.ProviderTypeString(providerStr)
-	if err != nil {
-		return nil, err
-	}
-
-	return s.metaSrv.Match(prov, query)
+	return s.metaSrv.Match(name, query)
 }
 
-func (s *Service) GetIndexerResults(indexerStr string, query string) ([]indexerTypes.Source, error) {
+func (s *Service) GetIndexerResults(name string, query string) ([]indexerTypes.Source, error) {
 	if query == "" {
 		return []indexerTypes.Source{}, nil
 	}
-	ind, err := indexerTypes.IndexerTypeString(indexerStr)
-	if err != nil {
-		return nil, err
-	}
 
-	return s.indexer.Search(ind, query)
+	return s.indexer.Search(name, query)
 }

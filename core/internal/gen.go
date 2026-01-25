@@ -1,3 +1,3 @@
 package internal
 
-//go:generate atlas migrate diff init --env gorm
+//go:generate atlas migrate diff mig --env gorm

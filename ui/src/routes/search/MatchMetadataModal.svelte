@@ -12,7 +12,7 @@
     } from '@lucide/svelte';
     import {fade, fly} from 'svelte/transition';
     import {callRPC, glacierCli} from "$lib/api/api";
-    import {type GameMetadata, type GameSearchResult, SearchService} from "$lib/gen/search/v1/search_pb";
+    import {type GameMetadata, type GameSource, SearchService} from "$lib/gen/search/v1/search_pb";
     import {createRPCRunner} from "$lib/api/svelte-api.svelte";
     import {GameSchema, LibraryService} from "$lib/gen/library/v1/library_pb";
     import {create} from "@bufbuild/protobuf";
@@ -20,7 +20,7 @@
 
     type Props = {
         isOpen?: boolean;
-        localGame: GameSearchResult | null;
+        localGame: GameSource | null;
     };
 
     let {
@@ -42,7 +42,12 @@
         }
     })
 
-    const rpc = createRPCRunner(() => searchClient.match({query: searchQuery.trim()}));
+    const rpc = createRPCRunner(() => searchClient.searchMetadata({
+        q: {
+            query: searchQuery,
+            indexer: ""
+        }
+    }));
 
     function search() {
         if (searchQuery.trim() !== '') {

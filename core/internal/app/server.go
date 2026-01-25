@@ -1,23 +1,22 @@
-package server
+package app
 
 import (
 	"context"
 	"errors"
 	"fmt"
+	"io/fs"
 
 	"net/http"
 
 	"time"
 
-	"github.com/ra341/glacier/internal/app"
-	downloadManager "github.com/ra341/glacier/internal/downloader/manager"
-	indexerManager "github.com/ra341/glacier/internal/indexer/manager"
+	connectcors "connectrpc.com/cors"
+	"github.com/ra341/glacier/internal/config/config_manager"
+
 	"github.com/ra341/glacier/internal/library"
-	metadataManager "github.com/ra341/glacier/internal/metadata/manager"
+
 	"github.com/ra341/glacier/internal/search"
 	"github.com/ra341/glacier/shared/api"
-
-	connectcors "connectrpc.com/cors"
 	"github.com/rs/cors"
 	"github.com/rs/zerolog/log"
 	"golang.org/x/net/http2"
@@ -25,30 +24,23 @@ import (
 )
 
 type Server struct {
-	*app.App
+	*App
 
-	uiDir string
+	UIFS fs.FS
+	Ctx  context.Context
 }
 
-func NewServer(uiDir string) {
-	server := &Server{
-		App:   app.NewApp(),
-		uiDir: uiDir,
-	}
+func NewServer(opts ...ServerOpt) {
+	var server Server
+	parseOpts(&server, opts...)
+
+	server.App = NewApp()
 	config := server.App.Conf.Get().Server
 
 	router := http.NewServeMux()
 	server.RegisterRoutes(router)
 
-	corsConfig := cors.New(cors.Options{
-		AllowedOrigins:      config.AllowedOrigins,
-		AllowPrivateNetwork: true,
-		AllowedMethods:      connectcors.AllowedMethods(),
-		AllowedHeaders:      connectcors.AllowedHeaders(),
-		ExposedHeaders:      connectcors.ExposedHeaders(),
-	})
-
-	finalMux := corsConfig.Handler(router)
+	finalMux := WithCors(router, config.AllowedOrigins)
 
 	port := fmt.Sprintf(":%d", config.Port)
 	log.Info().Str("port", port).Msg("Starting server...")
@@ -84,6 +76,16 @@ func NewServer(uiDir string) {
 	fmt.Println("Server gracefully stopped.")
 }
 
+func WithCors(router http.Handler, origins []string) http.Handler {
+	return cors.New(cors.Options{
+		AllowedOrigins:      origins,
+		AllowPrivateNetwork: true,
+		AllowedMethods:      connectcors.AllowedMethods(),
+		AllowedHeaders:      connectcors.AllowedHeaders(),
+		ExposedHeaders:      connectcors.ExposedHeaders(),
+	}).Handler(router)
+}
+
 func (s *Server) RegisterRoutes(mux *http.ServeMux) {
 	apiRouter := http.NewServeMux()
 	s.registerRoutes(apiRouter)
@@ -93,7 +95,7 @@ func (s *Server) RegisterRoutes(mux *http.ServeMux) {
 }
 
 func (s *Server) registerUI(mux *http.ServeMux) {
-	mux.Handle("/", http.FileServer(http.Dir(s.uiDir)))
+	mux.Handle("/", api.NewSpaHandler(s.UIFS))
 }
 
 func (s *Server) registerRoutes(mux *http.ServeMux) {
@@ -110,7 +112,5 @@ func (s *Server) registerRoutes(mux *http.ServeMux) {
 		library.NewHandlerHttp(s.Library),
 	)
 
-	mux.Handle(downloadManager.NewHandler(s.DownloadClientManager))
-	mux.Handle(metadataManager.NewHandler(s.MetadataManager))
-	mux.Handle(indexerManager.NewHandler(s.IndexerManager))
+	mux.Handle(config_manager.NewHandler(s.ConfigManager))
 }

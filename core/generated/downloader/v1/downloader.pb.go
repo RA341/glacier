@@ -10,7 +10,6 @@ import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
-	sync "sync"
 	unsafe "unsafe"
 )
 
@@ -21,171 +20,21 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type Client struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *Client) Reset() {
-	*x = Client{}
-	mi := &file_downloader_v1_downloader_proto_msgTypes[0]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *Client) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Client) ProtoMessage() {}
-
-func (x *Client) ProtoReflect() protoreflect.Message {
-	mi := &file_downloader_v1_downloader_proto_msgTypes[0]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Client.ProtoReflect.Descriptor instead.
-func (*Client) Descriptor() ([]byte, []int) {
-	return file_downloader_v1_downloader_proto_rawDescGZIP(), []int{0}
-}
-
-func (x *Client) GetName() string {
-	if x != nil {
-		return x.Name
-	}
-	return ""
-}
-
-type GetActiveClientsRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *GetActiveClientsRequest) Reset() {
-	*x = GetActiveClientsRequest{}
-	mi := &file_downloader_v1_downloader_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GetActiveClientsRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetActiveClientsRequest) ProtoMessage() {}
-
-func (x *GetActiveClientsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_downloader_v1_downloader_proto_msgTypes[1]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetActiveClientsRequest.ProtoReflect.Descriptor instead.
-func (*GetActiveClientsRequest) Descriptor() ([]byte, []int) {
-	return file_downloader_v1_downloader_proto_rawDescGZIP(), []int{1}
-}
-
-type GetActiveClientsResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Clients       []*Client              `protobuf:"bytes,1,rep,name=clients,proto3" json:"clients,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *GetActiveClientsResponse) Reset() {
-	*x = GetActiveClientsResponse{}
-	mi := &file_downloader_v1_downloader_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GetActiveClientsResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetActiveClientsResponse) ProtoMessage() {}
-
-func (x *GetActiveClientsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_downloader_v1_downloader_proto_msgTypes[2]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetActiveClientsResponse.ProtoReflect.Descriptor instead.
-func (*GetActiveClientsResponse) Descriptor() ([]byte, []int) {
-	return file_downloader_v1_downloader_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *GetActiveClientsResponse) GetClients() []*Client {
-	if x != nil {
-		return x.Clients
-	}
-	return nil
-}
-
 var File_downloader_v1_downloader_proto protoreflect.FileDescriptor
 
 const file_downloader_v1_downloader_proto_rawDesc = "" +
 	"\n" +
-	"\x1edownloader/v1/downloader.proto\x12\rdownloader.v1\"\x1c\n" +
-	"\x06Client\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\"\x19\n" +
-	"\x17GetActiveClientsRequest\"K\n" +
-	"\x18GetActiveClientsResponse\x12/\n" +
-	"\aclients\x18\x01 \x03(\v2\x15.downloader.v1.ClientR\aclients2z\n" +
-	"\x11DownloaderService\x12e\n" +
-	"\x10GetActiveClients\x12&.downloader.v1.GetActiveClientsRequest\x1a'.downloader.v1.GetActiveClientsResponse\"\x00B\xab\x01\n" +
+	"\x1edownloader/v1/downloader.proto\x12\rdownloader.v12\x13\n" +
+	"\x11DownloaderServiceB\xab\x01\n" +
 	"\x11com.downloader.v1B\x0fDownloaderProtoP\x01Z0github.com/ra341/glacier/generated/downloader/v1\xa2\x02\x03DXX\xaa\x02\rDownloader.V1\xca\x02\rDownloader\\V1\xe2\x02\x19Downloader\\V1\\GPBMetadata\xea\x02\x0eDownloader::V1b\x06proto3"
 
-var (
-	file_downloader_v1_downloader_proto_rawDescOnce sync.Once
-	file_downloader_v1_downloader_proto_rawDescData []byte
-)
-
-func file_downloader_v1_downloader_proto_rawDescGZIP() []byte {
-	file_downloader_v1_downloader_proto_rawDescOnce.Do(func() {
-		file_downloader_v1_downloader_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_downloader_v1_downloader_proto_rawDesc), len(file_downloader_v1_downloader_proto_rawDesc)))
-	})
-	return file_downloader_v1_downloader_proto_rawDescData
-}
-
-var file_downloader_v1_downloader_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
-var file_downloader_v1_downloader_proto_goTypes = []any{
-	(*Client)(nil),                   // 0: downloader.v1.Client
-	(*GetActiveClientsRequest)(nil),  // 1: downloader.v1.GetActiveClientsRequest
-	(*GetActiveClientsResponse)(nil), // 2: downloader.v1.GetActiveClientsResponse
-}
+var file_downloader_v1_downloader_proto_goTypes = []any{}
 var file_downloader_v1_downloader_proto_depIdxs = []int32{
-	0, // 0: downloader.v1.GetActiveClientsResponse.clients:type_name -> downloader.v1.Client
-	1, // 1: downloader.v1.DownloaderService.GetActiveClients:input_type -> downloader.v1.GetActiveClientsRequest
-	2, // 2: downloader.v1.DownloaderService.GetActiveClients:output_type -> downloader.v1.GetActiveClientsResponse
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	0, // [0:0] is the sub-list for method output_type
+	0, // [0:0] is the sub-list for method input_type
+	0, // [0:0] is the sub-list for extension type_name
+	0, // [0:0] is the sub-list for extension extendee
+	0, // [0:0] is the sub-list for field type_name
 }
 
 func init() { file_downloader_v1_downloader_proto_init() }
@@ -199,13 +48,12 @@ func file_downloader_v1_downloader_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_downloader_v1_downloader_proto_rawDesc), len(file_downloader_v1_downloader_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   0,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_downloader_v1_downloader_proto_goTypes,
 		DependencyIndexes: file_downloader_v1_downloader_proto_depIdxs,
-		MessageInfos:      file_downloader_v1_downloader_proto_msgTypes,
 	}.Build()
 	File_downloader_v1_downloader_proto = out.File
 	file_downloader_v1_downloader_proto_goTypes = nil

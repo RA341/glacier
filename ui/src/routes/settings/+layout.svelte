@@ -4,20 +4,37 @@
     let {children} = $props();
 
     const tabs = [
-        {label: 'General', href: '/settings/general'},
-        {label: 'Profile', href: '/settings/profile'},
+        {label: 'General', href: '/settings/general', desc: 'Configure basic server settings'},
+        {label: 'Users', href: '/settings/users', desc: 'Manage user accounts'},
+        {label: 'Metadata', href: '/settings/metadata', desc: 'Where to get game information'},
+        {label: 'Indexer', href: '/settings/indexer', desc: 'Where to find and download games'},
+        {label: 'Download', href: '/settings/downloads', desc: 'How downloads are handled'},
     ];
 
     let currentPath = $derived(page.url.pathname);
+
+    let activeTab = $derived(tabs.find(tab => currentPath.startsWith(tab.href)));
 </script>
 
 <div class="flex flex-col h-full bg-background">
-    <!-- Header Section -->
     <header class="px-8 pt-8 pb-0">
-        <h1 class="text-3xl font-bold tracking-tight text-foreground mb-6">Settings</h1>
+        <div class="flex items-baseline gap-4 mb-6">
+            <h1 class="text-3xl font-bold tracking-tight text-foreground">
+                Settings
+            </h1>
 
-        <!-- Tab List Container -->
-        <!-- Added 'pb-2' to give space between the pills and the bottom border -->
+            {#if activeTab}
+                <span class="text-muted/30 text-2xl font-light">/</span>
+                <p class="text-lg font-medium text-muted transition-all duration-300">
+                    {activeTab.label}
+                </p>
+                <span class="text-muted/30 text-2xl font-light">/</span>
+                <p class="text-lg font-medium text-muted transition-all duration-300">
+                    {activeTab.desc}
+                </p>
+            {/if}
+        </div>
+
         <nav class="flex gap-2 border-b border-border pb-2 relative">
             {#each tabs as tab}
                 {@const active = currentPath.startsWith(tab.href)}
@@ -31,29 +48,14 @@
                     {tab.label}
 
                     {#if active}
-                        <!-- Optional: Small high-intensity underline indicator -->
-                        <div
-                                class="absolute -bottom-2.25 left-0 right-0 bg-frost-500 rounded-full"
-                        ></div>
+                        <div class="absolute -bottom-2.25 left-0 right-0 h-0.5 bg-frost-500 rounded-full"></div>
                     {/if}
                 </a>
             {/each}
         </nav>
     </header>
 
-    <!-- Content Area -->
     <main class="flex-1 overflow-y-auto p-8">
         {@render children()}
     </main>
 </div>
-
-<style>
-    nav {
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-    }
-
-    nav::-webkit-scrollbar {
-        display: none;
-    }
-</style>

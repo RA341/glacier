@@ -7,7 +7,7 @@ vars:
 
   IMAGE_NAME: protobuilder/gonode
   CORE_DIR: ../core/generated
-  UI_DIR: ../frost/src/lib/gen
+  UI_DIR: ../ui/src/lib/gen
   GENERATED_DIR: generated
   PROTODIR: protos
   GO_PACKAGE_BASE: "github.com/ra341/glacier/generated"

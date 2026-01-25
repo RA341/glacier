@@ -26,7 +26,7 @@ type Client struct {
 	cli *transmissionrpc.Client
 }
 
-func New(config types.ClientConfig) (types.Downloader, error) {
+func New(config map[string]any) (types.Downloader, error) {
 	var conf Config
 
 	err := mapsct.ParseMap(&conf, config)
@@ -48,7 +48,7 @@ func New(config types.ClientConfig) (types.Downloader, error) {
 
 	tbt, err := transmissionrpc.New(endpoint, nil)
 	if err != nil {
-		panic(err)
+		return nil, fmt.Errorf("error creating transmission client: %w", err)
 	}
 
 	transmission := &Client{cli: tbt}
@@ -141,11 +141,10 @@ func (tm *Client) Progress(ctx context.Context, download *types.Download) (err e
 			download.State = types.Error
 		}
 
-		download.Progress = fmt.Sprintf(
-			"%s\nprogress:%2f",
-			info.Status.String(),
-			*info.PercentComplete,
-		)
+		download.Complete = uint64(*info.PercentComplete)
+		download.Left = uint64(*info.LeftUntilDone)
+
+		download.Progress = info.Status.String()
 		download.IncompletePath = filepath.Join(
 			*info.DownloadDir,
 			*info.Name,

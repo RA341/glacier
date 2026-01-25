@@ -1,1 +1,1 @@
-Profile settings sub page
+Profile page

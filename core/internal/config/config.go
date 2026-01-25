@@ -2,9 +2,7 @@ package config
 
 import (
 	"github.com/ra341/glacier/internal/downloader"
-	"github.com/ra341/glacier/internal/indexer"
 	"github.com/ra341/glacier/internal/library"
-	"github.com/ra341/glacier/internal/metadata"
 )
 
 type Config struct {
@@ -13,9 +11,7 @@ type Config struct {
 	Logger  Logger  `yaml:"logger"`
 
 	Library  library.Config    `yaml:"library"`
-	Indexer  indexer.Config    `yaml:"indexer"`
 	Download downloader.Config `yaml:"downloader"`
-	Metadata metadata.Config   `yaml:"metadata"`
 }
 
 type Glacier struct {

@@ -23,6 +23,8 @@ CREATE TABLE `games` (
   `client` text NULL,
   `download_id` text NULL,
   `state` text NULL,
+  `complete` integer NULL,
+  `left` integer NULL,
   `progress` text NULL,
   `download_url` text NULL,
   `download_path` text NULL,
@@ -34,6 +36,8 @@ CREATE TABLE `games` (
   `file_size` text NULL,
   `created_iso` text NULL
 );
+-- create index "idx_provider_game" to table: "games"
+CREATE UNIQUE INDEX `idx_provider_game` ON `games` (`provider_type`, `game_db_id`);
 -- create index "idx_games_deleted_at" to table: "games"
 CREATE INDEX `idx_games_deleted_at` ON `games` (`deleted_at`);
 -- create "folder_metadata" table
@@ -52,8 +56,30 @@ CREATE TABLE `folder_metadata` (
 CREATE INDEX `idx_folder_metadata_game_id` ON `folder_metadata` (`game_id`);
 -- create index "idx_folder_metadata_deleted_at" to table: "folder_metadata"
 CREATE INDEX `idx_folder_metadata_deleted_at` ON `folder_metadata` (`deleted_at`);
+-- create "service_configs" table
+CREATE TABLE `service_configs` (
+  `id` integer NULL PRIMARY KEY AUTOINCREMENT,
+  `created_at` datetime NULL,
+  `updated_at` datetime NULL,
+  `deleted_at` datetime NULL,
+  `service_type` text NULL,
+  `name` text NULL,
+  `enabled` numeric NULL,
+  `flavour` text NULL,
+  `config` text NULL
+);
+-- create index "idx_service_config" to table: "service_configs"
+CREATE UNIQUE INDEX `idx_service_config` ON `service_configs` (`service_type`, `name`);
+-- create index "idx_service_configs_deleted_at" to table: "service_configs"
+CREATE INDEX `idx_service_configs_deleted_at` ON `service_configs` (`deleted_at`);
 
 -- +goose Down
+-- reverse: create index "idx_service_configs_deleted_at" to table: "service_configs"
+DROP INDEX `idx_service_configs_deleted_at`;
+-- reverse: create index "idx_service_config" to table: "service_configs"
+DROP INDEX `idx_service_config`;
+-- reverse: create "service_configs" table
+DROP TABLE `service_configs`;
 -- reverse: create index "idx_folder_metadata_deleted_at" to table: "folder_metadata"
 DROP INDEX `idx_folder_metadata_deleted_at`;
 -- reverse: create index "idx_folder_metadata_game_id" to table: "folder_metadata"
@@ -62,5 +88,7 @@ DROP INDEX `idx_folder_metadata_game_id`;
 DROP TABLE `folder_metadata`;
 -- reverse: create index "idx_games_deleted_at" to table: "games"
 DROP INDEX `idx_games_deleted_at`;
+-- reverse: create index "idx_provider_game" to table: "games"
+DROP INDEX `idx_provider_game`;
 -- reverse: create "games" table
 DROP TABLE `games`;

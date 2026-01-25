@@ -48,7 +48,7 @@ type Hydra struct {
 	cancel context.CancelFunc
 }
 
-func New(config types.IndexerConfig) (types.Indexer, error) {
+func New(config map[string]any) (types.Indexer, error) {
 	raw, err := newRaw(config)
 	if err != nil {
 		return nil, err

@@ -10,7 +10,6 @@ import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
-	sync "sync"
 	unsafe "unsafe"
 )
 
@@ -21,171 +20,21 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type Provider struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          string                 `protobuf:"bytes,1,opt,name=Name,proto3" json:"Name,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *Provider) Reset() {
-	*x = Provider{}
-	mi := &file_metadata_v1_metadata_proto_msgTypes[0]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *Provider) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Provider) ProtoMessage() {}
-
-func (x *Provider) ProtoReflect() protoreflect.Message {
-	mi := &file_metadata_v1_metadata_proto_msgTypes[0]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Provider.ProtoReflect.Descriptor instead.
-func (*Provider) Descriptor() ([]byte, []int) {
-	return file_metadata_v1_metadata_proto_rawDescGZIP(), []int{0}
-}
-
-func (x *Provider) GetName() string {
-	if x != nil {
-		return x.Name
-	}
-	return ""
-}
-
-type MetadataProviderRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *MetadataProviderRequest) Reset() {
-	*x = MetadataProviderRequest{}
-	mi := &file_metadata_v1_metadata_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *MetadataProviderRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*MetadataProviderRequest) ProtoMessage() {}
-
-func (x *MetadataProviderRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_metadata_v1_metadata_proto_msgTypes[1]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use MetadataProviderRequest.ProtoReflect.Descriptor instead.
-func (*MetadataProviderRequest) Descriptor() ([]byte, []int) {
-	return file_metadata_v1_metadata_proto_rawDescGZIP(), []int{1}
-}
-
-type MetadataProviderResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Providers     []*Provider            `protobuf:"bytes,1,rep,name=providers,proto3" json:"providers,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *MetadataProviderResponse) Reset() {
-	*x = MetadataProviderResponse{}
-	mi := &file_metadata_v1_metadata_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *MetadataProviderResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*MetadataProviderResponse) ProtoMessage() {}
-
-func (x *MetadataProviderResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_metadata_v1_metadata_proto_msgTypes[2]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use MetadataProviderResponse.ProtoReflect.Descriptor instead.
-func (*MetadataProviderResponse) Descriptor() ([]byte, []int) {
-	return file_metadata_v1_metadata_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *MetadataProviderResponse) GetProviders() []*Provider {
-	if x != nil {
-		return x.Providers
-	}
-	return nil
-}
-
 var File_metadata_v1_metadata_proto protoreflect.FileDescriptor
 
 const file_metadata_v1_metadata_proto_rawDesc = "" +
 	"\n" +
-	"\x1ametadata/v1/metadata.proto\x12\vmetadata.v1\"\x1e\n" +
-	"\bProvider\x12\x12\n" +
-	"\x04Name\x18\x01 \x01(\tR\x04Name\"\x19\n" +
-	"\x17MetadataProviderRequest\"O\n" +
-	"\x18MetadataProviderResponse\x123\n" +
-	"\tproviders\x18\x01 \x03(\v2\x15.metadata.v1.ProviderR\tproviders2x\n" +
-	"\x0fMetadataService\x12e\n" +
-	"\x14GetMetadataProviders\x12$.metadata.v1.MetadataProviderRequest\x1a%.metadata.v1.MetadataProviderResponse\"\x00B\x9d\x01\n" +
+	"\x1ametadata/v1/metadata.proto\x12\vmetadata.v12\x11\n" +
+	"\x0fMetadataServiceB\x9d\x01\n" +
 	"\x0fcom.metadata.v1B\rMetadataProtoP\x01Z.github.com/ra341/glacier/generated/metadata/v1\xa2\x02\x03MXX\xaa\x02\vMetadata.V1\xca\x02\vMetadata\\V1\xe2\x02\x17Metadata\\V1\\GPBMetadata\xea\x02\fMetadata::V1b\x06proto3"
 
-var (
-	file_metadata_v1_metadata_proto_rawDescOnce sync.Once
-	file_metadata_v1_metadata_proto_rawDescData []byte
-)
-
-func file_metadata_v1_metadata_proto_rawDescGZIP() []byte {
-	file_metadata_v1_metadata_proto_rawDescOnce.Do(func() {
-		file_metadata_v1_metadata_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_metadata_v1_metadata_proto_rawDesc), len(file_metadata_v1_metadata_proto_rawDesc)))
-	})
-	return file_metadata_v1_metadata_proto_rawDescData
-}
-
-var file_metadata_v1_metadata_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
-var file_metadata_v1_metadata_proto_goTypes = []any{
-	(*Provider)(nil),                 // 0: metadata.v1.Provider
-	(*MetadataProviderRequest)(nil),  // 1: metadata.v1.MetadataProviderRequest
-	(*MetadataProviderResponse)(nil), // 2: metadata.v1.MetadataProviderResponse
-}
+var file_metadata_v1_metadata_proto_goTypes = []any{}
 var file_metadata_v1_metadata_proto_depIdxs = []int32{
-	0, // 0: metadata.v1.MetadataProviderResponse.providers:type_name -> metadata.v1.Provider
-	1, // 1: metadata.v1.MetadataService.GetMetadataProviders:input_type -> metadata.v1.MetadataProviderRequest
-	2, // 2: metadata.v1.MetadataService.GetMetadataProviders:output_type -> metadata.v1.MetadataProviderResponse
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	0, // [0:0] is the sub-list for method output_type
+	0, // [0:0] is the sub-list for method input_type
+	0, // [0:0] is the sub-list for extension type_name
+	0, // [0:0] is the sub-list for extension extendee
+	0, // [0:0] is the sub-list for field type_name
 }
 
 func init() { file_metadata_v1_metadata_proto_init() }
@@ -199,13 +48,12 @@ func file_metadata_v1_metadata_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_metadata_v1_metadata_proto_rawDesc), len(file_metadata_v1_metadata_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   0,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_metadata_v1_metadata_proto_goTypes,
 		DependencyIndexes: file_metadata_v1_metadata_proto_depIdxs,
-		MessageInfos:      file_metadata_v1_metadata_proto_msgTypes,
 	}.Build()
 	File_metadata_v1_metadata_proto = out.File
 	file_metadata_v1_metadata_proto_goTypes = nil

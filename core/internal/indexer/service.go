@@ -1,22 +1,23 @@
 package indexer
 
 import (
-	"github.com/ra341/glacier/internal/indexer/manager"
 	"github.com/ra341/glacier/internal/indexer/types"
 )
 
+type Get func(name string) (types.Indexer, error)
+
 type Service struct {
-	manager *manager.Service
+	get Get
 }
 
-func New(indexer *manager.Service) *Service {
+func New(get Get) *Service {
 	return &Service{
-		manager: indexer,
+		get: get,
 	}
 }
 
-func (s *Service) Search(indexerType types.IndexerType, searchTerm string) ([]types.Source, error) {
-	get, err := s.manager.Get(indexerType)
+func (s *Service) Search(indexerType string, searchTerm string) ([]types.Source, error) {
+	get, err := s.get(indexerType)
 	if err != nil {
 		return nil, err
 	}

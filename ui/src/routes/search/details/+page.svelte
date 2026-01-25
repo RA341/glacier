@@ -17,8 +17,9 @@
     import {createRPCRunner} from "$lib/api/svelte-api.svelte";
     import {type GameSource, GameSourceSchema, SearchService} from "$lib/gen/search/v1/search_pb";
     import {DownloaderService} from "$lib/gen/downloader/v1/downloader_pb";
-    import {DownloadSchema, type Game, GameSchema, LibraryService} from "$lib/gen/library/v1/library_pb";
+    import {DownloadSchema, GameSchema, LibraryService} from "$lib/gen/library/v1/library_pb";
     import {create,} from "@bufbuild/protobuf";
+    import {ServiceConfigService} from "$lib/gen/service_config/v1/service_config_pb";
 
 
     let game = $derived(transferStore.data);
@@ -55,8 +56,8 @@
         }
     }
 
-    let downloader = glacierCli(DownloaderService)
-    let activeClientsRpc = createRPCRunner(() => downloader.getActiveClients({}))
+    let srvConfig = glacierCli(ServiceConfigService)
+    let activeClientsRpc = createRPCRunner(() => srvConfig.getActiveService({serviceType: "Downloader"}))
 
     let selectedClient = $state("");
     let libraryService = glacierCli(LibraryService)
@@ -81,7 +82,7 @@
     }
 
     let indexerManagerService = glacierCli(IndexerService)
-    let activeIndexerRpc = createRPCRunner(() => indexerManagerService.getActiveIndexers({}))
+    let activeIndexerRpc = createRPCRunner(() => srvConfig.getActiveService({serviceType: "Indexer"}))
     $effect(() => {
         if (game) {
             searchQuery = game.Name
@@ -209,7 +210,7 @@
                             bind:value={selectedIndexer}
                             class="w-full bg-panel border border-border rounded-xl py-2.5 px-4 appearance-none outline-none text-sm font-bold"
                     >
-                        {#each activeIndexerRpc?.value?.indexers as ind }
+                        {#each activeIndexerRpc?.value?.names as ind }
                             <option>{ind.Name}</option>
                         {/each}
                     </select>
@@ -311,8 +312,8 @@
                         <select
                                 bind:value={selectedClient}
                                 class="w-full bg-panel border border-border rounded-xl py-2.5 px-4 appearance-none outline-none text-sm font-bold">
-                            {#each activeClientsRpc.value?.clients as cli}
-                                <option>{cli.name}</option>
+                            {#each activeClientsRpc.value?.names as cli}
+                                <option>{cli.Name}</option>
                             {/each}
                         </select>
                         <ChevronDownIcon size={16} class="absolute right-3 top-1/2 -translate-y-1/2 text-muted"/>

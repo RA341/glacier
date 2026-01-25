@@ -22,10 +22,9 @@ type Provider interface {
 }
 
 type Meta struct {
-	ProviderType ProviderType `json:"provider_type"`
+	ProviderType ProviderType `gorm:"uniqueIndex:idx_provider_game"`
 
-	// id assigned by the metadata provider
-	GameDBID string
+	GameDBID string `gorm:"uniqueIndex:idx_provider_game"`
 
 	Name string
 	// A short description/blurb of the game.

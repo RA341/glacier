@@ -2,6 +2,14 @@ package types
 
 import "context"
 
+//go:generate go run github.com/dmarkham/enumer@latest -sql -type=ClientType -output=enum_client_type.go
+type ClientType int
+
+const (
+	ClientUnknown ClientType = iota
+	ClientTransmission
+)
+
 //go:generate go run github.com/dmarkham/enumer@latest -sql -type=DownloadState -output=enum_download_state.go
 type DownloadState int
 
@@ -16,10 +24,14 @@ const (
 
 // Download todo add download client type
 type Download struct {
-	Client ClientType
+	Client string
 	// DownloadId contains the ID of the download from download client
 	DownloadId string
 	State      DownloadState
+
+	Complete uint64
+	Left     uint64
+
 	// Progress progressString contains any message from the client of the download
 	Progress string
 

@@ -11,10 +11,11 @@ import (
 
 	"github.com/ra341/glacier/internal/downloader/types"
 	"github.com/ra341/glacier/internal/library"
+
 	"github.com/rs/zerolog/log"
 )
 
-type GetCli func(clientType types.ClientType) (types.Downloader, error)
+type GetCli func(name string) (types.Downloader, error)
 
 type Service struct {
 	cli   GetCli
@@ -62,8 +63,8 @@ func (s *Service) Add(ctx context.Context, game *library.Game) (err error) {
 	return err
 }
 
-func (s *Service) Cancel(ctx context.Context, client types.ClientType, downloadID string, removeFiles bool) error {
-	downloader, err := s.cli(client)
+func (s *Service) Cancel(ctx context.Context, name string, downloadID string, removeFiles bool) error {
+	downloader, err := s.cli(name)
 	if err != nil {
 		return err
 	}
