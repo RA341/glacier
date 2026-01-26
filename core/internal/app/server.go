@@ -32,10 +32,10 @@ type Server struct {
 
 func NewServer(opts ...ServerOpt) {
 	var server Server
-	parseOpts(&server, opts...)
+	ParseOpts(&server, opts...)
 
 	server.App = NewApp()
-	config := server.App.Conf.Get().Server
+	config := server.Conf.Get().Server
 
 	router := http.NewServeMux()
 	server.RegisterRoutes(router)
@@ -53,8 +53,6 @@ func NewServer(opts ...ServerOpt) {
 		),
 	}
 
-	serverCtx := context.Background() // todo load from config
-
 	go func() {
 		var err error
 		err = srv.ListenAndServe()
@@ -63,7 +61,7 @@ func NewServer(opts ...ServerOpt) {
 		}
 	}()
 
-	<-serverCtx.Done()
+	<-server.Ctx.Done()
 
 	fmt.Println("Context cancelled. Shutting down server...")
 	shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)

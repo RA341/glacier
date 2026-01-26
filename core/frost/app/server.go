@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io/fs"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -32,17 +33,19 @@ func init() {
 }
 
 type Server struct {
-	app *App
+	*App
 
-	uiDir string
+	UIFS fs.FS
+	Ctx  context.Context
 }
 
-func NewServer(uiDir string) {
-	server := &Server{
-		app:   New(),
-		uiDir: uiDir,
-	}
-	conf := server.app.Conf.Get().Server
+func NewServer(opts ...ServerOpt) {
+	var server Server
+	ParseOpts(&server, opts...)
+
+	server.App = New()
+
+	conf := server.Conf.Get().Server
 
 	router := http.NewServeMux()
 	server.RegisterRoutes(router)
@@ -92,23 +95,30 @@ func NewServer(uiDir string) {
 }
 
 func (s *Server) RegisterRoutes(mux *http.ServeMux) {
-	s.registerRoutes(mux)
+	s.registerApiRoutes(mux)
 
 	s.registerUI(mux)
 }
 
 func (s *Server) registerUI(mux *http.ServeMux) {
-	if s.uiDir != "" {
-		mux.Handle("/", http.FileServer(http.Dir(s.uiDir)))
-	}
+	s.registerFrontend(mux)
 
 	apiMux := http.NewServeMux()
-	s.registerRoutes(apiMux)
+	s.registerApiRoutes(apiMux)
 	api.WithSubRouter(mux, "/api/frost", apiMux)
 
 	glacierProxy := http.NewServeMux()
 	s.registerGlacierProxy(glacierProxy)
 	mux.Handle("/api/server/", glacierProxy)
+}
+
+func (s *Server) registerFrontend(mux *http.ServeMux) {
+	if s.UIFS == nil {
+		log.Fatal().Msg("UI not set")
+		return
+	}
+
+	mux.Handle("/", api.NewSpaHandler(s.UIFS))
 }
 
 func (s *Server) registerGlacierProxy(mux *http.ServeMux) {
@@ -137,12 +147,12 @@ func (s *Server) registerGlacierProxy(mux *http.ServeMux) {
 	mux.Handle("/", proxy)
 }
 
-func (s *Server) registerRoutes(mux *http.ServeMux) {
+func (s *Server) registerApiRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("/hello", func(writer http.ResponseWriter, request *http.Request) {
 		writer.Header().Set("Content-Type", "text/plain")
 		writer.WriteHeader(http.StatusOK)
 		_, _ = writer.Write([]byte("Hello from frost"))
 	})
 
-	mux.Handle(ll.NewHandler(s.app.LocalLibrarySrv))
+	mux.Handle(ll.NewHandler(s.LocalLibrarySrv))
 }

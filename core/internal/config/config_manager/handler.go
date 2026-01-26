@@ -74,6 +74,8 @@ func (h *Handler) GetActiveService(ctx context.Context, req *connect.Request[v1.
 	}
 
 	res, err := listutils.ToMapErr(enabled, func(t ServiceConfig) (*v1.ServiceConfig, error) {
+		// remove any sensitive config info this endpoint does not need it
+		t.Config = nil
 		return t.ToProto()
 	})
 	if err != nil {

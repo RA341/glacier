@@ -1,8 +1,8 @@
 <script lang="ts">
     import './layout.css';
     import {page} from '$app/state';
-    import favicon from '$lib/assets/favicon.svg';
     import {DownloadIcon, LibraryIcon, SearchIcon, SettingsIcon, UserIcon} from "@lucide/svelte";
+    import {isFrost} from "$lib/api/api";
 
     let {children} = $props();
 
@@ -17,10 +17,13 @@
         {label: 'Profile', href: '/settings/profile', icon: UserIcon}
     ];
 
+    const favicon = "/favicon.svg"
+
     const isActive = (href: string) => page.url.pathname.startsWith(href);
 </script>
 
 <svelte:head>
+    <title>{isFrost ? "Frost" : "Glacier"}</title>
     <link rel="icon" href={favicon}/>
 </svelte:head>
 

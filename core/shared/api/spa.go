@@ -3,7 +3,6 @@ package api
 import (
 	"io/fs"
 	"net/http"
-	"os"
 	"path"
 	"strings"
 )
@@ -30,7 +29,7 @@ func (h *SpaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	fsPath := strings.TrimPrefix(reqPath, "/")
 
 	// Check if the file exists in the filesystem.
-	if _, err := fs.Stat(h.staticFS, fsPath); os.IsNotExist(err) {
+	if _, err := fs.Stat(h.staticFS, fsPath); err != nil {
 		// The file does not exist, so serve index.html.
 		http.ServeFileFS(w, r, h.staticFS, "index.html")
 		return

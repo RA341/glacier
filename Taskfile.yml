@@ -26,32 +26,6 @@ tasks:
     cmds:
       - 'mkdir -p {{.BUILD_DIR}}/{{.TARG}}'
 
-  ui:
-    vars:
-      TARGET: '{{.DEV}}'
-      DEST_DIR: '{{.BUILD_DIR}}/{{.TARGET}}'
-    cmds:
-      - 'task bddr TARG={{.TARGET}}'
-      - "task ui:bd:web -- --wasm"
-      - 'cp -r {{.UI_DIR}}/build/web {{ .DEST_DIR }}/'
-
-  ui:bd:*:
-    dir: '{{.UI_DIR}}'
-    vars:
-      tg: "{{index .MATCH 0}}"
-    cmds:
-      - 'flutter build {{.tg}} {{.CLI_ARGS}}'
-    sources:
-      - '**/*.dart'
-      - 'pubspec*'
-      - 'windows'
-      - 'macos'
-      - 'linux'
-      - 'web'
-      - 'ios'
-      - 'android'
-
-
   go:download:
     dir: "{{.CORE_DIR}}"
     cmds:
@@ -102,6 +76,27 @@ tasks:
     dir: "{{.CORE_DIR}}"
     cmds:
       - go generate ./...
+
+  ui:
+    dir: "{{.UI_DIR}}"
+    cmds:
+      - npm run buildfrost
+
+  ui:b:*:
+    dir: "{{.UI_DIR}}"
+    vars:
+      BUILD_OUT: "build"
+      CMD: "{{index .MATCH 0}}"
+      OUT_DIR: ../{{.CORE_DIR}}/{{.GO_CMD_DIR}}/{{.CMD}}
+    desc: "Builds ui and copies for embed binary. Usage: task ui:<go cmd target>"
+#    sources:
+#      - "**/*.ts"
+#      - "**/*.tsx"
+    cmds:
+      - task: ui
+      - rm -rf {{.OUT_DIR}}/{{.BUILD_OUT}}
+      - mkdir -p {{.OUT_DIR}}/{{.BUILD_OUT}}
+      - cp -rf {{.BUILD_OUT}} {{.OUT_DIR}}/
 
   go:*:
     dir: "{{.BUILD_DIR}}"
