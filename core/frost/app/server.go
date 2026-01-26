@@ -71,8 +71,6 @@ func NewServer(opts ...ServerOpt) {
 		),
 	}
 
-	serverCtx := context.Background() // todo load from config
-
 	go func() {
 		var err error
 		err = srv.ListenAndServe()
@@ -81,7 +79,7 @@ func NewServer(opts ...ServerOpt) {
 		}
 	}()
 
-	<-serverCtx.Done()
+	<-server.Ctx.Done()
 
 	fmt.Println("Context cancelled. Shutting down server...")
 	shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)

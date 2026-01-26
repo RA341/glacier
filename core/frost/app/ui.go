@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -8,7 +9,7 @@ import (
 	"github.com/rs/zerolog"
 )
 
-func NewDesktop(desktopExec string) error {
+func NewUI(ctx context.Context, desktopExec string) error {
 	executablePath, err := os.Executable()
 	if err != nil {
 		return err
@@ -17,7 +18,7 @@ func NewDesktop(desktopExec string) error {
 	base := filepath.Dir(executablePath)
 
 	uiExec := filepath.Join(base, desktopExec)
-	cmd := exec.Command(uiExec, "")
+	cmd := exec.CommandContext(ctx, uiExec, "")
 	// todo
 	//uiLogger := log.Logger.With().Str("ui", "logger").Logger()
 
