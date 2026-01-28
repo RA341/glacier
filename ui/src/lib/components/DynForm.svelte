@@ -15,26 +15,31 @@
         const k = tempInputs[`${fieldKey}_key`]?.trim();
         const v = tempInputs[`${fieldKey}_val`]?.trim();
         if (k && v !== undefined) {
-            formData[fieldKey][k] = v;
+            const currentMap = formData[fieldKey] || {};
+            formData[fieldKey] = { ...currentMap, [k]: v };
             tempInputs[`${fieldKey}_key`] = "";
             tempInputs[`${fieldKey}_val`] = "";
         }
     }
 
     function removeMapEntry(fieldKey: string, entryKey: string) {
-        delete formData[fieldKey][entryKey];
+        if (!formData[fieldKey]) return;
+        const { [entryKey]: _, ...rest } = formData[fieldKey];
+        formData[fieldKey] = rest;
     }
 
     function addArrayItem(fieldKey: string) {
         const v = tempInputs[`${fieldKey}_val`]?.trim();
         if (v) {
-            formData[fieldKey].push(v);
+            const currentArr = formData[fieldKey] || [];
+            formData[fieldKey] = [...currentArr, v];
             tempInputs[`${fieldKey}_val`] = "";
         }
     }
 
     function removeArrayItem(fieldKey: string, index: number) {
-        formData[fieldKey].splice(index, 1);
+        if (!formData[fieldKey]) return;
+        formData[fieldKey] = formData[fieldKey].filter((_: any, i: number) => i !== index);
     }
 </script>
 
@@ -47,7 +52,7 @@
 
             {#if field.Type === 'map'}
                 <div class="space-y-2 bg-panel/20 p-4 rounded-2xl border border-border">
-                    {#each Object.entries(formData[field.InsertKey] || {}) as [k, v]}
+                    {#each Object.entries(formData[field.InsertKey] || {}) as [k, v] (k)}
                         <div class="flex gap-2">
                             <input disabled value={k} class="flex-1 bg-panel/40 border border-border/50 rounded-lg px-3 py-2 text-xs text-muted font-mono"/>
                             <input bind:value={formData[field.InsertKey][k]} class="flex-1 bg-panel border border-border rounded-lg px-3 py-2 text-xs outline-none focus:border-frost-500"/>
@@ -67,7 +72,7 @@
 
             {:else if field.Type === 'array'}
                 <div class="space-y-2 bg-panel/20 p-4 rounded-2xl border border-border">
-                    {#each formData[field.InsertKey] || [] as item, i}
+                    {#each formData[field.InsertKey] || [] as item, i (i)}
                         <div class="flex gap-2">
                             <input bind:value={formData[field.InsertKey][i]} class="flex-1 bg-panel border border-border rounded-lg px-3 py-2 text-xs outline-none focus:border-frost-500"/>
                             <button onclick={() => removeArrayItem(field.InsertKey, i)} class="p-2 text-muted hover:text-red-400">
