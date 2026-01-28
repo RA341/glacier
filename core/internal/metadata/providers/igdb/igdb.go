@@ -159,8 +159,8 @@ func (ig *Client) GetMatches(query string) ([]types.Meta, error) {
 			ProviderType: types.ProviderIGDB,
 			GameDBID:     strconv.Itoa(t.Id),
 			Name:         t.Name,
-			Summary:      t.Summary,
-			Description:  t.Storyline,
+			ShortDesc:    t.Storyline,
+			FullDesc:     t.Summary,
 			URL:          t.Url,
 			Genres: listutils.ToMap(t.Genres, func(t Genre) string {
 				return t.Name

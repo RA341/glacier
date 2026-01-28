@@ -30,6 +30,7 @@ type App struct {
 	DownloadSrv   *downloader.Service
 	Search        *search.Service
 	ConfigManager *config_manager.Service
+	Indexer       *indexer.Service
 }
 
 func NewApp() *App {
@@ -74,6 +75,7 @@ func NewApp() *App {
 		Library:       libSrv,
 		DownloadSrv:   downSrv,
 		Search:        searchSrv,
+		Indexer:       indexerSrv,
 		ConfigManager: configManager,
 	}
 

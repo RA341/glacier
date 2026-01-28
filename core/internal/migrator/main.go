@@ -15,7 +15,7 @@ func main() {
 		New("sqlite").
 		Load(
 			&library.Game{},
-			&library.FolderMetadata{},
+			&library.FolderManifest{},
 			&config_manager.ServiceConfig{},
 		)
 	if err != nil {

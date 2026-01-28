@@ -49,8 +49,12 @@ func (s *ServiceConfigManagerGorm) New(conf *ServiceConfig) error {
 	return s.Q().Create(conf).Error
 }
 
-func (s *ServiceConfigManagerGorm) Edit(id uint, conf *ServiceConfig) error {
-	return s.Q().Where("id = ?", id).Updates(conf).Error
+func (s *ServiceConfigManagerGorm) Edit(conf *ServiceConfig) error {
+	err := s.Q().
+		Where("id = ?", conf.ID).
+		Select("name", "enabled", "config").
+		Updates(conf).Error
+	return err
 }
 
 func (s *ServiceConfigManagerGorm) Delete(id uint) error {

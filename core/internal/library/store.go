@@ -20,6 +20,11 @@ type Game struct {
 	Source indexer.Source `gorm:"embedded"`
 }
 
+func (g *Game) SetErr(err error) {
+	g.Download.State = download.Error
+	g.Download.Progress = err.Error()
+}
+
 type Store interface {
 	Add(ctx context.Context, game *Game) error
 	UpdateDownloadProgress(ctx context.Context, id uint, download download.Download) error

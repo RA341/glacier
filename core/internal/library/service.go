@@ -72,7 +72,13 @@ func (s *Service) Add(ctx context.Context, game *Game) error {
 		return err
 	}
 
-	return s.downloader.Add(ctx, game)
+	err = s.downloader.Add(ctx, game)
+	if err != nil {
+		game.SetErr(err)
+		return s.store.UpdateDownloadProgress(ctx, game.ID, game.Download)
+	}
+
+	return nil
 }
 
 func (s *Service) Delete(ctx context.Context, id uint) error {
@@ -83,7 +89,7 @@ func (s *Service) Get(ctx context.Context, id uint) (Game, error) {
 	return s.store.GetById(ctx, id)
 }
 
-func (s *Service) GetDownloadMetadata(ctx context.Context, gameId int, writer io.Writer) error {
+func (s *Service) GetDownloadManifest(ctx context.Context, gameId int, writer io.Writer) error {
 	game, err := s.store.GetById(ctx, uint(gameId))
 	if err != nil {
 		return err
@@ -93,7 +99,7 @@ func (s *Service) GetDownloadMetadata(ctx context.Context, gameId int, writer io
 		return fmt.Errorf("game is not complete")
 	}
 
-	var meta FolderMetadata
+	var meta FolderManifest
 
 	if folderMeta, err := s.folderMetaStore.Get(ctx, gameId); err == nil {
 		// meta previously exists
@@ -164,13 +170,13 @@ func (s *Service) GetDownloadMetadata(ctx context.Context, gameId int, writer io
 
 type MetaResult struct {
 	InsertIndex uint
-	meta        FileMetadata
+	meta        FileManifest
 	Update      bool
 }
 
 func (s *Service) gatherMeta(
 	metadataChan chan MetaResult, path string,
-	game *Game, prevMeta *FolderMetadata,
+	game *Game, prevMeta *FolderManifest,
 ) error {
 	relPath, err := filepath.Rel(game.Download.DownloadPath, path)
 	if err != nil {
@@ -201,7 +207,7 @@ func (s *Service) gatherMeta(
 		return err
 	}
 
-	res.meta = FileMetadata{
+	res.meta = FileManifest{
 		RelPath:  relPath,
 		Size:     stat.Size(),
 		ModTime:  stat.ModTime(),

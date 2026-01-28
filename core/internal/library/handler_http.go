@@ -35,7 +35,7 @@ func (h *HandlerHttp) getMetadata(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.srv.GetDownloadMetadata(r.Context(), gid, w)
+	err = h.srv.GetDownloadManifest(r.Context(), gid, w)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

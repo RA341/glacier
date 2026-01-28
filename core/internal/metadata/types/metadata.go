@@ -28,9 +28,9 @@ type Meta struct {
 
 	Name string
 	// A short description/blurb of the game.
-	Summary string
+	ShortDesc string
 	// A longer description of the game's plot.
-	Description string
+	FullDesc string
 	//  The direct link to the game's page on metadata provider.
 	URL string
 	// todo download the iamge

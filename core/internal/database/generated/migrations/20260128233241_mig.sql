@@ -8,8 +8,8 @@ CREATE TABLE `games` (
   `provider_type` text NULL,
   `game_db_id` text NULL,
   `name` text NULL,
-  `summary` text NULL,
-  `description` text NULL,
+  `short_desc` text NULL,
+  `full_desc` text NULL,
   `url` text NULL,
   `thumbnail_url` text NULL,
   `videos` text NULL,
@@ -40,8 +40,8 @@ CREATE TABLE `games` (
 CREATE UNIQUE INDEX `idx_provider_game` ON `games` (`provider_type`, `game_db_id`);
 -- create index "idx_games_deleted_at" to table: "games"
 CREATE INDEX `idx_games_deleted_at` ON `games` (`deleted_at`);
--- create "folder_metadata" table
-CREATE TABLE `folder_metadata` (
+-- create "folder_manifests" table
+CREATE TABLE `folder_manifests` (
   `id` integer NULL PRIMARY KEY AUTOINCREMENT,
   `created_at` datetime NULL,
   `updated_at` datetime NULL,
@@ -50,12 +50,12 @@ CREATE TABLE `folder_metadata` (
   `total_size` integer NULL,
   `available_exe_paths` text NULL,
   `file_info` text NULL,
-  CONSTRAINT `fk_folder_metadata_game` FOREIGN KEY (`game_id`) REFERENCES `games` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+  CONSTRAINT `fk_folder_manifests_game` FOREIGN KEY (`game_id`) REFERENCES `games` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 );
--- create index "idx_folder_metadata_game_id" to table: "folder_metadata"
-CREATE INDEX `idx_folder_metadata_game_id` ON `folder_metadata` (`game_id`);
--- create index "idx_folder_metadata_deleted_at" to table: "folder_metadata"
-CREATE INDEX `idx_folder_metadata_deleted_at` ON `folder_metadata` (`deleted_at`);
+-- create index "idx_folder_manifests_game_id" to table: "folder_manifests"
+CREATE INDEX `idx_folder_manifests_game_id` ON `folder_manifests` (`game_id`);
+-- create index "idx_folder_manifests_deleted_at" to table: "folder_manifests"
+CREATE INDEX `idx_folder_manifests_deleted_at` ON `folder_manifests` (`deleted_at`);
 -- create "service_configs" table
 CREATE TABLE `service_configs` (
   `id` integer NULL PRIMARY KEY AUTOINCREMENT,
@@ -80,12 +80,12 @@ DROP INDEX `idx_service_configs_deleted_at`;
 DROP INDEX `idx_service_config`;
 -- reverse: create "service_configs" table
 DROP TABLE `service_configs`;
--- reverse: create index "idx_folder_metadata_deleted_at" to table: "folder_metadata"
-DROP INDEX `idx_folder_metadata_deleted_at`;
--- reverse: create index "idx_folder_metadata_game_id" to table: "folder_metadata"
-DROP INDEX `idx_folder_metadata_game_id`;
--- reverse: create "folder_metadata" table
-DROP TABLE `folder_metadata`;
+-- reverse: create index "idx_folder_manifests_deleted_at" to table: "folder_manifests"
+DROP INDEX `idx_folder_manifests_deleted_at`;
+-- reverse: create index "idx_folder_manifests_game_id" to table: "folder_manifests"
+DROP INDEX `idx_folder_manifests_game_id`;
+-- reverse: create "folder_manifests" table
+DROP TABLE `folder_manifests`;
 -- reverse: create index "idx_games_deleted_at" to table: "games"
 DROP INDEX `idx_games_deleted_at`;
 -- reverse: create index "idx_provider_game" to table: "games"

@@ -8,13 +8,13 @@ import (
 )
 
 type StoreFolderMetadata interface {
-	Add(ctx context.Context, gameId int, metadata *FolderMetadata) error
-	Get(ctx context.Context, gameId int) (FolderMetadata, error)
+	Add(ctx context.Context, gameId int, metadata *FolderManifest) error
+	Get(ctx context.Context, gameId int) (FolderManifest, error)
 	Delete(ctx context.Context, gameId int) error
-	Edit(ctx context.Context, gameId int, metadata *FolderMetadata) error
+	Edit(ctx context.Context, gameId int, metadata *FolderManifest) error
 }
 
-type FolderMetadata struct {
+type FolderManifest struct {
 	gorm.Model
 
 	GameID int  `gorm:"index"`
@@ -22,10 +22,10 @@ type FolderMetadata struct {
 
 	TotalSize         int64
 	AvailableExePaths []string       `gorm:"serializer:json" `
-	FileInfo          []FileMetadata `gorm:"serializer:json"`
+	FileInfo          []FileManifest `gorm:"serializer:json"`
 }
 
-type FileMetadata struct {
+type FileManifest struct {
 	RelPath  string
 	Size     int64
 	ModTime  time.Time

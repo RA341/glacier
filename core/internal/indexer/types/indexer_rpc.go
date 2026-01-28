@@ -27,7 +27,7 @@ func (ig *Source) FromProto(rpcGame *v1.GameSource) {
 	gameType, err := GameTypeString(rpcGame.GameType)
 	if err != nil {
 		log.Warn().Err(err).Str("name", rpcGame.GameType).Msg("invalid gametype type")
-		gameType = GameTypeUnknown
+		gameType = Unknown
 	}
 
 	ig.IndexerType = indexerType

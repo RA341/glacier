@@ -102,7 +102,7 @@ func (h *Hydra) Search(query string) ([]types.Source, error) {
 			infos = append(infos, types.Source{
 				IndexerType: types.IndexerHydra,
 				// todo allow from each source
-				GameType:    types.GameTypeInstaller,
+				GameType:    types.Installer,
 				Title:       d.Title,
 				DownloadUrl: d.Uris[0],
 				FileSize:    d.FileSize,

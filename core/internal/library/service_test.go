@@ -24,7 +24,7 @@ func TestMeta(t *testing.T) {
 	srv := New(sd, nil, nil)
 	ctx := context.Background()
 
-	_, err := srv.GetDownloadMetadata(ctx, 1)
+	_, err := srv.GetDownloadManifest(ctx, 1)
 	require.NoError(t, err)
 
 }

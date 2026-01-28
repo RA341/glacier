@@ -20,14 +20,14 @@ func (s *StoreFolderMetadataGorm) Q(ctx context.Context) *gorm.DB {
 	return s.DB.WithContext(ctx)
 }
 
-func (s *StoreFolderMetadataGorm) Add(ctx context.Context, gameId int, metadata *FolderMetadata) error {
+func (s *StoreFolderMetadataGorm) Add(ctx context.Context, gameId int, metadata *FolderManifest) error {
 	metadata.GameID = gameId
 	err := s.Q(ctx).Save(&metadata).Error
 	return err
 }
 
-func (s *StoreFolderMetadataGorm) Get(ctx context.Context, gameId int) (FolderMetadata, error) {
-	var metadata FolderMetadata
+func (s *StoreFolderMetadataGorm) Get(ctx context.Context, gameId int) (FolderManifest, error) {
+	var metadata FolderManifest
 	err := s.Q(ctx).Where("game_id = ?", gameId).First(&metadata, gameId).Error
 	return metadata, err
 }
@@ -36,11 +36,11 @@ func (s *StoreFolderMetadataGorm) Delete(ctx context.Context, gameId int) error 
 	return s.Q(ctx).
 		Unscoped().
 		Where("game_id = ?", gameId).
-		Delete(&FolderMetadata{}).
+		Delete(&FolderManifest{}).
 		Error
 }
 
-func (s *StoreFolderMetadataGorm) Edit(ctx context.Context, gameId int, metadata *FolderMetadata) error {
+func (s *StoreFolderMetadataGorm) Edit(ctx context.Context, gameId int, metadata *FolderManifest) error {
 	//TODO implement me
 	panic("implement me")
 }

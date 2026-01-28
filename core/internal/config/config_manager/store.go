@@ -7,7 +7,7 @@ import (
 type Store interface {
 	Get(id string) (ServiceConfig, error)
 	New(conf *ServiceConfig) error
-	Edit(id uint, conf *ServiceConfig) error
+	Edit(conf *ServiceConfig) error
 	Delete(id uint) error
 	ListAll(config ServiceType) ([]ServiceConfig, error)
 	ListEnabled(ServiceType ServiceType) ([]ServiceConfig, error)

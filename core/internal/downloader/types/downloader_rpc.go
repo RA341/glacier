@@ -2,7 +2,6 @@ package types
 
 import (
 	v1 "github.com/ra341/glacier/generated/library/v1"
-	"github.com/rs/zerolog/log"
 )
 
 func (g *Download) ToProto() *v1.Download {
@@ -17,16 +16,7 @@ func (g *Download) ToProto() *v1.Download {
 }
 
 func (g *Download) FromProto(rpcDownload *v1.Download) {
-	downloadType, err := DownloadStateString(rpcDownload.State)
-	if err != nil {
-		log.Warn().Err(err).Msg("Failed to parse download type")
-		downloadType = Unknown
-	}
-
 	g.Client = rpcDownload.Client
-	g.DownloadId = rpcDownload.DownloadId
-	g.State = downloadType
-	g.Progress = rpcDownload.Progress
 	g.DownloadPath = rpcDownload.DownloadPath
 	g.DownloadUrl = rpcDownload.DownloadUrl
 }

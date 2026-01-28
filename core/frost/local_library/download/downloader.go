@@ -82,7 +82,7 @@ func (d *Download) Start() {
 
 	warnIfErr(d.progress.EditStatus(d.ctx, d.gameId, StatusMetadata, "Downloading Metadata"))
 
-	var meta library.FolderMetadata
+	var meta library.FolderManifest
 	err := d.downloadMetadata(&meta)
 	if err != nil {
 		warnIfErr(d.progress.EditStatus(d.ctx, d.gameId, StatusError, "could not download metadata"))
@@ -145,7 +145,7 @@ func (d *Download) Close() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // metadata step
 
-func (d *Download) downloadMetadata(meta *library.FolderMetadata) error {
+func (d *Download) downloadMetadata(meta *library.FolderManifest) error {
 	resp, err := d.conf.getHttpClient().Get(d.metadataUrlBase)
 	if err != nil {
 		return err
@@ -161,7 +161,7 @@ func (d *Download) downloadMetadata(meta *library.FolderMetadata) error {
 	return decoder.Decode(meta)
 }
 
-func (d *Download) setupFile(fm *library.FileMetadata) error {
+func (d *Download) setupFile(fm *library.FileManifest) error {
 	started := time.Now()
 
 	fullPath := filepath.Join(d.downloadFolder, fm.RelPath)
@@ -238,7 +238,7 @@ func (d *Download) setupFile(fm *library.FileMetadata) error {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // download step
 
-func (d *Download) downloadFile(fm *library.FileMetadata) error {
+func (d *Download) downloadFile(fm *library.FileManifest) error {
 	//log.Info().
 	//	Str("file", met.RelPath).
 	//	Str("size", humanize.Bytes(uint64(met.Size))).

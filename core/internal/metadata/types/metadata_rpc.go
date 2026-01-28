@@ -11,8 +11,8 @@ func (m *Meta) ToProto() *v1.GameMetadata {
 		ProviderType:  m.ProviderType.String(),
 		ID:            m.GameDBID,
 		Name:          m.Name,
-		Summary:       m.Summary,
-		Description:   m.Description,
+		Summary:       m.ShortDesc,
+		Description:   m.FullDesc,
 		URL:           m.URL,
 		ThumbnailURL:  m.ThumbnailURL,
 		Videos:        m.Videos,
@@ -38,8 +38,8 @@ func (m *Meta) FromProto(rpcMeta *v1.GameMetadata) {
 	m.ProviderType = providerType
 	m.GameDBID = rpcMeta.ID
 	m.Name = rpcMeta.Name
-	m.Summary = rpcMeta.Summary
-	m.Description = rpcMeta.Description
+	m.ShortDesc = rpcMeta.Summary
+	m.FullDesc = rpcMeta.Description
 	m.URL = rpcMeta.URL
 	m.ThumbnailURL = rpcMeta.ThumbnailURL
 	m.Videos = rpcMeta.Videos

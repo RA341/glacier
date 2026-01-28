@@ -12,6 +12,7 @@ import (
 
 	connectcors "connectrpc.com/cors"
 	"github.com/ra341/glacier/internal/config/config_manager"
+	"github.com/ra341/glacier/internal/indexer"
 
 	"github.com/ra341/glacier/internal/library"
 
@@ -104,6 +105,9 @@ func (s *Server) registerRoutes(mux *http.ServeMux) {
 	})
 
 	mux.Handle(search.NewHandler(s.Search))
+	mux.Handle(indexer.NewHandler(s.Indexer))
+
+	// lib stuff
 	mux.Handle(library.NewHandler(s.Library))
 	api.WithSubRouter(mux,
 		"/library/download",

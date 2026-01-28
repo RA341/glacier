@@ -16,7 +16,6 @@
     import {IndexerService} from "$lib/gen/indexer/v1/indexer_pb";
     import {createRPCRunner} from "$lib/api/svelte-api.svelte";
     import {type GameSource, GameSourceSchema, SearchService} from "$lib/gen/search/v1/search_pb";
-    import {DownloaderService} from "$lib/gen/downloader/v1/downloader_pb";
     import {DownloadSchema, GameSchema, LibraryService} from "$lib/gen/library/v1/library_pb";
     import {create,} from "@bufbuild/protobuf";
     import {ServiceConfigService} from "$lib/gen/service_config/v1/service_config_pb";
@@ -121,7 +120,7 @@
                 </div>
                 <div class="h-px bg-border w-full"></div>
                 <p class="text-sm text-muted leading-relaxed line-clamp-6">
-                    {game?.Description || "No description available for this title."}
+                    {game?.Summary || "No description available for this title."}
                 </p>
             </div>
 

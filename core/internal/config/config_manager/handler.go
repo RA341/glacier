@@ -134,8 +134,18 @@ func (h *Handler) Get(ctx context.Context, c *connect.Request[v1.GetRequest]) (*
 }
 
 func (h *Handler) Edit(ctx context.Context, c *connect.Request[v1.EditRequest]) (*connect.Response[v1.EditResponse], error) {
-	//TODO implement me
-	panic("implement me")
+	var cf ServiceConfig
+	err := cf.FromProto(c.Msg.Conf)
+	if err != nil {
+		return nil, err
+	}
+
+	err = h.srv.store.Edit(&cf)
+	if err != nil {
+		return nil, err
+	}
+
+	return connect.NewResponse(&v1.EditResponse{}), nil
 }
 
 func (h *Handler) Delete(ctx context.Context, c *connect.Request[v1.DeleteRequest]) (*connect.Response[v1.DeleteResponse], error) {

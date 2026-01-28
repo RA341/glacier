@@ -8,11 +8,11 @@ import (
 	"strings"
 )
 
-const _GameTypeName = "GameTypeUnknownGameTypeInstallerGameTypeStandalone"
+const _GameTypeName = "UnknownInstallerStandalone"
 
-var _GameTypeIndex = [...]uint8{0, 15, 32, 50}
+var _GameTypeIndex = [...]uint8{0, 7, 16, 26}
 
-const _GameTypeLowerName = "gametypeunknowngametypeinstallergametypestandalone"
+const _GameTypeLowerName = "unknowninstallerstandalone"
 
 func (i GameType) String() string {
 	if i < 0 || i >= GameType(len(_GameTypeIndex)-1) {
@@ -25,26 +25,26 @@ func (i GameType) String() string {
 // Re-run the stringer command to generate them again.
 func _GameTypeNoOp() {
 	var x [1]struct{}
-	_ = x[GameTypeUnknown-(0)]
-	_ = x[GameTypeInstaller-(1)]
-	_ = x[GameTypeStandalone-(2)]
+	_ = x[Unknown-(0)]
+	_ = x[Installer-(1)]
+	_ = x[Standalone-(2)]
 }
 
-var _GameTypeValues = []GameType{GameTypeUnknown, GameTypeInstaller, GameTypeStandalone}
+var _GameTypeValues = []GameType{Unknown, Installer, Standalone}
 
 var _GameTypeNameToValueMap = map[string]GameType{
-	_GameTypeName[0:15]:       GameTypeUnknown,
-	_GameTypeLowerName[0:15]:  GameTypeUnknown,
-	_GameTypeName[15:32]:      GameTypeInstaller,
-	_GameTypeLowerName[15:32]: GameTypeInstaller,
-	_GameTypeName[32:50]:      GameTypeStandalone,
-	_GameTypeLowerName[32:50]: GameTypeStandalone,
+	_GameTypeName[0:7]:        Unknown,
+	_GameTypeLowerName[0:7]:   Unknown,
+	_GameTypeName[7:16]:       Installer,
+	_GameTypeLowerName[7:16]:  Installer,
+	_GameTypeName[16:26]:      Standalone,
+	_GameTypeLowerName[16:26]: Standalone,
 }
 
 var _GameTypeNames = []string{
-	_GameTypeName[0:15],
-	_GameTypeName[15:32],
-	_GameTypeName[32:50],
+	_GameTypeName[0:7],
+	_GameTypeName[7:16],
+	_GameTypeName[16:26],
 }
 
 // GameTypeString retrieves an enum value from the enum constants string name.

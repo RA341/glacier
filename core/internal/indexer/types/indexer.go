@@ -10,14 +10,14 @@ type IndexerConfig = map[string]any
 type GameType int
 
 const (
-	// GameTypeUnknown is the default zero-value
-	GameTypeUnknown GameType = iota
+	// Unknown is the default zero-value
+	Unknown GameType = iota
 
-	// GameTypeInstaller means the files must be installed after download
-	GameTypeInstaller
+	// Installer means the files must be installed after download
+	Installer
 
-	// GameTypeStandalone means the files are ready-to-play after download
-	GameTypeStandalone
+	// Standalone means the files are ready-to-play after download
+	Standalone
 )
 
 //go:generate go run github.com/dmarkham/enumer@latest -sql -type=IndexerType -output=enum_indexer_type.go
