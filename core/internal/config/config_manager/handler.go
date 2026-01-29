@@ -149,6 +149,10 @@ func (h *Handler) Edit(ctx context.Context, c *connect.Request[v1.EditRequest]) 
 }
 
 func (h *Handler) Delete(ctx context.Context, c *connect.Request[v1.DeleteRequest]) (*connect.Response[v1.DeleteResponse], error) {
-	//TODO implement me
-	panic("implement me")
+	err := h.srv.store.Delete(uint(c.Msg.Id))
+	if err != nil {
+		return nil, err
+	}
+
+	return connect.NewResponse(&v1.DeleteResponse{}), nil
 }

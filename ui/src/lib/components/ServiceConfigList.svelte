@@ -14,6 +14,7 @@
     import {type ServiceConfig, ServiceConfigService} from "$lib/gen/service_config/v1/service_config_pb";
     import {createRPCRunner} from "$lib/api/svelte-api.svelte";
     import {onMount} from "svelte";
+    import {callRPC} from "$lib/api/api.ts";
 
     let {ServiceType}: { ServiceType: string } = $props();
     let scConfig = glacierCli(ServiceConfigService);
@@ -36,11 +37,20 @@
     })
 
     let editConf = $state<ServiceConfig | null>(null)
+
     function openEdit(config: ServiceConfig) {
         editConf = config;
         isOpen = true
     }
 
+    async function deleteClient(config: ServiceConfig) {
+        const {err} = await callRPC(() => scConfig.delete({id: config.ID}))
+        if (err) {
+            console.error(err)
+        }
+
+        refresh()
+    }
 </script>
 
 <div class="space-y-6">
@@ -107,7 +117,9 @@
                                                     class="p-2 text-muted hover:text-frost-400 hover:bg-frost-500/10 rounded-lg transition-all">
                                                 <Edit3Icon size={16}/>
                                             </button>
-                                            <button class="p-2 text-muted hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all">
+                                            <button
+                                                    onclick={()=>deleteClient(client)}
+                                                    class="p-2 text-muted hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all">
                                                 <Trash2Icon size={16}/>
                                             </button>
                                         </div>

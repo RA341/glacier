@@ -58,5 +58,5 @@ func (s *ServiceConfigManagerGorm) Edit(conf *ServiceConfig) error {
 }
 
 func (s *ServiceConfigManagerGorm) Delete(id uint) error {
-	return s.Q().Delete(id).Error
+	return s.Q().Unscoped().Delete(&ServiceConfig{}, id).Error
 }
