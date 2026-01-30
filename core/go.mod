@@ -12,11 +12,11 @@ require (
 	github.com/go-viper/mapstructure/v2 v2.5.0
 	github.com/goccy/go-yaml v1.19.2
 	github.com/gorilla/websocket v1.5.3
-	github.com/hekmon/transmissionrpc/v3 v3.0.0
 	github.com/joho/godotenv v1.5.1
 	github.com/mattn/go-sqlite3 v1.14.33
 	github.com/ncruces/zenity v0.10.14
 	github.com/pressly/goose/v3 v3.26.0
+	github.com/ra341/transmissionrpc/v3 v3.0.0-20260130024842-a566c28f4352
 	github.com/rs/cors v1.11.1
 	github.com/rs/zerolog v1.34.0
 	github.com/stretchr/testify v1.11.1
@@ -68,7 +68,7 @@ require (
 	github.com/googleapis/go-sql-spanner v1.17.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
-	github.com/hekmon/cunits/v2 v2.1.0 // indirect
+	github.com/hekmon/cunits/v2 v2.1.1 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
 	github.com/jackc/pgx/v5 v5.7.5 // indirect

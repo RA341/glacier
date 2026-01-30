@@ -11,7 +11,7 @@ import (
 	"github.com/ra341/glacier/internal/downloader/types"
 	"github.com/ra341/glacier/pkg/mapsct"
 
-	"github.com/hekmon/transmissionrpc/v3"
+	"github.com/ra341/transmissionrpc/v3"
 	"github.com/rs/zerolog/log"
 )
 

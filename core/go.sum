@@ -1,11 +1,7 @@
-ariga.io/atlas v0.36.2-0.20250806044935-5bb51a0a956e h1:7upp27oOT/fmM5Dz3z9k8cmYwKJ2NAzuTqfT/rEP+50=
-ariga.io/atlas v0.36.2-0.20250806044935-5bb51a0a956e/go.mod h1:Ex5l1xHsnWQUc3wYnrJ9gD7RUEzG76P7ZRQp8wNr0wc=
 ariga.io/atlas v1.0.0 h1:v9DQH49xK+SM2kKwk4OQBjfz/KNRMUR+pvDiEIxSJto=
 ariga.io/atlas v1.0.0/go.mod h1:esBbk3F+pi/mM2PvbCymDm+kWhaOk4PaaiegQdNELk8=
 ariga.io/atlas-provider-gorm v0.6.0 h1:nJx1jLKr8pKeIxuYX3NmBuchWR9VldopWyElnPakRDw=
 ariga.io/atlas-provider-gorm v0.6.0/go.mod h1:iod/+0ODkmcNBJsmNrs76btfETyqC+zCyy7sh7aXaig=
-cel.dev/expr v0.24.0 h1:56OvJKSH3hDGL0ml5uSxZmz3/3Pq4tJ+fb1unVLAFcY=
-cel.dev/expr v0.24.0/go.mod h1:hLPLo1W4QUmuYdA72RBX06QTs6MXw941piREPl3Yfiw=
 cel.dev/expr v0.25.1 h1:1KrZg61W6TWSxuNZ37Xy49ps13NUovb66QLprthtwi4=
 cel.dev/expr v0.25.1/go.mod h1:hrXvqGP6G6gyx8UAHSHJ5RGk//1Oj5nXQ2NI02Nrsg4=
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
@@ -915,10 +911,8 @@ github.com/hashicorp/golang-lru v0.5.0/go.mod h1:/m3WP610KZHVQ1SGc6re/UDhFvYD7pJ
 github.com/hashicorp/golang-lru v0.5.1/go.mod h1:/m3WP610KZHVQ1SGc6re/UDhFvYD7pJ4Ao+sR/qLZy8=
 github.com/hashicorp/golang-lru/v2 v2.0.7 h1:a+bsQ5rvGLjzHuww6tVxozPZFVghXaHOwFs4luLUK2k=
 github.com/hashicorp/golang-lru/v2 v2.0.7/go.mod h1:QeFd9opnmA6QUJc5vARoKUSoFhyfM2/ZepoAG6RGpeM=
-github.com/hekmon/cunits/v2 v2.1.0 h1:k6wIjc4PlacNOHwKEMBgWV2/c8jyD4eRMs5mR1BBhI0=
-github.com/hekmon/cunits/v2 v2.1.0/go.mod h1:9r1TycXYXaTmEWlAIfFV8JT+Xo59U96yUJAYHxzii2M=
-github.com/hekmon/transmissionrpc/v3 v3.0.0 h1:0Fb11qE0IBh4V4GlOwHNYpqpjcYDp5GouolwrpmcUDQ=
-github.com/hekmon/transmissionrpc/v3 v3.0.0/go.mod h1:38SlNhFzinVUuY87wGj3acOmRxeYZAZfrj6Re7UgCDg=
+github.com/hekmon/cunits/v2 v2.1.1 h1:E7RWES+bIJX8SK8EO7WmQ9xz5SnXVZ43I04yDqIHU2g=
+github.com/hekmon/cunits/v2 v2.1.1/go.mod h1:9r1TycXYXaTmEWlAIfFV8JT+Xo59U96yUJAYHxzii2M=
 github.com/iancoleman/strcase v0.2.0/go.mod h1:iwCmte+B7n89clKwxIoIXy/HfoL7AsD47ZCWhYzw7ho=
 github.com/ianlancetaylor/demangle v0.0.0-20181102032728-5e5cf60278f6/go.mod h1:aSSvb/t6k1mPoxDqO4vJh6VOCGPwU4O0C2/Eqndh1Sc=
 github.com/ianlancetaylor/demangle v0.0.0-20200824232613-28f6c0f3b639/go.mod h1:aSSvb/t6k1mPoxDqO4vJh6VOCGPwU4O0C2/Eqndh1Sc=
@@ -1016,6 +1010,8 @@ github.com/pressly/goose/v3 v3.26.0/go.mod h1:4hC1KrritdCxtuFsqgs1R4AU5bWtTAf+cn
 github.com/prometheus/client_model v0.0.0-20190812154241-14fe0d1b01d4/go.mod h1:xMI15A0UPsDsEKsMN9yxemIoYk6Tm2C1GtYGdfGttqA=
 github.com/prometheus/client_model v0.2.0/go.mod h1:xMI15A0UPsDsEKsMN9yxemIoYk6Tm2C1GtYGdfGttqA=
 github.com/prometheus/client_model v0.3.0/go.mod h1:LDGWKZIo7rky3hgvBe+caln+Dr3dPggB5dvjtD7w9+w=
+github.com/ra341/transmissionrpc/v3 v3.0.0-20260130024842-a566c28f4352 h1:c3o2QMcb9x02G9Y+99GtJo4WFfBvUM5HCaRbQxHVsdA=
+github.com/ra341/transmissionrpc/v3 v3.0.0-20260130024842-a566c28f4352/go.mod h1:uXdSQz8pnUOe65Vk1N1qMiJ0P6/SLR9iCvS1BneB5QY=
 github.com/randall77/makefat v0.0.0-20210315173500-7ddd0e42c844 h1:GranzK4hv1/pqTIhMTXt2X8MmMOuH3hMeUR0o9SP5yc=
 github.com/randall77/makefat v0.0.0-20210315173500-7ddd0e42c844/go.mod h1:T1TLSfyWVBRXVGzWd0o9BI4kfoO9InEgfQe4NV3mLz8=
 github.com/remyoudompheng/bigfft v0.0.0-20200410134404-eec4a21b6bb0/go.mod h1:qqbHyh8v60DhA7CoWK5oRCqLrMHRGoxYCSS9EjAz6Eo=

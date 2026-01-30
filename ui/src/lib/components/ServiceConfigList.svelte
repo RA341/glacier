@@ -10,11 +10,10 @@
         Settings2Icon,
         Trash2Icon
     } from "@lucide/svelte";
-    import {glacierCli} from "$lib/api/api";
+    import {callRPC, glacierCli} from "$lib/api/api";
     import {type ServiceConfig, ServiceConfigService} from "$lib/gen/service_config/v1/service_config_pb";
     import {createRPCRunner} from "$lib/api/svelte-api.svelte";
     import {onMount} from "svelte";
-    import {callRPC} from "$lib/api/api.ts";
 
     let {ServiceType}: { ServiceType: string } = $props();
     let scConfig = glacierCli(ServiceConfigService);
