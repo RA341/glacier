@@ -133,7 +133,7 @@ tasks:
   dk:b:
     desc: "Builds the main docker image"
     cmds:
-      - docker build -f pkg/docker/Dockerfile . -t {{.DOCKER_IMG}}
+      - docker --debug build -f pkg/docker/Dockerfile . -t {{.DOCKER_IMG}}
 
   cli:
     cmds:

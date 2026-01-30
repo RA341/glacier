@@ -2,9 +2,9 @@ FROM node:25-alpine AS web_ui
 
 WORKDIR /web/
 
-COPY ui/package.* .
+COPY ui/package* .
 
-RUN npm i
+RUN npm ci
 
 COPY ui/ .
 

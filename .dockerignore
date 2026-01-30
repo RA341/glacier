@@ -7,6 +7,10 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+
+ui/**/.svelte-kit
+ui/**/build
+ui/**/release
 /**/node_modules
 /**/dist
 /**/dist-ssr
@@ -25,11 +29,3 @@ lerna-debug.log*
 
 /**/.idea
 /**/bin
-/**/.dockman.yaml
-compose/*
-/**/test-compose
-/dock/
-dock/*
-/backend/**/*compose.yml
-install/stacks/
-/backend/**/gitTest
