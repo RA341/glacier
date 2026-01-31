@@ -2,6 +2,7 @@ package download
 
 import "io"
 
+//go:generate go run github.com/dmarkham/enumer@latest -sql -type=Status -output=enum_local_download_state.go
 type Status int
 
 const (

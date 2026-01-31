@@ -12,6 +12,7 @@
     import {GameSchema} from "$lib/gen/library/v1/library_pb";
     import {FrostLibraryService} from "$lib/gen/frost_library/v1/frost_library_pb";
     import {goto} from "$app/navigation";
+    import FrostTab from "./FrostTab.svelte";
 
     let activeTab = $state('details');
     let gameId = page.params.slug
@@ -91,6 +92,12 @@
                         Details
                     </button>
                     <button
+                            onclick={() => activeTab = 'local'}
+                            class="px-6 py-1.5 rounded-lg text-sm font-bold transition-all {activeTab === 'local' ? 'bg-surface shadow-sm text-frost-400' : 'text-muted hover:text-foreground'}"
+                    >
+                        Local
+                    </button>
+                    <button
                             onclick={() => activeTab = 'manage'}
                             class="px-6 py-1.5 rounded-lg text-sm font-bold transition-all {activeTab === 'manage' ? 'bg-surface shadow-sm text-frost-400' : 'text-muted hover:text-foreground'}"
                     >
@@ -129,6 +136,8 @@
         <main>
             {#if activeTab === 'details'}
                 <FrontPageTab bind:game={editGame}/>
+            {:else if activeTab === 'local'}
+                <FrostTab game={editGame}/>
             {:else}
                 <ManageTab bind:game={editGame}/>
             {/if}

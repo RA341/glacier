@@ -20,7 +20,16 @@ func New(baseurl string, store Store) *Service {
 	}
 }
 
-func (s *Service) Download(gameId int, downloadFolder string) error {
+func (s *Service) Download(ctx context.Context, gameId int, downloadFolder string) error {
+	var ll LocalGame
+
+	ll.GameId = gameId
+
+	err := s.store.Add(ctx, &ll)
+	if err != nil {
+		return err
+	}
+
 	return s.downloader.Download(gameId, downloadFolder)
 }
 

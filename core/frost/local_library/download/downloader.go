@@ -125,7 +125,6 @@ func (d *Download) Start() {
 		Msg("download finished")
 
 	warnIfErr(d.progress.EditStatus(d.ctx, d.gameId, StatusComplete, "Completed Downloading"))
-
 }
 
 func (d *Download) Progress() (complete []FileProgress, total error) {

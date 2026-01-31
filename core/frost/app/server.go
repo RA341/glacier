@@ -120,7 +120,7 @@ func (s *Server) registerFrontend(mux *http.ServeMux) {
 }
 
 func (s *Server) registerGlacierProxy(mux *http.ServeMux) {
-	target, err := url.Parse("http://localhost:6699")
+	target, err := url.Parse(s.Conf.Get().Server.GlacierUrl)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error parsing url")
 	}

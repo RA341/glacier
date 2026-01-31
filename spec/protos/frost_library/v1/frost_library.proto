@@ -5,9 +5,45 @@ package frost_library.v1;
 option go_package = "github.com/ra341/glacier/generated/frost_library/v1";
 
 service FrostLibraryService {
+  rpc Get(GetRequest) returns (GetResponse) {}
+  rpc Delete(DeleteRequest) returns (DeleteResponse) {}
+  rpc ListFiles(ListFilesRequest) returns (ListFilesResponse) {}
+
   rpc ListDownloading(ListDownloadingRequest) returns (ListDownloadingResponse) {}
   rpc Download(DownloadRequest) returns (DownloadResponse) {}
 }
+
+message ListFilesRequest {
+  uint64 id = 1;
+  string path = 2;
+}
+
+message ListFilesResponse {}
+
+message GetRequest {
+  uint64 id = 1;
+}
+
+message LocalGame {
+  uint64 ID = 1;
+
+  string DownloadPath = 2;
+  string InstallerPath = 3;
+  string ExePath = 4;
+
+  string Status = 5;
+  string StatusMessage = 6;
+}
+
+message GetResponse {
+  LocalGame lg = 1;
+}
+
+message DeleteRequest {
+  uint64 id = 1;
+}
+
+message DeleteResponse {}
 
 message DownloadRequest {
   int64 gameId = 1;
@@ -26,7 +62,9 @@ message FileProgress {
 }
 
 message FolderProgress {
-  repeated FileProgress files = 1;
+  int64 Complete = 1;
+  int64 Left = 2;
+  repeated FileProgress files = 3;
 }
 
 message ListDownloadingResponse {

@@ -15,13 +15,34 @@ type Handler struct {
 	srv *Service
 }
 
+func (h *Handler) Get(ctx context.Context, c *connect.Request[v1.GetRequest]) (*connect.Response[v1.GetResponse], error) {
+	get, err := h.srv.store.Get(ctx, int(c.Msg.Id))
+	if err != nil {
+		return nil, err
+	}
+
+	return connect.NewResponse(&v1.GetResponse{
+		Lg: get.ToProto(),
+	}), nil
+}
+
+func (h *Handler) Delete(ctx context.Context, c *connect.Request[v1.DeleteRequest]) (*connect.Response[v1.DeleteResponse], error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (h *Handler) ListFiles(ctx context.Context, c *connect.Request[v1.ListFilesRequest]) (*connect.Response[v1.ListFilesResponse], error) {
+	//TODO implement me
+	panic("implement me")
+}
+
 func NewHandler(srv *Service) (string, http.Handler) {
 	h := &Handler{srv: srv}
 	return v1connect.NewFrostLibraryServiceHandler(h)
 }
 
 func (h *Handler) Download(ctx context.Context, c *connect.Request[v1.DownloadRequest]) (*connect.Response[v1.DownloadResponse], error) {
-	err := h.srv.Download(int(c.Msg.GameId), c.Msg.DownloadFolder)
+	err := h.srv.Download(ctx, int(c.Msg.GameId), c.Msg.DownloadFolder)
 	if err != nil {
 		return nil, err
 	}
@@ -38,14 +59,24 @@ func (h *Handler) ListDownloading(ctx context.Context, c *connect.Request[v1.Lis
 	var res = map[uint64]*v1.FolderProgress{}
 
 	for k, v := range games {
+		var totalLeft int64 = 0
+		var totalComplete int64 = 0
+
+		toMap := listutils.ToMap(v, func(t download.FileProgress) *v1.FileProgress {
+			totalLeft += t.Left
+			totalComplete += t.Complete
+
+			return &v1.FileProgress{
+				Name:     t.Name,
+				Complete: uint64(t.Complete),
+				Left:     uint64(t.Left),
+			}
+		})
+
 		res[uint64(k)] = &v1.FolderProgress{
-			Files: listutils.ToMap(v, func(t download.FileProgress) *v1.FileProgress {
-				return &v1.FileProgress{
-					Name:     t.Name,
-					Complete: uint64(t.Complete),
-					Left:     uint64(t.Left),
-				}
-			}),
+			Complete: totalComplete,
+			Left:     totalLeft,
+			Files:    toMap,
 		}
 	}
 

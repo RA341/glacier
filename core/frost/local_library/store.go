@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/ra341/glacier/frost/local_library/download"
+	v1 "github.com/ra341/glacier/generated/frost_library/v1"
 	metadata "github.com/ra341/glacier/internal/metadata/types"
 	"gorm.io/gorm"
 )
@@ -22,12 +23,23 @@ type Store interface {
 type LocalGame struct {
 	gorm.Model
 
-	Game metadata.Meta `gorm:"embedded"`
-
+	Game          metadata.Meta `gorm:"embedded"`
+	GameId        int
 	DownloadPath  string
 	InstallerPath string
 	ExePath       string
 
 	Status        download.Status
 	StatusMessage string
+}
+
+func (g *LocalGame) ToProto() *v1.LocalGame {
+	return &v1.LocalGame{
+		ID:            uint64(g.ID),
+		DownloadPath:  g.DownloadPath,
+		InstallerPath: g.InstallerPath,
+		ExePath:       g.ExePath,
+		Status:        g.Status.String(),
+		StatusMessage: g.StatusMessage,
+	}
 }

@@ -31,6 +31,22 @@ tasks:
     cmds:
       - go mod download
 
+  frost:
+    deps:
+      - frost:ui:desk
+      - frost:go
+
+  frost:go:
+    cmds:
+      - task ui:b:frost
+      - task go:b:frost PROD=1
+
+  frost:ui:desk:
+    dir: "{{ .UI_DIR }}"
+    cmds:
+      - npm run desk:build
+      - cp -r release/linux-unpacked ../{{.BUILD_DIR}}/frost/ui
+
   go:b:*:
     dir: "{{.CORE_DIR}}"
     desc: "Builds a Go target. Usage: task go:<target>"
