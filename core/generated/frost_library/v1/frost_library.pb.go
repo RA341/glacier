@@ -605,16 +605,152 @@ func (x *FolderProgress) GetFiles() []*FileProgress {
 	return nil
 }
 
+type DownloadProgress struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Thumbnail     string                 `protobuf:"bytes,1,opt,name=Thumbnail,proto3" json:"Thumbnail,omitempty"`
+	Title         string                 `protobuf:"bytes,2,opt,name=Title,proto3" json:"Title,omitempty"`
+	Download      *DownloadInf           `protobuf:"bytes,3,opt,name=download,proto3" json:"download,omitempty"`
+	Progress      *FolderProgress        `protobuf:"bytes,4,opt,name=progress,proto3" json:"progress,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DownloadProgress) Reset() {
+	*x = DownloadProgress{}
+	mi := &file_frost_library_v1_frost_library_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DownloadProgress) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DownloadProgress) ProtoMessage() {}
+
+func (x *DownloadProgress) ProtoReflect() protoreflect.Message {
+	mi := &file_frost_library_v1_frost_library_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DownloadProgress.ProtoReflect.Descriptor instead.
+func (*DownloadProgress) Descriptor() ([]byte, []int) {
+	return file_frost_library_v1_frost_library_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *DownloadProgress) GetThumbnail() string {
+	if x != nil {
+		return x.Thumbnail
+	}
+	return ""
+}
+
+func (x *DownloadProgress) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *DownloadProgress) GetDownload() *DownloadInf {
+	if x != nil {
+		return x.Download
+	}
+	return nil
+}
+
+func (x *DownloadProgress) GetProgress() *FolderProgress {
+	if x != nil {
+		return x.Progress
+	}
+	return nil
+}
+
+type DownloadInf struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	State         string                 `protobuf:"bytes,1,opt,name=State,proto3" json:"State,omitempty"`
+	Message       string                 `protobuf:"bytes,2,opt,name=Message,proto3" json:"Message,omitempty"`
+	TimeStarted   string                 `protobuf:"bytes,3,opt,name=TimeStarted,proto3" json:"TimeStarted,omitempty"`
+	DownloadPath  string                 `protobuf:"bytes,4,opt,name=DownloadPath,proto3" json:"DownloadPath,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DownloadInf) Reset() {
+	*x = DownloadInf{}
+	mi := &file_frost_library_v1_frost_library_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DownloadInf) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DownloadInf) ProtoMessage() {}
+
+func (x *DownloadInf) ProtoReflect() protoreflect.Message {
+	mi := &file_frost_library_v1_frost_library_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DownloadInf.ProtoReflect.Descriptor instead.
+func (*DownloadInf) Descriptor() ([]byte, []int) {
+	return file_frost_library_v1_frost_library_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *DownloadInf) GetState() string {
+	if x != nil {
+		return x.State
+	}
+	return ""
+}
+
+func (x *DownloadInf) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *DownloadInf) GetTimeStarted() string {
+	if x != nil {
+		return x.TimeStarted
+	}
+	return ""
+}
+
+func (x *DownloadInf) GetDownloadPath() string {
+	if x != nil {
+		return x.DownloadPath
+	}
+	return ""
+}
+
 type ListDownloadingResponse struct {
-	state         protoimpl.MessageState     `protogen:"open.v1"`
-	Downloads     map[uint64]*FolderProgress `protobuf:"bytes,1,rep,name=downloads,proto3" json:"downloads,omitempty" protobuf_key:"varint,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Downloads     []*DownloadProgress    `protobuf:"bytes,1,rep,name=downloads,proto3" json:"downloads,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *ListDownloadingResponse) Reset() {
 	*x = ListDownloadingResponse{}
-	mi := &file_frost_library_v1_frost_library_proto_msgTypes[12]
+	mi := &file_frost_library_v1_frost_library_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -626,7 +762,7 @@ func (x *ListDownloadingResponse) String() string {
 func (*ListDownloadingResponse) ProtoMessage() {}
 
 func (x *ListDownloadingResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_frost_library_v1_frost_library_proto_msgTypes[12]
+	mi := &file_frost_library_v1_frost_library_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -639,10 +775,10 @@ func (x *ListDownloadingResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListDownloadingResponse.ProtoReflect.Descriptor instead.
 func (*ListDownloadingResponse) Descriptor() ([]byte, []int) {
-	return file_frost_library_v1_frost_library_proto_rawDescGZIP(), []int{12}
+	return file_frost_library_v1_frost_library_proto_rawDescGZIP(), []int{14}
 }
 
-func (x *ListDownloadingResponse) GetDownloads() map[uint64]*FolderProgress {
+func (x *ListDownloadingResponse) GetDownloads() []*DownloadProgress {
 	if x != nil {
 		return x.Downloads
 	}
@@ -685,12 +821,19 @@ const file_frost_library_v1_frost_library_proto_rawDesc = "" +
 	"\x0eFolderProgress\x12\x1a\n" +
 	"\bComplete\x18\x01 \x01(\x03R\bComplete\x12\x12\n" +
 	"\x04Left\x18\x02 \x01(\x03R\x04Left\x124\n" +
-	"\x05files\x18\x03 \x03(\v2\x1e.frost_library.v1.FileProgressR\x05files\"\xd1\x01\n" +
-	"\x17ListDownloadingResponse\x12V\n" +
-	"\tdownloads\x18\x01 \x03(\v28.frost_library.v1.ListDownloadingResponse.DownloadsEntryR\tdownloads\x1a^\n" +
-	"\x0eDownloadsEntry\x12\x10\n" +
-	"\x03key\x18\x01 \x01(\x04R\x03key\x126\n" +
-	"\x05value\x18\x02 \x01(\v2 .frost_library.v1.FolderProgressR\x05value:\x028\x012\xc1\x03\n" +
+	"\x05files\x18\x03 \x03(\v2\x1e.frost_library.v1.FileProgressR\x05files\"\xbf\x01\n" +
+	"\x10DownloadProgress\x12\x1c\n" +
+	"\tThumbnail\x18\x01 \x01(\tR\tThumbnail\x12\x14\n" +
+	"\x05Title\x18\x02 \x01(\tR\x05Title\x129\n" +
+	"\bdownload\x18\x03 \x01(\v2\x1d.frost_library.v1.DownloadInfR\bdownload\x12<\n" +
+	"\bprogress\x18\x04 \x01(\v2 .frost_library.v1.FolderProgressR\bprogress\"\x83\x01\n" +
+	"\vDownloadInf\x12\x14\n" +
+	"\x05State\x18\x01 \x01(\tR\x05State\x12\x18\n" +
+	"\aMessage\x18\x02 \x01(\tR\aMessage\x12 \n" +
+	"\vTimeStarted\x18\x03 \x01(\tR\vTimeStarted\x12\"\n" +
+	"\fDownloadPath\x18\x04 \x01(\tR\fDownloadPath\"[\n" +
+	"\x17ListDownloadingResponse\x12@\n" +
+	"\tdownloads\x18\x01 \x03(\v2\".frost_library.v1.DownloadProgressR\tdownloads2\xc1\x03\n" +
 	"\x13FrostLibraryService\x12D\n" +
 	"\x03Get\x12\x1c.frost_library.v1.GetRequest\x1a\x1d.frost_library.v1.GetResponse\"\x00\x12M\n" +
 	"\x06Delete\x12\x1f.frost_library.v1.DeleteRequest\x1a .frost_library.v1.DeleteResponse\"\x00\x12V\n" +
@@ -711,7 +854,7 @@ func file_frost_library_v1_frost_library_proto_rawDescGZIP() []byte {
 	return file_frost_library_v1_frost_library_proto_rawDescData
 }
 
-var file_frost_library_v1_frost_library_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
+var file_frost_library_v1_frost_library_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
 var file_frost_library_v1_frost_library_proto_goTypes = []any{
 	(*ListFilesRequest)(nil),        // 0: frost_library.v1.ListFilesRequest
 	(*ListFilesResponse)(nil),       // 1: frost_library.v1.ListFilesResponse
@@ -725,29 +868,31 @@ var file_frost_library_v1_frost_library_proto_goTypes = []any{
 	(*ListDownloadingRequest)(nil),  // 9: frost_library.v1.ListDownloadingRequest
 	(*FileProgress)(nil),            // 10: frost_library.v1.FileProgress
 	(*FolderProgress)(nil),          // 11: frost_library.v1.FolderProgress
-	(*ListDownloadingResponse)(nil), // 12: frost_library.v1.ListDownloadingResponse
-	nil,                             // 13: frost_library.v1.ListDownloadingResponse.DownloadsEntry
+	(*DownloadProgress)(nil),        // 12: frost_library.v1.DownloadProgress
+	(*DownloadInf)(nil),             // 13: frost_library.v1.DownloadInf
+	(*ListDownloadingResponse)(nil), // 14: frost_library.v1.ListDownloadingResponse
 }
 var file_frost_library_v1_frost_library_proto_depIdxs = []int32{
 	3,  // 0: frost_library.v1.GetResponse.lg:type_name -> frost_library.v1.LocalGame
 	10, // 1: frost_library.v1.FolderProgress.files:type_name -> frost_library.v1.FileProgress
-	13, // 2: frost_library.v1.ListDownloadingResponse.downloads:type_name -> frost_library.v1.ListDownloadingResponse.DownloadsEntry
-	11, // 3: frost_library.v1.ListDownloadingResponse.DownloadsEntry.value:type_name -> frost_library.v1.FolderProgress
-	2,  // 4: frost_library.v1.FrostLibraryService.Get:input_type -> frost_library.v1.GetRequest
-	5,  // 5: frost_library.v1.FrostLibraryService.Delete:input_type -> frost_library.v1.DeleteRequest
-	0,  // 6: frost_library.v1.FrostLibraryService.ListFiles:input_type -> frost_library.v1.ListFilesRequest
-	9,  // 7: frost_library.v1.FrostLibraryService.ListDownloading:input_type -> frost_library.v1.ListDownloadingRequest
-	7,  // 8: frost_library.v1.FrostLibraryService.Download:input_type -> frost_library.v1.DownloadRequest
-	4,  // 9: frost_library.v1.FrostLibraryService.Get:output_type -> frost_library.v1.GetResponse
-	6,  // 10: frost_library.v1.FrostLibraryService.Delete:output_type -> frost_library.v1.DeleteResponse
-	1,  // 11: frost_library.v1.FrostLibraryService.ListFiles:output_type -> frost_library.v1.ListFilesResponse
-	12, // 12: frost_library.v1.FrostLibraryService.ListDownloading:output_type -> frost_library.v1.ListDownloadingResponse
-	8,  // 13: frost_library.v1.FrostLibraryService.Download:output_type -> frost_library.v1.DownloadResponse
-	9,  // [9:14] is the sub-list for method output_type
-	4,  // [4:9] is the sub-list for method input_type
-	4,  // [4:4] is the sub-list for extension type_name
-	4,  // [4:4] is the sub-list for extension extendee
-	0,  // [0:4] is the sub-list for field type_name
+	13, // 2: frost_library.v1.DownloadProgress.download:type_name -> frost_library.v1.DownloadInf
+	11, // 3: frost_library.v1.DownloadProgress.progress:type_name -> frost_library.v1.FolderProgress
+	12, // 4: frost_library.v1.ListDownloadingResponse.downloads:type_name -> frost_library.v1.DownloadProgress
+	2,  // 5: frost_library.v1.FrostLibraryService.Get:input_type -> frost_library.v1.GetRequest
+	5,  // 6: frost_library.v1.FrostLibraryService.Delete:input_type -> frost_library.v1.DeleteRequest
+	0,  // 7: frost_library.v1.FrostLibraryService.ListFiles:input_type -> frost_library.v1.ListFilesRequest
+	9,  // 8: frost_library.v1.FrostLibraryService.ListDownloading:input_type -> frost_library.v1.ListDownloadingRequest
+	7,  // 9: frost_library.v1.FrostLibraryService.Download:input_type -> frost_library.v1.DownloadRequest
+	4,  // 10: frost_library.v1.FrostLibraryService.Get:output_type -> frost_library.v1.GetResponse
+	6,  // 11: frost_library.v1.FrostLibraryService.Delete:output_type -> frost_library.v1.DeleteResponse
+	1,  // 12: frost_library.v1.FrostLibraryService.ListFiles:output_type -> frost_library.v1.ListFilesResponse
+	14, // 13: frost_library.v1.FrostLibraryService.ListDownloading:output_type -> frost_library.v1.ListDownloadingResponse
+	8,  // 14: frost_library.v1.FrostLibraryService.Download:output_type -> frost_library.v1.DownloadResponse
+	10, // [10:15] is the sub-list for method output_type
+	5,  // [5:10] is the sub-list for method input_type
+	5,  // [5:5] is the sub-list for extension type_name
+	5,  // [5:5] is the sub-list for extension extendee
+	0,  // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_frost_library_v1_frost_library_proto_init() }
@@ -761,7 +906,7 @@ func file_frost_library_v1_frost_library_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_frost_library_v1_frost_library_proto_rawDesc), len(file_frost_library_v1_frost_library_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   14,
+			NumMessages:   15,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

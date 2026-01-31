@@ -70,7 +70,7 @@ func (d *Service) Download(gameId int, downloadFolder string) error {
 
 	// todo check for avail space
 
-	download, err := NewDownload(d, d.progress, d.baseurl, gameDownload, gameId)
+	download, err := NewDownload(d, d.onDone, d.progress, d.baseurl, gameDownload, gameId)
 	if err != nil {
 		return fmt.Errorf("could not start download: %w", err)
 	}
@@ -78,6 +78,9 @@ func (d *Service) Download(gameId int, downloadFolder string) error {
 	d.ActiveDownloads.Store(gameId, download)
 
 	return nil
+}
+func (d *Service) onDone(gameId int) {
+	d.ActiveDownloads.Delete(gameId)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

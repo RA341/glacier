@@ -2,26 +2,27 @@
     import GameHero from "./GameHero.svelte";
     import FrontPageTab from "./FrontPageTab.svelte";
     import ManageTab from "./ManageTab.svelte";
-    import {AlertCircleIcon, DownloadIcon, LoaderIcon, Save, ServerIcon, Trash2} from '@lucide/svelte';
-    import {type Game, LibraryService} from "$lib/gen/library/v1/library_pb";
-    import {frostCli, glacierCli, isFrost} from "$lib/api/api";
+    import {AlertCircleIcon, LoaderIcon, Save, ServerIcon, Trash2} from '@lucide/svelte';
+    import {type Game, GameSchema, LibraryService} from "$lib/gen/library/v1/library_pb";
+    import {glacierCli, isFrost} from "$lib/api/api";
     import {createRPCRunner} from "$lib/api/svelte-api.svelte";
     import {onMount} from "svelte";
     import {page} from "$app/state";
     import {toJson} from "@bufbuild/protobuf";
-    import {GameSchema} from "$lib/gen/library/v1/library_pb";
-    import {FrostLibraryService} from "$lib/gen/frost_library/v1/frost_library_pb";
     import {goto} from "$app/navigation";
     import FrostTab from "./FrostTab.svelte";
+    import GameDownloadButton from "./ButtonDownload.svelte";
 
     let activeTab = $state('details');
-    let gameId = page.params.slug
+    let gameIdStr = page.params.slug
+    let gameId = $derived(BigInt(gameIdStr!))
+
     let libSrv = glacierCli(LibraryService)
-    let gameRpc = createRPCRunner(() => libSrv.getGame({gameId: BigInt(gameId!)}))
+    let gameRpc = createRPCRunner(() => libSrv.getGame({gameId: gameId}))
 
     function getGame() {
-        console.log(`Fetching game... ${gameId}`);
-        if (gameId) {
+        console.log(`Fetching game... ${gameIdStr}`);
+        if (gameIdStr) {
             gameRpc.runner()
         }
     }
@@ -36,15 +37,6 @@
         }
     })
 
-    const llervice = frostCli(FrostLibraryService)
-
-    function download() {
-        llervice.download({
-            gameId: BigInt(gameId!),
-            downloadFolder: "./downloads"
-        })
-    }
-
     let isModified = $derived(
         editGame && originalGame &&
         toJson(GameSchema, editGame) !== toJson(GameSchema, originalGame)
@@ -55,13 +47,13 @@
     })
 
     function deleteGame() {
-        libSrv.delete({gameId: BigInt(gameId!)})
+        libSrv.delete({gameId: BigInt(gameIdStr!)})
         goto("/library")
     }
 
 </script>
 
-{#if !gameId}
+{#if !gameIdStr}
     <div class="flex flex-col items-center justify-center h-96 border-2 border-dashed border-border rounded-3xl text-muted/30">
         <ServerIcon size={48} strokeWidth={1} class="mb-4"/>
         <h2 class="text-xl font-bold text-foreground/50">No game Id found</h2>
@@ -122,13 +114,7 @@
                     Save
                 </button>
                 {#if isFrost}
-                    <button
-                            onclick={download}
-                            class="px-8 py-2 bg-frost-500 text-background rounded-xl text-sm font-bold hover:bg-frost-400 transition-all flex items-center gap-2 shadow-lg shadow-frost-500/20"
-                    >
-                        <DownloadIcon size={16}/>
-                        Download
-                    </button>
+                    <GameDownloadButton gameId={gameId} />
                 {/if}
             </div>
         </div>

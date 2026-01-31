@@ -25,10 +25,10 @@ func (s *StoreGorm) List(ctx context.Context, query string, limit int, offset in
 	return games, err
 }
 
-func (s *StoreGorm) ListWithState(ctx context.Context, status download.Status) ([]LocalGame, error) {
+func (s *StoreGorm) ListWithState(ctx context.Context, status ...download.Status) ([]LocalGame, error) {
 	var games []LocalGame
 	err := s.db.WithContext(ctx).
-		Where("status = ?", status).
+		Where("status IN ?", status).
 		Find(&games).Error
 	return games, err
 }
@@ -51,9 +51,10 @@ func (s *StoreGorm) Delete(ctx context.Context, id int) error {
 	return s.db.WithContext(ctx).Unscoped().Delete(&LocalGame{}, id).Error
 }
 
-func (s *StoreGorm) EditStatus(ctx context.Context, id int, Status download.Status, StatusMessage string) error {
-	return s.db.WithContext(ctx).Model(&LocalGame{}).Where("id = ?", id).Updates(map[string]interface{}{
-		"status":         Status,
-		"status_message": StatusMessage,
-	}).Error
+func (s *StoreGorm) EditStatus(ctx context.Context, id int, down *download.Info) error {
+	return s.db.WithContext(ctx).
+		Model(&LocalGame{}).
+		Where("id = ?", id).
+		Updates(down).
+		Error
 }

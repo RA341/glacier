@@ -47,8 +47,8 @@
                 <h2 class="text-xl font-bold text-frost-400/50">Frost downloads</h2>
             </div>
         {:else}
-            {#each Object.entries(downloadingRpc.value?.downloads ?? {}) as [key, ff]}
-                <DownloadItem ID={key} detail={ff}/>
+            {#each (downloadingRpc.value?.downloads ?? []) as down}
+                <DownloadItem detail={down}/>
             {/each}
         {/if}
     {/if}

@@ -27,8 +27,10 @@ type Config interface {
 }
 
 type ProgressUpdater interface {
-	EditStatus(ctx context.Context, id int, Status Status, StatusMessage string) error
+	EditStatus(ctx context.Context, id int, down *Info) error
 }
+
+type OnDone func(id int)
 
 type Download struct {
 	ctx    context.Context
@@ -41,14 +43,20 @@ type Download struct {
 	downloadUrlBase string
 
 	downloadFolder string
-
-	cacheStore CacheStore
-	progress   ProgressUpdater
+	OnDone         OnDone
+	cacheStore     CacheStore
+	progress       ProgressUpdater
 }
 
-const MetadataFolder = ".frost.metadata"
+const MetadataFolder = ".frost.cache"
 
-func NewDownload(config Config, progress ProgressUpdater, baseUrl, downloadFolder string, gameId int) (*Download, error) {
+func NewDownload(
+	config Config,
+	OnDone OnDone,
+	progress ProgressUpdater,
+	baseUrl, downloadFolder string,
+	gameId int,
+) (*Download, error) {
 	metaPath := filepath.Join(downloadFolder, MetadataFolder)
 	db, err := NewCacheStoreBadger(metaPath)
 	if err != nil {
@@ -59,6 +67,8 @@ func NewDownload(config Config, progress ProgressUpdater, baseUrl, downloadFolde
 	d := &Download{
 		ctx:    ctx,
 		cancel: cancel,
+
+		OnDone: OnDone,
 
 		downloadUrlBase: fmt.Sprintf("%s/load/%d", baseUrl, gameId),
 		metadataUrlBase: fmt.Sprintf("%s/meta/%d", baseUrl, gameId),
@@ -78,18 +88,25 @@ func NewDownload(config Config, progress ProgressUpdater, baseUrl, downloadFolde
 func (d *Download) Start() {
 	defer fileutil.Close(d.cacheStore)
 
-	start := time.Now()
-
-	warnIfErr(d.progress.EditStatus(d.ctx, d.gameId, StatusMetadata, "Downloading Metadata"))
+	warnIfErr(d.progress.EditStatus(d.ctx, d.gameId, &Info{
+		Status:        StatusMetadata,
+		StatusMessage: "Downloading Metadata",
+	}))
 
 	var meta library.FolderManifest
 	err := d.downloadMetadata(&meta)
 	if err != nil {
-		warnIfErr(d.progress.EditStatus(d.ctx, d.gameId, StatusError, "could not download metadata"))
+		warnIfErr(d.progress.EditStatus(d.ctx, d.gameId, &Info{
+			Status:        StatusError,
+			StatusMessage: "could not download metadata",
+		}))
 		return
 	}
 
-	warnIfErr(d.progress.EditStatus(d.ctx, d.gameId, StatusDownloading, "starting file download"))
+	warnIfErr(d.progress.EditStatus(d.ctx, d.gameId, &Info{
+		Status:        StatusDownloading,
+		StatusMessage: "starting file download",
+	}))
 
 	eg := errgroup.Group{}
 	eg.SetLimit(d.conf.getMaxConcurrentFileChunks())
@@ -98,14 +115,12 @@ func (d *Download) Start() {
 		eg.Go(func() error {
 			err := d.setupFile(&fi)
 			if err != nil {
-				log.Error().Err(err).Str("file", fi.RelPath).Msg("")
-				// todo how to handle err
+				return fmt.Errorf("could not setup file metadata: %w", err)
 			}
 
 			err = d.downloadFile(&fi)
 			if err != nil {
-				log.Error().Err(err).Str("file", fi.RelPath).Msg("download err")
-				// todo how to handle err
+				return fmt.Errorf("could not download file: %w", err)
 			}
 
 			return nil
@@ -115,16 +130,25 @@ func (d *Download) Start() {
 	err = eg.Wait()
 	if err != nil {
 		log.Error().Err(err).Msg("error downloading")
-		warnIfErr(d.progress.EditStatus(d.ctx, d.gameId, StatusError, "error downloading: "+err.Error()))
+		warnIfErr(d.progress.EditStatus(d.ctx, d.gameId, &Info{
+			Status:        StatusError,
+			StatusMessage: "error downloading: " + err.Error(),
+		}))
+		return
 	}
 
-	elapsed := time.Since(start)
 	log.Info().
-		Str("elapsed", elapsed.String()).
 		Int("game", d.gameId).
 		Msg("download finished")
 
-	warnIfErr(d.progress.EditStatus(d.ctx, d.gameId, StatusComplete, "Completed Downloading"))
+	// remove from download tracker
+	d.OnDone(d.gameId)
+
+	warnIfErr(d.progress.EditStatus(d.ctx, d.gameId, &Info{
+		Status:        StatusComplete,
+		StatusMessage: "Download Complete",
+		Done:          time.Now(),
+	}))
 }
 
 func (d *Download) Progress() (complete []FileProgress, total error) {

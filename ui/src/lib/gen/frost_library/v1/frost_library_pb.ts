@@ -10,7 +10,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file frost_library/v1/frost_library.proto.
  */
 export const file_frost_library_v1_frost_library: GenFile = /*@__PURE__*/
-  fileDesc("CiRmcm9zdF9saWJyYXJ5L3YxL2Zyb3N0X2xpYnJhcnkucHJvdG8SEGZyb3N0X2xpYnJhcnkudjEiLAoQTGlzdEZpbGVzUmVxdWVzdBIKCgJpZBgBIAEoBBIMCgRwYXRoGAIgASgJIhMKEUxpc3RGaWxlc1Jlc3BvbnNlIhgKCkdldFJlcXVlc3QSCgoCaWQYASABKAQifAoJTG9jYWxHYW1lEgoKAklEGAEgASgEEhQKDERvd25sb2FkUGF0aBgCIAEoCRIVCg1JbnN0YWxsZXJQYXRoGAMgASgJEg8KB0V4ZVBhdGgYBCABKAkSDgoGU3RhdHVzGAUgASgJEhUKDVN0YXR1c01lc3NhZ2UYBiABKAkiNgoLR2V0UmVzcG9uc2USJwoCbGcYASABKAsyGy5mcm9zdF9saWJyYXJ5LnYxLkxvY2FsR2FtZSIbCg1EZWxldGVSZXF1ZXN0EgoKAmlkGAEgASgEIhAKDkRlbGV0ZVJlc3BvbnNlIjkKD0Rvd25sb2FkUmVxdWVzdBIOCgZnYW1lSWQYASABKAMSFgoOZG93bmxvYWRGb2xkZXIYAiABKAkiEgoQRG93bmxvYWRSZXNwb25zZSIYChZMaXN0RG93bmxvYWRpbmdSZXF1ZXN0IjwKDEZpbGVQcm9ncmVzcxIMCgROYW1lGAEgASgJEhAKCENvbXBsZXRlGAIgASgEEgwKBExlZnQYAyABKAQiXwoORm9sZGVyUHJvZ3Jlc3MSEAoIQ29tcGxldGUYASABKAMSDAoETGVmdBgCIAEoAxItCgVmaWxlcxgDIAMoCzIeLmZyb3N0X2xpYnJhcnkudjEuRmlsZVByb2dyZXNzIroBChdMaXN0RG93bmxvYWRpbmdSZXNwb25zZRJLCglkb3dubG9hZHMYASADKAsyOC5mcm9zdF9saWJyYXJ5LnYxLkxpc3REb3dubG9hZGluZ1Jlc3BvbnNlLkRvd25sb2Fkc0VudHJ5GlIKDkRvd25sb2Fkc0VudHJ5EgsKA2tleRgBIAEoBBIvCgV2YWx1ZRgCIAEoCzIgLmZyb3N0X2xpYnJhcnkudjEuRm9sZGVyUHJvZ3Jlc3M6AjgBMsEDChNGcm9zdExpYnJhcnlTZXJ2aWNlEkQKA0dldBIcLmZyb3N0X2xpYnJhcnkudjEuR2V0UmVxdWVzdBodLmZyb3N0X2xpYnJhcnkudjEuR2V0UmVzcG9uc2UiABJNCgZEZWxldGUSHy5mcm9zdF9saWJyYXJ5LnYxLkRlbGV0ZVJlcXVlc3QaIC5mcm9zdF9saWJyYXJ5LnYxLkRlbGV0ZVJlc3BvbnNlIgASVgoJTGlzdEZpbGVzEiIuZnJvc3RfbGlicmFyeS52MS5MaXN0RmlsZXNSZXF1ZXN0GiMuZnJvc3RfbGlicmFyeS52MS5MaXN0RmlsZXNSZXNwb25zZSIAEmgKD0xpc3REb3dubG9hZGluZxIoLmZyb3N0X2xpYnJhcnkudjEuTGlzdERvd25sb2FkaW5nUmVxdWVzdBopLmZyb3N0X2xpYnJhcnkudjEuTGlzdERvd25sb2FkaW5nUmVzcG9uc2UiABJTCghEb3dubG9hZBIhLmZyb3N0X2xpYnJhcnkudjEuRG93bmxvYWRSZXF1ZXN0GiIuZnJvc3RfbGlicmFyeS52MS5Eb3dubG9hZFJlc3BvbnNlIgBCuwEKFGNvbS5mcm9zdF9saWJyYXJ5LnYxQhFGcm9zdExpYnJhcnlQcm90b1ABWjNnaXRodWIuY29tL3JhMzQxL2dsYWNpZXIvZ2VuZXJhdGVkL2Zyb3N0X2xpYnJhcnkvdjGiAgNGWFiqAg9Gcm9zdExpYnJhcnkuVjHKAg9Gcm9zdExpYnJhcnlcVjHiAhtGcm9zdExpYnJhcnlcVjFcR1BCTWV0YWRhdGHqAhBGcm9zdExpYnJhcnk6OlYxYgZwcm90bzM");
+  fileDesc("CiRmcm9zdF9saWJyYXJ5L3YxL2Zyb3N0X2xpYnJhcnkucHJvdG8SEGZyb3N0X2xpYnJhcnkudjEiLAoQTGlzdEZpbGVzUmVxdWVzdBIKCgJpZBgBIAEoBBIMCgRwYXRoGAIgASgJIhMKEUxpc3RGaWxlc1Jlc3BvbnNlIhgKCkdldFJlcXVlc3QSCgoCaWQYASABKAQifAoJTG9jYWxHYW1lEgoKAklEGAEgASgEEhQKDERvd25sb2FkUGF0aBgCIAEoCRIVCg1JbnN0YWxsZXJQYXRoGAMgASgJEg8KB0V4ZVBhdGgYBCABKAkSDgoGU3RhdHVzGAUgASgJEhUKDVN0YXR1c01lc3NhZ2UYBiABKAkiNgoLR2V0UmVzcG9uc2USJwoCbGcYASABKAsyGy5mcm9zdF9saWJyYXJ5LnYxLkxvY2FsR2FtZSIbCg1EZWxldGVSZXF1ZXN0EgoKAmlkGAEgASgEIhAKDkRlbGV0ZVJlc3BvbnNlIjkKD0Rvd25sb2FkUmVxdWVzdBIOCgZnYW1lSWQYASABKAMSFgoOZG93bmxvYWRGb2xkZXIYAiABKAkiEgoQRG93bmxvYWRSZXNwb25zZSIYChZMaXN0RG93bmxvYWRpbmdSZXF1ZXN0IjwKDEZpbGVQcm9ncmVzcxIMCgROYW1lGAEgASgJEhAKCENvbXBsZXRlGAIgASgEEgwKBExlZnQYAyABKAQiXwoORm9sZGVyUHJvZ3Jlc3MSEAoIQ29tcGxldGUYASABKAMSDAoETGVmdBgCIAEoAxItCgVmaWxlcxgDIAMoCzIeLmZyb3N0X2xpYnJhcnkudjEuRmlsZVByb2dyZXNzIpkBChBEb3dubG9hZFByb2dyZXNzEhEKCVRodW1ibmFpbBgBIAEoCRINCgVUaXRsZRgCIAEoCRIvCghkb3dubG9hZBgDIAEoCzIdLmZyb3N0X2xpYnJhcnkudjEuRG93bmxvYWRJbmYSMgoIcHJvZ3Jlc3MYBCABKAsyIC5mcm9zdF9saWJyYXJ5LnYxLkZvbGRlclByb2dyZXNzIlgKC0Rvd25sb2FkSW5mEg0KBVN0YXRlGAEgASgJEg8KB01lc3NhZ2UYAiABKAkSEwoLVGltZVN0YXJ0ZWQYAyABKAkSFAoMRG93bmxvYWRQYXRoGAQgASgJIlAKF0xpc3REb3dubG9hZGluZ1Jlc3BvbnNlEjUKCWRvd25sb2FkcxgBIAMoCzIiLmZyb3N0X2xpYnJhcnkudjEuRG93bmxvYWRQcm9ncmVzczLBAwoTRnJvc3RMaWJyYXJ5U2VydmljZRJECgNHZXQSHC5mcm9zdF9saWJyYXJ5LnYxLkdldFJlcXVlc3QaHS5mcm9zdF9saWJyYXJ5LnYxLkdldFJlc3BvbnNlIgASTQoGRGVsZXRlEh8uZnJvc3RfbGlicmFyeS52MS5EZWxldGVSZXF1ZXN0GiAuZnJvc3RfbGlicmFyeS52MS5EZWxldGVSZXNwb25zZSIAElYKCUxpc3RGaWxlcxIiLmZyb3N0X2xpYnJhcnkudjEuTGlzdEZpbGVzUmVxdWVzdBojLmZyb3N0X2xpYnJhcnkudjEuTGlzdEZpbGVzUmVzcG9uc2UiABJoCg9MaXN0RG93bmxvYWRpbmcSKC5mcm9zdF9saWJyYXJ5LnYxLkxpc3REb3dubG9hZGluZ1JlcXVlc3QaKS5mcm9zdF9saWJyYXJ5LnYxLkxpc3REb3dubG9hZGluZ1Jlc3BvbnNlIgASUwoIRG93bmxvYWQSIS5mcm9zdF9saWJyYXJ5LnYxLkRvd25sb2FkUmVxdWVzdBoiLmZyb3N0X2xpYnJhcnkudjEuRG93bmxvYWRSZXNwb25zZSIAQrsBChRjb20uZnJvc3RfbGlicmFyeS52MUIRRnJvc3RMaWJyYXJ5UHJvdG9QAVozZ2l0aHViLmNvbS9yYTM0MS9nbGFjaWVyL2dlbmVyYXRlZC9mcm9zdF9saWJyYXJ5L3YxogIDRlhYqgIPRnJvc3RMaWJyYXJ5LlYxygIPRnJvc3RMaWJyYXJ5XFYx4gIbRnJvc3RMaWJyYXJ5XFYxXEdQQk1ldGFkYXRh6gIQRnJvc3RMaWJyYXJ5OjpWMWIGcHJvdG8z");
 
 /**
  * @generated from message frost_library.v1.ListFilesRequest
@@ -256,13 +256,77 @@ export const FolderProgressSchema: GenMessage<FolderProgress> = /*@__PURE__*/
   messageDesc(file_frost_library_v1_frost_library, 11);
 
 /**
+ * @generated from message frost_library.v1.DownloadProgress
+ */
+export type DownloadProgress = Message<"frost_library.v1.DownloadProgress"> & {
+  /**
+   * @generated from field: string Thumbnail = 1;
+   */
+  Thumbnail: string;
+
+  /**
+   * @generated from field: string Title = 2;
+   */
+  Title: string;
+
+  /**
+   * @generated from field: frost_library.v1.DownloadInf download = 3;
+   */
+  download?: DownloadInf;
+
+  /**
+   * @generated from field: frost_library.v1.FolderProgress progress = 4;
+   */
+  progress?: FolderProgress;
+};
+
+/**
+ * Describes the message frost_library.v1.DownloadProgress.
+ * Use `create(DownloadProgressSchema)` to create a new message.
+ */
+export const DownloadProgressSchema: GenMessage<DownloadProgress> = /*@__PURE__*/
+  messageDesc(file_frost_library_v1_frost_library, 12);
+
+/**
+ * @generated from message frost_library.v1.DownloadInf
+ */
+export type DownloadInf = Message<"frost_library.v1.DownloadInf"> & {
+  /**
+   * @generated from field: string State = 1;
+   */
+  State: string;
+
+  /**
+   * @generated from field: string Message = 2;
+   */
+  Message: string;
+
+  /**
+   * @generated from field: string TimeStarted = 3;
+   */
+  TimeStarted: string;
+
+  /**
+   * @generated from field: string DownloadPath = 4;
+   */
+  DownloadPath: string;
+};
+
+/**
+ * Describes the message frost_library.v1.DownloadInf.
+ * Use `create(DownloadInfSchema)` to create a new message.
+ */
+export const DownloadInfSchema: GenMessage<DownloadInf> = /*@__PURE__*/
+  messageDesc(file_frost_library_v1_frost_library, 13);
+
+/**
  * @generated from message frost_library.v1.ListDownloadingResponse
  */
 export type ListDownloadingResponse = Message<"frost_library.v1.ListDownloadingResponse"> & {
   /**
-   * @generated from field: map<uint64, frost_library.v1.FolderProgress> downloads = 1;
+   * @generated from field: repeated frost_library.v1.DownloadProgress downloads = 1;
    */
-  downloads: { [key: string]: FolderProgress };
+  downloads: DownloadProgress[];
 };
 
 /**
@@ -270,7 +334,7 @@ export type ListDownloadingResponse = Message<"frost_library.v1.ListDownloadingR
  * Use `create(ListDownloadingResponseSchema)` to create a new message.
  */
 export const ListDownloadingResponseSchema: GenMessage<ListDownloadingResponse> = /*@__PURE__*/
-  messageDesc(file_frost_library_v1_frost_library, 12);
+  messageDesc(file_frost_library_v1_frost_library, 14);
 
 /**
  * @generated from service frost_library.v1.FrostLibraryService

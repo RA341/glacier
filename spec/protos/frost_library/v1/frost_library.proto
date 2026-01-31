@@ -67,6 +67,20 @@ message FolderProgress {
   repeated FileProgress files = 3;
 }
 
+message DownloadProgress {
+  string Thumbnail = 1;
+  string Title = 2;
+  DownloadInf download  = 3;
+  FolderProgress progress = 4;
+}
+
+message DownloadInf {
+  string State = 1;
+  string Message = 2;
+  string TimeStarted = 3;
+  string DownloadPath = 4;
+}
+
 message ListDownloadingResponse {
-  map<uint64, FolderProgress> downloads = 1;
+  repeated DownloadProgress downloads = 1;
 }

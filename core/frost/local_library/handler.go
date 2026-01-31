@@ -9,6 +9,7 @@ import (
 	v1 "github.com/ra341/glacier/generated/frost_library/v1"
 	"github.com/ra341/glacier/generated/frost_library/v1/v1connect"
 	"github.com/ra341/glacier/pkg/listutils"
+	"github.com/rs/zerolog/log"
 )
 
 type Handler struct {
@@ -56,13 +57,20 @@ func (h *Handler) ListDownloading(ctx context.Context, c *connect.Request[v1.Lis
 		return nil, err
 	}
 
-	var res = map[uint64]*v1.FolderProgress{}
+	res := listutils.ToMap(games, func(t LocalGame) *v1.DownloadProgress {
+		var progress []download.FileProgress
+		value, ok := h.srv.downloader.ActiveDownloads.Load(t.GameId)
+		if ok {
+			progress, err = value.Progress()
+			if err != nil {
+				log.Warn().Msg("could not get download progress")
+			}
+		}
 
-	for k, v := range games {
 		var totalLeft int64 = 0
 		var totalComplete int64 = 0
 
-		toMap := listutils.ToMap(v, func(t download.FileProgress) *v1.FileProgress {
+		toMap := listutils.ToMap(progress, func(t download.FileProgress) *v1.FileProgress {
 			totalLeft += t.Left
 			totalComplete += t.Complete
 
@@ -73,12 +81,17 @@ func (h *Handler) ListDownloading(ctx context.Context, c *connect.Request[v1.Lis
 			}
 		})
 
-		res[uint64(k)] = &v1.FolderProgress{
-			Complete: totalComplete,
-			Left:     totalLeft,
-			Files:    toMap,
+		return &v1.DownloadProgress{
+			Thumbnail: t.Game.Meta.ThumbnailURL,
+			Title:     t.Game.Meta.Name,
+			Download:  t.Download.ToProto(),
+			Progress: &v1.FolderProgress{
+				Complete: totalComplete,
+				Left:     totalLeft,
+				Files:    toMap,
+			},
 		}
-	}
+	})
 
 	return connect.NewResponse(&v1.ListDownloadingResponse{
 		Downloads: res,
