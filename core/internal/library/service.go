@@ -175,8 +175,10 @@ type MetaResult struct {
 }
 
 func (s *Service) gatherMeta(
-	metadataChan chan MetaResult, path string,
-	game *Game, prevMeta *FolderManifest,
+	metadataChan chan MetaResult,
+	path string,
+	game *Game,
+	prevMeta *FolderManifest,
 ) error {
 	relPath, err := filepath.Rel(game.Download.DownloadPath, path)
 	if err != nil {
@@ -190,10 +192,11 @@ func (s *Service) gatherMeta(
 
 	var res MetaResult
 
-	for i, m := range prevMeta.FileInfo {
-		if m.RelPath == relPath {
-			if m.ModTime == stat.ModTime() {
+	for i, cur := range prevMeta.FileInfo {
+		if cur.RelPath == relPath {
+			if cur.ModTime == stat.ModTime() {
 				// file is not modified, meta does not need to be updated
+				log.Info().Str("file", relPath).Msg("using cached metadata")
 				return nil
 			}
 			// update at index
@@ -201,6 +204,8 @@ func (s *Service) gatherMeta(
 			res.Update = true
 		}
 	}
+
+	log.Info().Str("file", relPath).Msg("metadata cache miss")
 
 	hash, err := GetHash(path)
 	if err != nil {

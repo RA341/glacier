@@ -21,8 +21,8 @@ func main() {
 		"LOGGER_VERBOSE": "true",
 		"LOGGER_LEVEL":   "debug",
 		"CONFIG_DIR":     "./config",
-		"GLACIER_URL":    "http://192.168.50.123:6699",
-		//"GLACIER_URL":     "http://localhost:6699",
+		//"GLACIER_URL":    "http://192.168.50.123:6699",
+		"GLACIER_URL":     "http://localhost:6699",
 		"CONFIG_YML_PATH": "./config/glacier.yml",
 	}
 

@@ -140,6 +140,11 @@ func (h *Handler) Edit(ctx context.Context, c *connect.Request[v1.EditRequest]) 
 		return nil, err
 	}
 
+	err = h.srv.Test(&cf)
+	if err != nil {
+		return nil, err
+	}
+
 	err = h.srv.store.Edit(&cf)
 	if err != nil {
 		return nil, err
