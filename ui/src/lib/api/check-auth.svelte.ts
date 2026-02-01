@@ -1,27 +1,28 @@
+import { Glacier } from '$lib/api/api';
 
-export function createRPCRunner<T>(exec: () => Promise<T>) {
+
+export function checkAuth() {
 	let loading = $state(false);
 	let error = $state('');
-	let value = $state<T | null>(null);
+	let value = $state<boolean>(false);
 
 	const runner = async () => {
 		loading = true;
 		error = '';
 
 		try {
-			value = await exec();
+			const sd = await fetch(`${Glacier.base}/ping`);
+			value = sd.ok;
 		} catch (e: any) {
-			value = null;
+			value = false;
 			console.error(e.message || 'An error occurred');
 			error = e.message || 'An error occurred';
 		} finally {
 			loading = false;
+
+			console.log(`Auth status ${value}`);
 		}
 	};
-
-	const clear = () => {
-		error = '';
-	}
 
 	return {
 		get loading() {
@@ -33,7 +34,6 @@ export function createRPCRunner<T>(exec: () => Promise<T>) {
 		get value() {
 			return value;
 		},
-		runner,
-		clear
+		runner
 	};
 }

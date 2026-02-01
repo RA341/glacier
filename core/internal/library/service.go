@@ -131,6 +131,11 @@ func (s *Service) GetDownloadManifest(ctx context.Context, gameId int, writer io
 		close(metadataChan)
 	}()
 
+	err = eg.Wait()
+	if err != nil {
+		return err
+	}
+
 	for me := range metadataChan {
 		log.Info().Any("data", me.meta).Msg("got metadata")
 
@@ -143,11 +148,6 @@ func (s *Service) GetDownloadManifest(ctx context.Context, gameId int, writer io
 
 		// new metadata
 		meta.FileInfo = append(meta.FileInfo, me.meta)
-	}
-
-	err = eg.Wait()
-	if err != nil {
-		return err
 	}
 
 	err = s.folderMetaStore.Add(ctx, gameId, &meta)

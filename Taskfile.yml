@@ -95,12 +95,18 @@ tasks:
 
   ui:
     dir: "{{.UI_DIR}}"
+    vars:
+      DEFAULT_FROST: '0'
+      FROST: '{{.FROST | default .DEFAULT_FROST}}'
     cmds:
-      - npm run buildfrost
+      - 'npm run {{if eq .DEFAULT_FROST .FROST}} build {{else}} buildfrost {{end}}'
 
   ui:b:*:
     dir: "{{.UI_DIR}}"
     vars:
+      DEFAULT_FROST: '0'
+      FROST: '{{.FROST | default .DEFAULT_FROST}}'
+
       BUILD_OUT: "build"
       CMD: "{{index .MATCH 0}}"
       OUT_DIR: ../{{.CORE_DIR}}/{{.GO_CMD_DIR}}/{{.CMD}}
@@ -109,7 +115,7 @@ tasks:
 #      - "**/*.ts"
 #      - "**/*.tsx"
     cmds:
-      - task: ui
+      - task ui FROST={{.FROST}}
       - rm -rf {{.OUT_DIR}}/{{.BUILD_OUT}}
       - mkdir -p {{.OUT_DIR}}/{{.BUILD_OUT}}
       - cp -rf {{.BUILD_OUT}} {{.OUT_DIR}}/

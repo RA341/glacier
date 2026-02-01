@@ -1,6 +1,9 @@
 package main
 
 import (
+	"embed"
+	"fmt"
+	"io/fs"
 	"log"
 	"os"
 
@@ -13,12 +16,18 @@ func init() {
 	app.InitMeta(info.FlavourDevelop)
 }
 
+//go:embed all:build
+var uifs embed.FS
+
 func main() {
 	prefixer := config.DefaultPrefixer()
 	envs := map[string]string{
-		"LOGGER_VERBOSE":  "true",
-		"LOGGER_LEVEL":    "debug",
-		"SERVER_PORT":     "6699",
+		"LOGGER_VERBOSE": "true",
+		"LOGGER_LEVEL":   "debug",
+		"LOGGER_HTTP":    "true",
+
+		"SERVER_PORT": "6699",
+
 		"CONFIG_DIR":      "./config",
 		"GAME_DIR":        "./gamestop",
 		"CONFIG_YML_PATH": "./config/glacier.yml",
@@ -31,12 +40,10 @@ func main() {
 		}
 	}
 
-	//file, err := app.LoadUIFromDir("./web")
-	//if err != nil {
-	//	log.Fatalf("could not load UI from file:%s\nerr:%v", file, err)
-	//	return
-	//}
-	//app.NewServer(app.WithUIFS(file))
+	subFS, err := fs.Sub(uifs, "build")
+	if err != nil {
+		log.Fatal(fmt.Errorf("error loading frontend directory: %w", err))
+	}
 
-	app.NewServer()
+	app.NewServer(app.WithUIFS(subFS))
 }

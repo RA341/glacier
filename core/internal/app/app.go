@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"reflect"
 
+	"github.com/ra341/glacier/internal/auth"
 	"github.com/ra341/glacier/internal/config"
 	"github.com/ra341/glacier/internal/config/config_manager"
 	"github.com/ra341/glacier/internal/database"
@@ -13,6 +14,7 @@ import (
 	"github.com/ra341/glacier/internal/library"
 	"github.com/ra341/glacier/internal/metadata"
 	"github.com/ra341/glacier/internal/search"
+	"github.com/ra341/glacier/internal/user"
 	"github.com/ra341/glacier/pkg/logger"
 
 	"github.com/rs/zerolog/log"
@@ -25,12 +27,16 @@ func InitMeta(flavour info.FlavourType) {
 }
 
 type App struct {
-	Conf          *config.Service
+	Conf *config.Service
+
 	Library       *library.Service
 	DownloadSrv   *downloader.Service
 	Search        *search.Service
 	ConfigManager *config_manager.Service
 	Indexer       *indexer.Service
+
+	User    *user.Service
+	Session *auth.Service
 }
 
 func NewApp() *App {
@@ -70,6 +76,12 @@ func NewApp() *App {
 
 	searchSrv := search.New(metaSrv, indexerSrv)
 
+	userDb := user.NewStoreGorm(db)
+	userSrv := user.NewService(userDb)
+
+	sessionDb := auth.NewStoreGorm(db, conf.Get().Auth.MaxConcurrentSessions)
+	sessionSrv := auth.New(sessionDb, userSrv)
+
 	a := &App{
 		Conf:          conf,
 		Library:       libSrv,
@@ -77,6 +89,8 @@ func NewApp() *App {
 		Search:        searchSrv,
 		Indexer:       indexerSrv,
 		ConfigManager: configManager,
+		User:          userSrv,
+		Session:       sessionSrv,
 	}
 
 	err := a.VerifyServices()
