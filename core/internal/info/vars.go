@@ -23,7 +23,9 @@ const (
 	FlavourDevelop FlavourType = "develop"
 	FlavourServer  FlavourType = "server"
 	FlavourDocker  FlavourType = "docker"
-	FlavourFrost   FlavourType = "frost"
+
+	FlavourFrost        FlavourType = "frost"
+	FlavourFrostDevelop FlavourType = "frostdev"
 )
 
 var (

@@ -1,19 +1,20 @@
 package main
 
 import (
-	"embed"
-	"fmt"
-	"io/fs"
 	"log"
 	"os"
 
 	frost "github.com/ra341/glacier/frost/app"
 	"github.com/ra341/glacier/frost/config"
+	"github.com/ra341/glacier/internal/app"
+	"github.com/ra341/glacier/internal/info"
 	"github.com/ra341/glacier/pkg/argos"
+	"github.com/ra341/glacier/shared/api"
 )
 
-//go:embed all:build
-var uiDir embed.FS
+func init() {
+	app.InitMeta(info.FlavourFrostDevelop)
+}
 
 func main() {
 	prefixer := argos.WithPrefixer(config.EnvPrefix)
@@ -21,8 +22,8 @@ func main() {
 		"LOGGER_VERBOSE": "true",
 		"LOGGER_LEVEL":   "debug",
 		"CONFIG_DIR":     "./config",
-		"GLACIER_URL":    "http://192.168.50.123:6699",
-		//"GLACIER_URL":     "http://localhost:6699",
+		//"GLACIER_URL":    "http://192.168.50.123:6699",
+		"GLACIER_URL":     "http://localhost:6699",
 		"CONFIG_YML_PATH": "./config/glacier.yml",
 	}
 
@@ -33,10 +34,9 @@ func main() {
 		}
 	}
 
-	subFS, err := fs.Sub(uiDir, "build")
-	if err != nil {
-		log.Fatal(fmt.Errorf("error loading frontend directory: %w", err))
-	}
-
-	frost.NewTray(frost.WithDisableUI(), frost.WithUI(subFS))
+	devUi := api.WithProxy("http://localhost:5122")
+	frost.NewTray(
+		frost.WithDisableTrayUI(),
+		frost.WithServerBase(api.WithUIProxy(devUi)),
+	)
 }

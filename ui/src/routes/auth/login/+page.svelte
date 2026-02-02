@@ -13,7 +13,6 @@
     const loginRpc = createRPCRunner(() => authSrv.login({
         username: username,
         password: password,
-        tokenType: "web"
     }))
 
     async function handleLogin(e: Event) {

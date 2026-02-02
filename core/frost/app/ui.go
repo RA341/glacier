@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -18,10 +19,11 @@ func NewUI(ctx context.Context, desktopExec string) error {
 	base := filepath.Dir(executablePath)
 
 	uiExec := filepath.Join(base, desktopExec)
-	cmd := exec.CommandContext(ctx, uiExec, "")
+	port := os.Getenv("FROST_PORT")
+	cmd := exec.CommandContext(ctx, uiExec, fmt.Sprintf("--port=%s", port))
+
 	// todo
 	//uiLogger := log.Logger.With().Str("ui", "logger").Logger()
-
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 

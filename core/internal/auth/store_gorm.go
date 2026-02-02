@@ -22,7 +22,6 @@ func (s *StoreGorm) New(token *Session) error {
 			return err
 		}
 
-		// get the ids to keep
 		var idsToKeep []string
 		err := tx.Model(&Session{}).
 			Select("id").
@@ -38,7 +37,6 @@ func (s *StoreGorm) New(token *Session) error {
 
 		// delete everything else for this user and this specific session type
 		return tx.
-			Debug().
 			Where("user_id = ?", token.UserId).
 			Where("session_type = ?", token.SessionType).
 			Where("id NOT IN ?", idsToKeep).

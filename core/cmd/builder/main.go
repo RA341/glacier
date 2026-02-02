@@ -1,0 +1,326 @@
+package main
+
+import (
+	"bufio"
+	"context"
+	"fmt"
+	"io"
+	"log"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"strings"
+	"sync"
+	"time"
+
+	"golang.org/x/term"
+)
+
+// Stage represents a single command step within a job pipeline
+type Stage struct {
+	Cmd      string
+	Args     []string
+	Dir      string
+	Duration time.Duration // Added to track stage time
+}
+
+// Job represents a lane in the TUI that runs multiple stages sequentially
+type Job struct {
+	ID           int
+	Stages       []Stage
+	CurrentStage int
+	StartTime    time.Time
+	Lines        []string
+
+	mu     sync.RWMutex
+	done   bool
+	status string
+}
+
+func main() {
+	fmt.Print("\033[?25l")
+	defer fmt.Print("\033[?25h")
+
+	getwd, err := os.Getwd()
+	must(err)
+
+	frostOut := filepath.Join(getwd, ".build", "frost")
+	err = os.MkdirAll(frostOut, 0777)
+	must(err)
+
+	uiDir := filepath.Join(getwd, "ui")
+	core := filepath.Join(getwd, "core")
+	cmd := filepath.Join(core, "cmd")
+
+	frostCmd := filepath.Join(cmd, "frost")
+	frostInfoPkg := "github.com/ra341/glacier/internal/info"
+	withPkgInf := func(varName string, value string) string {
+		return fmt.Sprintf("-X %s.%s=%s ", frostInfoPkg, varName, value)
+	}
+
+	jobs := []*Job{
+		{
+			ID: 1,
+			Stages: []Stage{
+				{
+					Dir:  uiDir,
+					Cmd:  "npm",
+					Args: []string{"run", "buildfrost"},
+				},
+				{
+					Dir:  uiDir,
+					Cmd:  "cp",
+					Args: []string{"-r", "build", frostCmd},
+				},
+				{
+					Dir: core,
+					Cmd: "go",
+					Args: []string{
+						"build",
+						"-o", frostOut,
+						"-ldflags",
+						fmt.Sprintf("s -w %s %s %s %s",
+							withPkgInf("Version", "TestVersion"),
+							withPkgInf("CommitInfo", "TestCommitInfo"),
+							withPkgInf("BuildDate", "TestBuildDate"),
+							withPkgInf("Branch", "TestBranch"),
+						),
+						"./cmd/frost",
+					},
+				},
+			},
+		},
+		{
+			ID: 2,
+			Stages: []Stage{
+				{Dir: uiDir, Cmd: "npm", Args: []string{"run", "desk:build"}},
+				{Dir: uiDir, Cmd: "cp", Args: []string{"-r", "release/linux-unpacked/", frostOut + "/ui"}},
+			},
+		},
+	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	var wg sync.WaitGroup
+	for _, j := range jobs {
+		wg.Add(1)
+		j.StartTime = time.Now()
+		go func(job *Job) {
+			defer wg.Done()
+			runJob(ctx, job)
+		}(j)
+	}
+
+	doneCh := make(chan struct{})
+	go func() {
+		wg.Wait()
+		close(doneCh)
+	}()
+
+	renderLoop(ctx, jobs, doneCh)
+}
+
+func must(err error) {
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func runJob(ctx context.Context, job *Job) {
+	for i := range job.Stages {
+		job.mu.Lock()
+		job.CurrentStage = i + 1
+		job.status = "running"
+		job.mu.Unlock()
+
+		start := time.Now()
+		err := runStage(ctx, job, job.Stages[i])
+		elapsed := time.Since(start)
+
+		job.mu.Lock()
+		job.Stages[i].Duration = elapsed // Record duration for the summary
+		job.mu.Unlock()
+
+		if err != nil {
+			job.mu.Lock()
+			job.status = "failed"
+			msg := fmt.Sprintf("\033[31mStage failed: %v\033[0m", err)
+			job.Lines = append(job.Lines, msg)
+			job.mu.Unlock()
+			return
+		}
+	}
+
+	job.mu.Lock()
+	job.status = "done"
+	job.done = true
+	job.mu.Unlock()
+}
+
+func runStage(ctx context.Context, job *Job, stage Stage) error {
+	cmd := exec.CommandContext(ctx, stage.Cmd, stage.Args...)
+	if stage.Dir != "" {
+		cmd.Dir = stage.Dir
+	}
+
+	cmd.Env = append(os.Environ(),
+		"FORCE_COLOR=1",
+		"CLICOLOR_FORCE=1",
+		"TERM=xterm-256color",
+	)
+
+	stdout, _ := cmd.StdoutPipe()
+	stderr, _ := cmd.StderrPipe()
+	multiReader := io.MultiReader(stdout, stderr)
+
+	if err := cmd.Start(); err != nil {
+		return err
+	}
+
+	scanner := bufio.NewScanner(multiReader)
+	for scanner.Scan() {
+		job.appendLine(scanner.Text())
+	}
+
+	return cmd.Wait()
+}
+
+func (j *Job) appendLine(line string) {
+	j.mu.Lock()
+	defer j.mu.Unlock()
+	j.Lines = append(j.Lines, line)
+	if len(j.Lines) > 2000 {
+		j.Lines = j.Lines[len(j.Lines)-2000:]
+	}
+}
+
+func renderLoop(ctx context.Context, jobs []*Job, doneCh <-chan struct{}) {
+	ticker := time.NewTicker(100 * time.Millisecond)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-doneCh:
+			render(jobs)
+			fmt.Println("\n\033[1;32mALL DONE\033[0m")
+			fmt.Println("Summary:")
+
+			for _, j := range jobs {
+				j.mu.RLock()
+
+				// Calculate total job time
+				var totalDuration time.Duration
+				for _, s := range j.Stages {
+					totalDuration += s.Duration
+				}
+
+				fmt.Printf("\n\033[1mJob %d Total Time: %s\033[0m\n", j.ID, totalDuration.Round(time.Millisecond))
+
+				for i, s := range j.Stages {
+					dur := s.Duration.Truncate(time.Millisecond).String()
+
+					// Handle failed/skipped status
+					if s.Duration == 0 {
+						if j.status == "failed" && i >= j.CurrentStage-1 {
+							dur = "\033[31mfailed/skipped\033[0m"
+						} else {
+							dur = "0s"
+						}
+					}
+
+					fmt.Printf("  [Stage %d-%d] [%s %s] - %s\n",
+						j.ID, i+1, s.Cmd, strings.Join(s.Args, " "), dur)
+				}
+				j.mu.RUnlock()
+			}
+			return
+		case <-ticker.C:
+			render(jobs)
+		case <-ctx.Done():
+			return
+		}
+	}
+}
+
+func render(jobs []*Job) {
+	width, height, err := term.GetSize(int(os.Stdout.Fd()))
+	if err != nil {
+		width, height = 80, 24
+	}
+
+	numJobs := len(jobs)
+	if numJobs == 0 {
+		return
+	}
+
+	availLines := height - numJobs
+	if availLines < 0 {
+		availLines = 0
+	}
+
+	linesPerJob := availLines / numJobs
+	remainder := availLines % numJobs
+
+	var screenLines []string
+
+	for i, j := range jobs {
+		j.mu.RLock()
+
+		paneHeight := linesPerJob
+		if i == 0 {
+			paneHeight += remainder
+		}
+
+		idx := j.CurrentStage - 1
+		if idx < 0 {
+			idx = 0
+		}
+		if idx >= len(j.Stages) {
+			idx = len(j.Stages) - 1
+		}
+
+		currentStageSpec := j.Stages[idx]
+		cmdDisplay := fmt.Sprintf("%s %s", currentStageSpec.Cmd, strings.Join(currentStageSpec.Args, " "))
+
+		statusIcon := ""
+		if j.status == "failed" {
+			statusIcon = " \033[31m(FAILED)\033[0m"
+		} else if j.status == "done" {
+			statusIcon = " \033[32m(DONE)\033[0m"
+		}
+
+		duration := time.Since(j.StartTime).Seconds()
+		displayStageNum := j.CurrentStage
+		if displayStageNum == 0 {
+			displayStageNum = 1
+		}
+
+		header := fmt.Sprintf("[%6.1fs] [stage %d-%d] %s%s", duration, j.ID, displayStageNum, cmdDisplay, statusIcon)
+		headerFormatted := fmt.Sprintf("\033[1m%s\033[0m", header)
+		screenLines = append(screenLines, headerFormatted)
+
+		count := len(j.Lines)
+		start := 0
+		if count > paneHeight {
+			start = count - paneHeight
+		}
+		visibleLines := j.Lines[start:]
+
+		for _, line := range visibleLines {
+			if len(line) > width {
+				line = line[:width]
+			}
+			screenLines = append(screenLines, fmt.Sprintf("=> %s", line))
+		}
+
+		padding := paneHeight - len(visibleLines)
+		for k := 0; k < padding; k++ {
+			screenLines = append(screenLines, "")
+		}
+		j.mu.RUnlock()
+	}
+
+	output := strings.Join(screenLines, "\n")
+	fmt.Print("\033[H\033[2J" + output)
+}

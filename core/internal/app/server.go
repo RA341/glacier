@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io/fs"
 	"net/http"
 	"time"
 
@@ -16,8 +15,6 @@ import (
 	"github.com/ra341/glacier/internal/user"
 	"github.com/ra341/glacier/shared/api"
 
-	connectcors "connectrpc.com/cors"
-	"github.com/rs/cors"
 	"github.com/rs/zerolog/log"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
@@ -25,15 +22,12 @@ import (
 
 type Server struct {
 	*App
-
-	UIFS    fs.FS
-	Ctx     context.Context
-	uiProxy http.Handler
+	api.ServerBase
 }
 
-func NewServer(opts ...ServerOpt) {
+func NewServer(opts ...api.ServerOpt) {
 	var server Server
-	ParseOpts(&server, opts...)
+	api.ParseOpts(&server.ServerBase, opts...)
 
 	server.App = NewApp()
 	config := server.Conf.Get().Server
@@ -41,7 +35,7 @@ func NewServer(opts ...ServerOpt) {
 	router := http.NewServeMux()
 	server.RegisterRoutes(router)
 
-	finalMux := WithCors(router, config.AllowedOrigins)
+	finalMux := api.WithCors(router, config.AllowedOrigins)
 
 	port := fmt.Sprintf(":%d", config.Port)
 	log.Info().Str("port", port).Msg("Starting server...")
@@ -75,16 +69,6 @@ func NewServer(opts ...ServerOpt) {
 	fmt.Println("Server gracefully stopped.")
 }
 
-func WithCors(router http.Handler, origins []string) http.Handler {
-	return cors.New(cors.Options{
-		AllowedOrigins:      origins,
-		AllowPrivateNetwork: true,
-		AllowedMethods:      connectcors.AllowedMethods(),
-		AllowedHeaders:      connectcors.AllowedHeaders(),
-		ExposedHeaders:      connectcors.ExposedHeaders(),
-	}).Handler(router)
-}
-
 func (s *Server) RegisterRoutes(mux *http.ServeMux) {
 	apiRouter := http.NewServeMux()
 	s.registerApiRoutes(apiRouter)
@@ -94,27 +78,12 @@ func (s *Server) RegisterRoutes(mux *http.ServeMux) {
 		s.withLogger(apiRouter),
 	)
 
-	s.registerUI(mux)
-}
-
-func (s *Server) registerUI(mux *http.ServeMux) {
-	if s.UIFS != nil {
-		log.Info().Msg("using fs UI")
-		mux.Handle("/", api.NewSpaHandler(s.UIFS))
-		return
-	}
-
-	if s.uiProxy != nil {
-		log.Info().Msg("using proxy UI")
-		mux.Handle("/", s.uiProxy)
-		return
-	}
-
-	log.Info().Msg("using default UI")
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusNotFound)
+	def := func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte("No UI opt was set when building"))
-	})
+	}
+
+	s.RegisterUI(mux, def)
 }
 
 func (s *Server) registerApiRoutes(mux *http.ServeMux) {
@@ -202,5 +171,5 @@ func (s *Server) withLogger(protectedRouter *http.ServeMux) http.Handler {
 	}
 
 	log.Info().Msg("using http route logger")
-	return api.LoggingMiddleware(protectedRouter)
+	return api.WithHTTPLogger(protectedRouter)
 }

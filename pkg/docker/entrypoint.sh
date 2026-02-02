@@ -46,5 +46,5 @@ for DIR_VAR in $APP_DIRS; do
 done
 
 # Drop permissions and run the application
-echo "Launching Dockman as $PUID:$PGID"
+echo "Launching Glacier as $PUID:$PGID"
 exec su-exec appuser "$@"

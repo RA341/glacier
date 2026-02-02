@@ -4,44 +4,27 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io/fs"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
 	"time"
 
 	ll "github.com/ra341/glacier/frost/local_library"
-	"github.com/ra341/glacier/internal/info"
-	"github.com/ra341/glacier/pkg/logger"
 	"github.com/ra341/glacier/shared/api"
 
-	connectcors "connectrpc.com/cors"
-	"github.com/rs/cors"
 	"github.com/rs/zerolog/log"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 )
 
-func InitMeta(flavour info.FlavourType) {
-	info.SetFlavour(flavour)
-	info.PrintInfo()
-	logger.InitDefault()
-}
-
-func init() {
-	InitMeta(info.FlavourFrost)
-}
-
 type Server struct {
 	*App
-
-	UIFS fs.FS
-	Ctx  context.Context
+	api.ServerBase
 }
 
-func NewServer(opts ...ServerOpt) {
+func NewServer(opts ...api.ServerOpt) {
 	var server Server
-	ParseOpts(&server, opts...)
+	api.ParseOpts(&server.ServerBase, opts...)
 
 	server.App = New()
 
@@ -50,15 +33,7 @@ func NewServer(opts ...ServerOpt) {
 	router := http.NewServeMux()
 	server.RegisterRoutes(router)
 
-	corsConfig := cors.New(cors.Options{
-		AllowedOrigins:      conf.Origins,
-		AllowPrivateNetwork: true,
-		AllowedMethods:      connectcors.AllowedMethods(),
-		AllowedHeaders:      connectcors.AllowedHeaders(),
-		ExposedHeaders:      connectcors.ExposedHeaders(),
-	})
-
-	finalMux := corsConfig.Handler(router)
+	finalMux := api.WithCors(router, conf.AllowedOrigins)
 
 	port := fmt.Sprintf(":%d", conf.Port)
 	log.Info().Str("port", port).Msg("Starting server...")
@@ -90,37 +65,46 @@ func NewServer(opts ...ServerOpt) {
 	}
 
 	fmt.Println("Server gracefully stopped.")
+	// todo send a return value to indicate if the tray should also be stopped or not
 }
 
 func (s *Server) RegisterRoutes(mux *http.ServeMux) {
 	s.registerApiRoutes(mux)
-
 	s.registerUI(mux)
 }
 
 func (s *Server) registerUI(mux *http.ServeMux) {
-	s.registerFrontend(mux)
+	s.RegisterUI(mux, func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte("No UI was set when building"))
+	})
+}
 
-	apiMux := http.NewServeMux()
-	s.registerApiRoutes(apiMux)
-	api.WithSubRouter(mux, "/api/frost", apiMux)
+func (s *Server) registerApiRoutes(mux *http.ServeMux) {
+	frostMux := http.NewServeMux()
+	s.RegisterFrostRoutes(frostMux)
+	api.WithSubRouter(mux, "/api/frost", frostMux)
 
 	glacierProxy := http.NewServeMux()
 	s.registerGlacierProxy(glacierProxy)
 	mux.Handle("/api/server/", glacierProxy)
 }
 
-func (s *Server) registerFrontend(mux *http.ServeMux) {
-	if s.UIFS == nil {
-		log.Fatal().Msg("UI not set")
-		return
-	}
+func (s *Server) RegisterFrostRoutes(mux *http.ServeMux) {
+	mux.HandleFunc("/hello", func(writer http.ResponseWriter, request *http.Request) {
+		writer.Header().Set("Content-Type", "text/plain")
+		writer.WriteHeader(http.StatusOK)
+		_, _ = writer.Write([]byte("A pleasant fuck off from frost"))
+	})
 
-	mux.Handle("/", api.NewSpaHandler(s.UIFS))
+	mux.Handle(ll.NewHandler(s.LocalLibrarySrv))
 }
 
+const FrostHeader = "is-frost"
+
 func (s *Server) registerGlacierProxy(mux *http.ServeMux) {
-	target, err := url.Parse(s.Conf.Get().Server.GlacierUrl)
+	conf := s.App.Conf.Get()
+	target, err := url.Parse(conf.Server.GlacierUrl)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error parsing url")
 	}
@@ -128,6 +112,11 @@ func (s *Server) registerGlacierProxy(mux *http.ServeMux) {
 	proxy := httputil.NewSingleHostReverseProxy(target)
 	originalDirector := proxy.Director
 	proxy.Director = func(req *http.Request) {
+		val := req.Header.Get(FrostHeader)
+		if val == "" {
+			req.Header.Set(FrostHeader, "true")
+		}
+
 		originalDirector(req)
 		req.Host = target.Host
 	}
@@ -139,18 +128,9 @@ func (s *Server) registerGlacierProxy(mux *http.ServeMux) {
 		resp.Header.Del("Access-Control-Allow-Credentials")
 		resp.Header.Del("Access-Control-Allow-Methods")
 		resp.Header.Del("Access-Control-Allow-Headers")
+
 		return nil
 	}
 
 	mux.Handle("/", proxy)
-}
-
-func (s *Server) registerApiRoutes(mux *http.ServeMux) {
-	mux.HandleFunc("/hello", func(writer http.ResponseWriter, request *http.Request) {
-		writer.Header().Set("Content-Type", "text/plain")
-		writer.WriteHeader(http.StatusOK)
-		_, _ = writer.Write([]byte("Hello from frost"))
-	})
-
-	mux.Handle(ll.NewHandler(s.LocalLibrarySrv))
 }

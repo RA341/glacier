@@ -5,13 +5,12 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/fs"
 	"os"
-	"runtime"
 	"sync"
 	"sync/atomic"
 
 	"fyne.io/systray"
+	"github.com/ra341/glacier/shared/api"
 )
 
 type Tray struct {
@@ -23,25 +22,6 @@ type Tray struct {
 	wg            sync.WaitGroup
 	uiRunning     atomic.Bool
 	serverRunning atomic.Bool
-}
-
-type TrayConfig struct {
-	disableUI bool
-	subFS     fs.FS
-}
-
-type Opt func(config *TrayConfig)
-
-func WithUI(uifs fs.FS) Opt {
-	return func(config *TrayConfig) {
-		config.subFS = uifs
-	}
-}
-
-func WithDisableUI() Opt {
-	return func(config *TrayConfig) {
-		config.disableUI = true
-	}
 }
 
 func NewTray(opts ...Opt) {
@@ -69,15 +49,13 @@ func (t *Tray) Start() {
 }
 
 func (t *Tray) startServices() {
-	// hold until functions cleans up
+	// hold until functions clean up
 	t.wg.Wait()
 
 	// then reset context
 	ctx, cancel := context.WithCancel(context.Background())
 	t.ctx = ctx
 	t.cancel = cancel
-
-	runtime.GC()
 
 	t.wg.Go(t.startServer)
 	t.wg.Go(t.startUI)
@@ -97,7 +75,7 @@ func (t *Tray) startServer() {
 	}()
 	t.serverRunning.Store(true)
 
-	NewServer(WithUIFS(t.conf.subFS), WithCtx(t.ctx))
+	NewServer(api.WithServerBase(&t.conf.serverBase))
 }
 
 func (t *Tray) startUI() {
@@ -158,11 +136,17 @@ func (t *Tray) onExit() {
 }
 
 func (t *Tray) loadIcon() []byte {
-	open, err := t.conf.subFS.Open("favicon.png")
+	uifs := t.conf.serverBase.UIFS
+	if uifs == nil {
+		return nil
+	}
+
+	open, err := uifs.Open("favicon.png")
 	if err != nil {
 		ShowErr("Could not open favicon.svg")
 		os.Exit(1)
 	}
+
 	all, err := io.ReadAll(open)
 	if err != nil {
 		ShowErr("Could not read favicon.svg bytes")

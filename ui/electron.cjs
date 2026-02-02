@@ -2,7 +2,7 @@ const {app, BrowserWindow} = require('electron');
 
 async function createWindow() {
     const customPort = app.commandLine.getSwitchValue('port') || 9966;
-    console.log(`Using port: ${customPort}`);
+    console.log(`Electron is using port: ${customPort}`);
 
     const isDev = process.env.NODE_ENV === 'development';
     let url = 'http://localhost:5173'; // dev url

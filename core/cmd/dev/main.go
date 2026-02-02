@@ -1,24 +1,18 @@
 package main
 
 import (
-	"embed"
 	"log"
-	"net/http"
-	"net/http/httputil"
-	"net/url"
 	"os"
 
 	"github.com/ra341/glacier/internal/app"
 	"github.com/ra341/glacier/internal/config"
 	"github.com/ra341/glacier/internal/info"
+	"github.com/ra341/glacier/shared/api"
 )
 
 func init() {
 	app.InitMeta(info.FlavourDevelop)
 }
-
-//go:embed all:build
-var uifs embed.FS
 
 func main() {
 	prefixer := config.DefaultPrefixer()
@@ -44,17 +38,7 @@ func main() {
 		}
 	}
 
-	devUi := NewDevProxy("http://localhost:5173")
+	devUi := api.WithProxy("http://localhost:5173")
 
-	app.NewServer(app.WithUIProxy(devUi))
-}
-
-func NewDevProxy(target string) http.Handler {
-	u, _ := url.Parse(target)
-	proxy := httputil.NewSingleHostReverseProxy(u)
-
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		r.Host = u.Host
-		proxy.ServeHTTP(w, r)
-	})
+	app.NewServer(api.WithUIProxy(devUi))
 }

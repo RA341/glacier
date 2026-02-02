@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"connectrpc.com/connect"
+	frost "github.com/ra341/glacier/frost/app"
 	v1 "github.com/ra341/glacier/generated/auth/v1"
 	"github.com/ra341/glacier/generated/auth/v1/v1connect"
 	"github.com/ra341/glacier/internal/user"
@@ -23,12 +24,17 @@ func NewHandler(srv *Service) (string, http.Handler) {
 }
 
 func (h *Handler) Login(ctx context.Context, req *connect.Request[v1.LoginRequest]) (*connect.Response[v1.LoginResponse], error) {
-	typeString, err := SessionTypeString(req.Msg.TokenType)
-	if err != nil {
-		return nil, err
+	val := req.Header().Get(frost.FrostHeader)
+	var sessionType = Web
+	if val == "true" {
+		sessionType = Frost
 	}
 
-	s, session, refresh, err := h.srv.Login(req.Msg.Username, req.Msg.Password, typeString)
+	s, session, refresh, err := h.srv.Login(
+		req.Msg.Username,
+		req.Msg.Password,
+		sessionType,
+	)
 	if err != nil {
 		return nil, err
 	}

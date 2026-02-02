@@ -2,12 +2,36 @@ package api
 
 import (
 	"net/http"
+	"net/http/httputil"
+	"net/url"
 	"time"
 
+	connectcors "connectrpc.com/cors"
+	"github.com/rs/cors"
 	"github.com/rs/zerolog/log"
 )
 
-func LoggingMiddleware(next http.Handler) http.Handler {
+func WithProxy(target string) http.Handler {
+	u, _ := url.Parse(target)
+	proxy := httputil.NewSingleHostReverseProxy(u)
+
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		r.Host = u.Host
+		proxy.ServeHTTP(w, r)
+	})
+}
+
+func WithCors(router http.Handler, origins []string) http.Handler {
+	return cors.New(cors.Options{
+		AllowedOrigins:      origins,
+		AllowPrivateNetwork: true,
+		AllowedMethods:      connectcors.AllowedMethods(),
+		AllowedHeaders:      connectcors.AllowedHeaders(),
+		ExposedHeaders:      connectcors.ExposedHeaders(),
+	}).Handler(router)
+}
+
+func WithHTTPLogger(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		subLog := log.With().
 			Str("url", r.URL.String()).

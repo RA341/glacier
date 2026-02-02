@@ -47,6 +47,11 @@ tasks:
       - npm run desk:build
       - cp -r release/linux-unpacked ../{{.BUILD_DIR}}/frost/ui
 
+  bb:
+    cmds:
+      - "cd {{.CORE_DIR}} && go build -ldflags '-s -w' -o {{.TASKFILE_DIR}}/bob ./cmd/builder"
+      - "./bob"
+
   go:b:*:
     dir: "{{.CORE_DIR}}"
     desc: "Builds a Go target. Usage: task go:<target>"
@@ -60,7 +65,7 @@ tasks:
       DEFAULT_OUT_EXE: '{{.OUT}}/{{.CMD_NAME}}{{.EXE_EXT}}'
       OUT_EXE: '{{.OUT_EXE| default .DEFAULT_OUT_EXE}}'
 
-      INFO_PACKAGE: "github.com/RA341/dockman/internal/info"
+      INFO_PACKAGE: "github.com/ra341/glacier/internal/info"
 
       VERSION:
         sh: git describe --tags --abbrev=0 2>/dev/null || echo "canary"

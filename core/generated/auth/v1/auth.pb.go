@@ -193,7 +193,6 @@ type LoginRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Username      string                 `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`
 	Password      string                 `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
-	TokenType     string                 `protobuf:"bytes,3,opt,name=tokenType,proto3" json:"tokenType,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -238,13 +237,6 @@ func (x *LoginRequest) GetUsername() string {
 func (x *LoginRequest) GetPassword() string {
 	if x != nil {
 		return x.Password
-	}
-	return ""
-}
-
-func (x *LoginRequest) GetTokenType() string {
-	if x != nil {
-		return x.TokenType
 	}
 	return ""
 }
@@ -296,11 +288,10 @@ const file_auth_v1_auth_proto_rawDesc = "" +
 	"\busername\x18\x01 \x01(\tR\busername\x12\x1a\n" +
 	"\bpassword\x18\x02 \x01(\tR\bpassword\x12&\n" +
 	"\x0epasswordVerify\x18\x03 \x01(\tR\x0epasswordVerify\"\x12\n" +
-	"\x10RegisterResponse\"d\n" +
+	"\x10RegisterResponse\"F\n" +
 	"\fLoginRequest\x12\x1a\n" +
 	"\busername\x18\x01 \x01(\tR\busername\x12\x1a\n" +
-	"\bpassword\x18\x02 \x01(\tR\bpassword\x12\x1c\n" +
-	"\ttokenType\x18\x03 \x01(\tR\ttokenType\"\x0f\n" +
+	"\bpassword\x18\x02 \x01(\tR\bpassword\"\x0f\n" +
 	"\rLoginResponse2\xc7\x01\n" +
 	"\vAuthService\x128\n" +
 	"\x05Login\x12\x15.auth.v1.LoginRequest\x1a\x16.auth.v1.LoginResponse\"\x00\x12A\n" +
