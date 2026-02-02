@@ -87,13 +87,11 @@
             <div class="grid grid-cols-1 gap-4">
                 {#each activeDownloadsRpc.value?.game ?? [] as download (download.ID)}
                     {@const theme = getStatusTheme(download.DownloadState?.State ?? "Unknown")}
-                    <!-- Calculate actual percentage for the progress bar -->
                     {@const progressPercent = calculatePercent(
                         download.DownloadState?.Complete,
-                        download.DownloadState?.Done
+                        download.DownloadState?.Left
                     )}
-                    {@const
-                        totalBytes = Number(download.DownloadState?.Complete || 0) + Number(download.DownloadState?.Done || 0)}
+                    {@const totalBytes = Number(download.DownloadState?.Complete || 0) + Number(download.DownloadState?.Left || 0)}
 
                     <div
                             class="group bg-surface border border-border rounded-3xl p-5 flex items-center gap-6 overflow-hidden hover:border-frost-500/30 transition-all shadow-sm"

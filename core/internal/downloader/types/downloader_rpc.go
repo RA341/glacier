@@ -11,7 +11,7 @@ func (g *Download) ToProto() *v1.Download {
 		State:        g.State.String(),
 		Progress:     g.Progress,
 		Complete:     g.Complete,
-		Done:         g.Left,
+		Left:         g.Left,
 		DownloadPath: g.DownloadPath,
 		DownloadUrl:  g.DownloadUrl,
 	}
