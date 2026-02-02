@@ -9,8 +9,7 @@ on:
       - Dockerfile.updater
       - .github/workflows/action-docker.yml
       - .github/workflows/build-release-tag.yml
-      - .github/workflows/build-release.yml
-      - build-dev.yml
+      - .github/workflows/release-build.yml
       - core/**
       - ui/**
   workflow_dispatch:
