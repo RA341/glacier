@@ -22,6 +22,7 @@
 
     function trigger() {
         libRpc.runner()
+        refresh()
     }
 
     let activeDownloadsRpc = createRPCRunner(() => libSrv.listWithState({state: "downloading"}))
@@ -52,7 +53,7 @@
     <div class="flex items-center justify-between px-2">
         <h2 class="text-sm font-bold uppercase tracking-widest text-muted">Active Downloads</h2>
         <button
-                onclick={refresh}
+                onclick={trigger}
                 disabled={libRpc.loading}
                 class="flex items-center gap-2 p-2 px-4 rounded-xl bg-panel border border-border text-xs font-bold text-muted hover:text-frost-400 hover:border-frost-500/50 transition-all active:scale-95 disabled:opacity-50"
         >
