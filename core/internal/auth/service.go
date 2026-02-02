@@ -5,6 +5,8 @@ import (
 	"time"
 
 	"github.com/ra341/glacier/internal/user"
+	"github.com/rs/zerolog/log"
+	"gorm.io/gorm"
 )
 
 type Service struct {
@@ -25,29 +27,45 @@ const (
 
 var (
 	ErrTokenExpired       = errors.New("token expired")
-	ErrRegistrationClosed = errors.New("open registration is disabled no users cannot be created without permissions from the admin")
+	ErrRegistrationClosed = errors.New("registration is closed, contact your admin to create a new account")
+	ErrDuplicateUser      = errors.New("username already exists, choose a different username")
+	ErrInvalidUserPass    = errors.New("invalid username/password")
 )
 
-func New(store Store, userSrv *user.Service) *Service {
+func New(store Store, userSrv *user.Service, openSignups bool) *Service {
 	s := &Service{
-		store:         store,
-		userSrv:       userSrv,
-		refreshExpiry: Year,
-		sessionExpiry: Day,
+		store:            store,
+		userSrv:          userSrv,
+		refreshExpiry:    Year,
+		sessionExpiry:    Day,
+		openRegistration: openSignups,
 	}
 
 	return s
 }
 
+func (s *Service) Register(username, password string, role user.Role, creatingUser *user.User) (err error) {
+	if creatingUser == nil && !s.openRegistration {
+		return ErrRegistrationClosed
+	}
+	err = s.userSrv.New(username, password, role, creatingUser)
+	if err != nil && errors.Is(err, gorm.ErrDuplicatedKey) {
+		return ErrDuplicateUser
+	}
+	return err
+}
+
 func (s *Service) Login(username, password string, sessionType SessionType) (session Session, sessionToken string, refreshToken string, err error) {
 	u, err := s.userSrv.GetByUsername(username)
 	if err != nil {
-		return Session{}, "", "", err
+		log.Error().Err(err).Msg("Failed to get user by username")
+		return Session{}, "", "", ErrInvalidUserPass
 	}
 
 	err = user.CheckEncryptedString(password, u.EncryptedPassword)
 	if err != nil {
-		return Session{}, "", "", err
+		log.Error().Err(err).Msg("could not decrypt password")
+		return Session{}, "", "", ErrInvalidUserPass
 	}
 
 	var sess Session
@@ -91,10 +109,31 @@ func (s *Service) VerifySession(sessionToken string) (session Session, err error
 
 	err = checkExpiry(token.SessionTokenExpiry)
 	if err != nil {
-		return session, err
+		return token, err
 	}
 
 	return token, nil
+}
+
+func (s *Service) RefreshSession(refreshToken string) (session Session, sessionTok string, refreshTok string, err error) {
+	hashedTok := user.HashString(refreshToken)
+	sess, err := s.store.GetBySessionToken(hashedTok)
+	if err != nil {
+		return Session{}, "", "", err
+	}
+
+	err = checkExpiry(sess.SessionTokenExpiry)
+	if err != nil {
+		return Session{}, "", "", err
+	}
+
+	sessionTok, refreshTok = s.GenerateTok(&session)
+	err = s.store.Edit(&session)
+	if err != nil {
+		return Session{}, "", "", err
+	}
+
+	return session, sessionTok, refreshTok, nil
 }
 
 func checkExpiry(expiry time.Time) error {
@@ -105,26 +144,4 @@ func checkExpiry(expiry time.Time) error {
 		return ErrTokenExpired
 	}
 	return nil
-}
-
-func (s *Service) RefreshSession(session *Session) (se Session, sessionTok string, refreshTok string, err error) {
-	err = checkExpiry(session.RefreshTokenExpiry)
-	if err != nil {
-		return Session{}, "", "", err
-	}
-
-	sessionTok, refreshTok = s.GenerateTok(session)
-	err = s.store.Edit(session)
-	if err != nil {
-		return Session{}, "", "", err
-	}
-
-	return *session, sessionTok, refreshTok, nil
-}
-
-func (s *Service) Register(username, password string, role user.Role, creatingUser *user.User) (err error) {
-	if creatingUser == nil && !s.openRegistration {
-		return ErrRegistrationClosed
-	}
-	return s.userSrv.New(username, password, role, creatingUser)
 }

@@ -1,4 +1,4 @@
-package config_manager
+package services_manager
 
 import (
 	"fmt"

@@ -22,22 +22,28 @@ func (s *StoreGorm) New(token *Session) error {
 			return err
 		}
 
-		// Subquery finds the IDs of the newest N sessions to keep them
-		// The outer query deletes everything else for this user
-		err := tx.
-			Where("user_id = ? AND id NOT IN (?)",
-				token.UserId,
-				tx.Model(&Session{}).
-					Select("id").
-					Where("user_id = ?", token.UserId).
-					Where("session_type = ?", token.SessionType).
-					Order("created_at DESC").
-					Limit(s.maxSessions),
-			).
-			Delete(&Session{}).
+		// get the ids to keep
+		var idsToKeep []string
+		err := tx.Model(&Session{}).
+			Select("id").
+			Where("user_id = ? AND session_type = ?", token.UserId, token.SessionType).
+			// use update instead of created to ensure a refreshed session is not deleted
+			Order("updated_at DESC").
+			Limit(s.maxSessions).
+			Pluck("id", &idsToKeep).
 			Error
+		if err != nil {
+			return err
+		}
 
-		return err
+		// delete everything else for this user and this specific session type
+		return tx.
+			Debug().
+			Where("user_id = ?", token.UserId).
+			Where("session_type = ?", token.SessionType).
+			Where("id NOT IN ?", idsToKeep).
+			Unscoped().Delete(&Session{}).
+			Error
 	})
 }
 
@@ -46,7 +52,7 @@ func (s *StoreGorm) Edit(token *Session) error {
 }
 
 func (s *StoreGorm) Delete(token *Session) error {
-	return s.db.Delete(token).Error
+	return s.db.Unscoped().Delete(token).Error
 }
 
 func (s *StoreGorm) List() ([]Session, error) {

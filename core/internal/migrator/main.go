@@ -7,8 +7,8 @@ import (
 
 	"ariga.io/atlas-provider-gorm/gormschema"
 	"github.com/ra341/glacier/internal/auth"
-	"github.com/ra341/glacier/internal/config/config_manager"
 	"github.com/ra341/glacier/internal/library"
+	"github.com/ra341/glacier/internal/services_manager"
 	"github.com/ra341/glacier/internal/user"
 )
 
@@ -18,7 +18,7 @@ func main() {
 		Load(
 			&library.Game{},
 			&library.FolderManifest{},
-			&config_manager.ServiceConfig{},
+			&services_manager.ServiceConfig{},
 			&user.User{},
 			&auth.Session{},
 		)

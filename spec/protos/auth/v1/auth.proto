@@ -7,7 +7,12 @@ option go_package = "github.com/ra341/glacier/generated/auth/v1";
 service AuthService {
   rpc Login(LoginRequest) returns (LoginResponse) {}
   rpc Register(RegisterRequest) returns (RegisterResponse) {}
+  rpc Logout(LogoutRequest) returns (LogoutResponse) {}
 }
+
+message LogoutRequest {}
+
+message LogoutResponse {}
 
 message RegisterRequest {
   string username = 1;

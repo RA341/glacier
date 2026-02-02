@@ -5,20 +5,18 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
-
 	"net/http"
-
 	"time"
 
-	connectcors "connectrpc.com/cors"
 	"github.com/ra341/glacier/internal/auth"
-	"github.com/ra341/glacier/internal/config/config_manager"
 	"github.com/ra341/glacier/internal/indexer"
-
 	"github.com/ra341/glacier/internal/library"
-
 	"github.com/ra341/glacier/internal/search"
+	sm "github.com/ra341/glacier/internal/services_manager"
+	"github.com/ra341/glacier/internal/user"
 	"github.com/ra341/glacier/shared/api"
+
+	connectcors "connectrpc.com/cors"
 	"github.com/rs/cors"
 	"github.com/rs/zerolog/log"
 	"golang.org/x/net/http2"
@@ -28,8 +26,9 @@ import (
 type Server struct {
 	*App
 
-	UIFS fs.FS
-	Ctx  context.Context
+	UIFS    fs.FS
+	Ctx     context.Context
+	uiProxy http.Handler
 }
 
 func NewServer(opts ...ServerOpt) {
@@ -99,16 +98,23 @@ func (s *Server) RegisterRoutes(mux *http.ServeMux) {
 }
 
 func (s *Server) registerUI(mux *http.ServeMux) {
-	if s.UIFS == nil {
-		log.Info().Msg("no ui is set, will serve default")
-
-		mux.HandleFunc("/", func(w http.ResponseWriter, request *http.Request) {
-			_, _ = w.Write([]byte("No UI was set when building"))
-		})
+	if s.UIFS != nil {
+		log.Info().Msg("using fs UI")
+		mux.Handle("/", api.NewSpaHandler(s.UIFS))
 		return
 	}
 
-	mux.Handle("/", api.NewSpaHandler(s.UIFS))
+	if s.uiProxy != nil {
+		log.Info().Msg("using proxy UI")
+		mux.Handle("/", s.uiProxy)
+		return
+	}
+
+	log.Info().Msg("using default UI")
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusNotFound)
+		_, _ = w.Write([]byte("No UI opt was set when building"))
+	})
 }
 
 func (s *Server) registerApiRoutes(mux *http.ServeMux) {
@@ -143,14 +149,26 @@ func (s *Server) registerProtectedRoutes(mux *http.ServeMux) {
 	mux.Handle(search.NewHandler(s.Search))
 	mux.Handle(indexer.NewHandler(s.Indexer))
 
-	// lib stuff
 	mux.Handle(library.NewHandler(s.Library))
 	api.WithSubRouter(mux,
 		"/library/download",
 		library.NewHandlerHttp(s.Library),
 	)
 
-	mux.Handle(config_manager.NewHandler(s.ConfigManager))
+	mux.Handle(user.NewHandler(s.User))
+
+	adminMiddleware := NewMiddleware(user.AdminMiddleware)
+	mux.Handle(adminMiddleware(sm.NewHandler(s.ConfigManager)))
+}
+
+type NewHandler func(string, http.Handler) (string, http.Handler)
+
+type Middleware func(http.Handler) http.Handler
+
+func NewMiddleware(m Middleware) NewHandler {
+	return func(path string, h http.Handler) (string, http.Handler) {
+		return path, m(h)
+	}
 }
 
 func (s *Server) registerPublicRoutes(mux *http.ServeMux) {

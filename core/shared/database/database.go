@@ -45,8 +45,9 @@ func connect(dbPath string, devMode bool, migrationDir fs.FS, migrationPath stri
 	}
 
 	conf := &gorm.Config{
-		Logger:      logger.Default.LogMode(gormLogLevel),
-		PrepareStmt: true,
+		Logger:         logger.Default.LogMode(gormLogLevel),
+		PrepareStmt:    true,
+		TranslateError: true,
 	}
 
 	db, err := gorm.Open(sqlite.Dialector{Conn: sqlDB}, conf)

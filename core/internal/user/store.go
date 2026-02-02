@@ -11,7 +11,7 @@ type Store interface {
 	New(user *User) error
 	Edit(user *User) error
 	Delete(id uint) error
-	List() ([]User, error)
+	List(q string) ([]User, error)
 }
 
 //go:generate go run github.com/dmarkham/enumer@latest -sql -type=Role -output=enum_user_role.go

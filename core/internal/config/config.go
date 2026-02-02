@@ -22,6 +22,7 @@ type Glacier struct {
 type Auth struct {
 	MaxConcurrentSessions int  `yaml:"maxConcurrentSessions" env:"MAX_SESSIONS" default:"8" help:"maximum number of logged in sessions per user"`
 	Disable               bool `yaml:"disable" env:"AUTH_DISABLE" default:"false" help:"disable authentication"`
+	OpenRegistration      bool `yaml:"openRegistration" env:"AUTH_OPEN_REGISTRATION" default:"false" help:"open registration for anyone to signup"`
 }
 
 type Server struct {
@@ -33,4 +34,5 @@ type Logger struct {
 	Verbose    bool   `yaml:"verbose" default:"false" env:"LOGGER_VERBOSE" help:"add more info"`
 	Level      string `yaml:"level" default:"info" env:"LOGGER_LEVEL" help:"disabled|debug|info|warn|error|fatal"`
 	HTTPLogger bool   `yaml:"HTTPLogger" default:"false" env:"LOGGER_HTTP" help:"log api routes"`
+	DBLogger   bool   `yaml:"DBLogger" default:"false" env:"LOGGER_DB" help:"log db queries"`
 }

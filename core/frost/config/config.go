@@ -3,6 +3,7 @@ package config
 type Config struct {
 	Server Server
 	Files  Files
+	Logger Logger
 }
 
 type Server struct {
@@ -14,4 +15,10 @@ type Server struct {
 
 type Files struct {
 	ConfigDir string `yaml:"configDir" env:"CONFIG_DIR" default:"./config" help:"frost config directory"`
+}
+
+type Logger struct {
+	Verbose    bool   `yaml:"verbose" default:"false" env:"LOGGER_VERBOSE" help:"add more info"`
+	Level      string `yaml:"level" default:"info" env:"LOGGER_LEVEL" help:"disabled|debug|info|warn|error|fatal"`
+	HTTPLogger bool   `yaml:"HTTPLogger" default:"false" env:"LOGGER_HTTP" help:"log api routes"`
 }

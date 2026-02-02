@@ -3,24 +3,30 @@
 
     let {children} = $props();
 
+    const prefix = '/settings/server';
+
     const tabs = [
-        {label: 'General', href: '/settings/general', desc: 'Configure basic server settings'},
-        {label: 'Users', href: '/settings/users', desc: 'Manage user accounts'},
-        {label: 'Metadata', href: '/settings/metadata', desc: 'Where to get game information'},
-        {label: 'Indexer', href: '/settings/indexer', desc: 'Where to find and download games'},
-        {label: 'Download', href: '/settings/downloads', desc: 'How downloads are handled'},
+        {label: 'General', href: 'general', desc: 'Configure basic server settings'},
+        {label: 'Users', href: 'users', desc: 'Manage user accounts'},
+        {label: 'Metadata', href: 'metadata', desc: 'Where to get game information'},
+        {label: 'Indexer', href: 'indexer', desc: 'Where to find and download games'},
+        {label: 'Download', href: 'downloads', desc: 'How downloads are handled'},
     ];
 
     let currentPath = $derived(page.url.pathname);
 
-    let activeTab = $derived(tabs.find(tab => currentPath.startsWith(tab.href)));
+    function withPrefix(ref: string) {
+        return `${prefix}/${ref}`
+    }
+
+    let activeTab = $derived(tabs.find(tab => currentPath.startsWith(withPrefix(tab.href))));
 </script>
 
 <div class="flex flex-col h-full bg-background">
     <header class="px-8 pt-8 pb-0">
         <div class="flex items-baseline gap-4 mb-6">
             <h1 class="text-3xl font-bold tracking-tight text-foreground">
-                Settings
+                Server Settings
             </h1>
 
             {#if activeTab}
@@ -37,9 +43,9 @@
 
         <nav class="flex gap-2 border-b border-border pb-2 relative">
             {#each tabs as tab}
-                {@const active = currentPath.startsWith(tab.href)}
+                {@const active = currentPath.startsWith(withPrefix(tab.href))}
                 <a
-                        href={tab.href}
+                        href={withPrefix(tab.href)}
                         class="group relative px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300
                     {active
                         ? 'bg-frost-500/10 text-frost-400'

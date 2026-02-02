@@ -2,9 +2,10 @@ package main
 
 import (
 	"embed"
-	"fmt"
-	"io/fs"
 	"log"
+	"net/http"
+	"net/http/httputil"
+	"net/url"
 	"os"
 
 	"github.com/ra341/glacier/internal/app"
@@ -24,9 +25,12 @@ func main() {
 	envs := map[string]string{
 		"LOGGER_VERBOSE": "true",
 		"LOGGER_LEVEL":   "debug",
-		"LOGGER_HTTP":    "true",
+		"LOGGER_HTTP":    "false",
 
-		"SERVER_PORT": "6699",
+		"SERVER_PORT":            "6699",
+		"AUTH_DISABLE":           "false",
+		"AUTH_OPEN_REGISTRATION": "true",
+		"MAX_SESSIONS":           "3",
 
 		"CONFIG_DIR":      "./config",
 		"GAME_DIR":        "./gamestop",
@@ -40,10 +44,17 @@ func main() {
 		}
 	}
 
-	subFS, err := fs.Sub(uifs, "build")
-	if err != nil {
-		log.Fatal(fmt.Errorf("error loading frontend directory: %w", err))
-	}
+	devUi := NewDevProxy("http://localhost:5173")
 
-	app.NewServer(app.WithUIFS(subFS))
+	app.NewServer(app.WithUIProxy(devUi))
+}
+
+func NewDevProxy(target string) http.Handler {
+	u, _ := url.Parse(target)
+	proxy := httputil.NewSingleHostReverseProxy(u)
+
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		r.Host = u.Host
+		proxy.ServeHTTP(w, r)
+	})
 }

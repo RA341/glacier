@@ -19,7 +19,10 @@
     async function handleLogin(e: Event) {
         e.preventDefault();
         await loginRpc.runner()
-        await goto("/library", {replaceState: true})
+
+        if (!loginRpc.error) {
+            await goto("/library", {replaceState: true})
+        }
     }
 </script>
 

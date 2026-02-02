@@ -6,7 +6,6 @@ import (
 
 	"github.com/ra341/glacier/internal/auth"
 	"github.com/ra341/glacier/internal/config"
-	"github.com/ra341/glacier/internal/config/config_manager"
 	"github.com/ra341/glacier/internal/database"
 	"github.com/ra341/glacier/internal/downloader"
 	"github.com/ra341/glacier/internal/indexer"
@@ -14,6 +13,7 @@ import (
 	"github.com/ra341/glacier/internal/library"
 	"github.com/ra341/glacier/internal/metadata"
 	"github.com/ra341/glacier/internal/search"
+	"github.com/ra341/glacier/internal/services_manager"
 	"github.com/ra341/glacier/internal/user"
 	"github.com/ra341/glacier/pkg/logger"
 
@@ -32,7 +32,7 @@ type App struct {
 	Library       *library.Service
 	DownloadSrv   *downloader.Service
 	Search        *search.Service
-	ConfigManager *config_manager.Service
+	ConfigManager *services_manager.Service
 	Indexer       *indexer.Service
 
 	User    *user.Service
@@ -41,25 +41,25 @@ type App struct {
 
 func NewApp() *App {
 	conf := config.New()
-	get := conf.Get()
-	if get == nil {
+	c := conf.Get()
+	if c == nil {
 		log.Fatal().Msg("config is nil THIS SHOULD NEVER HAPPEN")
 		return nil
 	}
-	logger.InitConsole(get.Logger.Level, get.Logger.Verbose)
+	logger.InitConsole(c.Logger.Level, c.Logger.Verbose)
 
-	db := database.New(conf.Get().Glacier.ConfigDir, false)
+	db := database.New(c.Glacier.ConfigDir, c.Logger.DBLogger)
 
 	libDb := library.NewStoreGorm(db)
 
-	confDb := config_manager.NewStore(db)
-	configManager := config_manager.New(confDb)
+	confDb := services_manager.NewStore(db)
+	configManager := services_manager.New(confDb)
 
 	downSrv := downloader.New(
 		configManager.Downloader.LoadService,
 		libDb,
 		func() *downloader.Config {
-			return &conf.Get().Download
+			return &c.Download
 		},
 	)
 	downSrv.StartTracker() // check for previous incomplete downloads
@@ -67,7 +67,7 @@ func NewApp() *App {
 	libSrv := library.New(libDb, folderMetaDb,
 		downSrv,
 		func() *library.Config {
-			return &conf.Get().Library
+			return &c.Library
 		},
 	)
 
@@ -79,8 +79,8 @@ func NewApp() *App {
 	userDb := user.NewStoreGorm(db)
 	userSrv := user.NewService(userDb)
 
-	sessionDb := auth.NewStoreGorm(db, conf.Get().Auth.MaxConcurrentSessions)
-	sessionSrv := auth.New(sessionDb, userSrv)
+	sessionDb := auth.NewStoreGorm(db, c.Auth.MaxConcurrentSessions)
+	sessionSrv := auth.New(sessionDb, userSrv, c.Auth.OpenRegistration)
 
 	a := &App{
 		Conf:          conf,

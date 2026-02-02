@@ -10,7 +10,33 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file auth/v1/auth.proto.
  */
 export const file_auth_v1_auth: GenFile = /*@__PURE__*/
-  fileDesc("ChJhdXRoL3YxL2F1dGgucHJvdG8SB2F1dGgudjEiTQoPUmVnaXN0ZXJSZXF1ZXN0EhAKCHVzZXJuYW1lGAEgASgJEhAKCHBhc3N3b3JkGAIgASgJEhYKDnBhc3N3b3JkVmVyaWZ5GAMgASgJIhIKEFJlZ2lzdGVyUmVzcG9uc2UiRQoMTG9naW5SZXF1ZXN0EhAKCHVzZXJuYW1lGAEgASgJEhAKCHBhc3N3b3JkGAIgASgJEhEKCXRva2VuVHlwZRgDIAEoCSIPCg1Mb2dpblJlc3BvbnNlMooBCgtBdXRoU2VydmljZRI4CgVMb2dpbhIVLmF1dGgudjEuTG9naW5SZXF1ZXN0GhYuYXV0aC52MS5Mb2dpblJlc3BvbnNlIgASQQoIUmVnaXN0ZXISGC5hdXRoLnYxLlJlZ2lzdGVyUmVxdWVzdBoZLmF1dGgudjEuUmVnaXN0ZXJSZXNwb25zZSIAQoEBCgtjb20uYXV0aC52MUIJQXV0aFByb3RvUAFaKmdpdGh1Yi5jb20vcmEzNDEvZ2xhY2llci9nZW5lcmF0ZWQvYXV0aC92MaICA0FYWKoCB0F1dGguVjHKAgdBdXRoXFYx4gITQXV0aFxWMVxHUEJNZXRhZGF0YeoCCEF1dGg6OlYxYgZwcm90bzM");
+  fileDesc("ChJhdXRoL3YxL2F1dGgucHJvdG8SB2F1dGgudjEiDwoNTG9nb3V0UmVxdWVzdCIQCg5Mb2dvdXRSZXNwb25zZSJNCg9SZWdpc3RlclJlcXVlc3QSEAoIdXNlcm5hbWUYASABKAkSEAoIcGFzc3dvcmQYAiABKAkSFgoOcGFzc3dvcmRWZXJpZnkYAyABKAkiEgoQUmVnaXN0ZXJSZXNwb25zZSJFCgxMb2dpblJlcXVlc3QSEAoIdXNlcm5hbWUYASABKAkSEAoIcGFzc3dvcmQYAiABKAkSEQoJdG9rZW5UeXBlGAMgASgJIg8KDUxvZ2luUmVzcG9uc2UyxwEKC0F1dGhTZXJ2aWNlEjgKBUxvZ2luEhUuYXV0aC52MS5Mb2dpblJlcXVlc3QaFi5hdXRoLnYxLkxvZ2luUmVzcG9uc2UiABJBCghSZWdpc3RlchIYLmF1dGgudjEuUmVnaXN0ZXJSZXF1ZXN0GhkuYXV0aC52MS5SZWdpc3RlclJlc3BvbnNlIgASOwoGTG9nb3V0EhYuYXV0aC52MS5Mb2dvdXRSZXF1ZXN0GhcuYXV0aC52MS5Mb2dvdXRSZXNwb25zZSIAQoEBCgtjb20uYXV0aC52MUIJQXV0aFByb3RvUAFaKmdpdGh1Yi5jb20vcmEzNDEvZ2xhY2llci9nZW5lcmF0ZWQvYXV0aC92MaICA0FYWKoCB0F1dGguVjHKAgdBdXRoXFYx4gITQXV0aFxWMVxHUEJNZXRhZGF0YeoCCEF1dGg6OlYxYgZwcm90bzM");
+
+/**
+ * @generated from message auth.v1.LogoutRequest
+ */
+export type LogoutRequest = Message<"auth.v1.LogoutRequest"> & {
+};
+
+/**
+ * Describes the message auth.v1.LogoutRequest.
+ * Use `create(LogoutRequestSchema)` to create a new message.
+ */
+export const LogoutRequestSchema: GenMessage<LogoutRequest> = /*@__PURE__*/
+  messageDesc(file_auth_v1_auth, 0);
+
+/**
+ * @generated from message auth.v1.LogoutResponse
+ */
+export type LogoutResponse = Message<"auth.v1.LogoutResponse"> & {
+};
+
+/**
+ * Describes the message auth.v1.LogoutResponse.
+ * Use `create(LogoutResponseSchema)` to create a new message.
+ */
+export const LogoutResponseSchema: GenMessage<LogoutResponse> = /*@__PURE__*/
+  messageDesc(file_auth_v1_auth, 1);
 
 /**
  * @generated from message auth.v1.RegisterRequest
@@ -37,7 +63,7 @@ export type RegisterRequest = Message<"auth.v1.RegisterRequest"> & {
  * Use `create(RegisterRequestSchema)` to create a new message.
  */
 export const RegisterRequestSchema: GenMessage<RegisterRequest> = /*@__PURE__*/
-  messageDesc(file_auth_v1_auth, 0);
+  messageDesc(file_auth_v1_auth, 2);
 
 /**
  * @generated from message auth.v1.RegisterResponse
@@ -50,7 +76,7 @@ export type RegisterResponse = Message<"auth.v1.RegisterResponse"> & {
  * Use `create(RegisterResponseSchema)` to create a new message.
  */
 export const RegisterResponseSchema: GenMessage<RegisterResponse> = /*@__PURE__*/
-  messageDesc(file_auth_v1_auth, 1);
+  messageDesc(file_auth_v1_auth, 3);
 
 /**
  * @generated from message auth.v1.LoginRequest
@@ -77,7 +103,7 @@ export type LoginRequest = Message<"auth.v1.LoginRequest"> & {
  * Use `create(LoginRequestSchema)` to create a new message.
  */
 export const LoginRequestSchema: GenMessage<LoginRequest> = /*@__PURE__*/
-  messageDesc(file_auth_v1_auth, 2);
+  messageDesc(file_auth_v1_auth, 4);
 
 /**
  * @generated from message auth.v1.LoginResponse
@@ -90,7 +116,7 @@ export type LoginResponse = Message<"auth.v1.LoginResponse"> & {
  * Use `create(LoginResponseSchema)` to create a new message.
  */
 export const LoginResponseSchema: GenMessage<LoginResponse> = /*@__PURE__*/
-  messageDesc(file_auth_v1_auth, 3);
+  messageDesc(file_auth_v1_auth, 5);
 
 /**
  * @generated from service auth.v1.AuthService
@@ -111,6 +137,14 @@ export const AuthService: GenService<{
     methodKind: "unary";
     input: typeof RegisterRequestSchema;
     output: typeof RegisterResponseSchema;
+  },
+  /**
+   * @generated from rpc auth.v1.AuthService.Logout
+   */
+  logout: {
+    methodKind: "unary";
+    input: typeof LogoutRequestSchema;
+    output: typeof LogoutResponseSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_auth_v1_auth, 0);

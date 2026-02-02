@@ -46,8 +46,12 @@ func (s *Service) GetByID(id uint) (User, error) {
 	return s.store.GetByID(id)
 }
 
-func (s *Service) List() ([]User, error) {
-	return s.store.List()
+func (s *Service) List(q string, user *User) ([]User, error) {
+	if user.Role > Magos {
+		return []User{}, fmt.Errorf("insufficient privileges to list users")
+	}
+
+	return s.store.List(q)
 }
 
 func (s *Service) New(user, password string, role Role, createdBy *User) error {
@@ -94,10 +98,43 @@ func (s *Service) newRaw(userid uint, user string, password string, finalRole Ro
 	return err
 }
 
-func (s *Service) Edit(user *User) error {
+func (s *Service) Edit(user *User, editorUser *User) (err error) {
+	if editorUser == nil {
+		return fmt.Errorf("editor user cannot be nil")
+	}
+
+	if user.ID == editorUser.ID && user.Role != editorUser.Role {
+		return fmt.Errorf("cannot change self role")
+	}
+
+	if user.Role < editorUser.Role {
+		return fmt.Errorf("insufficient privileges to edit role: %s", user.Role.String())
+	}
+
+	if user.EncryptedPassword != "" {
+		user.EncryptedPassword, err = EncryptPassword(user.EncryptedPassword)
+		if err != nil {
+			return fmt.Errorf("failed to encrypt password: %w", err)
+		}
+
+	}
+
 	return s.store.Edit(user)
 }
 
-func (s *Service) Delete(id uint) error {
+func (s *Service) Delete(id uint, deleteBy *User) error {
+	if deleteBy.ID == id {
+		return fmt.Errorf("cannot delete self")
+	}
+
+	deleted, err := s.store.GetByID(id)
+	if err != nil {
+		return err
+	}
+
+	if deleted.Role < deleteBy.Role || deleteBy.Role > Magos {
+		return fmt.Errorf("cannot delete user with higher permission")
+	}
+
 	return s.store.Delete(id)
 }

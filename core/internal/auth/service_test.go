@@ -16,7 +16,7 @@ func TestService_RoleChecks(t *testing.T) {
 	uts := &TestUserStore{}
 	us := user.NewService(uts)
 	ts := &TestSessionStore{}
-	srv := New(ts, us)
+	srv := New(ts, us, false)
 
 	u, err := srv.userSrv.GetByUsername(user.DefaultUser)
 	require.NoError(t, err)
@@ -46,7 +46,7 @@ func TestService_Register(t *testing.T) {
 	uts := &TestUserStore{}
 	us := user.NewService(uts)
 	ts := &TestSessionStore{}
-	srv := New(ts, us)
+	srv := New(ts, us, false)
 
 	u := "test"
 	p := "test"

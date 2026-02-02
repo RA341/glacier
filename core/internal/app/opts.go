@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io/fs"
+	"net/http"
 	"os"
 )
 
@@ -36,5 +37,11 @@ func LoadUIFromDir(path string) (fs.FS, error) {
 func WithUIFS(uiFs fs.FS) ServerOpt {
 	return func(o *Server) {
 		o.UIFS = uiFs
+	}
+}
+
+func WithUIProxy(ui http.Handler) ServerOpt {
+	return func(o *Server) {
+		o.uiProxy = ui
 	}
 }
