@@ -52,6 +52,8 @@ func (s *StoreGorm) UpdateDownloadProgress(ctx context.Context, id uint, downloa
 			`state`,
 			`progress`,
 			`incomplete_path`,
+			`done`,
+			`complete`,
 		).
 		UpdateColumns(Game{
 			Download: download,

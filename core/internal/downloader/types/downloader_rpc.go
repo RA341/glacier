@@ -6,11 +6,12 @@ import (
 
 func (g *Download) ToProto() *v1.Download {
 	return &v1.Download{
-		Client:     g.Client,
-		DownloadId: g.DownloadId,
-		State:      g.State.String(),
-		Progress:   g.Progress,
-
+		Client:       g.Client,
+		DownloadId:   g.DownloadId,
+		State:        g.State.String(),
+		Progress:     g.Progress,
+		Complete:     g.Complete,
+		Done:         g.Left,
 		DownloadPath: g.DownloadPath,
 		DownloadUrl:  g.DownloadUrl,
 	}

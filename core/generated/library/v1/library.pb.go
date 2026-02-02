@@ -588,6 +588,8 @@ type Download struct {
 	DownloadId    string                 `protobuf:"bytes,2,opt,name=DownloadId,proto3" json:"DownloadId,omitempty"`
 	State         string                 `protobuf:"bytes,3,opt,name=State,proto3" json:"State,omitempty"`
 	Progress      string                 `protobuf:"bytes,4,opt,name=Progress,proto3" json:"Progress,omitempty"`
+	Complete      uint64                 `protobuf:"varint,7,opt,name=Complete,proto3" json:"Complete,omitempty"`
+	Done          uint64                 `protobuf:"varint,8,opt,name=Done,proto3" json:"Done,omitempty"`
 	DownloadPath  string                 `protobuf:"bytes,5,opt,name=DownloadPath,proto3" json:"DownloadPath,omitempty"`
 	DownloadUrl   string                 `protobuf:"bytes,6,opt,name=DownloadUrl,proto3" json:"DownloadUrl,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -650,6 +652,20 @@ func (x *Download) GetProgress() string {
 		return x.Progress
 	}
 	return ""
+}
+
+func (x *Download) GetComplete() uint64 {
+	if x != nil {
+		return x.Complete
+	}
+	return 0
+}
+
+func (x *Download) GetDone() uint64 {
+	if x != nil {
+		return x.Done
+	}
+	return 0
 }
 
 func (x *Download) GetDownloadPath() string {
@@ -736,14 +752,16 @@ const file_library_v1_library_proto_rawDesc = "" +
 	"\bEditedAt\x18\x03 \x01(\tR\bEditedAt\x12:\n" +
 	"\rDownloadState\x18\a \x01(\v2\x14.library.v1.DownloadR\rDownloadState\x12+\n" +
 	"\x04Meta\x18\x04 \x01(\v2\x17.search.v1.GameMetadataR\x04Meta\x12-\n" +
-	"\x06Source\x18\b \x01(\v2\x15.search.v1.GameSourceR\x06Source\"\xba\x01\n" +
+	"\x06Source\x18\b \x01(\v2\x15.search.v1.GameSourceR\x06Source\"\xea\x01\n" +
 	"\bDownload\x12\x16\n" +
 	"\x06Client\x18\x01 \x01(\tR\x06Client\x12\x1e\n" +
 	"\n" +
 	"DownloadId\x18\x02 \x01(\tR\n" +
 	"DownloadId\x12\x14\n" +
 	"\x05State\x18\x03 \x01(\tR\x05State\x12\x1a\n" +
-	"\bProgress\x18\x04 \x01(\tR\bProgress\x12\"\n" +
+	"\bProgress\x18\x04 \x01(\tR\bProgress\x12\x1a\n" +
+	"\bComplete\x18\a \x01(\x04R\bComplete\x12\x12\n" +
+	"\x04Done\x18\b \x01(\x04R\x04Done\x12\"\n" +
 	"\fDownloadPath\x18\x05 \x01(\tR\fDownloadPath\x12 \n" +
 	"\vDownloadUrl\x18\x06 \x01(\tR\vDownloadUrl\"\r\n" +
 	"\vAddResponse2\xc3\x03\n" +

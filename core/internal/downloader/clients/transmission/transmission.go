@@ -141,10 +141,14 @@ func (tm *Client) Progress(ctx context.Context, download *types.Download) (err e
 			download.State = types.Error
 		}
 
-		download.Complete = uint64(*info.PercentComplete)
+		download.Complete = uint64(*info.DownloadedEver)
 		download.Left = uint64(*info.LeftUntilDone)
 
-		download.Progress = info.Status.String()
+		download.Progress = fmt.Sprintf(
+			"%s-%s",
+			info.TimeDownloading.String(),
+			info.Status.String(),
+		)
 		download.IncompletePath = filepath.Join(
 			*info.DownloadDir,
 			*info.Name,

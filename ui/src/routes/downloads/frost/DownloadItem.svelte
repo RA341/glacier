@@ -5,6 +5,7 @@
     } from "@lucide/svelte";
     import {slide} from 'svelte/transition';
     import type {DownloadProgress} from "$lib/gen/frost_library/v1/frost_library_pb";
+    import {formatBytes} from "$lib/api/byte-math";
 
     let {detail}: { detail: DownloadProgress } = $props();
 
@@ -44,15 +45,6 @@
     const totalLeft = $derived(Number(detail.progress?.Left ?? 0));
     const totalSize = $derived(totalComplete + totalLeft);
     const overallProgress = $derived(totalSize > 0 ? (totalComplete / totalSize) * 100 : 0);
-
-    function formatBytes(bytes: number, decimals = 2) {
-        if (bytes === 0) return '0 B';
-        const k = 1024;
-        const dm = decimals < 0 ? 0 : decimals;
-        const sizes = ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
-    }
 
     function getStateColor(state: string = "") {
         const s = state.toLowerCase();

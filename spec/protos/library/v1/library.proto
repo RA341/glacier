@@ -76,6 +76,9 @@ message Download {
   string DownloadId = 2;
   string State = 3;
   string Progress = 4;
+  uint64 Complete = 7;
+  uint64 Done = 8;
+
   string DownloadPath = 5;
   string DownloadUrl = 6;
 }
