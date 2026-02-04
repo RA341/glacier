@@ -2,15 +2,15 @@ package library
 
 import (
 	"context"
-	"crypto/md5"
 	"encoding/gob"
-	"encoding/hex"
 	"fmt"
 	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
+	"strconv"
 
+	"github.com/cespare/xxhash/v2"
 	"github.com/ra341/glacier/internal/downloader/types"
 	"github.com/ra341/glacier/pkg/fileutil"
 	"github.com/rs/zerolog/log"
@@ -233,23 +233,20 @@ func (s *ManifestService) gatherMeta(
 }
 
 func GetHash(path string) (string, error) {
-	open, err := os.Open(path)
+	f, err := os.Open(path)
 	if err != nil {
-		return "", err
+		return "0", err
 	}
-	defer fileutil.Close(open)
+	defer fileutil.Close(f)
 
-	_, err = open.Seek(0, io.SeekStart)
-	if err != nil {
-		return "", err
-	}
-
-	h := md5.New()
-	if _, err := io.Copy(h, open); err != nil {
-		return "", err
+	h := xxhash.New()
+	// 1MB buffer to keep the pipeline full
+	buf := make([]byte, 1024*1024)
+	if _, err := io.CopyBuffer(h, f, buf); err != nil {
+		return "0", err
 	}
 
-	checksum := hex.EncodeToString(h.Sum(nil))
+	sum64 := h.Sum64()
 
-	return checksum, nil
+	return strconv.FormatUint(sum64, 10), nil
 }
