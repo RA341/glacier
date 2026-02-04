@@ -190,7 +190,7 @@ func (s *ManifestService) gatherMeta(
 			res.InsertIndex = uint(i)
 			res.Update = true
 
-			if prevState.ModTime == curStat.ModTime() {
+			if prevState.ModTime.Equal(curStat.ModTime()) {
 				// file is not modified, meta does not need to be updated
 				log.Info().Str("file", relPath).Msg("using cached metadata")
 				res.meta = prevState
