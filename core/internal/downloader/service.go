@@ -16,22 +16,24 @@ import (
 )
 
 type GetCli func(name string) (types.Downloader, error)
+type CheckMetaFn func(id int)
 
 type Service struct {
-	cli   GetCli
-	store library.Store
-	conf  ConfigLoader
-
+	cli                      GetCli
+	store                    library.Store
+	conf                     ConfigLoader
+	cmf                      CheckMetaFn
 	isDownloadTrackerRunning atomic.Bool
 	trackerCtxCancelFn       context.CancelFunc
 	triggerChan              chan struct{}
 }
 
-func New(cli GetCli, store library.Store, conf ConfigLoader) *Service {
+func New(cli GetCli, cmf CheckMetaFn, store library.Store, conf ConfigLoader) *Service {
 	return &Service{
 		cli:   cli,
 		store: store,
 		conf:  conf,
+		cmf:   cmf,
 	}
 }
 
@@ -240,6 +242,10 @@ func (s *Service) completeGameDownload(game *library.Game) {
 		game.Download.Progress = fmt.Sprintf("could link file: %v", err)
 		return
 	}
+
+	log.Info().Str("name", game.Meta.Name).Msg("generating manifest")
+
+	s.cmf(int(game.ID))
 
 	log.Debug().Str("title", game.Meta.Name[:24]).Msg("download complete with no errors")
 }

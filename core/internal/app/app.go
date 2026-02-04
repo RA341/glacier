@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"fmt"
 	"reflect"
 
@@ -55,16 +56,22 @@ func NewApp() *App {
 	confDb := services_manager.NewStore(db)
 	configManager := services_manager.New(confDb)
 
+	manStore := library.NewStoreManifestGorm(db)
+	fms := library.NewManifestService(libDb, manStore)
+
 	downSrv := downloader.New(
 		configManager.Downloader.LoadService,
+		func(id int) {
+			fms.GenerateManifest(context.Background(), id)
+		},
 		libDb,
 		func() *downloader.Config {
 			return &c.Download
 		},
 	)
 	downSrv.StartTracker() // check for previous incomplete downloads
-	folderMetaDb := library.NewStoreFolderMetadataGorm(db)
-	libSrv := library.New(libDb, folderMetaDb,
+
+	libSrv := library.New(libDb, fms,
 		downSrv,
 		func() *library.Config {
 			return &c.Library

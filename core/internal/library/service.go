@@ -24,18 +24,16 @@ type ConfigLoader func() *Config
 
 func New(
 	store Store,
-	folderMetaStore StoreGameManifest,
+	fs *ManifestService,
 	downloader Downloader,
 	config ConfigLoader,
 ) *Service {
-	fms := NewManifestService(store, folderMetaStore)
 
 	return &Service{
 		downloader: downloader,
 		config:     config,
-
-		store:    store,
-		manifest: fms,
+		store:      store,
+		manifest:   fs,
 	}
 }
 

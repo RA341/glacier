@@ -12,7 +12,7 @@ type StoreFolderMetadataGorm struct {
 	DB *gorm.DB
 }
 
-func NewStoreFolderMetadataGorm(gorm *gorm.DB) StoreGameManifest {
+func NewStoreManifestGorm(gorm *gorm.DB) StoreGameManifest {
 	return &StoreFolderMetadataGorm{
 		DB: gorm,
 	}
