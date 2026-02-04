@@ -243,9 +243,13 @@ func (s *Service) completeGameDownload(game *library.Game) {
 		return
 	}
 
+	now := time.Now()
 	log.Info().Str("name", game.Meta.Name).Msg("generating manifest")
 
 	s.cmf(int(game.ID))
 
-	log.Debug().Str("title", game.Meta.Name[:24]).Msg("download complete with no errors")
+	log.Debug().
+		Str("title", game.Meta.Name[:24]+"...").
+		Str("meta-took", time.Since(now).String()).
+		Msg("download complete with no errors")
 }
