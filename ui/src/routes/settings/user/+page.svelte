@@ -30,7 +30,6 @@
     $effect(() => {
         if (selfRpc.value?.user && !newUsername) {
             newUsername = selfRpc.value.user.Username;
-            console.log($inspect(selfRpc.value.user));
         }
     });
 
