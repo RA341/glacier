@@ -116,7 +116,6 @@ func (s *Service) Edit(user *User, editorUser *User) (err error) {
 		if err != nil {
 			return fmt.Errorf("failed to encrypt password: %w", err)
 		}
-
 	}
 
 	return s.store.Edit(user)

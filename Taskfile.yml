@@ -77,6 +77,7 @@ tasks:
         sh: git rev-parse --abbrev-ref HEAD
 
       LDFLAGS: >-
+        {{if .STATIC}}-linkmode external -extldflags '-static'{{end}}
         {{if .PROD}}-s -w{{end}} 
         -X {{.INFO_PACKAGE}}.Version={{.VERSION}}
         -X {{.INFO_PACKAGE}}.CommitInfo={{.COMMIT}}
@@ -160,7 +161,7 @@ tasks:
   dk:b:
     desc: "Builds the main docker image"
     cmds:
-      - docker --debug build -f pkg/docker/Dockerfile . -t {{.DOCKER_IMG}}
+      - docker build -f pkg/docker/Dockerfile . -t {{.DOCKER_IMG}}
 
   cli:
     cmds:
