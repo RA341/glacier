@@ -11,7 +11,7 @@ type StoreGorm struct {
 	gormDB *gorm.DB
 }
 
-func NewStoreGorm(gormDB *gorm.DB) *StoreGorm {
+func NewStoreGorm(gormDB *gorm.DB) Store {
 	return &StoreGorm{
 		gormDB: gormDB,
 	}
@@ -33,11 +33,20 @@ func (s *StoreGorm) Add(ctx context.Context, game *Game) error {
 	return s.Q(ctx).Save(game).Error
 }
 
-func (s *StoreGorm) List(ctx context.Context, limit uint, offset uint) ([]Game, error) {
+func (s *StoreGorm) List(ctx context.Context, query string, limit uint, offset uint) ([]Game, error) {
 	var games []Game
-	err := s.Q(ctx).
-		Order("updated_at desc").Offset(int(offset)).
-		Limit(int(limit)).Find(&games).
+
+	whereQ := s.Q(ctx)
+	if query != "" {
+		searchTerm := "%" + query + "%"
+		whereQ = whereQ.Where("title LIKE ?", searchTerm).Or("description LIKE ?", searchTerm)
+	}
+
+	err := whereQ.
+		Order("updated_at desc").
+		Offset(int(offset)).
+		Limit(int(limit)).
+		Find(&games).
 		Error
 	return games, err
 }

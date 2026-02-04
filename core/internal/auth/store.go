@@ -17,18 +17,8 @@ type Store interface {
 
 	GetBySessionId(sessionId uint) (Session, error)
 	GetBySessionToken(token string) (Session, error)
+	GetByApiKey(key string) (Session, error)
 }
-
-//go:generate go run github.com/dmarkham/enumer@latest -sql -type=SessionType -output=enum_session_type.go
-type SessionType int
-
-const (
-	// Web for direct glacier web UI access
-	Web SessionType = iota
-
-	// Frost for frost clients
-	Frost
-)
 
 type Session struct {
 	gorm.Model
@@ -38,8 +28,19 @@ type Session struct {
 
 	HashedRefreshToken string `gorm:"uniqueIndex"`
 	RefreshTokenExpiry time.Time
+
 	HashedSessionToken string `gorm:"uniqueIndex"`
 	SessionTokenExpiry time.Time
 
 	SessionType SessionType
 }
+
+//go:generate go run github.com/dmarkham/enumer@latest -sql -type=SessionType -output=enum_session_type.go
+type SessionType int
+
+const (
+	// Web for direct glacier web UI access
+	Web SessionType = iota
+	// Frost for frost clients
+	Frost
+)

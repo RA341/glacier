@@ -53,11 +53,12 @@ console.log(`Is frost ${isFrost}`);
 export const appName = isFrost ? 'Frost' : 'Glacier';
 
 export const Glacier = createServiceContext(SERVICES.GLACIER);
-export const GlacierPub = createServiceContext(SERVICES.GLACIERPUB);
-export const Frost = createServiceContext(SERVICES.FROST);
-
 export const glacierCli = Glacier.get;
+
+export const GlacierPub = createServiceContext(SERVICES.GLACIERPUB);
 export const glacierPubCli = GlacierPub.get;
+
+export const Frost = createServiceContext(SERVICES.FROST);
 export const frostCli = Frost.get;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

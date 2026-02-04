@@ -76,3 +76,12 @@ func (s *StoreGorm) GetBySessionToken(token string) (Session, error) {
 	err := s.db.Preload("User").Where("hashed_session_token = ?", token).First(&session).Error
 	return session, err
 }
+func (s *StoreGorm) GetByApiKey(token string) (Session, error) {
+	var session Session
+	err := s.db.
+		Preload("User").
+		Where("hashed_api_key = ?", token).
+		First(&session).
+		Error
+	return session, err
+}

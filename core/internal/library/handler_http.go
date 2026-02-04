@@ -35,7 +35,7 @@ func (h *HandlerHttp) getMetadata(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.srv.GetDownloadManifest(r.Context(), gid, w)
+	err = h.srv.manifest.GetDownloadManifest(r.Context(), gid, w)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -60,7 +60,7 @@ func (h *HandlerHttp) downloadFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	download, err := h.srv.FileDownload(r.Context(), gameId, file)
+	download, err := h.srv.manifest.FileDownload(r.Context(), gameId, file)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

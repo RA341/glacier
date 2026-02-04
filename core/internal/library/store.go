@@ -30,6 +30,6 @@ type Store interface {
 	UpdateDownloadProgress(ctx context.Context, id uint, download download.Download) error
 	GetById(ctx context.Context, id uint) (Game, error)
 	DeleteGame(ctx context.Context, id uint) error
-	List(ctx context.Context, limit uint, offset uint) ([]Game, error)
+	List(ctx context.Context, query string, limit uint, offset uint) ([]Game, error)
 	ListDownloadState(ctx context.Context, state download.DownloadState) ([]Game, error)
 }

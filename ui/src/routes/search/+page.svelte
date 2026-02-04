@@ -2,15 +2,13 @@
     import {createRPCRunner} from "$lib/api/svelte-api.svelte";
     import {type GameMetadata, SearchService} from "$lib/gen/search/v1/search_pb";
     import {glacierCli} from "$lib/api/api";
-    import {CircleAlert, HardDriveIcon, ImageIcon, LoaderIcon, PlusIcon, SearchIcon, SearchXIcon} from '@lucide/svelte';
-
-    import MatchMetadataModal from "./MatchMetadataModal.svelte";
+    import {CircleAlert, ImageIcon, LoaderIcon, PlusIcon, SearchIcon, SearchXIcon} from '@lucide/svelte';
     import {page} from '$app/state';
     import {goto} from "$app/navigation";
     import {onMount} from "svelte";
-    import {MetadataService} from "$lib/gen/metadata/v1/metadata_pb";
     import {transferStore} from "./selectedGame.svelte";
     import {ServiceConfigService} from "$lib/gen/service_config/v1/service_config_pb";
+    import GameGridItem from "./GameGridItem.svelte";
 
     const searchQueryParam = 'q';
     let query = $state(page.url.searchParams.get(searchQueryParam) || "");
@@ -63,7 +61,7 @@
     function handleAdd(meta: GameMetadata) {
         transferStore.data = meta
 
-        goto("/search/details", { keepFocus: true })
+        goto("/search/details", {keepFocus: true})
     }
 
     function handleKeyDown(event: KeyboardEvent) {
@@ -137,50 +135,9 @@
                 </div>
 
             {:else if searchRpc.value && searchRpc.value.metadata && searchRpc.value.metadata.length > 0}
-                <!-- Card Grid -->
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-                    {#each searchRpc.value.metadata as item}
-                        <button
-                                onclick={() => handleAdd(item)}
-                                class="group relative flex flex-col bg-surface border border-border rounded-2xl overflow-hidden hover:border-frost-500/50 transition-all hover:-translate-y-1 shadow-sm active:scale-[0.98]"
-                        >
-                            <!-- Game Photo / Poster -->
-                            <div class="aspect-3/4 w-full bg-panel relative overflow-hidden">
-                                <!-- Placeholder Logic -->
-                                {#if item.ThumbnailURL}
-                                    <img
-                                            src={item.ThumbnailURL}
-                                            alt={item.Name}
-                                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                    />
-                                {:else}
-                                    <div class="w-full h-full flex flex-col items-center justify-center text-muted/20 gap-2">
-                                        <ImageIcon size={48} strokeWidth={1}/>
-                                        <span class="text-[10px] font-bold uppercase tracking-widest">No Preview</span>
-                                    </div>
-                                {/if}
-
-                                <!-- Hover Overlay -->
-                                <div class="absolute inset-0 bg-frost-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                    <div class="bg-frost-500 text-background p-3 rounded-full shadow-xl translate-y-4 group-hover:translate-y-0 transition-transform">
-                                        <PlusIcon size={24}/>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Info Bar -->
-                            <div class="p-4 border-t border-border flex flex-col gap-1 bg-surface">
-                                <h3 class="font-bold text-sm text-foreground truncate">{item.Name}</h3>
-                                <div class="flex items-center justify-between text-[11px] text-muted font-medium">
-                                    <span class="flex items-center gap-1">
-                                        (2023) <!-- Placeholder Year -->
-                                    </span>
-                                    <!--                                    <span class="flex items-center gap-1 uppercase tracking-tighter opacity-70">-->
-                                    <!--                                        <HardDriveIcon size={12}/> {item.FileSize}-->
-                                    <!--                                    </span>-->
-                                </div>
-                            </div>
-                        </button>
+                    {#each searchRpc.value.metadata as item (item.ID)}
+                        <GameGridItem game={item}/>
                     {/each}
                 </div>
             {:else if searchRpc.value}
@@ -190,7 +147,6 @@
                     <p class="text-sm">Try adjusting your query or indexer</p>
                 </div>
             {:else}
-                <!-- Initial State -->
                 <div class="flex flex-col items-center justify-center h-96 border-2 border-dashed border-border rounded-3xl text-blue-100">
                     <SearchIcon size={80} strokeWidth={1} class="mb-4"/>
                     <p class="text-lg font-medium">Search for game</p>

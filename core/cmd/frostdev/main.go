@@ -21,6 +21,7 @@ func main() {
 	envs := map[string]string{
 		"LOGGER_VERBOSE": "true",
 		"LOGGER_LEVEL":   "debug",
+		"LOGGER_HTTP":    "true",
 		"CONFIG_DIR":     "./config",
 		//"GLACIER_URL":    "http://192.168.50.123:6699",
 		"GLACIER_URL":     "http://localhost:6699",

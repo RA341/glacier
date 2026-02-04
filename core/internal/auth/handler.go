@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"connectrpc.com/connect"
-	frost "github.com/ra341/glacier/frost/app"
 	v1 "github.com/ra341/glacier/generated/auth/v1"
 	"github.com/ra341/glacier/generated/auth/v1/v1connect"
 	"github.com/ra341/glacier/internal/user"
@@ -24,24 +23,35 @@ func NewHandler(srv *Service) (string, http.Handler) {
 }
 
 func (h *Handler) Login(ctx context.Context, req *connect.Request[v1.LoginRequest]) (*connect.Response[v1.LoginResponse], error) {
-	val := req.Header().Get(frost.FrostHeader)
-	var sessionType = Web
-	if val == "true" {
-		sessionType = Frost
-	}
+	resp := connect.NewResponse(&v1.LoginResponse{})
 
 	s, session, refresh, err := h.srv.Login(
 		req.Msg.Username,
 		req.Msg.Password,
-		sessionType,
+		Web,
 	)
 	if err != nil {
 		return nil, err
 	}
 
-	resp := connect.NewResponse(&v1.LoginResponse{})
+	// for the webui
+	writeWebCookie(resp, &s, session, refresh)
 
-	writeSessionCookie(resp, &s, session, refresh)
+	// if its a desktop client
+	// generate new tokens specifically for desktop
+	val := req.Header().Get(FrostHeader)
+	if val == "true" {
+		s, session, refresh, err = h.srv.Login(
+			req.Msg.Username,
+			req.Msg.Password,
+			Frost,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		WriteFrostHeader(resp, session, refresh)
+	}
 
 	return resp, nil
 }
@@ -94,7 +104,21 @@ func (h *Handler) getSessionCookie(ctx context.Context, cookies string) error {
 	return nil
 }
 
-func writeSessionCookie(hw HeaderWriter, s *Session, session, refresh string) {
+const HeaderFrostRefreshToken = "frostRefreshKey"
+const HeaderFrostSessionToken = "frostSessionKey"
+
+func WriteFrostHeader(hw HeaderWriter, session, refresh string) {
+	if hw == nil {
+		// in case of logout
+		return
+	}
+	// since desktop does not care about expiry tokens
+	// let the server refresh the tokens when needed
+	hw.Header().Add(HeaderFrostRefreshToken, refresh)
+	hw.Header().Add(HeaderFrostSessionToken, session)
+}
+
+func writeWebCookie(hw HeaderWriter, s *Session, session, refresh string) {
 	if hw == nil {
 		// in case of logout
 		return

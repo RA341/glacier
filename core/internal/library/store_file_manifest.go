@@ -7,22 +7,22 @@ import (
 	"gorm.io/gorm"
 )
 
-type StoreFolderMetadata interface {
+type StoreGameManifest interface {
 	Add(ctx context.Context, gameId int, metadata *FolderManifest) error
 	Get(ctx context.Context, gameId int) (FolderManifest, error)
 	Delete(ctx context.Context, gameId int) error
 	Edit(ctx context.Context, gameId int, metadata *FolderManifest) error
+	ListGamesWithoutManifest(ctx context.Context) ([]int, error)
 }
 
 type FolderManifest struct {
 	gorm.Model
 
-	GameID int  `gorm:"index"`
+	GameID int  `gorm:"uniqueIndex"`
 	Game   Game `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 
-	TotalSize         int64
-	AvailableExePaths []string       `gorm:"serializer:json" `
-	FileInfo          []FileManifest `gorm:"serializer:json"`
+	TotalSize int64
+	FileInfo  []FileManifest `gorm:"serializer:json"`
 }
 
 type FileManifest struct {

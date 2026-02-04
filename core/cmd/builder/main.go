@@ -21,7 +21,8 @@ type Stage struct {
 	Cmd      string
 	Args     []string
 	Dir      string
-	Duration time.Duration // Added to track stage time
+	Duration time.Duration
+	OnDone   func(output string)
 }
 
 // Job represents a lane in the TUI that runs multiple stages sequentially
@@ -58,6 +59,8 @@ func main() {
 		return fmt.Sprintf("-X %s.%s=%s ", frostInfoPkg, varName, value)
 	}
 
+	version := "canary"
+
 	jobs := []*Job{
 		{
 			ID: 1,
@@ -73,6 +76,21 @@ func main() {
 					Args: []string{"-r", "build", frostCmd},
 				},
 				{
+					Dir: getwd,
+					Cmd: "git",
+					Args: []string{
+						"describe",
+						"--tags",
+						"--abbrev=0",
+						"2>/dev/null",
+					},
+					OnDone: func(output string) {
+						if output != "" {
+							version = output
+						}
+					},
+				},
+				{
 					Dir: core,
 					Cmd: "go",
 					Args: []string{
@@ -80,7 +98,7 @@ func main() {
 						"-o", frostOut,
 						"-ldflags",
 						fmt.Sprintf("s -w %s %s %s %s",
-							withPkgInf("Version", "TestVersion"),
+							withPkgInf("Version", version),
 							withPkgInf("CommitInfo", "TestCommitInfo"),
 							withPkgInf("BuildDate", "TestBuildDate"),
 							withPkgInf("Branch", "TestBranch"),
@@ -139,7 +157,7 @@ func runJob(ctx context.Context, job *Job) {
 		elapsed := time.Since(start)
 
 		job.mu.Lock()
-		job.Stages[i].Duration = elapsed // Record duration for the summary
+		job.Stages[i].Duration = elapsed
 		job.mu.Unlock()
 
 		if err != nil {
@@ -183,7 +201,22 @@ func runStage(ctx context.Context, job *Job, stage Stage) error {
 		job.appendLine(scanner.Text())
 	}
 
-	return cmd.Wait()
+	err := cmd.Wait()
+	if err != nil {
+		return err
+	}
+
+	if stage.OnDone == nil {
+		return err
+	}
+
+	output, err := cmd.Output()
+	if err != nil {
+		return err
+	}
+	stage.OnDone(string(output))
+
+	return err
 }
 
 func (j *Job) appendLine(line string) {

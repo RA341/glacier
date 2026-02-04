@@ -10,6 +10,7 @@ import (
 	"time"
 
 	ll "github.com/ra341/glacier/frost/local_library"
+	"github.com/ra341/glacier/internal/auth"
 	"github.com/ra341/glacier/shared/api"
 
 	"github.com/rs/zerolog/log"
@@ -83,7 +84,11 @@ func (s *Server) registerUI(mux *http.ServeMux) {
 func (s *Server) registerApiRoutes(mux *http.ServeMux) {
 	frostMux := http.NewServeMux()
 	s.RegisterFrostRoutes(frostMux)
-	api.WithSubRouter(mux, "/api/frost", frostMux)
+	api.WithSubRouter(
+		mux,
+		"/api/frost",
+		frostMux,
+	)
 
 	glacierProxy := http.NewServeMux()
 	s.registerGlacierProxy(glacierProxy)
@@ -100,8 +105,6 @@ func (s *Server) RegisterFrostRoutes(mux *http.ServeMux) {
 	mux.Handle(ll.NewHandler(s.LocalLibrarySrv))
 }
 
-const FrostHeader = "is-frost"
-
 func (s *Server) registerGlacierProxy(mux *http.ServeMux) {
 	conf := s.App.Conf.Get()
 	target, err := url.Parse(conf.Server.GlacierUrl)
@@ -112,10 +115,7 @@ func (s *Server) registerGlacierProxy(mux *http.ServeMux) {
 	proxy := httputil.NewSingleHostReverseProxy(target)
 	originalDirector := proxy.Director
 	proxy.Director = func(req *http.Request) {
-		val := req.Header.Get(FrostHeader)
-		if val == "" {
-			req.Header.Set(FrostHeader, "true")
-		}
+		req.Header.Set(auth.FrostHeader, "true")
 
 		originalDirector(req)
 		req.Host = target.Host
@@ -128,6 +128,16 @@ func (s *Server) registerGlacierProxy(mux *http.ServeMux) {
 		resp.Header.Del("Access-Control-Allow-Credentials")
 		resp.Header.Del("Access-Control-Allow-Methods")
 		resp.Header.Del("Access-Control-Allow-Headers")
+
+		refresh := resp.Header.Get(auth.HeaderFrostRefreshToken)
+		session := resp.Header.Get(auth.HeaderFrostSessionToken)
+		if refresh != "" && session != "" {
+			err := s.Secret.AddSession(session, refresh)
+			if err != nil {
+				// maybe return error IDK
+				log.Warn().Err(err).Msg("Error adding session")
+			}
+		}
 
 		return nil
 	}

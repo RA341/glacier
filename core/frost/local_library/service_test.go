@@ -12,7 +12,7 @@ func init() {
 }
 
 func TestDownload(t *testing.T) {
-	srv := New("http://localhost:6699")
+	srv := New("http://localhost:6699", nil)
 
 	err := srv.Download(1, "./tmp/download")
 	require.NoError(t, err)

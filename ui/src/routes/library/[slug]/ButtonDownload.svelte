@@ -1,8 +1,8 @@
 <script lang="ts">
-    import { DownloadIcon, LoaderIcon, AlertTriangleIcon, XIcon } from '@lucide/svelte';
-    import { callRPC, frostCli } from "$lib/api/api";
-    import { FrostLibraryService } from "$lib/gen/frost_library/v1/frost_library_pb";
-    import { fade, fly } from 'svelte/transition';
+    import {DownloadIcon, LoaderIcon, TriangleAlert, XIcon} from '@lucide/svelte';
+    import {callRPC, frostCli} from "$lib/api/api";
+    import {FrostLibraryService} from "$lib/gen/frost_library/v1/frost_library_pb";
+    import {fade, fly} from 'svelte/transition';
 
     let { gameId }: { gameId: bigint } = $props();
 
@@ -61,7 +61,7 @@
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3 text-red-400">
                     <div class="p-2 bg-red-500/10 rounded-lg">
-                        <AlertTriangleIcon size={20} />
+                        <TriangleAlert size={20} />
                     </div>
                     <h3 class="font-bold">Download Failed</h3>
                 </div>

@@ -56,6 +56,7 @@ func NewDownload(
 	progress ProgressUpdater,
 	baseUrl, downloadFolder string,
 	gameId int,
+
 ) (*Download, error) {
 	metaPath := filepath.Join(downloadFolder, MetadataFolder)
 	db, err := NewCacheStoreBadger(metaPath)
