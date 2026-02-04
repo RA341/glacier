@@ -12,18 +12,8 @@ import (
 type Service struct {
 	store   Store
 	userSrv *user.Service
-
-	openRegistration bool
-	refreshExpiry    time.Duration
-	sessionExpiry    time.Duration
+	conf    ConfigLoader
 }
-
-const (
-	Day      = time.Hour * 24
-	Month    = Day * 30
-	Year     = Month * 12
-	HalfYear = Month * 6
-)
 
 var (
 	ErrTokenExpired       = errors.New("token expired")
@@ -32,20 +22,17 @@ var (
 	ErrInvalidUserPass    = errors.New("invalid username/password")
 )
 
-func New(store Store, userSrv *user.Service, openSignups bool) *Service {
+func New(store Store, userSrv *user.Service, conf ConfigLoader) *Service {
 	s := &Service{
-		store:            store,
-		userSrv:          userSrv,
-		refreshExpiry:    Year,
-		sessionExpiry:    Day,
-		openRegistration: openSignups,
+		store:   store,
+		userSrv: userSrv,
+		conf:    conf,
 	}
-
 	return s
 }
 
 func (s *Service) Register(username, password string, role user.Role, creatingUser *user.User) (err error) {
-	if creatingUser == nil && !s.openRegistration {
+	if creatingUser == nil && !s.conf().OpenRegistration {
 		return ErrRegistrationClosed
 	}
 	err = s.userSrv.New(username, password, role, creatingUser)
@@ -83,16 +70,18 @@ func (s *Service) Login(username, password string, sessionType SessionType) (ses
 }
 
 func (s *Service) GenerateTok(sess *Session) (plainSession string, plainRefresh string) {
+	conf := s.conf()
+
 	plainRefresh = user.GenerateRandomToken(20)
 	hashedRefreshToken := user.HashString(plainRefresh)
-	refreshExpiry := time.Now().Add(s.refreshExpiry)
+	refreshExpiry := time.Now().Add(conf.GetRefreshExp())
 
 	sess.HashedRefreshToken = hashedRefreshToken
 	sess.RefreshTokenExpiry = refreshExpiry
 
 	plainSession = user.GenerateRandomToken(20)
 	hashedSessionToken := user.HashString(plainSession)
-	sessionExpiry := time.Now().Add(s.sessionExpiry)
+	sessionExpiry := time.Now().Add(conf.GetSessionExp())
 
 	sess.HashedSessionToken = hashedSessionToken
 	sess.SessionTokenExpiry = sessionExpiry
@@ -117,12 +106,12 @@ func (s *Service) VerifySession(sessionToken string) (session Session, err error
 
 func (s *Service) RefreshSession(refreshToken string) (session Session, sessionTok string, refreshTok string, err error) {
 	hashedTok := user.HashString(refreshToken)
-	sess, err := s.store.GetBySessionToken(hashedTok)
+	sess, err := s.store.GetByRefreshToken(hashedTok)
 	if err != nil {
 		return Session{}, "", "", err
 	}
 
-	err = checkExpiry(sess.SessionTokenExpiry)
+	err = checkExpiry(sess.RefreshTokenExpiry)
 	if err != nil {
 		return Session{}, "", "", err
 	}

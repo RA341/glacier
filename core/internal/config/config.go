@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/ra341/glacier/internal/auth"
 	"github.com/ra341/glacier/internal/downloader"
 	"github.com/ra341/glacier/internal/library"
 )
@@ -9,7 +10,7 @@ type Config struct {
 	Glacier  Glacier           `yaml:"glacier"`
 	Server   Server            `yaml:"server"`
 	Logger   Logger            `yaml:"logger"`
-	Auth     Auth              `yaml:"auth"`
+	Auth     auth.Config       `yaml:"auth"`
 	Library  library.Config    `yaml:"library"`
 	Download downloader.Config `yaml:"downloader"`
 }
@@ -17,12 +18,6 @@ type Config struct {
 type Glacier struct {
 	// holds db and the yml file
 	ConfigDir string `yaml:"config" env:"CONFIG_DIR" default:"./config" help:"path to the config dir"`
-}
-
-type Auth struct {
-	MaxConcurrentSessions int  `yaml:"maxConcurrentSessions" env:"MAX_SESSIONS" default:"8" help:"maximum number of logged in sessions per user"`
-	Disable               bool `yaml:"disable" env:"AUTH_DISABLE" default:"false" help:"disable authentication"`
-	OpenRegistration      bool `yaml:"openRegistration" env:"AUTH_OPEN_REGISTRATION" default:"false" help:"open registration for anyone to signup"`
 }
 
 type Server struct {

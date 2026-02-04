@@ -87,7 +87,13 @@ func NewApp() *App {
 	userSrv := user.NewService(userDb)
 
 	sessionDb := auth.NewStoreGorm(db, c.Auth.MaxConcurrentSessions)
-	sessionSrv := auth.New(sessionDb, userSrv, c.Auth.OpenRegistration)
+	sessionSrv := auth.New(
+		sessionDb,
+		userSrv,
+		func() *auth.Config {
+			return &c.Auth
+		},
+	)
 
 	a := &App{
 		Conf:          conf,

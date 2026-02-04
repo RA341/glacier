@@ -16,6 +16,42 @@ func NewStoreGorm(db *gorm.DB, maxSessions int) *StoreGorm {
 	}
 }
 
+func (s *StoreGorm) List() ([]Session, error) {
+	var sessions []Session
+	err := s.db.Find(&sessions).Error
+	return sessions, err
+}
+
+func (s *StoreGorm) ListByUser(userId uint) ([]Session, error) {
+	var sessions []Session
+	err := s.db.Where("user_id = ?", userId).Find(&sessions).Error
+	return sessions, err
+}
+
+func (s *StoreGorm) GetBySessionId(sessionId uint) (Session, error) {
+	var session Session
+	err := s.db.First(&session, sessionId).Error
+	return session, err
+}
+
+func (s *StoreGorm) GetBySessionToken(token string) (Session, error) {
+	var session Session
+	err := s.db.Preload("User").
+		Where("hashed_session_token = ?", token).
+		First(&session).
+		Error
+	return session, err
+}
+
+func (s *StoreGorm) GetByRefreshToken(token string) (Session, error) {
+	var session Session
+	err := s.db.Preload("User").
+		Where("hashed_refresh_token = ?", token).
+		First(&session).
+		Error
+	return session, err
+}
+
 func (s *StoreGorm) New(token *Session) error {
 	return s.db.Transaction(func(tx *gorm.DB) error {
 		if err := tx.Create(token).Error; err != nil {
@@ -51,37 +87,4 @@ func (s *StoreGorm) Edit(token *Session) error {
 
 func (s *StoreGorm) Delete(token *Session) error {
 	return s.db.Unscoped().Delete(token).Error
-}
-
-func (s *StoreGorm) List() ([]Session, error) {
-	var sessions []Session
-	err := s.db.Find(&sessions).Error
-	return sessions, err
-}
-
-func (s *StoreGorm) ListByUser(userId uint) ([]Session, error) {
-	var sessions []Session
-	err := s.db.Where("user_id = ?", userId).Find(&sessions).Error
-	return sessions, err
-}
-
-func (s *StoreGorm) GetBySessionId(sessionId uint) (Session, error) {
-	var session Session
-	err := s.db.First(&session, sessionId).Error
-	return session, err
-}
-
-func (s *StoreGorm) GetBySessionToken(token string) (Session, error) {
-	var session Session
-	err := s.db.Preload("User").Where("hashed_session_token = ?", token).First(&session).Error
-	return session, err
-}
-func (s *StoreGorm) GetByApiKey(token string) (Session, error) {
-	var session Session
-	err := s.db.
-		Preload("User").
-		Where("hashed_api_key = ?", token).
-		First(&session).
-		Error
-	return session, err
 }

@@ -17,7 +17,7 @@ type Store interface {
 
 	GetBySessionId(sessionId uint) (Session, error)
 	GetBySessionToken(token string) (Session, error)
-	GetByApiKey(key string) (Session, error)
+	GetByRefreshToken(token string) (Session, error)
 }
 
 type Session struct {

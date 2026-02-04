@@ -162,6 +162,11 @@ type TestSessionStore struct {
 	idCount atomic.Int64
 }
 
+func (t *TestSessionStore) GetByRefreshToken(token string) (Session, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (t *TestSessionStore) New(session *Session) error {
 	newID := uint(t.idCount.Add(1))
 	session.ID = newID
