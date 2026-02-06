@@ -37,7 +37,7 @@ COPY .git .git
 COPY core core
 COPY Taskfile.yml .
 
-RUN task go:b:docker OUT_EXE=../glacier PROD=1 STATIC=1
+RUN task go:b:docker OUT_EXE=../glacier PROD=1
 
 FROM alpine:latest
 

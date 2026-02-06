@@ -17,7 +17,7 @@
 		"format": "prettier --write .",
 		"lint": "prettier --check .",
 		"desk:dev": "cross-env NODE_ENV=development electron .",
-		"desk:build": "npx electron-builder"
+		"desk:build": "npx electron-builder --dir"
 	},
 	"main": "electron.cjs",
 	"build": {
@@ -27,6 +27,12 @@
 		],
 		"directories": {
 			"output": "release"
+		},
+		"win": {
+			"icon": "static/favicon.png"
+		},
+		"linux": {
+			"icon": "static/favicon.png"
 		}
 	},
 	"dependencies": {

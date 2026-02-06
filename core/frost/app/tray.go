@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"runtime"
 	"sync"
 	"sync/atomic"
 
@@ -95,7 +96,12 @@ func (t *Tray) startUI() {
 		return
 	}
 
-	err := NewUI(t.ctx, "ui/ui")
+	exePath := "ui/ui"
+	if runtime.GOOS == "windows" {
+		exePath += ".exe"
+	}
+
+	err := NewUI(t.ctx, exePath)
 	if err != nil {
 		if errors.Is(t.ctx.Err(), context.Canceled) {
 			fmt.Println("Process stopped by user")

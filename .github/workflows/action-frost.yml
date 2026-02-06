@@ -1,0 +1,75 @@
+name: build frost
+
+on:
+  workflow_call:
+    inputs:
+      version_tag:
+        description: 'The primary version identifier (e.g., v1.2.3, canary, dev)'
+        required: true
+        type: string
+
+jobs:
+  build-architectures:
+    strategy:
+      matrix:
+        include:
+          - platform: "linux"
+            machine: ubuntu-latest
+            output_path: .build/frost/linux
+            zip_name: frost-linux.zip
+
+          - platform: "windows"
+            machine: windows-latest
+            output_path: .build/frost/windows
+            zip_name: frost-windows.zip
+
+    name: Build frost (${{ matrix.platform }})
+    runs-on: ${{ matrix.machine }}
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 'stable'
+
+      - name: Install Task
+        uses: go-task/setup-task@v1
+
+      - name: Go mod tidy
+        run: go mod tidy
+        working-directory: ./core
+
+      - name: Build frost
+        run: |
+          task init
+          task bb
+
+      - name: Zip Artifacts (Linux)
+        if: runner.os == 'Linux'
+        run: zip -r ${{ matrix.zip_name }} ${{ matrix.output_path }}
+
+      - name: Zip Artifacts (Windows)
+        if: runner.os == 'Windows'
+        run: Compress-Archive -Path ${{ matrix.output_path }} -DestinationPath ${{ matrix.zip_name }}
+
+      - name: Upload to Canary Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: canary
+          prerelease: true
+          files: ${{ matrix.zip_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

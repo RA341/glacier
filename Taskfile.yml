@@ -26,45 +26,62 @@ tasks:
     cmds:
       - 'mkdir -p {{.BUILD_DIR}}/{{.TARG}}'
 
+  init:
+    deps:
+      - go:download
+      - ui:install
+
   go:download:
     dir: "{{.CORE_DIR}}"
     cmds:
       - go mod download
 
+  ui:install:
+    dir: "{{.UI_DIR}}"
+    cmds:
+      - npm i
+
   frost:
-    deps:
-      - frost:ui:desk
-      - frost:go
+    vars:
+      OSS: '{{if eq OS "windows"}}win{{else}}linux{{end}}'
+      OUT: "{{.TASKFILE_DIR}}/{{.BUILD_DIR}}/frost/{{.OSS}}"
+      UI: "{{.OUT}}/ui/"
+    cmds:
+      - task frost:ui:desk OUT={{.UI}}
+      - task frost:go OUT={{.OUT}}
 
   frost:go:
     cmds:
       - task ui:b:frost
-      - task go:b:frost PROD=1
+      - task go:b:frost PROD=1 OUT={{.OUT}}
 
   frost:ui:desk:
     dir: "{{ .UI_DIR }}"
+    vars:
+      ELECTRON: '{{if eq OS "windows"}}win-unpacked{{else}}linux-unpacked{{end}}'
     cmds:
       - npm run desk:build
-      - cp -r release/linux-unpacked ../{{.BUILD_DIR}}/frost/ui
+      - mkdir -p {{.OUT}}
+      - cp -r release/{{.ELECTRON}}/. {{.OUT}}/
 
   bb:
     cmds:
       - "cd {{.CORE_DIR}} && go build -ldflags '-s -w' -o {{.TASKFILE_DIR}}/bob ./cmd/builder"
       - "./bob"
 
-  go:*:
-    dir: "{{.BUILD_DIR}}"
-    desc: "Builds and runs a Go target. Usage: task go:<target>"
-    vars:
-      CMD_NAME: "{{index .MATCH 0}}"
-      EXE_EXT: '{{if eq OS "windows"}}.exe{{end}}'
-      ARGS: '{{if eq .CMD_NAME "updater"}} 
-              -cr={{.CMD_NAME}}/compose {{else}} 
-              -conf={{.CMD_NAME}}/config 
-              -cr={{.CMD_NAME}}/compose{{end}}'
-    cmds:
-      - task go:b:{{.CMD_NAME}}
-      - ../{{.BUILD_DIR}}/{{.CMD_NAME}}/{{.CMD_NAME}}{{.EXE_EXT}}{{.ARGS}}
+#  go:*:
+#    dir: "{{.BUILD_DIR}}"
+#    desc: "Builds and runs a Go target. Usage: task go:<target>"
+#    vars:
+#      CMD_NAME: "{{index .MATCH 0}}"
+#      EXE_EXT: '{{if eq OS "windows"}}.exe{{end}}'
+#      ARGS: '{{if eq .CMD_NAME "updater"}}
+#              -cr={{.CMD_NAME}}/compose {{else}}
+#              -conf={{.CMD_NAME}}/config
+#              -cr={{.CMD_NAME}}/compose{{end}}'
+#    cmds:
+#      - task go:b:{{.CMD_NAME}}
+#      - ../{{.BUILD_DIR}}/{{.CMD_NAME}}/{{.CMD_NAME}}{{.EXE_EXT}}{{.ARGS}}
 
   go:b:*:
     dir: "{{.CORE_DIR}}"

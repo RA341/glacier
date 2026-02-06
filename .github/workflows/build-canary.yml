@@ -18,8 +18,14 @@ permissions:
   packages: write  # To push Docker images to GHCR
 
 jobs:
-  build-canary:
-    name: Build Canary
+  build-frost:
+    name: Build Docker Canary
+    uses: ./.github/workflows/action-frost.yml
+    with:
+      version_tag: canary
+
+  build-docker:
+    name: Build Docker Canary
     uses: ./.github/workflows/action-docker.yml
     with:
       title: glacier

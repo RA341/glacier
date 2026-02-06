@@ -20,7 +20,7 @@ on:
         description: 'Title for the image'
         required: false
         type: string
-        default: "dockman"
+        default: "glacier"
       dockerfile:
         description: 'Path to Dockerfile'
         required: false

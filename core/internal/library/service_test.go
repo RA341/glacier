@@ -20,11 +20,10 @@ var testGame = Game{
 }
 
 func TestMeta(t *testing.T) {
-	sd := TestStore{}
-	srv := New(sd, nil, nil)
+	srv := New(nil, nil, nil, nil)
 	ctx := context.Background()
 
-	_, err := srv.GetDownloadManifest(ctx, 1)
+	err := srv.manifest.GetDownloadManifest(ctx, 1, nil)
 	require.NoError(t, err)
 
 }
@@ -34,7 +33,7 @@ func TestMeta(t *testing.T) {
 type TestStore struct {
 }
 
-func (t TestStore) Edit(ctx context.context.Context, game *Game) error {
+func (t TestStore) Edit(ctx context.Context, game *Game) error {
 	//TODO implement me
 	panic("implement me")
 }
