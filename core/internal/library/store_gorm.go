@@ -2,8 +2,10 @@ package library
 
 import (
 	"context"
+	"errors"
 
 	"github.com/ra341/glacier/internal/downloader/types"
+	metadata "github.com/ra341/glacier/internal/metadata/types"
 	"gorm.io/gorm"
 )
 
@@ -19,6 +21,23 @@ func NewStoreGorm(gormDB *gorm.DB) Store {
 
 func (s *StoreGorm) Q(ctx context.Context) *gorm.DB {
 	return s.gormDB.WithContext(ctx)
+}
+
+func (s *StoreGorm) Edit(ctx context.Context, game *Game) error {
+	return s.Q(ctx).Updates(game).Error
+}
+
+func (s *StoreGorm) Exists(provType metadata.ProviderType, GameDBID string) (uint, error) {
+	dest := &Game{}
+	err := s.Q(context.Background()).
+		Where("provider_type", provType).
+		Where("game_db_id", GameDBID).
+		Select("id").First(dest).
+		Error
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return 0, err
+	}
+	return dest.ID, nil
 }
 
 func (s *StoreGorm) ListDownloadState(ctx context.Context, state types.DownloadState) ([]Game, error) {
@@ -75,6 +94,6 @@ func (s *StoreGorm) GetById(ctx context.Context, id uint) (Game, error) {
 	return game, err
 }
 
-func (s *StoreGorm) DeleteGame(ctx context.Context, id uint) error {
+func (s *StoreGorm) Delete(ctx context.Context, id uint) error {
 	return s.Q(ctx).Unscoped().Delete(&Game{}, id).Error
 }

@@ -1,7 +1,36 @@
 name: glacier-dev
 services:
+  caddy:
+    image: caddy:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - pocket-id-net
+    restart: unless-stopped
+
+
+  pocket:
+    image: ghcr.io/pocket-id/pocket-id:latest
+    environment:
+      - ENCRYPTION_KEY=ZLEAiNYTFgxFgSomYSsWGC1xdH1U26Z6sScFHM8gcoM=
+      - APP_URL=https://auth.localhost
+      - TRUST_PROXY=true
+    ports:
+      - "1411:1411"
+    volumes:
+      - ./.build/pocket_id:/app/backend/data
+    networks:
+      - pocket-id-net
+    depends_on:
+      - caddy
+    restart: unless-stopped
+
   transmission:
-    container_name: "transmission-dev"
     image: lscr.io/linuxserver/transmission:latest
     environment:
       - PUID=1000
@@ -13,3 +42,13 @@ services:
       - /home/ra341/Dev/Go/glacier/.build/dev/incomplete:/home/ra341/Dev/Go/glacier/.build/dev/incomplete
     ports:
       - "9091:9091"
+    depends_on:
+      - caddy
+
+volumes:
+  caddy_data:
+  caddy_config:
+  pocket_id_data:
+
+networks:
+  pocket-id-net:

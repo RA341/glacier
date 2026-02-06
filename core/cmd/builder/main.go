@@ -18,11 +18,15 @@ import (
 
 // Stage represents a single command step within a job pipeline
 type Stage struct {
-	Cmd      string
-	Args     []string
-	Dir      string
-	Duration time.Duration
-	OnDone   func(output string)
+	Cmd       string
+	Args      []string
+	Dir       string
+	Duration  time.Duration
+	OnDone    func(output string)
+	IgnoreErr bool
+	Sources   []string
+	Debug     bool
+	Output    string // Add this to store the result
 }
 
 // Job represents a lane in the TUI that runs multiple stages sequentially
@@ -38,19 +42,22 @@ type Job struct {
 	status string
 }
 
+var workingDir = ""
+
 func main() {
 	fmt.Print("\033[?25l")
 	defer fmt.Print("\033[?25h")
 
-	getwd, err := os.Getwd()
+	var err error
+	workingDir, err = os.Getwd()
 	must(err)
 
-	frostOut := filepath.Join(getwd, ".build", "frost")
+	frostOut := filepath.Join(workingDir, ".build", "frost")
 	err = os.MkdirAll(frostOut, 0777)
 	must(err)
 
-	uiDir := filepath.Join(getwd, "ui")
-	core := filepath.Join(getwd, "core")
+	uiDir := filepath.Join(workingDir, "ui")
+	core := filepath.Join(workingDir, "core")
 	cmd := filepath.Join(core, "cmd")
 
 	frostCmd := filepath.Join(cmd, "frost")
@@ -59,7 +66,10 @@ func main() {
 		return fmt.Sprintf("-X %s.%s=%s ", frostInfoPkg, varName, value)
 	}
 
+	commit := "unknown"
+	branch := "unknown"
 	version := "canary"
+	const gitCmd = "git"
 
 	jobs := []*Job{
 		{
@@ -76,13 +86,13 @@ func main() {
 					Args: []string{"-r", "build", frostCmd},
 				},
 				{
-					Dir: getwd,
-					Cmd: "git",
+					Dir:       workingDir,
+					Cmd:       gitCmd,
+					IgnoreErr: true,
 					Args: []string{
 						"describe",
 						"--tags",
 						"--abbrev=0",
-						"2>/dev/null",
 					},
 					OnDone: func(output string) {
 						if output != "" {
@@ -91,17 +101,50 @@ func main() {
 					},
 				},
 				{
+					Dir:       workingDir,
+					Cmd:       gitCmd,
+					IgnoreErr: true,
+					Args: []string{
+						"rev-parse",
+						"HEAD",
+					},
+					Debug: true,
+					OnDone: func(output string) {
+						if output != "" {
+							commit = output
+						}
+					},
+				},
+				{
+					Dir:       workingDir,
+					Cmd:       gitCmd,
+					IgnoreErr: true,
+					Debug:     true,
+					Args: []string{
+						"rev-parse", "--abbrev-ref HEAD",
+					},
+					OnDone: func(output string) {
+						if output != "" {
+							branch = output
+						}
+					},
+				},
+				{
 					Dir: core,
 					Cmd: "go",
+					Sources: []string{
+						"**/*.go",
+						"go.*",
+					},
 					Args: []string{
 						"build",
 						"-o", frostOut,
 						"-ldflags",
 						fmt.Sprintf("s -w %s %s %s %s",
 							withPkgInf("Version", version),
-							withPkgInf("CommitInfo", "TestCommitInfo"),
-							withPkgInf("BuildDate", "TestBuildDate"),
-							withPkgInf("Branch", "TestBranch"),
+							withPkgInf("CommitInfo", commit),
+							withPkgInf("BuildDate", time.Now().UTC().Format(time.RFC3339)),
+							withPkgInf("Branch", branch),
 						),
 						"./cmd/frost",
 					},
@@ -111,8 +154,21 @@ func main() {
 		{
 			ID: 2,
 			Stages: []Stage{
-				{Dir: uiDir, Cmd: "npm", Args: []string{"run", "desk:build"}},
-				{Dir: uiDir, Cmd: "cp", Args: []string{"-r", "release/linux-unpacked/", frostOut + "/ui"}},
+				{
+					Dir:     uiDir,
+					Cmd:     "npm",
+					Sources: []string{"package*.json", "electron.cjs"},
+					Args: []string{
+						"run",
+						"desk:build",
+					},
+					Debug: true,
+				},
+				{
+					Dir:  uiDir,
+					Cmd:  "cp",
+					Args: []string{"-r", "release/linux-unpacked/.", frostOut + "/ui"},
+				},
 			},
 		},
 	}
@@ -146,6 +202,8 @@ func must(err error) {
 }
 
 func runJob(ctx context.Context, job *Job) {
+	allPreviousCached := true
+
 	for i := range job.Stages {
 		job.mu.Lock()
 		job.CurrentStage = i + 1
@@ -153,30 +211,132 @@ func runJob(ctx context.Context, job *Job) {
 		job.mu.Unlock()
 
 		start := time.Now()
-		err := runStage(ctx, job, job.Stages[i])
+		var err error
+		stage := job.Stages[i]
+		stageKey := fmt.Sprintf("%d-%d", job.ID, i)
+
+		// isCurrentCached is true if file exists AND (no sources OR hashes match)
+		isCurrentCached, newHashContent := checkCache(stageKey, &stage)
+
+		var resultSuffix string
+		var output string
+		if isCurrentCached && allPreviousCached {
+			job.status = "cached"
+			resultSuffix = "\033[33m(CACHED)\033[0m"
+		} else {
+			allPreviousCached = false
+
+			output, err = runStage(ctx, job, stage)
+			if err == nil {
+				job.status = "done"
+				resultSuffix = "\033[32m(DONE)\033[0m"
+				// Mark as completed in cache, even if newHashContent is empty
+				commitCache(stageKey, newHashContent)
+			} else {
+				job.status = "failed"
+				resultSuffix = "\033[31m(FAILED)\033[0m"
+			}
+		}
+
+		// TUI Logging
 		elapsed := time.Since(start)
+		durationTotal := time.Since(job.StartTime).Seconds()
+		cmdStr := fmt.Sprintf("%s %s", stage.Cmd, strings.Join(stage.Args, " "))
+		lim := 80
+		if len(cmdStr) > lim {
+			cmdStr = cmdStr[:lim] + "..."
+		}
+
+		completionLine := fmt.Sprintf("[%6.1fs] [stage %d-%d] %s %s",
+			durationTotal, job.ID, i+1, cmdStr, resultSuffix)
 
 		job.mu.Lock()
 		job.Stages[i].Duration = elapsed
+		job.Stages[i].Output = output
+		job.Lines = append(job.Lines, completionLine)
 		job.mu.Unlock()
 
 		if err != nil {
-			job.mu.Lock()
-			job.status = "failed"
-			msg := fmt.Sprintf("\033[31mStage failed: %v\033[0m", err)
-			job.Lines = append(job.Lines, msg)
-			job.mu.Unlock()
 			return
 		}
 	}
 
 	job.mu.Lock()
-	job.status = "done"
 	job.done = true
 	job.mu.Unlock()
 }
 
-func runStage(ctx context.Context, job *Job, stage Stage) error {
+const cacheDir = ".bob.cache"
+
+func checkCache(i string, stage *Stage) (bool, string) {
+	base := filepath.Join(workingDir, cacheDir)
+	cachePath := filepath.Join(base, i)
+
+	oldContent, err := os.ReadFile(cachePath)
+	if err != nil {
+		return false, ""
+	}
+
+	var currentLines []string
+	currentLines = append(currentLines, fmt.Sprintf("CMD: %s %s", stage.Cmd, strings.Join(stage.Args, " ")))
+
+	files := expandSources(stage.Dir, stage.Sources)
+	for _, fpath := range files {
+		stat, err := os.Stat(fpath)
+		if err != nil {
+			continue
+		}
+		relPath, _ := filepath.Rel(stage.Dir, fpath)
+		currentLines = append(currentLines, fmt.Sprintf("%s:%s", relPath, stat.ModTime().String()))
+	}
+
+	newContent := strings.Join(currentLines, "\n")
+	return string(oldContent) == newContent, newContent
+}
+
+func commitCache(i string, content string) {
+	base := filepath.Join(workingDir, cacheDir)
+	err := os.MkdirAll(base, 0777)
+	must(err)
+	// Write hashes or an empty string to signify completion
+	err = os.WriteFile(filepath.Join(base, i), []byte(content), 0644)
+	must(err)
+}
+
+func expandSources(wd string, patterns []string) []string {
+	var allFiles []string
+	for _, pattern := range patterns {
+		// Handle recursive pattern **
+		if strings.Contains(pattern, "**") {
+			baseDir := strings.Split(pattern, "**")[0]
+			searchDir := filepath.Join(wd, baseDir)
+
+			err := filepath.WalkDir(searchDir, func(path string, d os.DirEntry, err error) error {
+				if err == nil && !d.IsDir() {
+					// Match the specific extension or suffix if provided after **
+					suffix := filepath.Ext(pattern)
+					if suffix == "" || strings.HasSuffix(path, suffix) {
+						allFiles = append(allFiles, path)
+					}
+				}
+				return nil
+			})
+			must(err)
+
+		} else {
+			// Standard non-recursive glob
+			matches, _ := filepath.Glob(filepath.Join(wd, pattern))
+			for _, m := range matches {
+				if stat, err := os.Stat(m); err == nil && !stat.IsDir() {
+					allFiles = append(allFiles, m)
+				}
+			}
+		}
+	}
+	return allFiles
+}
+
+func runStage(ctx context.Context, job *Job, stage Stage) (string, error) {
 	cmd := exec.CommandContext(ctx, stage.Cmd, stage.Args...)
 	if stage.Dir != "" {
 		cmd.Dir = stage.Dir
@@ -193,30 +353,32 @@ func runStage(ctx context.Context, job *Job, stage Stage) error {
 	multiReader := io.MultiReader(stdout, stderr)
 
 	if err := cmd.Start(); err != nil {
-		return err
+		return "", err
 	}
 
+	var capturedOutput strings.Builder
 	scanner := bufio.NewScanner(multiReader)
 	for scanner.Scan() {
-		job.appendLine(scanner.Text())
+		txt := scanner.Text()
+		job.appendLine(txt)
+		// Always capture if Debug is on or OnDone is present
+		if stage.OnDone != nil || stage.Debug {
+			capturedOutput.WriteString(txt + "\n")
+		}
 	}
 
 	err := cmd.Wait()
-	if err != nil {
-		return err
+	output := strings.TrimSpace(capturedOutput.String())
+
+	if stage.OnDone != nil {
+		stage.OnDone(output)
 	}
 
-	if stage.OnDone == nil {
-		return err
+	if stage.IgnoreErr {
+		return output, nil
 	}
 
-	output, err := cmd.Output()
-	if err != nil {
-		return err
-	}
-	stage.OnDone(string(output))
-
-	return err
+	return output, err
 }
 
 func (j *Job) appendLine(line string) {
@@ -264,6 +426,11 @@ func renderLoop(ctx context.Context, jobs []*Job, doneCh <-chan struct{}) {
 
 					fmt.Printf("  [Stage %d-%d] [%s %s] - %s\n",
 						j.ID, i+1, s.Cmd, strings.Join(s.Args, " "), dur)
+
+					if s.Debug {
+						fmt.Printf("    \033[90m> Debug Output: %s\033[0m\n", strings.ReplaceAll(s.Output, "\n", "\n    "))
+					}
+
 				}
 				j.mu.RUnlock()
 			}
@@ -315,12 +482,9 @@ func render(jobs []*Job) {
 
 		currentStageSpec := j.Stages[idx]
 		cmdDisplay := fmt.Sprintf("%s %s", currentStageSpec.Cmd, strings.Join(currentStageSpec.Args, " "))
-
-		statusIcon := ""
-		if j.status == "failed" {
-			statusIcon = " \033[31m(FAILED)\033[0m"
-		} else if j.status == "done" {
-			statusIcon = " \033[32m(DONE)\033[0m"
+		cmdLim := 30
+		if len(cmdDisplay) > cmdLim {
+			cmdDisplay = cmdDisplay[:cmdLim] + "..."
 		}
 
 		duration := time.Since(j.StartTime).Seconds()
@@ -329,7 +493,9 @@ func render(jobs []*Job) {
 			displayStageNum = 1
 		}
 
-		header := fmt.Sprintf("[%6.1fs] [stage %d-%d] %s%s", duration, j.ID, displayStageNum, cmdDisplay, statusIcon)
+		header := fmt.Sprintf("[%6.1fs] [stage %d-%d] %s (running...)",
+			duration, j.ID, j.CurrentStage, cmdDisplay)
+
 		headerFormatted := fmt.Sprintf("\033[1m%s\033[0m", header)
 		screenLines = append(screenLines, headerFormatted)
 

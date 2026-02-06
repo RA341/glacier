@@ -68,6 +68,16 @@ func printConfig(defaultPrefixer argos.Prefixer, conf *Config) {
 			}
 		},
 	}
+	// todo hide
+	//redactTag := argos.FieldPrintConfig{
+	//	TagName: "hide",
+	//	PrintConfig: func(TagName string, val *argos.FieldVal) {
+	//		_, ok := val.Tags[TagName]
+	//		if ok {
+	//			val.Value = argos.Colorize("REDACTED", argos.ColorRed)
+	//		}
+	//	},
+	//}
 	helpTag := argos.FieldPrintConfig{
 		TagName: "help",
 		PrintConfig: func(TagName string, val *argos.FieldVal) {

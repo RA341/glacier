@@ -37,7 +37,6 @@
 </svelte:head>
 
 <Snackbar>
-
     <div class="flex h-screen w-full overflow-hidden bg-background text-foreground">
         {#if !page.url.pathname.startsWith("/auth")}
             <!-- Sidebar -->

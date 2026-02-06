@@ -10,6 +10,12 @@ func NewStoreGorm(db *gorm.DB) *StoreGorm {
 	return &StoreGorm{db: db}
 }
 
+func (s *StoreGorm) GetByEmail(email string) (User, error) {
+	var u User
+	err := s.db.Where("email = ?", email).First(&u).Error
+	return u, err
+}
+
 func (s *StoreGorm) GetByUsername(username string) (User, error) {
 	var u User
 	err := s.db.Where("username = ?", username).First(&u).Error

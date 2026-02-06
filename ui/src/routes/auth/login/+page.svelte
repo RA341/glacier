@@ -81,7 +81,22 @@
                 <ArrowRightIcon size={18}/>
             {/if}
         </button>
+
     </form>
+
+
+    <button
+            type="submit"
+            onclick={() => goto("/api/server/public/auth/oidc")}
+            class="w-full py-4 bg-frost-500 text-background font-bold rounded-2xl hover:bg-frost-400 active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-frost-500/20 disabled:opacity-50"
+    >
+        {#if loginRpc.loading}
+            <LoaderIcon size={20} class="animate-spin"/>
+        {:else}
+            Use OIDC
+            <ArrowRightIcon size={18}/>
+        {/if}
+    </button>
 </div>
 
 {#if loginRpc.error}

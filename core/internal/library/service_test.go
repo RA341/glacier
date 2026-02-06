@@ -34,6 +34,11 @@ func TestMeta(t *testing.T) {
 type TestStore struct {
 }
 
+func (t TestStore) Edit(ctx context.context.Context, game *Game) error {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (t TestStore) GetById(ctx context.Context, id uint) (Game, error) {
 	return testGame, nil
 }

@@ -148,6 +148,11 @@ func (s *Server) registerPublicRoutes(mux *http.ServeMux) {
 	})
 
 	mux.Handle(auth.NewHandler(s.Session))
+	api.WithSubRouter(
+		mux,
+		"/auth",
+		auth.NewHandlerHttp(s.Session),
+	)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -2,9 +2,11 @@ package library
 
 import (
 	"context"
+	"fmt"
 	"path/filepath"
 
 	"github.com/ra341/glacier/internal/downloader/types"
+	"github.com/ra341/glacier/internal/user"
 )
 
 type Downloader interface {
@@ -35,6 +37,19 @@ func New(
 		store:      store,
 		manifest:   fs,
 	}
+}
+
+func (s *Service) Get(ctx context.Context, id uint) (Game, error) {
+	return s.store.GetById(ctx, id)
+}
+
+func (s *Service) Edit(ctx context.Context, game *Game) error {
+	err := checkPerms(ctx)
+	if err != nil {
+		return err
+	}
+
+	return s.store.Edit(ctx, game)
 }
 
 func (s *Service) List(ctx context.Context, query string, offset, limit uint) ([]Game, error) {
@@ -72,9 +87,22 @@ func (s *Service) Add(ctx context.Context, game *Game) error {
 }
 
 func (s *Service) Delete(ctx context.Context, id uint) error {
-	return s.store.DeleteGame(ctx, id)
+	err := checkPerms(ctx)
+	if err != nil {
+		return err
+	}
+
+	return s.store.Delete(ctx, id)
 }
 
-func (s *Service) Get(ctx context.Context, id uint) (Game, error) {
-	return s.store.GetById(ctx, id)
+func checkPerms(ctx context.Context) error {
+	userInf, err := user.GetUserCtx(ctx)
+	if err != nil {
+		return err
+	}
+
+	if userInf.Role > user.Magos {
+		return fmt.Errorf("insufficient permissions to delete")
+	}
+	return nil
 }

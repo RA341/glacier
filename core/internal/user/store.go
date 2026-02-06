@@ -5,8 +5,9 @@ import (
 )
 
 type Store interface {
-	GetByUsername(username string) (User, error)
 	GetByID(id uint) (User, error)
+	GetByUsername(username string) (User, error)
+	GetByEmail(username string) (User, error)
 
 	New(user *User) error
 	Edit(user *User) error
@@ -29,6 +30,7 @@ const (
 type User struct {
 	gorm.Model
 	Username          string `gorm:"uniqueIndex"`
+	Email             string `gorm:"uniqueIndex"`
 	EncryptedPassword string
 
 	Role Role

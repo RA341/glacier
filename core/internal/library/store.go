@@ -20,6 +20,10 @@ type Game struct {
 	Source indexer.Source `gorm:"embedded"`
 }
 
+type GameConfig struct {
+	ExePath string
+}
+
 func (g *Game) SetErr(err error) {
 	g.Download.State = download.Error
 	g.Download.Progress = err.Error()
@@ -27,9 +31,13 @@ func (g *Game) SetErr(err error) {
 
 type Store interface {
 	Add(ctx context.Context, game *Game) error
-	UpdateDownloadProgress(ctx context.Context, id uint, download download.Download) error
-	GetById(ctx context.Context, id uint) (Game, error)
-	DeleteGame(ctx context.Context, id uint) error
+	Edit(ctx context.Context, game *Game) error
+	Delete(ctx context.Context, id uint) error
+	Exists(provType metadata.ProviderType, GameDBID string) (uint, error)
+
 	List(ctx context.Context, query string, limit uint, offset uint) ([]Game, error)
 	ListDownloadState(ctx context.Context, state download.DownloadState) ([]Game, error)
+	GetById(ctx context.Context, id uint) (Game, error)
+
+	UpdateDownloadProgress(ctx context.Context, id uint, download download.Download) error
 }

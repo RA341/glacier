@@ -22,35 +22,50 @@ func NewHandler(srv *Service) (string, http.Handler) {
 	return v1connect.NewAuthServiceHandler(h)
 }
 
-func (h *Handler) Login(ctx context.Context, req *connect.Request[v1.LoginRequest]) (*connect.Response[v1.LoginResponse], error) {
-	resp := connect.NewResponse(&v1.LoginResponse{})
+type SessionCreate func(sessionType SessionType) (session Session, sessionToken string, refreshToken string, err error)
 
-	s, session, refresh, err := h.srv.Login(
-		req.Msg.Username,
-		req.Msg.Password,
-		Web,
-	)
+func loginSessionHandler(login SessionCreate, hw HeaderWriter, headers http.Header) error {
+	s, session, refresh, err := login(Web)
 	if err != nil {
-		return nil, err
+		return err
+	}
+
+	// if it's a desktop client
+	// generate new tokens specifically for desktop
+	val := headers.Get(FrostHeader)
+	if val == "true" {
+		s, session, refresh, err = login(Frost)
+		if err != nil {
+			return fmt.Errorf("could login frost client: %v", err)
+		}
+
+		WriteFrostHeader(hw, session, refresh)
 	}
 
 	// for the webui
-	writeWebCookie(resp, &s, session, refresh)
+	writeWebCookie(hw, &s, session, refresh)
 
-	// if its a desktop client
-	// generate new tokens specifically for desktop
-	val := req.Header().Get(FrostHeader)
-	if val == "true" {
-		s, session, refresh, err = h.srv.Login(
+	return nil
+}
+
+func (h *Handler) Login(ctx context.Context, req *connect.Request[v1.LoginRequest]) (*connect.Response[v1.LoginResponse], error) {
+	resp := connect.NewResponse(&v1.LoginResponse{})
+
+	normalLogin := func(sessionT SessionType) (session Session, sessionToken string, refreshToken string, err error) {
+		return h.srv.Login(
 			req.Msg.Username,
 			req.Msg.Password,
-			Frost,
+			sessionT,
 		)
-		if err != nil {
-			return nil, err
-		}
+	}
 
-		WriteFrostHeader(resp, session, refresh)
+	err := loginSessionHandler(
+		normalLogin,
+		resp,
+		req.Header(),
+	)
+	if err != nil {
+		return nil, err
 	}
 
 	return resp, nil

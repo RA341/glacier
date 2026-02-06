@@ -6,3 +6,4 @@
 bob
 core/cmd/**/build
 Bobfile
+.bob.cache

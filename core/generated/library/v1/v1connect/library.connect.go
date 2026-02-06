@@ -40,6 +40,8 @@ const (
 	LibraryServiceListWithStateProcedure = "/library.v1.LibraryService/ListWithState"
 	// LibraryServiceDeleteProcedure is the fully-qualified name of the LibraryService's Delete RPC.
 	LibraryServiceDeleteProcedure = "/library.v1.LibraryService/Delete"
+	// LibraryServiceExistsProcedure is the fully-qualified name of the LibraryService's Exists RPC.
+	LibraryServiceExistsProcedure = "/library.v1.LibraryService/Exists"
 	// LibraryServiceTriggerTrackerProcedure is the fully-qualified name of the LibraryService's
 	// TriggerTracker RPC.
 	LibraryServiceTriggerTrackerProcedure = "/library.v1.LibraryService/TriggerTracker"
@@ -54,6 +56,7 @@ type LibraryServiceClient interface {
 	List(context.Context, *connect.Request[v1.ListRequest]) (*connect.Response[v1.ListResponse], error)
 	ListWithState(context.Context, *connect.Request[v1.ListWithStateRequest]) (*connect.Response[v1.ListWithStateResponse], error)
 	Delete(context.Context, *connect.Request[v1.DeleteRequest]) (*connect.Response[v1.DeleteResponse], error)
+	Exists(context.Context, *connect.Request[v1.ExistsRequest]) (*connect.Response[v1.ExistsResponse], error)
 	TriggerTracker(context.Context, *connect.Request[v1.TriggerTrackerRequest]) (*connect.Response[v1.TriggerTrackerResponse], error)
 	GetGame(context.Context, *connect.Request[v1.GetGameRequest]) (*connect.Response[v1.GetGameResponse], error)
 	Add(context.Context, *connect.Request[v1.AddRequest]) (*connect.Response[v1.AddResponse], error)
@@ -88,6 +91,12 @@ func NewLibraryServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(libraryServiceMethods.ByName("Delete")),
 			connect.WithClientOptions(opts...),
 		),
+		exists: connect.NewClient[v1.ExistsRequest, v1.ExistsResponse](
+			httpClient,
+			baseURL+LibraryServiceExistsProcedure,
+			connect.WithSchema(libraryServiceMethods.ByName("Exists")),
+			connect.WithClientOptions(opts...),
+		),
 		triggerTracker: connect.NewClient[v1.TriggerTrackerRequest, v1.TriggerTrackerResponse](
 			httpClient,
 			baseURL+LibraryServiceTriggerTrackerProcedure,
@@ -114,6 +123,7 @@ type libraryServiceClient struct {
 	list           *connect.Client[v1.ListRequest, v1.ListResponse]
 	listWithState  *connect.Client[v1.ListWithStateRequest, v1.ListWithStateResponse]
 	delete         *connect.Client[v1.DeleteRequest, v1.DeleteResponse]
+	exists         *connect.Client[v1.ExistsRequest, v1.ExistsResponse]
 	triggerTracker *connect.Client[v1.TriggerTrackerRequest, v1.TriggerTrackerResponse]
 	getGame        *connect.Client[v1.GetGameRequest, v1.GetGameResponse]
 	add            *connect.Client[v1.AddRequest, v1.AddResponse]
@@ -132,6 +142,11 @@ func (c *libraryServiceClient) ListWithState(ctx context.Context, req *connect.R
 // Delete calls library.v1.LibraryService.Delete.
 func (c *libraryServiceClient) Delete(ctx context.Context, req *connect.Request[v1.DeleteRequest]) (*connect.Response[v1.DeleteResponse], error) {
 	return c.delete.CallUnary(ctx, req)
+}
+
+// Exists calls library.v1.LibraryService.Exists.
+func (c *libraryServiceClient) Exists(ctx context.Context, req *connect.Request[v1.ExistsRequest]) (*connect.Response[v1.ExistsResponse], error) {
+	return c.exists.CallUnary(ctx, req)
 }
 
 // TriggerTracker calls library.v1.LibraryService.TriggerTracker.
@@ -154,6 +169,7 @@ type LibraryServiceHandler interface {
 	List(context.Context, *connect.Request[v1.ListRequest]) (*connect.Response[v1.ListResponse], error)
 	ListWithState(context.Context, *connect.Request[v1.ListWithStateRequest]) (*connect.Response[v1.ListWithStateResponse], error)
 	Delete(context.Context, *connect.Request[v1.DeleteRequest]) (*connect.Response[v1.DeleteResponse], error)
+	Exists(context.Context, *connect.Request[v1.ExistsRequest]) (*connect.Response[v1.ExistsResponse], error)
 	TriggerTracker(context.Context, *connect.Request[v1.TriggerTrackerRequest]) (*connect.Response[v1.TriggerTrackerResponse], error)
 	GetGame(context.Context, *connect.Request[v1.GetGameRequest]) (*connect.Response[v1.GetGameResponse], error)
 	Add(context.Context, *connect.Request[v1.AddRequest]) (*connect.Response[v1.AddResponse], error)
@@ -184,6 +200,12 @@ func NewLibraryServiceHandler(svc LibraryServiceHandler, opts ...connect.Handler
 		connect.WithSchema(libraryServiceMethods.ByName("Delete")),
 		connect.WithHandlerOptions(opts...),
 	)
+	libraryServiceExistsHandler := connect.NewUnaryHandler(
+		LibraryServiceExistsProcedure,
+		svc.Exists,
+		connect.WithSchema(libraryServiceMethods.ByName("Exists")),
+		connect.WithHandlerOptions(opts...),
+	)
 	libraryServiceTriggerTrackerHandler := connect.NewUnaryHandler(
 		LibraryServiceTriggerTrackerProcedure,
 		svc.TriggerTracker,
@@ -210,6 +232,8 @@ func NewLibraryServiceHandler(svc LibraryServiceHandler, opts ...connect.Handler
 			libraryServiceListWithStateHandler.ServeHTTP(w, r)
 		case LibraryServiceDeleteProcedure:
 			libraryServiceDeleteHandler.ServeHTTP(w, r)
+		case LibraryServiceExistsProcedure:
+			libraryServiceExistsHandler.ServeHTTP(w, r)
 		case LibraryServiceTriggerTrackerProcedure:
 			libraryServiceTriggerTrackerHandler.ServeHTTP(w, r)
 		case LibraryServiceGetGameProcedure:
@@ -235,6 +259,10 @@ func (UnimplementedLibraryServiceHandler) ListWithState(context.Context, *connec
 
 func (UnimplementedLibraryServiceHandler) Delete(context.Context, *connect.Request[v1.DeleteRequest]) (*connect.Response[v1.DeleteResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("library.v1.LibraryService.Delete is not implemented"))
+}
+
+func (UnimplementedLibraryServiceHandler) Exists(context.Context, *connect.Request[v1.ExistsRequest]) (*connect.Response[v1.ExistsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("library.v1.LibraryService.Exists is not implemented"))
 }
 
 func (UnimplementedLibraryServiceHandler) TriggerTracker(context.Context, *connect.Request[v1.TriggerTrackerRequest]) (*connect.Response[v1.TriggerTrackerResponse], error) {

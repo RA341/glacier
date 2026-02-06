@@ -52,6 +52,20 @@ tasks:
       - "cd {{.CORE_DIR}} && go build -ldflags '-s -w' -o {{.TASKFILE_DIR}}/bob ./cmd/builder"
       - "./bob"
 
+  go:*:
+    dir: "{{.BUILD_DIR}}"
+    desc: "Builds and runs a Go target. Usage: task go:<target>"
+    vars:
+      CMD_NAME: "{{index .MATCH 0}}"
+      EXE_EXT: '{{if eq OS "windows"}}.exe{{end}}'
+      ARGS: '{{if eq .CMD_NAME "updater"}} 
+              -cr={{.CMD_NAME}}/compose {{else}} 
+              -conf={{.CMD_NAME}}/config 
+              -cr={{.CMD_NAME}}/compose{{end}}'
+    cmds:
+      - task go:b:{{.CMD_NAME}}
+      - ../{{.BUILD_DIR}}/{{.CMD_NAME}}/{{.CMD_NAME}}{{.EXE_EXT}}{{.ARGS}}
+
   go:b:*:
     dir: "{{.CORE_DIR}}"
     desc: "Builds a Go target. Usage: task go:<target>"
@@ -126,20 +140,6 @@ tasks:
       - mkdir -p {{.OUT_DIR}}/{{.BUILD_OUT}}
       - cp -rf {{.BUILD_OUT}} {{.OUT_DIR}}/
 
-  go:*:
-    dir: "{{.BUILD_DIR}}"
-    desc: "Builds and runs a Go target. Usage: task go:r:<target>"
-    vars:
-      CMD_NAME: "{{index .MATCH 0}}"
-      EXE_EXT: '{{if eq OS "windows"}}.exe{{end}}'
-      ARGS: '{{if eq .CMD_NAME "updater"}} 
-              -cr={{.CMD_NAME}}/compose {{else}} 
-              -conf={{.CMD_NAME}}/config 
-              -cr={{.CMD_NAME}}/compose{{end}}'
-    cmds:
-      - task: go:b:{{.CMD_NAME}}
-      - ../{{.BUILD_DIR}}/{{.CMD_NAME}}/{{.CMD_NAME}}{{.EXE_EXT}}{{.ARGS}}
-
   dk:
     desc: "Builds and runs the main dockman image. Usage: task dk"
     cmds:
@@ -165,4 +165,7 @@ tasks:
 
   cli:
     cmds:
-      - docker compose up
+      - docker compose up trasmission caddy
+  pocket:
+    cmds:
+      - docker compose up pocket caddy

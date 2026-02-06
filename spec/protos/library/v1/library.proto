@@ -10,6 +10,8 @@ service LibraryService {
   rpc List(ListRequest) returns (ListResponse) {}
   rpc ListWithState(ListWithStateRequest) returns (ListWithStateResponse) {}
   rpc Delete(DeleteRequest) returns (DeleteResponse) {}
+  rpc Exists(ExistsRequest) returns (ExistsResponse) {}
+
 
   rpc TriggerTracker(TriggerTrackerRequest) returns (TriggerTrackerResponse) {}
   rpc GetGame(GetGameRequest) returns (GetGameResponse) {}
@@ -18,6 +20,14 @@ service LibraryService {
   rpc Add(AddRequest) returns (AddResponse) {}
 }
 
+message ExistsRequest {
+  string MetadataGameId = 1;
+  string MetadataType = 2;
+}
+
+message ExistsResponse {
+  uint64 gameId = 1;
+}
 
 message DeleteRequest {
   int64 gameId = 1;
