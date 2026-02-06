@@ -67,12 +67,9 @@ tasks:
   bb:
     vars:
       EXE_EXT: '{{if eq OS "windows"}}.exe{{end}}'
-      # Use a platform-agnostic way to call local binaries
-      DOT_SLASH: '{{if eq OS "windows"}}.\{{else}}./{{end}}'
     cmds:
       - "cd {{.CORE_DIR}} && go build -ldflags '-s -w' -o {{.TASKFILE_DIR}}/bob{{.EXE_EXT}} ./cmd/builder"
-      # Use the variable or call the file directly by name if it's in the current directory
-      - "{{.DOT_SLASH}}bob{{.EXE_EXT}}"
+      - "{{.TASKFILE_DIR}}/bob{{.EXE_EXT}}"
 
   #  go:*:
   #    dir: "{{.BUILD_DIR}}"
