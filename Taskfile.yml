@@ -67,23 +67,26 @@ tasks:
   bb:
     vars:
       EXE_EXT: '{{if eq OS "windows"}}.exe{{end}}'
+      # Use a platform-agnostic way to call local binaries
+      DOT_SLASH: '{{if eq OS "windows"}}.\{{else}}./{{end}}'
     cmds:
       - "cd {{.CORE_DIR}} && go build -ldflags '-s -w' -o {{.TASKFILE_DIR}}/bob{{.EXE_EXT}} ./cmd/builder"
-      - "./bob{{.EXE_EXT}}"
+      # Use the variable or call the file directly by name if it's in the current directory
+      - "{{.DOT_SLASH}}bob{{.EXE_EXT}}"
 
-#  go:*:
-#    dir: "{{.BUILD_DIR}}"
-#    desc: "Builds and runs a Go target. Usage: task go:<target>"
-#    vars:
-#      CMD_NAME: "{{index .MATCH 0}}"
-#      EXE_EXT: '{{if eq OS "windows"}}.exe{{end}}'
-#      ARGS: '{{if eq .CMD_NAME "updater"}}
-#              -cr={{.CMD_NAME}}/compose {{else}}
-#              -conf={{.CMD_NAME}}/config
-#              -cr={{.CMD_NAME}}/compose{{end}}'
-#    cmds:
-#      - task go:b:{{.CMD_NAME}}
-#      - ../{{.BUILD_DIR}}/{{.CMD_NAME}}/{{.CMD_NAME}}{{.EXE_EXT}}{{.ARGS}}
+  #  go:*:
+  #    dir: "{{.BUILD_DIR}}"
+  #    desc: "Builds and runs a Go target. Usage: task go:<target>"
+  #    vars:
+  #      CMD_NAME: "{{index .MATCH 0}}"
+  #      EXE_EXT: '{{if eq OS "windows"}}.exe{{end}}'
+  #      ARGS: '{{if eq .CMD_NAME "updater"}}
+  #              -cr={{.CMD_NAME}}/compose {{else}}
+  #              -conf={{.CMD_NAME}}/config
+  #              -cr={{.CMD_NAME}}/compose{{end}}'
+  #    cmds:
+  #      - task go:b:{{.CMD_NAME}}
+  #      - ../{{.BUILD_DIR}}/{{.CMD_NAME}}/{{.CMD_NAME}}{{.EXE_EXT}}{{.ARGS}}
 
   go:b:*:
     dir: "{{.CORE_DIR}}"
@@ -150,9 +153,9 @@ tasks:
       CMD: "{{index .MATCH 0}}"
       OUT_DIR: ../{{.CORE_DIR}}/{{.GO_CMD_DIR}}/{{.CMD}}
     desc: "Builds ui and copies for embed binary. Usage: task ui:<go cmd target>"
-#    sources:
-#      - "**/*.ts"
-#      - "**/*.tsx"
+    #    sources:
+    #      - "**/*.ts"
+    #      - "**/*.tsx"
     cmds:
       - task ui FROST={{.FROST}}
       - rm -rf {{.OUT_DIR}}/{{.BUILD_OUT}}
@@ -170,7 +173,7 @@ tasks:
       - task dk:b
       - docker run --rm
         -e TZ=America/New_York
-          -e DOCKMAN_COMPOSE_ROOT=/.build/docker/compose
+        -e DOCKMAN_COMPOSE_ROOT=/.build/docker/compose
         -v /var/run/docker.sock:/var/run/docker.sock
         -v ./.build/docker/compose:/.build/docker/compose
         -v ./.build/docker/config:/config
