@@ -65,9 +65,11 @@ tasks:
       - cp -r release/{{.ELECTRON}}/. {{.OUT}}/
 
   bb:
+    vars:
+      EXE_EXT: '{{if eq OS "windows"}}.exe{{end}}'
     cmds:
-      - "cd {{.CORE_DIR}} && go build -ldflags '-s -w' -o {{.TASKFILE_DIR}}/bob ./cmd/builder"
-      - "./bob"
+      - "cd {{.CORE_DIR}} && go build -ldflags '-s -w' -o {{.TASKFILE_DIR}}/bob{{.EXE_EXT}} ./cmd/builder"
+      - "./bob{{.EXE_EXT}}"
 
 #  go:*:
 #    dir: "{{.BUILD_DIR}}"

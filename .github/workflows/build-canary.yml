@@ -5,27 +5,28 @@ on:
 
   push:
     branches:
-      - main # publish a dev build on main
+      - main
     paths:
       - pkg/docker/Dockerfile
       - .github/workflows/action-docker.yml
+      - .github/workflows/action-frost.yml
       - .github/workflows/build-canary.yml
       - core/**
       - ui/**
 
 permissions:
-  contents: write   # To checkout the repository
-  packages: write  # To push Docker images to GHCR
+  contents: write
+  packages: write
 
 jobs:
   build-frost:
-    name: Build Docker Canary
+    name: Build Frost Canary
     uses: ./.github/workflows/action-frost.yml
     with:
       version_tag: canary
 
   build-docker:
-    name: Build Docker Canary
+    name: Build Glacier Docker Canary
     uses: ./.github/workflows/action-docker.yml
     with:
       title: glacier
