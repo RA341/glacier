@@ -69,7 +69,7 @@ tasks:
       EXE_EXT: '{{if eq OS "windows"}}.exe{{end}}'
     cmds:
       - cd {{.CORE_DIR}} && go build -ldflags "-s -w" -o {{.TASKFILE_DIR}}/bob{{.EXE_EXT}} ./cmd/builder
-      - '{{if eq OS "windows"}}./bob.exe{{else}}./bob{{end}}'
+      - "{{.TASKFILE_DIR}}/bob{{.EXE_EXT}}"
 
   #  go:*:
   #    dir: "{{.BUILD_DIR}}"
