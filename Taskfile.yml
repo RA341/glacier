@@ -51,7 +51,7 @@ tasks:
 
   frost:go:
     cmds:
-      - task ui:b:frost
+      - task ui:b:frost FROST=1
       - task go:b:frost PROD=1 OUT_EXE={{.OUT}}
 
   frost:ui:desk:
@@ -94,7 +94,7 @@ tasks:
       DEFAULT_OUT: ../{{.BUILD_DIR}}/{{.CMD_NAME}}
       OUT: '{{.OUT| default .DEFAULT_OUT}}'
 
-      DEFAULT_OUT_EXE: '{{.OUT}}/{{.CMD_NAME}}{{.EXE_EXT}}'
+      DEFAULT_OUT_EXE: '{{.OUT}}/{{.CMD_NAME}}'
       OUT_EXE: '{{.OUT_EXE| default .DEFAULT_OUT_EXE}}'
 
       INFO_PACKAGE: "github.com/ra341/glacier/internal/info"
