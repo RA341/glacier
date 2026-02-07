@@ -44,6 +44,8 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: 'stable'
+          cache: 'true'
+          cache-dependency-path: core/go.sum
 
       - name: Install Task
         uses: go-task/setup-task@v1
@@ -58,20 +60,16 @@ jobs:
             mingw-w64-x86_64-gcc
             mingw-w64-x86_64-make
 
-      - name: Go mod tidy
-        run: go mod tidy
-        working-directory: ./core
-
       - name: Build frost
         run: |
           task init
-          task bb
+          task frost
 
-      - name: Zip Artifacts (Linux)
+      - name: Zip Artifacts
         if: runner.os == 'Linux'
         run: zip -r ${{ matrix.zip_name }} ${{ matrix.output_path }}
 
-      - name: Zip Artifacts (Windows)
+      - name: Zip Artifacts
         if: runner.os == 'Windows'
         run: Compress-Archive -Path ${{ matrix.output_path }} -DestinationPath ${{ matrix.zip_name }}
 

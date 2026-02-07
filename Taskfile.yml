@@ -43,17 +43,16 @@ tasks:
 
   frost:
     vars:
-      OSS: '{{if eq OS "windows"}}win{{else}}linux{{end}}'
-      OUT: "{{.TASKFILE_DIR}}/{{.BUILD_DIR}}/frost/{{.OSS}}"
+      OUT: "{{.TASKFILE_DIR}}/{{.BUILD_DIR}}/frost/{{OS}}"
       UI: "{{.OUT}}/ui/"
     cmds:
       - task frost:ui:desk OUT={{.UI}}
-      - task frost:go OUT={{.OUT}}
+      - task frost:go OUT={{.OUT}}/frost
 
   frost:go:
     cmds:
       - task ui:b:frost
-      - task go:b:frost PROD=1 OUT={{.OUT}}
+      - task go:b:frost PROD=1 OUT_EXE={{.OUT}}
 
   frost:ui:desk:
     dir: "{{ .UI_DIR }}"
@@ -111,20 +110,22 @@ tasks:
 
       LDFLAGS: >-
         {{if .STATIC}}-linkmode external -extldflags '-static'{{end}}
-        {{if .PROD}}-s -w{{end}} 
+        {{if .PROD}}-s -w{{end}}
         -X {{.INFO_PACKAGE}}.Version={{.VERSION}}
         -X {{.INFO_PACKAGE}}.CommitInfo={{.COMMIT}}
         -X {{.INFO_PACKAGE}}.BuildDate={{.BUILD_DATE}}
         -X {{.INFO_PACKAGE}}.Branch={{.BRANCH}}
-
+      GOENV: >-
+        {{if .WINDOWS}}
+          CC=x86_64-w64-mingw32-gcc GOOS=windows
+        {{end}}
     sources:
       - "**/*.go"
       - "go.*"
-
     cmds:
       - '{{if eq .OUT_EXE .DEFAULT_OUT_EXE}} mkdir -p {{.OUT}} {{end}}'
       - CGO_ENABLED=1 go build -ldflags "{{.LDFLAGS}}" -v
-        -o {{ .OUT_EXE }}
+        -o {{ .OUT_EXE }}{{.EXE_EXT}}
         ./{{.GO_CMD_DIR}}/{{.CMD_NAME}}
 
   ggen:
