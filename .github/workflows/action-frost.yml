@@ -1,4 +1,4 @@
-name: build frost
+name: Frost Build
 
 on:
   workflow_call:

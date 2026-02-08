@@ -1,4 +1,4 @@
-name: Canary
+name: Build Canary
 
 on:
   workflow_dispatch:
@@ -10,7 +10,7 @@ on:
       - pkg/docker/Dockerfile
       - .github/workflows/action-docker.yml
       - .github/workflows/action-frost.yml
-      - .github/workflows/build-canary.yml
+      - canary-build.yml
       - core/**
       - ui/**
 
