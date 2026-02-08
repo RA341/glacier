@@ -1,6 +1,7 @@
 version: '3'
 
 vars:
+  CU: '{{ if eq .OS "Windows" }}coreutils{{ else }}{{ end }}'
   CORE_DIR: core
   UI_DIR: ui
   DOCKER_IMG: glacier
@@ -61,8 +62,8 @@ tasks:
       ELECTRON: '{{if eq OS "windows"}}win-unpacked{{else}}linux-unpacked{{end}}'
     cmds:
       - npm run desk:build
-      - mkdir -p {{.OUT}}
-      - cp -r release/{{.ELECTRON}}/. {{.OUT}}/
+      - '{{.cu}} mkdir -p {{.OUT}}'
+      - '{{.cu}} cp -r release/{{.ELECTRON}}/. {{.OUT}}/'
 
   bb:
     vars:
@@ -124,7 +125,7 @@ tasks:
       - "**/*.go"
       - "go.*"
     cmds:
-      - '{{if eq .OUT_EXE .DEFAULT_OUT_EXE}} mkdir -p {{.OUT}} {{end}}'
+      - '{{if eq .OUT_EXE .DEFAULT_OUT_EXE}} {{.cu}} mkdir -p {{.OUT}} {{end}}'
       - CGO_ENABLED=1 go build -ldflags "{{.LDFLAGS}}" -v
         -o {{ .OUT_EXE }}{{.EXE_EXT}}
         ./{{.GO_CMD_DIR}}/{{.CMD_NAME}}
@@ -157,9 +158,9 @@ tasks:
     #      - "**/*.tsx"
     cmds:
       - task ui FROST={{.FROST}}
-      - rm -rf {{.OUT_DIR}}/{{.BUILD_OUT}}
-      - mkdir -p {{.OUT_DIR}}/{{.BUILD_OUT}}
-      - cp -rf {{.BUILD_OUT}} {{.OUT_DIR}}/
+      - '{{.cu}} rm -rf {{.OUT_DIR}}/{{.BUILD_OUT}}'
+      - '{{.cu}} mkdir -p {{.OUT_DIR}}/{{.BUILD_OUT}}'
+      - '{{.cu}} cp -rf {{.BUILD_OUT}} {{.OUT_DIR}}/'
 
   dk:
     desc: "Builds and runs the main dockman image. Usage: task dk"

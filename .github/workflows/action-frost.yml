@@ -50,6 +50,14 @@ jobs:
       - name: Install Task
         uses: go-task/setup-task@v1
 
+
+      - name: setup coreutils
+        uses: MinoruSekine/setup-scoop@v4.0.2
+        if: runner.os == 'Windows'
+        with:
+          buckets: main
+          apps: uutils-coreutils
+
       - name: Setup MSYS2 for Windows CGO
         if: runner.os == 'Windows'
         uses: msys2/setup-msys2@v2
