@@ -113,6 +113,7 @@ tasks:
       LDFLAGS: >-
         {{if .STATIC}}-linkmode external -extldflags '-static'{{end}}
         {{if .PROD}}-s -w{{end}}
+        {{if eq .OS "Windows_NT" }}-H=windowsgui{{ end }}
         -X {{.INFO_PACKAGE}}.Version={{.VERSION}}
         -X {{.INFO_PACKAGE}}.CommitInfo={{.COMMIT}}
         -X {{.INFO_PACKAGE}}.BuildDate={{.BUILD_DATE}}
