@@ -17,10 +17,6 @@ tasks:
     desc: "Lists all available tasks"
     cmds:
       - task --list --sort=alphanumeric
-  
-  env:
-    cmds:
-      - echo {{OS}} {{.CU}}
 
   ##########################A##########################################################################
   # .build
@@ -63,7 +59,7 @@ tasks:
   frost:ui:desk:
     dir: "{{ .UI_DIR }}"
     vars:
-      ELECTRON: '{{if eq OS "Windows_NT"}}win-unpacked{{else}}linux-unpacked{{end}}'
+      ELECTRON: '{{if eq OS "windows"}}win-unpacked{{else}}linux-unpacked{{end}}'
     cmds:
       - npm run desk:build
       - '{{.CU}} mkdir -p {{.OUT}}'
@@ -76,12 +72,26 @@ tasks:
       - cd {{.CORE_DIR}} && go install -ldflags "-s -w" ./cmd/builder
       - "builder{{.EXE_EXT}}"
 
+  #  go:*:
+  #    dir: "{{.BUILD_DIR}}"
+  #    desc: "Builds and runs a Go target. Usage: task go:<target>"
+  #    vars:
+  #      CMD_NAME: "{{index .MATCH 0}}"
+  #      EXE_EXT: '{{if eq OS "windows"}}.exe{{end}}'
+  #      ARGS: '{{if eq .CMD_NAME "updater"}}
+  #              -cr={{.CMD_NAME}}/compose {{else}}
+  #              -conf={{.CMD_NAME}}/config
+  #              -cr={{.CMD_NAME}}/compose{{end}}'
+  #    cmds:
+  #      - task go:b:{{.CMD_NAME}}
+  #      - ../{{.BUILD_DIR}}/{{.CMD_NAME}}/{{.CMD_NAME}}{{.EXE_EXT}}{{.ARGS}}
+
   go:b:*:
     dir: "{{.CORE_DIR}}"
     desc: "Builds a Go target. Usage: task go:<target>"
     vars:
       CMD_NAME: "{{index .MATCH 0}}"
-      EXE_EXT: '{{if eq OS "Windows_NT"}}.exe{{end}}'
+      EXE_EXT: '{{if eq OS "windows"}}.exe{{end}}'
 
       DEFAULT_OUT: ../{{.BUILD_DIR}}/{{.CMD_NAME}}
       OUT: '{{.OUT| default .DEFAULT_OUT}}'
@@ -107,6 +117,10 @@ tasks:
         -X {{.INFO_PACKAGE}}.CommitInfo={{.COMMIT}}
         -X {{.INFO_PACKAGE}}.BuildDate={{.BUILD_DATE}}
         -X {{.INFO_PACKAGE}}.Branch={{.BRANCH}}
+      GOENV: >-
+        {{if .WINDOWS}}
+          CC=x86_64-w64-mingw32-gcc GOOS=windows
+        {{end}}
     sources:
       - "**/*.go"
       - "go.*"
