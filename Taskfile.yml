@@ -43,7 +43,7 @@ tasks:
 
   frost:
     vars:
-      OUT: "{{.ROOT_DIR}}/{{.BUILD_DIR}}/frost/{{OS}}"
+      OUT: "{{.USER_WORKING_DIR}}/{{.BUILD_DIR}}/frost/{{OS}}"
       UI: "{{.OUT}}/ui/"
     cmds:
       - task frost:ui:desk OUT={{.UI}}
