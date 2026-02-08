@@ -1,7 +1,7 @@
 version: '3'
 
 vars:
-  CU: '{{ if eq .OS "Windows" }}coreutils{{ else }}{{ end }}'
+  CU: '{{ if eq .OS "windows" }}coreutils{{ else }}{{ end }}'
   CORE_DIR: core
   UI_DIR: ui
   DOCKER_IMG: glacier
