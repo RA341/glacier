@@ -136,6 +136,19 @@ tasks:
     cmds:
       - go generate ./...
 
+  icon:
+    dir: "{{.UI_DIR}}"
+    vars:
+      ICON_OUT: '../{{.CORE_DIR}}/frost/app/icon'
+      PNG_OUT: '{{.ICON_OUT}}/icon.png'
+      ICO_OUT: '{{.ICON_OUT}}/icon.ico'
+      SIZE: 48
+    cmds:
+      - inkscape static/favicon.svg 
+          --export-type=png --export-filename={{.PNG_OUT}} 
+          --export-width={{.SIZE}} --export-height={{.SIZE}}
+      - magick {{.PNG_OUT}} {{.ICO_OUT}}
+
   ui:
     dir: "{{.UI_DIR}}"
     vars:

@@ -25,7 +25,7 @@ func main() {
 		"AUTH_DISABLE":            "false",
 		"AUTH_OPEN_REGISTRATION":  "true",
 		"AUTH_MAX_SESSIONS":       "3",
-		"AUTH_OIDC_ENABLE":        "true",
+		"AUTH_OIDC_ENABLE":        "false",
 		"AUTH_OIDC_ISSUER":        "https://auth.localhost",
 		"AUTH_OIDC_CLIENT_ID":     "51668c29-ca37-4bd5-b4b2-dbc9c953ea6d",
 		"AUTH_OIDC_CLIENT_SECRET": "xAsPzGKy4MGoExAy0r7kLbBN5Hvr9Pg9",
@@ -43,7 +43,5 @@ func main() {
 		}
 	}
 
-	devUi := api.WithProxy("http://localhost:5173")
-
-	app.NewServer(api.WithUIProxy(devUi))
+	app.NewServer(api.WithUIProxy("http://localhost:5173"))
 }

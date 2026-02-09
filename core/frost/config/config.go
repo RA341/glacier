@@ -1,10 +1,15 @@
 package config
 
 type Config struct {
+	Desktop    Desktop
 	Server     Server
 	Files      Files
 	Logger     Logger
 	Downloader Downloader
+}
+
+type Desktop struct {
+	StartSilent bool `yaml:"startSilent" env:"START_SILENT" default:"false" help:"Disable UI launch on startup"`
 }
 
 type Server struct {

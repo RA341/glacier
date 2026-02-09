@@ -1,123 +1,78 @@
 <script lang="ts">
     import './layout.css';
     import {page} from '$app/state';
-    import {DownloadIcon, LibraryIcon, LogOutIcon, SearchIcon, ServerIcon, UserIcon} from "@lucide/svelte";
-    import {appName, glacierPubCli} from "$lib/api/api";
+    import {appName, Glacier} from "$lib/api/api";
     import Snackbar from "$lib/components/snackbar/Snackbar.svelte";
-    import {AuthService} from "$lib/gen/auth/v1/auth_pb";
     import {goto} from "$app/navigation";
+    import {onMount} from 'svelte';
+    import Sidebar from './sidebar.svelte';
 
     let {children} = $props();
 
-    const links = [
-        {label: 'Library', href: '/library', icon: LibraryIcon},
-        {label: 'Search', href: '/search', icon: SearchIcon},
-        {label: 'Downloads', href: '/downloads', icon: DownloadIcon},
-    ];
+    let isCheckingAuth = $state(true);
 
-    const footerLinks = [
-        {label: 'Server Settings', href: '/settings/server', icon: ServerIcon},
-        {label: 'Profile', href: '/settings/user', icon: UserIcon},
-    ];
+    onMount(async () => {
+        await checkAuth();
+    });
 
-    const favicon = "/favicon.svg"
+    async function checkAuth() {
+        const isAuthPage = page.url.pathname.startsWith('/auth');
 
-    const isActive = (href: string) => page.url.pathname.startsWith(href);
+        if (isAuthPage) {
+            isCheckingAuth = false;
+            return;
+        }
 
-    const auth = glacierPubCli(AuthService)
-    async function logout() {
-        await auth.logout({})
-        await goto("/auth/login", {replaceState: true})
+        const isRoot = page.url.pathname === '/';
+
+        try {
+            const res = await fetch(`${Glacier.base}/ping`, {
+                credentials: 'include'
+            });
+
+            if (!res.ok) {
+                await goto('/auth/login', {replaceState: true});
+
+            } else if (isRoot) {
+                await goto('/library', {replaceState: true});
+            }
+        } catch (e: any) {
+            console.log('error fetching ping', e);
+            await goto('/auth/login', {replaceState: true});
+        }
+
+        isCheckingAuth = false
     }
 </script>
 
 <svelte:head>
     <title>{appName}</title>
-    <link rel="icon" href={favicon}/>
+    <link rel="icon" href={"/favicon.svg"}/>
 </svelte:head>
 
 <Snackbar>
     <div class="flex h-screen w-full overflow-hidden bg-background text-foreground">
-        {#if !page.url.pathname.startsWith("/auth")}
-            <!-- Sidebar -->
-            <aside class="flex flex-col w-16 h-full border-r border-border bg-surface items-center py-6">
-                <!-- Logo Area -->
-                <div class="mb-8 flex items-center justify-center">
-                    <img src={favicon} alt="Logo" class="w-8 h-8 rounded-lg shadow-frost"/>
+        {#if isCheckingAuth}
+            <!-- Loading Spinner -->
+            <div class="flex items-center justify-center w-full h-full">
+                <div class="flex flex-col items-center gap-4">
+                    <div class="spinner"></div>
+                    <p class="text-muted text-sm">Checking authentication...</p>
                 </div>
-
-                <!-- Main Navigation -->
-                <nav class="flex flex-col flex-1 gap-4">
-                    {#each links as link}
-                        {@const active = isActive(link.href)}
-                        <a
-                                href={link.href}
-                                title={link.label}
-                                class="group relative flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-300
-                            {active
-                                ? 'bg-frost-500/10 text-frost-400 shadow-frost'
-                                : 'text-muted hover:text-frost-400 hover:bg-panel'}"
-                        >
-
-                            <link.icon
-                                    size={22}
-                                    strokeWidth={active ? 2.5 : 2}
-                                    class="transition-transform duration-200 {active ? 'scale-110' : 'group-active:scale-90'}"
-                            />
-                        </a>
-                    {/each}
-                </nav>
-
-                <!-- Footer Navigation -->
-                <div class="flex flex-col gap-4">
-                    {#each footerLinks as link}
-                        {@const active = isActive(link.href)}
-                        <a
-                                href={link.href}
-                                title={link.label}
-                                class="group relative flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-300
-                            {active
-                                ? 'bg-frost-500/10 text-frost-400 shadow-frost'
-                                : 'text-muted hover:text-frost-400 hover:bg-panel'}"
-                        >
-                            <link.icon size={22} strokeWidth={2}/>
-                        </a>
-                    {/each}
-                    <button
-                            onclick={logout}
-                            class="group relative flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-300"
-                    >
-                        <LogOutIcon size={22} strokeWidth={2}/>
-                    </button>
-                </div>
-            </aside>
+            </div>
+        {:else}
+            {#if !page.url.pathname.startsWith('/auth')}
+                <Sidebar/>
+            {/if}
+            <!-- Main Content Area -->
+            <main class="relative flex-1 overflow-y-auto">
+                {@render children()}
+            </main>
         {/if}
-
-        <!-- Main Content Area -->
-        <main class="relative flex-1 overflow-y-auto">
-            {@render children()}
-        </main>
-
-
     </div>
 </Snackbar>
 
 <style>
-    a:hover::after {
-        content: attr(title);
-        position: absolute;
-        left: 3.5rem;
-        background: var(--color-panel);
-        color: var(--color-foreground);
-        padding: 4px 8px;
-        border-radius: 4px;
-        font-size: 0.75rem;
-        white-space: nowrap;
-        border: 1px solid var(--color-border);
-        pointer-events: none;
-        z-index: 50;
-    }
-
     ::-webkit-scrollbar {
         width: 6px;
     }
@@ -134,5 +89,20 @@
     ::-webkit-scrollbar-thumb:hover {
         background: #444;
     }
-</style>
 
+    /* Loading Spinner */
+    .spinner {
+        width: 48px;
+        height: 48px;
+        border: 4px solid var(--color-border);
+        border-top-color: var(--color-frost-400, #60a5fa);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+</style>

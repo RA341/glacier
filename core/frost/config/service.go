@@ -10,15 +10,15 @@ type Service struct {
 	conf Config
 }
 
-func New() *Service {
+func New(printConf bool) *Service {
 	s := &Service{}
-	s.Init()
+	s.init(printConf)
 	return s
 }
 
 const EnvPrefix = "FROST"
 
-func (s *Service) Init() {
+func (s *Service) init(printConf bool) {
 	var conf Config
 
 	// todo yaml
@@ -33,8 +33,9 @@ func (s *Service) Init() {
 	//	&conf.Library.GameDir,
 	//}
 	//resolvePaths(pathsToResolve)
-
-	printConfig(defaultPrefixer, &conf)
+	if printConf {
+		printConfig(defaultPrefixer, &conf)
+	}
 
 	s.conf = conf
 }

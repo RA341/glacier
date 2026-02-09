@@ -4,49 +4,53 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io"
-	"os"
+	"os/exec"
 	"runtime"
 	"sync"
 	"sync/atomic"
 
 	"fyne.io/systray"
+	"github.com/ra341/glacier/frost/app/icon"
+	"github.com/ra341/glacier/frost/config"
 	"github.com/ra341/glacier/shared/api"
+	"github.com/rs/zerolog/log"
 )
 
 type Tray struct {
 	ctx    context.Context
 	cancel context.CancelFunc
 
-	conf TrayConfig
+	conf *config.Service
 
 	wg            sync.WaitGroup
 	uiRunning     atomic.Bool
 	serverRunning atomic.Bool
+	serverOpts    []api.ServerOpt
 }
 
-func NewTray(opts ...Opt) {
-	var conf TrayConfig
-	for _, opt := range opts {
-		opt(&conf)
-	}
+func NewDesktop(opts ...api.ServerOpt) {
+	sm := NewSocketManager()
+	sm.exitIfAlreadyRunning()
 
 	t := Tray{
-		conf: conf,
+		serverOpts: opts,
+		conf:       config.New(false), // initial config for UI launch will be overwritten by server init
 	}
+
+	go func() {
+		err := sm.setupSocketHandler(context.Background(), t.StartUI)
+		if err != nil {
+			log.Fatal().Err(err).Msg("Failed to start socket listener")
+			return
+		}
+	}()
+
 	t.Start()
 }
 
 func (t *Tray) Start() {
-	all := t.loadIcon()
-
 	t.startServices()
-	systray.Run(
-		func() {
-			t.onReady(all)
-		},
-		t.onExit,
-	)
+	systray.Run(t.onReady, t.onExit)
 }
 
 func (t *Tray) startServices() {
@@ -59,42 +63,50 @@ func (t *Tray) startServices() {
 	t.cancel = cancel
 
 	t.wg.Go(t.startServer)
+
+	if t.conf.Get().Desktop.StartSilent {
+		log.Info().Msg("UI set to launch silently")
+		return
+	}
 	t.wg.Go(t.startUI)
 }
 
 func (t *Tray) startServer() {
 	if t.serverRunning.Load() {
-		fmt.Println("Server is already running")
+		log.Info().Msg("Server is already running")
 		return
 	}
 
-	fmt.Println("Starting server...")
+	log.Info().Msg("Starting server...")
 
 	defer func() {
-		fmt.Println("Server stopped")
+		log.Info().Msg("Server stopped")
 		t.serverRunning.Store(false)
 	}()
 	t.serverRunning.Store(true)
 
-	NewServer(api.WithServerBase(&t.conf.serverBase))
+	app := New()
+	t.conf = app.Conf
+
+	finalOpts := append(t.serverOpts, api.WithCtx(t.ctx))
+	StartServerRaw(app, finalOpts...)
+}
+
+func (t *Tray) StartUI() {
+	go t.startUI()
 }
 
 func (t *Tray) startUI() {
 	if t.uiRunning.Load() {
-		fmt.Println("UI is running")
+		log.Info().Msg("UI is running")
 		return
 	}
 
-	fmt.Println("Starting UI")
+	log.Info().Msg("Starting UI")
 	defer func() {
 		t.uiRunning.Store(false)
 	}()
 	t.uiRunning.Store(true)
-
-	if t.conf.disableUI {
-		fmt.Println("UI is disabled in config")
-		return
-	}
 
 	exePath := "ui/ui"
 	if runtime.GOOS == "windows" {
@@ -104,7 +116,7 @@ func (t *Tray) startUI() {
 	err := NewUI(t.ctx, exePath)
 	if err != nil {
 		if errors.Is(t.ctx.Err(), context.Canceled) {
-			fmt.Println("Process stopped by user")
+			log.Info().Msg("Process stopped by user")
 			return
 		}
 
@@ -112,24 +124,31 @@ func (t *Tray) startUI() {
 	}
 }
 
-func (t *Tray) onReady(all []byte) {
-	systray.SetIcon(all)
+func (t *Tray) onReady() {
+	systray.SetTemplateIcon(icon.Data, icon.Data)
 	systray.SetTitle("Frost")
 	systray.SetTooltip("Frost")
 
-	mUI := systray.AddMenuItem("Open UI", "Start the UI")
+	mUI := systray.AddMenuItem("Open", "Start the UI")
+	mLaunchWebUI := systray.AddMenuItem("Open in browser", "Launched the Web UI")
 	mServer := systray.AddMenuItem("Restart", "Restart the app")
 	mQuit := systray.AddMenuItem("Quit", "Quit the whole app")
 
 	go func() {
 		for {
 			select {
+			case <-mLaunchWebUI.ClickedCh:
+				log.Info().Msg("launching web browser")
+				openURL(fmt.Sprintf("http://localhost:%d", t.conf.Get().Server.Port))
 			case <-mServer.ClickedCh:
+				log.Info().Msg("restarting frost")
 				t.cancel()
 				t.startServices()
 			case <-mUI.ClickedCh:
+				log.Info().Msg("starting UI")
 				go t.startUI()
 			case <-mQuit.ClickedCh:
+				log.Info().Msg("exiting frost")
 				t.cancel()
 				systray.Quit()
 			}
@@ -141,23 +160,22 @@ func (t *Tray) onExit() {
 	t.cancel()
 }
 
-func (t *Tray) loadIcon() []byte {
-	uifs := t.conf.serverBase.UIFS
-	if uifs == nil {
-		return nil
+func openURL(url string) {
+	var cmd *exec.Cmd
+
+	switch runtime.GOOS {
+	case "windows":
+		cmd = exec.Command("rundll32", "url.dll,FileProtocolHandler", url)
+	case "darwin": // macOS
+		cmd = exec.Command("open", url)
+	case "linux":
+		cmd = exec.Command("xdg-open", url)
+	default:
+		ShowErr(fmt.Sprintf("unsupported platform: %s", runtime.GOOS))
 	}
 
-	open, err := uifs.Open("favicon.png")
+	err := cmd.Start()
 	if err != nil {
-		ShowErr("Could not open favicon.svg")
-		os.Exit(1)
+		ShowErr(fmt.Sprintf("could not launch URL: %v", err))
 	}
-
-	all, err := io.ReadAll(open)
-	if err != nil {
-		ShowErr("Could not read favicon.svg bytes")
-		os.Exit(1)
-	}
-
-	return all
 }

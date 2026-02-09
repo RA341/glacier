@@ -23,9 +23,10 @@ func main() {
 		"LOGGER_LEVEL":   "debug",
 		"LOGGER_HTTP":    "true",
 		"CONFIG_DIR":     "./config",
-		"GLACIER_URL":    "http://192.168.50.123:6699",
-		//"GLACIER_URL":     "http://localhost:6699",
+		//"GLACIER_URL":    "http://192.168.50.123:6699",
+		"GLACIER_URL":     "http://localhost:6699",
 		"CONFIG_YML_PATH": "./config/glacier.yml",
+		"START_SILENT":    "true",
 	}
 
 	for key, value := range envs {
@@ -35,9 +36,5 @@ func main() {
 		}
 	}
 
-	devUi := api.WithProxy("http://localhost:5122")
-	frost.NewTray(
-		frost.WithDisableTrayUI(),
-		frost.WithServerBase(api.WithUIProxy(devUi)),
-	)
+	frost.NewDesktop(api.WithUIProxy("http://localhost:5122"))
 }

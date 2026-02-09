@@ -23,12 +23,15 @@ type Server struct {
 	api.ServerBase
 }
 
-func NewServer(opts ...api.ServerOpt) {
+func NewServerAndApp(opts ...api.ServerOpt) {
+	app := New()
+	StartServerRaw(app, opts...)
+}
+
+func StartServerRaw(app *App, opts ...api.ServerOpt) {
 	var server Server
 	api.ParseOpts(&server.ServerBase, opts...)
-
-	server.App = New()
-
+	server.App = app
 	conf := server.Conf.Get().Server
 
 	router := http.NewServeMux()
@@ -57,16 +60,15 @@ func NewServer(opts ...api.ServerOpt) {
 
 	<-server.Ctx.Done()
 
-	fmt.Println("Context cancelled. Shutting down server...")
+	log.Info().Msg("Context cancelled. Shutting down server...")
 	shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	if err := srv.Shutdown(shutdownCtx); err != nil {
-		fmt.Printf("Error occurred while shutting down server: %v\n", err)
+		log.Error().Err(err).Msg("Error occurred while shutting down server")
 	}
 
-	fmt.Println("Server gracefully stopped.")
-	// todo send a return value to indicate if the tray should also be stopped or not
+	log.Info().Msg("Server gracefully stopped.")
 }
 
 func (s *Server) RegisterRoutes(mux *http.ServeMux) {
@@ -92,7 +94,7 @@ func (s *Server) registerApiRoutes(mux *http.ServeMux) {
 
 	glacierProxy := http.NewServeMux()
 	s.registerGlacierProxy(glacierProxy)
-	mux.Handle("/api/server/", glacierProxy)
+	mux.Handle("/api/server/", api.WithHTTPLogger(glacierProxy))
 }
 
 func (s *Server) RegisterFrostRoutes(mux *http.ServeMux) {

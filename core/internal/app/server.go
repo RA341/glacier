@@ -58,15 +58,16 @@ func NewServer(opts ...api.ServerOpt) {
 
 	<-server.Ctx.Done()
 
-	fmt.Println("Context cancelled. Shutting down server...")
+	log.Info().Msg("Context cancelled. Shutting down server...")
 	shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	if err := srv.Shutdown(shutdownCtx); err != nil {
-		fmt.Printf("Error occurred while shutting down server: %v\n", err)
+		log.Error().Err(err).Msg("Error occurred while shutting down server")
+		return
 	}
 
-	fmt.Println("Server gracefully stopped.")
+	log.Info().Msg("Server gracefully stopped.")
 }
 
 func (s *Server) RegisterRoutes(mux *http.ServeMux) {

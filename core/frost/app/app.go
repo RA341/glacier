@@ -23,7 +23,7 @@ type App struct {
 }
 
 func New() *App {
-	conf := config.New()
+	conf := config.New(true)
 	get := conf.Get()
 
 	logger.InitConsole(get.Logger.Level, get.Logger.Verbose)
