@@ -10,6 +10,7 @@ import (
 	v1 "github.com/ra341/glacier/generated/library/v1"
 	"github.com/ra341/glacier/generated/library/v1/v1connect"
 	"github.com/ra341/glacier/internal/metadata/types"
+	"github.com/ra341/glacier/internal/user"
 	"github.com/ra341/glacier/pkg/listutils"
 )
 
@@ -53,7 +54,15 @@ func (h *Handler) List(ctx context.Context, c *connect.Request[v1.ListRequest]) 
 }
 
 func (h *Handler) Delete(ctx context.Context, c *connect.Request[v1.DeleteRequest]) (*connect.Response[v1.DeleteResponse], error) {
-	err := h.srv.Delete(ctx, uint(c.Msg.GameId))
+	u, err := user.GetUserCtx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if u.Role != user.Omnissiah {
+		return nil, user.ErrNotAuthorized
+	}
+
+	err = h.srv.Delete(ctx, uint(c.Msg.GameId))
 	if err != nil {
 		return nil, err
 	}
@@ -106,6 +115,15 @@ func (h *Handler) Add(ctx context.Context, req *connect.Request[v1.AddRequest]) 
 }
 
 func (h *Handler) ListFiles(ctx context.Context, c *connect.Request[v1.ListFilesRequest]) (*connect.Response[v1.ListFilesResponse], error) {
+	u, err := user.GetUserCtx(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	if u.Role != user.Omnissiah {
+		return nil, user.ErrNotAuthorized
+	}
+
 	files, err := h.srv.ListFiles(
 		ctx,
 		uint(c.Msg.GameId),
@@ -133,4 +151,27 @@ func (h *Handler) ListFiles(ctx context.Context, c *connect.Request[v1.ListFiles
 	}
 
 	return connect.NewResponse(&v1.ListFilesResponse{Files: rpcFile}), nil
+}
+
+func (h *Handler) DeleteFile(ctx context.Context, c *connect.Request[v1.DeleteFileRequest]) (*connect.Response[v1.DeleteFileResponse], error) {
+	u, err := user.GetUserCtx(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	if u.Role != user.Omnissiah {
+		return nil, user.ErrNotAuthorized
+	}
+
+	err = h.srv.DeleteFile(
+		ctx,
+		uint(c.Msg.GameId),
+		c.Msg.Path,
+		c.Msg.Downloaded,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return connect.NewResponse(&v1.DeleteFileResponse{}), nil
 }

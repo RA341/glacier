@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -9,6 +10,8 @@ import (
 	"github.com/ra341/glacier/generated/service_config/v1/v1connect"
 	"github.com/ra341/glacier/shared/api"
 )
+
+var ErrNotAuthorized = errors.New("insufficient permissions")
 
 func AdminMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

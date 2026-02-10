@@ -97,22 +97,44 @@ func (s *Service) Delete(ctx context.Context, id uint) error {
 }
 
 func (s *Service) ListFiles(ctx context.Context, id uint, downloaded bool, base string) ([]os.DirEntry, error) {
-	game, err := s.store.GetById(ctx, id)
+	readPath, err := s.getFolder(ctx, id, downloaded)
 	if err != nil {
 		return nil, err
+	}
+
+	if base != "" {
+		readPath = filepath.Join(readPath, base)
+	}
+
+	return os.ReadDir(readPath)
+}
+
+func (s *Service) DeleteFile(ctx context.Context, id uint, base string, downloaded bool) error {
+	readPath, err := s.getFolder(ctx, id, downloaded)
+	if err != nil {
+		return err
+	}
+
+	if base == "" {
+		return fmt.Errorf("no file name found")
+	}
+
+	readPath = filepath.Join(readPath, base)
+
+	return os.RemoveAll(readPath)
+}
+
+func (s *Service) getFolder(ctx context.Context, id uint, downloaded bool) (string, error) {
+	game, err := s.store.GetById(ctx, id)
+	if err != nil {
+		return "", err
 	}
 
 	var readPath = game.Download.DownloadPath
 	if downloaded {
 		readPath = game.Download.IncompletePath
 	}
-
-	final := readPath
-	if base != "" {
-		final = filepath.Join(readPath, base)
-	}
-
-	return os.ReadDir(final)
+	return readPath, nil
 }
 
 func checkPerms(ctx context.Context) error {

@@ -17,10 +17,18 @@ service LibraryService {
   rpc GetGame(GetGameRequest) returns (GetGameResponse) {}
 
   rpc ListFiles(ListFilesRequest) returns (ListFilesResponse) {}
-
+  rpc DeleteFile(DeleteFileRequest) returns (DeleteFileResponse) {}
 
   rpc Add(AddRequest) returns (AddResponse) {}
 }
+
+message DeleteFileRequest {
+  uint64 GameId = 1;
+  bool Downloaded = 2;
+  string Path = 3;
+}
+
+message DeleteFileResponse {}
 
 message ListFilesRequest {
   uint64 GameId = 1;
