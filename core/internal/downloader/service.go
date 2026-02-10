@@ -249,7 +249,7 @@ func (s *Service) completeGameDownload(game *library.Game) {
 	s.cmf(int(game.ID))
 
 	log.Debug().
-		Str("title", game.Meta.Name[:24]+"...").
+		Str("title", game.Meta.Name).
 		Str("meta-took", time.Since(now).String()).
 		Msg("download complete with no errors")
 }

@@ -13,6 +13,7 @@ import (
 	"github.com/cespare/xxhash/v2"
 	"github.com/ra341/glacier/internal/downloader/types"
 	"github.com/ra341/glacier/pkg/fileutil"
+	"github.com/ra341/glacier/pkg/syncmap"
 	"github.com/rs/zerolog/log"
 	"golang.org/x/sync/errgroup"
 )
@@ -20,6 +21,8 @@ import (
 type ManifestService struct {
 	gameStore       Store
 	folderMetaStore StoreGameManifest
+
+	activeChecks syncmap.Map[int, *WorkResult]
 }
 
 func NewManifestService(gameStore Store, folderMetaStore StoreGameManifest) *ManifestService {
@@ -49,6 +52,8 @@ func (s *ManifestService) CheckManifest(ctx context.Context) error {
 	for _, gid := range gameIds {
 		eg.Go(func() error {
 			_, err := s.GenerateManifest(ctx, gid)
+			_, err = s.GenerateManifest(ctx, gid)
+
 			return err
 		})
 	}
@@ -76,19 +81,47 @@ func (s *ManifestService) GetDownloadManifest(ctx context.Context, gameId int, w
 	return encoder.Encode(meta)
 }
 
-func (s *ManifestService) GenerateManifest(ctx context.Context, gameId int) (FolderManifest, error) {
+type WorkResult struct {
+	result *FolderManifest
+	err    error
+	done   chan struct{}
+}
+
+func (s *ManifestService) GenerateManifest(ctx context.Context, gameId int) (*FolderManifest, error) {
+	val, ok := s.activeChecks.Load(gameId)
+	if ok {
+		log.Debug().Int("game", gameId).Msg("manifest already being generated, waiting...")
+		// manifest is being generated wait for it complete
+		<-val.done
+		return val.result, val.err
+	}
+
+	log.Debug().Int("game", gameId).Msg("generating manifest")
+
+	var workResult WorkResult
+	workResult.done = make(chan struct{})
+	s.activeChecks.Store(gameId, &workResult)
+
+	workResult.result, workResult.err = s.generateManifest(ctx, gameId)
+
+	close(workResult.done)
+
+	return workResult.result, workResult.err
+}
+
+func (s *ManifestService) generateManifest(ctx context.Context, gameId int) (*FolderManifest, error) {
 	game, err := s.gameStore.GetById(ctx, uint(gameId))
 	if err != nil {
-		return FolderManifest{}, err
+		return nil, err
 	}
 
 	if game.Download.State != types.Complete {
-		return FolderManifest{}, fmt.Errorf("game is not complete")
+		return nil, fmt.Errorf("game is not complete")
 	}
 
 	prevMeta, err := s.folderMetaStore.Get(ctx, gameId)
 	if err != nil {
-		log.Debug().Err(err).Msg("Failed to get previous manifest")
+		log.Debug().Err(err).Msg("previous manifest not found")
 	}
 
 	eg := errgroup.Group{}
@@ -108,7 +141,7 @@ func (s *ManifestService) GenerateManifest(ctx context.Context, gameId int) (Fol
 		return nil
 	})
 	if err != nil {
-		return FolderManifest{}, err
+		return nil, err
 	}
 
 	go func() {
@@ -141,21 +174,21 @@ func (s *ManifestService) GenerateManifest(ctx context.Context, gameId int) (Fol
 
 	err = eg.Wait()
 	if err != nil {
-		return FolderManifest{}, err
+		return nil, err
 	}
 
 	err = s.folderMetaStore.Add(ctx, gameId, &finalMeta)
 	if err != nil {
-		return FolderManifest{}, err
+		return nil, err
 	}
 
 	if finalMeta.ID == 0 {
-		return FolderManifest{}, fmt.Errorf("metadata DB id was 0, THIS SHOULD NEVER HAPPEN: %v", finalMeta)
+		return nil, fmt.Errorf("metadata DB id was 0, THIS SHOULD NEVER HAPPEN: %v", finalMeta)
 	}
 
 	log.Debug().Int("game", gameId).Msg("completed metadata extraction")
 
-	return finalMeta, nil
+	return &finalMeta, nil
 }
 
 type MetaResult struct {
