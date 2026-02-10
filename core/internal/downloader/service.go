@@ -112,7 +112,7 @@ func (s *Service) downloadTracker(ctx context.Context) {
 	s.isDownloadTrackerRunning.Store(true)
 	defer s.isDownloadTrackerRunning.Store(false)
 
-	timer := time.NewTimer(s.conf().Interval())
+	timer := time.NewTicker(s.conf().Interval())
 	defer timer.Stop()
 
 	errTries := 0
