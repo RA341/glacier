@@ -3,6 +3,7 @@
     import {fade} from "svelte/transition";
     import type {Game} from "$lib/gen/library/v1/library_pb";
     import IndexerSearch from "$lib/components/IndexerSearch.svelte";
+    import FileManager from "./FileManager.svelte";
 
     let {game = $bindable(null)}: { game: Game | null } = $props();
 
@@ -50,13 +51,8 @@
                 </div>
             </div>
             <!-- File List -->
-            <div class="lg:col-span-7 bg-panel/30 border border-border rounded-2xl flex flex-col h-50">
-                <div class="p-3 border-b border-border text-[10px] font-bold uppercase text-muted">Downloaded Files
-                </div>
-                <div class="flex-1 overflow-y-auto p-4 flex flex-col items-center justify-center opacity-20">
-                    <FileTextIcon size={48} strokeWidth={1}/>
-                    <p class="text-xs mt-2">File listing not available</p>
-                </div>
+            <div class="lg:col-span-7 flex flex-col h-95 bg-panel/30 border border-border rounded-2xl overflow-hidden">
+                <FileManager gameId={game?.ID ?? BigInt(0)}/>
             </div>
         </div>
     </section>

@@ -3,6 +3,8 @@ package library
 import (
 	"context"
 	"net/http"
+	"os"
+	"time"
 
 	"connectrpc.com/connect"
 	v1 "github.com/ra341/glacier/generated/library/v1"
@@ -69,7 +71,7 @@ func (h *Handler) Exists(ctx context.Context, req *connect.Request[v1.ExistsRequ
 	if err != nil {
 		return nil, err
 	}
-	
+
 	gameId, err := h.srv.store.Exists(typeString, req.Msg.MetadataGameId)
 	if err != nil {
 		return nil, err
@@ -101,4 +103,34 @@ func (h *Handler) Add(ctx context.Context, req *connect.Request[v1.AddRequest]) 
 	}
 
 	return connect.NewResponse(&v1.AddResponse{}), nil
+}
+
+func (h *Handler) ListFiles(ctx context.Context, c *connect.Request[v1.ListFilesRequest]) (*connect.Response[v1.ListFilesResponse], error) {
+	files, err := h.srv.ListFiles(
+		ctx,
+		uint(c.Msg.GameId),
+		c.Msg.Downloaded,
+		c.Msg.BasePath,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	rpcFile, err := listutils.ToMapErr(files, func(t os.DirEntry) (*v1.File, error) {
+		info, err := t.Info()
+		if err != nil {
+			return nil, err
+		}
+		return &v1.File{
+			RelPath: t.Name(),
+			IsDir:   t.IsDir(),
+			Date:    info.ModTime().Format(time.RFC3339),
+			Size:    uint64(info.Size()),
+		}, nil
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return connect.NewResponse(&v1.ListFilesResponse{Files: rpcFile}), nil
 }

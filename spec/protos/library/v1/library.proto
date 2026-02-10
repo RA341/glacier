@@ -16,8 +16,27 @@ service LibraryService {
   rpc TriggerTracker(TriggerTrackerRequest) returns (TriggerTrackerResponse) {}
   rpc GetGame(GetGameRequest) returns (GetGameResponse) {}
 
+  rpc ListFiles(ListFilesRequest) returns (ListFilesResponse) {}
+
 
   rpc Add(AddRequest) returns (AddResponse) {}
+}
+
+message ListFilesRequest {
+  uint64 GameId = 1;
+  string BasePath = 3;
+  bool Downloaded = 2;
+}
+
+message File {
+  string RelPath = 1;
+  bool IsDir = 2;
+  uint64 Size = 3;
+  string date = 4;
+}
+
+message ListFilesResponse {
+  repeated File files = 1;
 }
 
 message ExistsRequest {
@@ -37,7 +56,7 @@ message DeleteResponse {}
 
 
 message ListWithStateRequest {
-  string state  = 1;
+  string state = 1;
 }
 
 message ListWithStateResponse {
@@ -50,7 +69,7 @@ message GetGameRequest {
 }
 
 message GetGameResponse {
-    Game game = 1;
+  Game game = 1;
 }
 
 

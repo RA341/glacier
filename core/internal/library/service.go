@@ -3,6 +3,7 @@ package library
 import (
 	"context"
 	"fmt"
+	"os"
 	"path/filepath"
 
 	"github.com/ra341/glacier/internal/downloader/types"
@@ -93,6 +94,25 @@ func (s *Service) Delete(ctx context.Context, id uint) error {
 	}
 
 	return s.store.Delete(ctx, id)
+}
+
+func (s *Service) ListFiles(ctx context.Context, id uint, downloaded bool, base string) ([]os.DirEntry, error) {
+	game, err := s.store.GetById(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	var readPath = game.Download.DownloadPath
+	if downloaded {
+		readPath = game.Download.IncompletePath
+	}
+
+	final := readPath
+	if base != "" {
+		final = filepath.Join(readPath, base)
+	}
+
+	return os.ReadDir(final)
 }
 
 func checkPerms(ctx context.Context) error {

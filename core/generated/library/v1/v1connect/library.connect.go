@@ -47,6 +47,9 @@ const (
 	LibraryServiceTriggerTrackerProcedure = "/library.v1.LibraryService/TriggerTracker"
 	// LibraryServiceGetGameProcedure is the fully-qualified name of the LibraryService's GetGame RPC.
 	LibraryServiceGetGameProcedure = "/library.v1.LibraryService/GetGame"
+	// LibraryServiceListFilesProcedure is the fully-qualified name of the LibraryService's ListFiles
+	// RPC.
+	LibraryServiceListFilesProcedure = "/library.v1.LibraryService/ListFiles"
 	// LibraryServiceAddProcedure is the fully-qualified name of the LibraryService's Add RPC.
 	LibraryServiceAddProcedure = "/library.v1.LibraryService/Add"
 )
@@ -59,6 +62,7 @@ type LibraryServiceClient interface {
 	Exists(context.Context, *connect.Request[v1.ExistsRequest]) (*connect.Response[v1.ExistsResponse], error)
 	TriggerTracker(context.Context, *connect.Request[v1.TriggerTrackerRequest]) (*connect.Response[v1.TriggerTrackerResponse], error)
 	GetGame(context.Context, *connect.Request[v1.GetGameRequest]) (*connect.Response[v1.GetGameResponse], error)
+	ListFiles(context.Context, *connect.Request[v1.ListFilesRequest]) (*connect.Response[v1.ListFilesResponse], error)
 	Add(context.Context, *connect.Request[v1.AddRequest]) (*connect.Response[v1.AddResponse], error)
 }
 
@@ -109,6 +113,12 @@ func NewLibraryServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(libraryServiceMethods.ByName("GetGame")),
 			connect.WithClientOptions(opts...),
 		),
+		listFiles: connect.NewClient[v1.ListFilesRequest, v1.ListFilesResponse](
+			httpClient,
+			baseURL+LibraryServiceListFilesProcedure,
+			connect.WithSchema(libraryServiceMethods.ByName("ListFiles")),
+			connect.WithClientOptions(opts...),
+		),
 		add: connect.NewClient[v1.AddRequest, v1.AddResponse](
 			httpClient,
 			baseURL+LibraryServiceAddProcedure,
@@ -126,6 +136,7 @@ type libraryServiceClient struct {
 	exists         *connect.Client[v1.ExistsRequest, v1.ExistsResponse]
 	triggerTracker *connect.Client[v1.TriggerTrackerRequest, v1.TriggerTrackerResponse]
 	getGame        *connect.Client[v1.GetGameRequest, v1.GetGameResponse]
+	listFiles      *connect.Client[v1.ListFilesRequest, v1.ListFilesResponse]
 	add            *connect.Client[v1.AddRequest, v1.AddResponse]
 }
 
@@ -159,6 +170,11 @@ func (c *libraryServiceClient) GetGame(ctx context.Context, req *connect.Request
 	return c.getGame.CallUnary(ctx, req)
 }
 
+// ListFiles calls library.v1.LibraryService.ListFiles.
+func (c *libraryServiceClient) ListFiles(ctx context.Context, req *connect.Request[v1.ListFilesRequest]) (*connect.Response[v1.ListFilesResponse], error) {
+	return c.listFiles.CallUnary(ctx, req)
+}
+
 // Add calls library.v1.LibraryService.Add.
 func (c *libraryServiceClient) Add(ctx context.Context, req *connect.Request[v1.AddRequest]) (*connect.Response[v1.AddResponse], error) {
 	return c.add.CallUnary(ctx, req)
@@ -172,6 +188,7 @@ type LibraryServiceHandler interface {
 	Exists(context.Context, *connect.Request[v1.ExistsRequest]) (*connect.Response[v1.ExistsResponse], error)
 	TriggerTracker(context.Context, *connect.Request[v1.TriggerTrackerRequest]) (*connect.Response[v1.TriggerTrackerResponse], error)
 	GetGame(context.Context, *connect.Request[v1.GetGameRequest]) (*connect.Response[v1.GetGameResponse], error)
+	ListFiles(context.Context, *connect.Request[v1.ListFilesRequest]) (*connect.Response[v1.ListFilesResponse], error)
 	Add(context.Context, *connect.Request[v1.AddRequest]) (*connect.Response[v1.AddResponse], error)
 }
 
@@ -218,6 +235,12 @@ func NewLibraryServiceHandler(svc LibraryServiceHandler, opts ...connect.Handler
 		connect.WithSchema(libraryServiceMethods.ByName("GetGame")),
 		connect.WithHandlerOptions(opts...),
 	)
+	libraryServiceListFilesHandler := connect.NewUnaryHandler(
+		LibraryServiceListFilesProcedure,
+		svc.ListFiles,
+		connect.WithSchema(libraryServiceMethods.ByName("ListFiles")),
+		connect.WithHandlerOptions(opts...),
+	)
 	libraryServiceAddHandler := connect.NewUnaryHandler(
 		LibraryServiceAddProcedure,
 		svc.Add,
@@ -238,6 +261,8 @@ func NewLibraryServiceHandler(svc LibraryServiceHandler, opts ...connect.Handler
 			libraryServiceTriggerTrackerHandler.ServeHTTP(w, r)
 		case LibraryServiceGetGameProcedure:
 			libraryServiceGetGameHandler.ServeHTTP(w, r)
+		case LibraryServiceListFilesProcedure:
+			libraryServiceListFilesHandler.ServeHTTP(w, r)
 		case LibraryServiceAddProcedure:
 			libraryServiceAddHandler.ServeHTTP(w, r)
 		default:
@@ -271,6 +296,10 @@ func (UnimplementedLibraryServiceHandler) TriggerTracker(context.Context, *conne
 
 func (UnimplementedLibraryServiceHandler) GetGame(context.Context, *connect.Request[v1.GetGameRequest]) (*connect.Response[v1.GetGameResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("library.v1.LibraryService.GetGame is not implemented"))
+}
+
+func (UnimplementedLibraryServiceHandler) ListFiles(context.Context, *connect.Request[v1.ListFilesRequest]) (*connect.Response[v1.ListFilesResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("library.v1.LibraryService.ListFiles is not implemented"))
 }
 
 func (UnimplementedLibraryServiceHandler) Add(context.Context, *connect.Request[v1.AddRequest]) (*connect.Response[v1.AddResponse], error) {
