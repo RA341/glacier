@@ -3,10 +3,12 @@ package library
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"os"
 	"path/filepath"
 
 	"github.com/ra341/glacier/internal/downloader/types"
+	"github.com/ra341/glacier/internal/library/manifest"
 	"github.com/ra341/glacier/internal/user"
 )
 
@@ -20,14 +22,14 @@ type Service struct {
 	downloader Downloader
 
 	store    Store
-	manifest *ManifestService
+	manifest *manifest.Service
 }
 
 type ConfigLoader func() *Config
 
 func New(
 	store Store,
-	fs *ManifestService,
+	fs *manifest.Service,
 	downloader Downloader,
 	config ConfigLoader,
 ) *Service {
@@ -38,6 +40,29 @@ func New(
 		store:      store,
 		manifest:   fs,
 	}
+}
+
+func (s *Service) GetDownloadManifest(ctx context.Context, gid int, w http.ResponseWriter) error {
+	game, err := s.store.GetById(ctx, uint(gid))
+	if err != nil {
+		return err
+	}
+
+	if game.Download.State != types.Complete {
+		return fmt.Errorf("game is not complete")
+	}
+
+	return s.manifest.GetGameManifest(ctx, gid, game.Download.DownloadPath, w)
+}
+
+func (s *Service) FileDownload(ctx context.Context, id int, file string) (*os.File, error) {
+	game, err := s.store.GetById(ctx, uint(id))
+	if err != nil {
+		return nil, err
+	}
+
+	filePath := filepath.Join(game.Download.DownloadPath, file)
+	return os.Open(filePath)
 }
 
 func (s *Service) Get(ctx context.Context, id uint) (Game, error) {

@@ -1,4 +1,4 @@
-package library
+package manifest
 
 import (
 	"context"
@@ -12,15 +12,18 @@ type StoreGameManifest interface {
 	Get(ctx context.Context, gameId int) (FolderManifest, error)
 	Delete(ctx context.Context, gameId int) error
 	Edit(ctx context.Context, gameId int, metadata *FolderManifest) error
-	ListGamesWithoutManifest(ctx context.Context) ([]int, error)
+	ListGamesWithoutManifest(ctx context.Context) ([]Info, error)
+}
+
+// Info information required to generate metadata
+type Info struct {
+	ID           int
+	DownloadPath string
 }
 
 type FolderManifest struct {
 	gorm.Model
-
-	GameID int  `gorm:"uniqueIndex"`
-	Game   Game `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-
+	GameID    int `gorm:"uniqueIndex"`
 	TotalSize int64
 	FileInfo  []FileManifest `gorm:"serializer:json"`
 }

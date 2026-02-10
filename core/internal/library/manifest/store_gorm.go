@@ -1,4 +1,4 @@
-package library
+package manifest
 
 import (
 	"context"
@@ -45,11 +45,12 @@ func (s *StoreFolderMetadataGorm) Delete(ctx context.Context, gameId int) error 
 		Error
 }
 
-func (s *StoreFolderMetadataGorm) ListGamesWithoutManifest(ctx context.Context) ([]int, error) {
-	var games []int
+func (s *StoreFolderMetadataGorm) ListGamesWithoutManifest(ctx context.Context) ([]Info, error) {
+	var games []Info
 
 	err := s.Q(ctx).
-		Model(&Game{}).
+		Table("games").
+		Select("games.id, games.download_path").
 		Joins("LEFT JOIN folder_manifests ON folder_manifests.game_id = games.id").
 		Where("folder_manifests.id IS NULL").
 		Where("games.state = ?", download.Complete).

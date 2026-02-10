@@ -11,7 +11,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/ra341/glacier/internal/library"
+	"github.com/ra341/glacier/internal/library/manifest"
 	"github.com/ra341/glacier/pkg/fileutil"
 
 	"github.com/dustin/go-humanize"
@@ -94,7 +94,7 @@ func (d *Download) Start() {
 		StatusMessage: "Downloading Metadata",
 	}))
 
-	var meta library.FolderManifest
+	var meta manifest.FolderManifest
 	err := d.downloadMetadata(&meta)
 	if err != nil {
 		warnIfErr(d.progress.EditStatus(d.ctx, d.gameId, &Info{
@@ -169,7 +169,7 @@ func (d *Download) Close() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // metadata step
 
-func (d *Download) downloadMetadata(meta *library.FolderManifest) error {
+func (d *Download) downloadMetadata(meta *manifest.FolderManifest) error {
 	resp, err := d.conf.getHttpClient().Get(d.metadataUrlBase)
 	if err != nil {
 		return err
@@ -185,7 +185,7 @@ func (d *Download) downloadMetadata(meta *library.FolderManifest) error {
 	return decoder.Decode(meta)
 }
 
-func (d *Download) setupFile(fm *library.FileManifest) error {
+func (d *Download) setupFile(fm *manifest.FileManifest) error {
 	started := time.Now()
 
 	fullPath := filepath.Join(d.downloadFolder, fm.RelPath)
@@ -262,7 +262,7 @@ func (d *Download) setupFile(fm *library.FileManifest) error {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // download step
 
-func (d *Download) downloadFile(fm *library.FileManifest) error {
+func (d *Download) downloadFile(fm *manifest.FileManifest) error {
 	//log.Info().
 	//	Str("file", met.RelPath).
 	//	Str("size", humanize.Bytes(uint64(met.Size))).
@@ -324,7 +324,7 @@ func (d *Download) downloadFile(fm *library.FileManifest) error {
 		return err
 	}
 
-	hash, err := library.GetHash(fullPath)
+	hash, err := manifest.GetHash(fullPath)
 	if err != nil {
 		return err
 	}

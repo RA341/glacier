@@ -5,6 +5,7 @@ import (
 
 	download "github.com/ra341/glacier/internal/downloader/types"
 	indexer "github.com/ra341/glacier/internal/indexer/types"
+	"github.com/ra341/glacier/internal/library/manifest"
 	metadata "github.com/ra341/glacier/internal/metadata/types"
 
 	"gorm.io/gorm"
@@ -18,6 +19,9 @@ type Game struct {
 	Download download.Download `gorm:"embedded"`
 	// Source of the Indexer
 	Source indexer.Source `gorm:"embedded"`
+
+	// Manifest game file inf
+	Manifest manifest.FolderManifest `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 type GameConfig struct {

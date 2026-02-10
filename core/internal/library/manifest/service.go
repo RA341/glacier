@@ -1,4 +1,4 @@
-package library
+package manifest
 
 import (
 	"context"
@@ -11,24 +11,22 @@ import (
 	"strconv"
 
 	"github.com/cespare/xxhash/v2"
-	"github.com/ra341/glacier/internal/downloader/types"
 	"github.com/ra341/glacier/pkg/fileutil"
 	"github.com/ra341/glacier/pkg/syncmap"
 	"github.com/rs/zerolog/log"
 	"golang.org/x/sync/errgroup"
 )
 
-type ManifestService struct {
-	gameStore       Store
+type Service struct {
+	//gameStore       Store
 	folderMetaStore StoreGameManifest
 
 	activeChecks syncmap.Map[int, *WorkResult]
 }
 
-func NewManifestService(gameStore Store, folderMetaStore StoreGameManifest) *ManifestService {
-	m := &ManifestService{
+func New(folderMetaStore StoreGameManifest) *Service {
+	m := &Service{
 		folderMetaStore: folderMetaStore,
-		gameStore:       gameStore,
 	}
 
 	go func() {
@@ -41,19 +39,17 @@ func NewManifestService(gameStore Store, folderMetaStore StoreGameManifest) *Man
 	return m
 }
 
-func (s *ManifestService) CheckManifest(ctx context.Context) error {
-	gameIds, err := s.folderMetaStore.ListGamesWithoutManifest(ctx)
+func (s *Service) CheckManifest(ctx context.Context) error {
+	infs, err := s.folderMetaStore.ListGamesWithoutManifest(ctx)
 	if err != nil {
 		return err
 	}
 
 	eg := errgroup.Group{}
 
-	for _, gid := range gameIds {
+	for _, in := range infs {
 		eg.Go(func() error {
-			_, err := s.GenerateManifest(ctx, gid)
-			_, err = s.GenerateManifest(ctx, gid)
-
+			_, err := s.GenerateManifest(ctx, in.ID, in.DownloadPath)
 			return err
 		})
 	}
@@ -61,18 +57,9 @@ func (s *ManifestService) CheckManifest(ctx context.Context) error {
 	return eg.Wait()
 }
 
-func (s *ManifestService) FileDownload(ctx context.Context, id int, file string) (*os.File, error) {
-	game, err := s.gameStore.GetById(ctx, uint(id))
-	if err != nil {
-		return nil, err
-	}
-
-	filePath := filepath.Join(game.Download.DownloadPath, file)
-	return os.Open(filePath)
-}
-
-func (s *ManifestService) GetDownloadManifest(ctx context.Context, gameId int, writer io.Writer) error {
-	meta, err := s.GenerateManifest(ctx, gameId)
+// GetGameManifest generates then sends the manifest via io.writer
+func (s *Service) GetGameManifest(ctx context.Context, gameId int, downloadPath string, writer io.Writer) error {
+	meta, err := s.GenerateManifest(ctx, gameId, downloadPath)
 	if err != nil {
 		return err
 	}
@@ -87,7 +74,7 @@ type WorkResult struct {
 	done   chan struct{}
 }
 
-func (s *ManifestService) GenerateManifest(ctx context.Context, gameId int) (*FolderManifest, error) {
+func (s *Service) GenerateManifest(ctx context.Context, gameId int, downloadPath string) (*FolderManifest, error) {
 	val, ok := s.activeChecks.Load(gameId)
 	if ok {
 		log.Debug().Int("game", gameId).Msg("manifest already being generated, waiting...")
@@ -102,23 +89,14 @@ func (s *ManifestService) GenerateManifest(ctx context.Context, gameId int) (*Fo
 	workResult.done = make(chan struct{})
 	s.activeChecks.Store(gameId, &workResult)
 
-	workResult.result, workResult.err = s.generateManifest(ctx, gameId)
+	workResult.result, workResult.err = s.realGenerateManifest(ctx, gameId, downloadPath)
 
 	close(workResult.done)
 
 	return workResult.result, workResult.err
 }
 
-func (s *ManifestService) generateManifest(ctx context.Context, gameId int) (*FolderManifest, error) {
-	game, err := s.gameStore.GetById(ctx, uint(gameId))
-	if err != nil {
-		return nil, err
-	}
-
-	if game.Download.State != types.Complete {
-		return nil, fmt.Errorf("game is not complete")
-	}
-
+func (s *Service) realGenerateManifest(ctx context.Context, gameId int, downloadPath string) (*FolderManifest, error) {
 	prevMeta, err := s.folderMetaStore.Get(ctx, gameId)
 	if err != nil {
 		log.Debug().Err(err).Msg("previous manifest not found")
@@ -128,14 +106,14 @@ func (s *ManifestService) generateManifest(ctx context.Context, gameId int) (*Fo
 	eg.SetLimit(-1)
 	metadataChan := make(chan MetaResult, 5)
 
-	err = filepath.WalkDir(game.Download.DownloadPath, func(path string, d fs.DirEntry, err error) error {
-		if game.Download.DownloadPath == path || d.IsDir() {
+	err = filepath.WalkDir(downloadPath, func(path string, d fs.DirEntry, err error) error {
+		if downloadPath == path || d.IsDir() {
 			// process files inside dir directly with their paths
 			return nil
 		}
 
 		eg.Go(func() error {
-			return s.gatherMeta(metadataChan, path, &game, &prevMeta)
+			return s.gatherMeta(metadataChan, path, downloadPath, &prevMeta)
 		})
 
 		return nil
@@ -197,13 +175,13 @@ type MetaResult struct {
 	Update      bool
 }
 
-func (s *ManifestService) gatherMeta(
+func (s *Service) gatherMeta(
 	metadataChan chan MetaResult,
 	path string,
-	game *Game,
+	downloadPath string,
 	prevMeta *FolderManifest,
 ) error {
-	relPath, err := filepath.Rel(game.Download.DownloadPath, path)
+	relPath, err := filepath.Rel(downloadPath, path)
 	if err != nil {
 		return err
 	}

@@ -23,7 +23,7 @@ func TestMeta(t *testing.T) {
 	srv := New(nil, nil, nil, nil)
 	ctx := context.Background()
 
-	err := srv.manifest.GetDownloadManifest(ctx, 1, nil)
+	err := srv.manifest.GetGameManifest(ctx, 1, nil)
 	require.NoError(t, err)
 
 }

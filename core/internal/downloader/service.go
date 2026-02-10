@@ -16,7 +16,7 @@ import (
 )
 
 type GetCli func(name string) (types.Downloader, error)
-type CheckMetaFn func(id int)
+type CheckMetaFn func(id int, downloadFolder string)
 
 type Service struct {
 	cli                      GetCli
@@ -246,7 +246,7 @@ func (s *Service) completeGameDownload(game *library.Game) {
 	now := time.Now()
 	log.Info().Str("name", game.Meta.Name).Msg("generating manifest")
 
-	s.cmf(int(game.ID))
+	s.cmf(int(game.ID), game.Download.DownloadPath)
 
 	log.Debug().
 		Str("title", game.Meta.Name).

@@ -12,6 +12,7 @@ import (
 	"github.com/ra341/glacier/internal/indexer"
 	"github.com/ra341/glacier/internal/info"
 	"github.com/ra341/glacier/internal/library"
+	"github.com/ra341/glacier/internal/library/manifest"
 	"github.com/ra341/glacier/internal/metadata"
 	"github.com/ra341/glacier/internal/search"
 	"github.com/ra341/glacier/internal/services_manager"
@@ -56,13 +57,16 @@ func NewApp() *App {
 	confDb := services_manager.NewStore(db)
 	configManager := services_manager.New(confDb)
 
-	manStore := library.NewStoreManifestGorm(db)
-	fms := library.NewManifestService(libDb, manStore)
+	manStore := manifest.NewStoreManifestGorm(db)
+	fms := manifest.New(manStore)
 
 	downSrv := downloader.New(
 		configManager.Downloader.LoadService,
-		func(id int) {
-			fms.GenerateManifest(context.Background(), id)
+		func(id int, downloadPath string) {
+			_, err := fms.GenerateManifest(context.Background(), id, downloadPath)
+			if err != nil {
+				log.Warn().Err(err).Msg("failed to generate manifest")
+			}
 		},
 		libDb,
 		func() *downloader.Config {
