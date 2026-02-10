@@ -2,8 +2,11 @@ package config
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 
 	"github.com/ra341/glacier/pkg/argos"
+	"github.com/rs/zerolog/log"
 )
 
 type Service struct {
@@ -27,17 +30,37 @@ func (s *Service) init(printConf bool) {
 	rnFn := argos.FieldProcessorTag(defaultPrefixer)
 	argos.LoadStruct(&conf, rnFn)
 
-	//pathsToResolve := []*string{
-	//	&conf.Download.IncompletePath,
-	//	&conf.Glacier.ConfigDir,
-	//	&conf.Library.GameDir,
-	//}
-	//resolvePaths(pathsToResolve)
+	pathsToResolve := []*string{
+		&conf.Files.ConfigDir,
+		&conf.Files.LogsDir,
+	}
+	err := resolvePaths(pathsToResolve)
+	if err != nil {
+		log.Fatal().Err(err).Msg("failed to resolve paths")
+		return
+	}
+
 	if printConf {
 		printConfig(defaultPrefixer, &conf)
 	}
 
 	s.conf = conf
+}
+
+func resolvePaths(pathsToResolve []*string) error {
+	for _, p := range pathsToResolve {
+		absPath, err := filepath.Abs(*p)
+		if err != nil {
+			return fmt.Errorf("failed to get abs path for %s: %w", *p, err)
+		}
+		*p = absPath
+
+		if err = os.MkdirAll(absPath, 0777); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func (s *Service) Get() *Config {

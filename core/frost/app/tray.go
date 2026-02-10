@@ -4,16 +4,20 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"os/exec"
+	"path/filepath"
 	"runtime"
 	"sync"
 	"sync/atomic"
 
 	"fyne.io/systray"
+	"github.com/natefinch/lumberjack"
 	"github.com/ra341/glacier/frost/app/icon"
 	"github.com/ra341/glacier/frost/config"
+	"github.com/ra341/glacier/pkg/logger"
 	"github.com/ra341/glacier/shared/api"
-	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog"
 )
 
 type Tray struct {
@@ -26,21 +30,28 @@ type Tray struct {
 	uiRunning     atomic.Bool
 	serverRunning atomic.Bool
 	serverOpts    []api.ServerOpt
+
+	trayLog *zerolog.Logger
 }
 
 func NewDesktop(opts ...api.ServerOpt) {
 	sm := NewSocketManager()
 	sm.exitIfAlreadyRunning()
 
+	// initial config for UI launch will be overwritten by server init
+	conf := config.New(false)
+
 	t := Tray{
 		serverOpts: opts,
-		conf:       config.New(false), // initial config for UI launch will be overwritten by server init
+		conf:       conf,
 	}
+	l := t.makeLogger("tray")
+	t.trayLog = &l
 
 	go func() {
 		err := sm.setupSocketHandler(context.Background(), t.StartUI)
 		if err != nil {
-			log.Fatal().Err(err).Msg("Failed to start socket listener")
+			t.trayLog.Fatal().Err(err).Msg("Failed to start socket listener")
 			return
 		}
 	}()
@@ -65,7 +76,7 @@ func (t *Tray) startServices() {
 	t.wg.Go(t.startServer)
 
 	if t.conf.Get().Desktop.StartSilent {
-		log.Info().Msg("UI set to launch silently")
+		t.trayLog.Info().Msg("UI set to launch silently")
 		return
 	}
 	t.wg.Go(t.startUI)
@@ -73,14 +84,14 @@ func (t *Tray) startServices() {
 
 func (t *Tray) startServer() {
 	if t.serverRunning.Load() {
-		log.Info().Msg("Server is already running")
+		t.trayLog.Info().Msg("Server is already running")
 		return
 	}
 
-	log.Info().Msg("Starting server...")
+	t.trayLog.Info().Msg("Starting server...")
 
 	defer func() {
-		log.Info().Msg("Server stopped")
+		t.trayLog.Info().Msg("Server stopped")
 		t.serverRunning.Store(false)
 	}()
 	t.serverRunning.Store(true)
@@ -97,12 +108,14 @@ func (t *Tray) StartUI() {
 }
 
 func (t *Tray) startUI() {
+	subLog := t.makeLogger("ui")
+
 	if t.uiRunning.Load() {
-		log.Info().Msg("UI is running")
+		subLog.Info().Msg("UI is running")
 		return
 	}
 
-	log.Info().Msg("Starting UI")
+	subLog.Info().Msg("Starting UI")
 	defer func() {
 		t.uiRunning.Store(false)
 	}()
@@ -113,15 +126,39 @@ func (t *Tray) startUI() {
 		exePath += ".exe"
 	}
 
-	err := NewUI(t.ctx, exePath)
+	err := NewUI(t.ctx, exePath, &subLog)
 	if err != nil {
 		if errors.Is(t.ctx.Err(), context.Canceled) {
-			log.Info().Msg("Process stopped by user")
+			subLog.Debug().Msg("UI closed by user")
 			return
 		}
 
 		ShowErr(fmt.Sprintf("Failed to start UI: %v", err))
 	}
+}
+
+func (t *Tray) makeLogger(name string) zerolog.Logger {
+	get := t.conf.Get()
+
+	logWriter := NewFileLogger(filepath.Join(get.Files.LogsDir, name))
+	return logger.
+		CreateLogger(
+			get.Logger.Level,
+			get.Logger.Verbose,
+			logWriter,
+		).
+		Str("component", name).Logger()
+}
+
+func NewFileLogger(filename string) io.Writer {
+	logFile := &lumberjack.Logger{
+		Filename:   filename + ".log",
+		MaxSize:    3,
+		MaxBackups: 3,
+		MaxAge:     28,
+		Compress:   true,
+	}
+	return logFile
 }
 
 func (t *Tray) onReady() {
@@ -131,24 +168,36 @@ func (t *Tray) onReady() {
 
 	mUI := systray.AddMenuItem("Open", "Start the UI")
 	mLaunchWebUI := systray.AddMenuItem("Open in browser", "Launched the Web UI")
+
+	systray.AddSeparator()
+
+	logsDir := systray.AddMenuItem("Logs", "Open Logs directory")
+
+	systray.AddSeparator()
+
 	mServer := systray.AddMenuItem("Restart", "Restart the app")
 	mQuit := systray.AddMenuItem("Quit", "Quit the whole app")
 
 	go func() {
 		for {
 			select {
+			case <-logsDir.ClickedCh:
+				openFolder(t.conf.Get().Files.LogsDir)
 			case <-mLaunchWebUI.ClickedCh:
-				log.Info().Msg("launching web browser")
-				openURL(fmt.Sprintf("http://localhost:%d", t.conf.Get().Server.Port))
+				//t.trayLog.Info().Msg("launching web browser")
+				openURL(fmt.Sprintf(
+					"http://localhost:%d",
+					t.conf.Get().Server.Port,
+				))
 			case <-mServer.ClickedCh:
-				log.Info().Msg("restarting frost")
+				t.trayLog.Info().Msg("restarting frost")
 				t.cancel()
 				t.startServices()
 			case <-mUI.ClickedCh:
-				log.Info().Msg("starting UI")
+				//t.trayLog.Info().Msg("starting UI")
 				go t.startUI()
 			case <-mQuit.ClickedCh:
-				log.Info().Msg("exiting frost")
+				t.trayLog.Info().Msg("exiting frost")
 				t.cancel()
 				systray.Quit()
 			}
@@ -158,6 +207,26 @@ func (t *Tray) onReady() {
 
 func (t *Tray) onExit() {
 	t.cancel()
+}
+
+func openFolder(path string) {
+	var cmd *exec.Cmd
+
+	switch runtime.GOOS {
+	case "windows":
+		cmd = exec.Command("explorer", path)
+	case "darwin": // macOS
+		cmd = exec.Command("open", path)
+	case "linux":
+		cmd = exec.Command("xdg-open", path)
+	default:
+		ShowErr(fmt.Sprintf("unsupported platform: %s", runtime.GOOS))
+	}
+
+	err := cmd.Start()
+	if err != nil {
+		ShowErr(fmt.Sprintf("Failed to open folder: %v", err))
+	}
 }
 
 func openURL(url string) {

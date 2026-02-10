@@ -10,7 +10,7 @@ import (
 	"github.com/rs/zerolog"
 )
 
-func NewUI(ctx context.Context, desktopExec string) error {
+func NewUI(ctx context.Context, desktopExec string, logger *zerolog.Logger) error {
 	executablePath, err := os.Executable()
 	if err != nil {
 		return err
@@ -22,16 +22,14 @@ func NewUI(ctx context.Context, desktopExec string) error {
 	port := os.Getenv("FROST_PORT")
 	cmd := exec.CommandContext(ctx, uiExec, fmt.Sprintf("--port=%s", port))
 
-	// todo
-	//uiLogger := log.Logger.With().Str("ui", "logger").Logger()
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	cmd.Stdout = &StdOutLogger{logger: logger}
+	cmd.Stderr = &StdErrLogger{logger: logger}
 
 	return cmd.Run()
 }
 
 type StdOutLogger struct {
-	logger zerolog.Logger
+	logger *zerolog.Logger
 }
 
 func (s *StdOutLogger) Write(p []byte) (n int, err error) {
@@ -40,7 +38,7 @@ func (s *StdOutLogger) Write(p []byte) (n int, err error) {
 }
 
 type StdErrLogger struct {
-	logger zerolog.Logger
+	logger *zerolog.Logger
 }
 
 func (s *StdErrLogger) Write(p []byte) (n int, err error) {

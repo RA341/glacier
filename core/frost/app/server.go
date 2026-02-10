@@ -94,7 +94,7 @@ func (s *Server) registerApiRoutes(mux *http.ServeMux) {
 
 	glacierProxy := http.NewServeMux()
 	s.registerGlacierProxy(glacierProxy)
-	mux.Handle("/api/server/", api.WithHTTPLogger(glacierProxy))
+	mux.Handle("/api/server/", glacierProxy)
 }
 
 func (s *Server) RegisterFrostRoutes(mux *http.ServeMux) {
