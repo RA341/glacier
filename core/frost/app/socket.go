@@ -9,7 +9,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/rs/zerolog/log"
+	"github.com/ra341/glacier/pkg/logger"
+	"github.com/rs/zerolog"
 )
 
 const socketFile = "glacier.sock"
@@ -18,11 +19,18 @@ const StartUIMsg = "StartUI"
 
 type SocketManager struct {
 	socketPath string
+	log        *zerolog.Logger
 }
 
-func NewSocketManager() *SocketManager {
+func NewSocketManager(logDir string) *SocketManager {
 	fullSocket := filepath.Join(os.TempDir(), socketFile)
-	return &SocketManager{socketPath: fullSocket}
+	logWriter := NewFileLogger(filepath.Join(logDir, "socket"))
+	subLog := logger.CreateLogger("debug", false, logWriter).Str("component", "socket").Logger()
+
+	return &SocketManager{
+		socketPath: fullSocket,
+		log:        &subLog,
+	}
 }
 
 // will exit if found
@@ -30,18 +38,18 @@ func (sm *SocketManager) exitIfAlreadyRunning() {
 	conn, err := net.Dial("unix", sm.socketPath)
 	if err != nil {
 		// no prev socket found this is the only instance
-		log.Info().Err(err).Msg("Failed to connect to socket")
+		sm.log.Info().Err(err).Msg("Failed to connect to socket")
 		return
 	}
 
 	defer func(conn net.Conn) {
 		err = conn.Close()
 		if err != nil {
-			log.Error().Err(err).Msg("Failed to close socket")
+			sm.log.Error().Err(err).Msg("Failed to close socket")
 		}
 	}(conn)
 
-	log.Info().Msg("Another instance is running. Sending instructions...")
+	sm.log.Info().Msg("Another instance is running. Sending instructions...")
 	message := strings.Join(os.Args[1:], " ")
 	if message == "" {
 		// launch desktop
@@ -49,7 +57,7 @@ func (sm *SocketManager) exitIfAlreadyRunning() {
 	}
 	_, err = conn.Write([]byte(message))
 	if err != nil {
-		log.Warn().Err(err).Msg("could not send message")
+		sm.log.Warn().Err(err).Msg("could not send message")
 	}
 
 	os.Exit(0)
@@ -69,19 +77,19 @@ func (sm *SocketManager) setupSocketHandler(ctx context.Context, startUIFn func(
 		listener.Close()
 	}()
 
-	log.Info().Str("addr", listener.Addr().String()).Msg("Socket handler listening on")
+	sm.log.Info().Str("addr", listener.Addr().String()).Msg("Socket handler listening on")
 
 	handler := func(conn net.Conn) {
 		defer func(conn net.Conn) {
 			err := conn.Close()
 			if err != nil {
-				log.Printf("Error closing socket connection: %v", err)
+				sm.log.Printf("Error closing socket connection: %v", err)
 			}
 		}(conn)
 
 		buf, err := io.ReadAll(conn)
 		if err != nil {
-			log.Printf("Error reading from socket: %v", err)
+			sm.log.Printf("Error reading from socket: %v", err)
 			return
 		}
 
