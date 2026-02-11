@@ -86,12 +86,14 @@
                     >
                         Details
                     </button>
-                    <button
-                            onclick={() => setTab('local')}
-                            class="px-6 py-1.5 rounded-lg text-sm font-bold transition-all {activeTab === 'local' ? 'bg-surface shadow-sm text-frost-400' : 'text-muted hover:text-foreground'}"
-                    >
-                        Local
-                    </button>
+                    {#if isFrost}
+                        <button
+                                onclick={() => setTab('local')}
+                                class="px-6 py-1.5 rounded-lg text-sm font-bold transition-all {activeTab === 'local' ? 'bg-surface shadow-sm text-frost-400' : 'text-muted hover:text-foreground'}"
+                        >
+                            Local
+                        </button>
+                    {/if}
                     <button
                             onclick={() => setTab('manage')}
                             class="px-6 py-1.5 rounded-lg text-sm font-bold transition-all {activeTab === 'manage' ? 'bg-surface shadow-sm text-frost-400' : 'text-muted hover:text-foreground'}"

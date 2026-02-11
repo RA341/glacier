@@ -165,6 +165,9 @@ func (t *Tray) onReady() {
 	systray.SetTemplateIcon(icon.Data, icon.Data)
 	systray.SetTitle("Frost")
 	systray.SetTooltip("Frost")
+	systray.SetOnTapped(func() {
+		t.StartUI()
+	})
 
 	mUI := systray.AddMenuItem("Open", "Start the UI")
 	mLaunchWebUI := systray.AddMenuItem("Open in browser", "Launched the Web UI")
