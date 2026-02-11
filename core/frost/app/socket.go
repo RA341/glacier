@@ -89,12 +89,12 @@ func (sm *SocketManager) setupSocketHandler(ctx context.Context, startUIFn func(
 
 		buf, err := io.ReadAll(conn)
 		if err != nil {
-			sm.log.Printf("Error reading from socket: %v", err)
+			sm.log.Error().Err(err).Msg("Error reading from socket")
 			return
 		}
 
 		msg := string(buf)
-		fmt.Printf("\n[Primary Instance] Received command from another instance: %s\n", msg)
+		sm.log.Info().Str("msg", msg).Msg("[Primary Instance] Received command from another instance")
 
 		if msg == StartUIMsg {
 			// send message to start desktop ui
