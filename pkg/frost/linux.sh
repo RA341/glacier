@@ -1,7 +1,7 @@
 #!/bin/bash
 
 REPO="RA341/glacier"
-ASSET_NAME="frost-windows.zip"
+ASSET_NAME="frost-linux.zip"
 DOWNLOAD_URL="https://github.com/$REPO/releases/latest/download/$ASSET_NAME"
 
 TARGET_DIR=$(pwd)
@@ -38,7 +38,7 @@ mkdir -p "$EXTRACT_PATH"
 if command -v unzip >/dev/null 2>&1; then
     unzip -o "$ZIP_PATH" -d "$EXTRACT_PATH"
 else
-    echo "Error: 'unzip' utility not found. Please install it (e.g., sudo apt install unzip)."
+    echo "Error: 'unzip' utility not found. Please install it (e.g., sudo apt install unzip). or unzip manually $ZIP_PATH"
     exit 1
 fi
 
