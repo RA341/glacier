@@ -50,10 +50,13 @@ func New() *App {
 	llStore := ll.NewStoreGorm(db)
 	downloader := download.New(
 		frostProtectedBase,
+		&download.Config{
+			MaxConcurrentFiles:      5,
+			MaxConcurrentFileChunks: 50,
+			ChunkSizeInMB:           128 * download.MB,
+		}, // todo
 		httpCliFac,
-		llStore,
-		get.Downloader.MaxConcurrentFiles,
-		get.Downloader.MaxFileChunks,
+		llStore.EditStatus,
 	)
 
 	llibSrv := ll.New(

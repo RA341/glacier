@@ -1,8 +1,6 @@
 <script lang="ts">
     import {
-        AlertCircleIcon,
-        ChevronRightIcon,
-        ClockIcon,
+        AlertTriangleIcon,
         CornerLeftUpIcon,
         FileIcon,
         FolderIcon,
@@ -10,15 +8,13 @@
         LoaderIcon,
         RefreshCwIcon,
         SearchXIcon,
-        Trash2Icon,        // Added
-        AlertTriangleIcon  // Added
+        Trash2Icon
     } from "@lucide/svelte";
-    import {fade, fly} from 'svelte/transition'; // Added
-    import {glacierCli} from "$lib/api/api";
+    import {fade, fly} from 'svelte/transition';
+    import {callRPC, glacierCli} from "$lib/api/api";
     import {LibraryService} from "$lib/gen/library/v1/library_pb";
     import {createRPCRunner} from "$lib/api/svelte-api.svelte";
     import {formatBytes} from "$lib/api/byte-math";
-    import {callRPC} from "$lib/api/api";
     import {getSnackbarCtx} from "$lib/components/snackbar/snackbar-provider.svelte";
 
     let {gameId}: { gameId: bigint } = $props();
@@ -27,7 +23,7 @@
 
     let base = $state("");
     let downloaded = $state(false);
-    let pendingDeletePath = $state<string | null>(null); // Track file to delete
+    let pendingDeletePath = $state<string | null>(null);
 
     let fileRpc = createRPCRunner(() => libSrv.listFiles({
         GameId: gameId,

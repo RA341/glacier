@@ -16,6 +16,11 @@ type Handler struct {
 	srv *Service
 }
 
+func NewHandler(srv *Service) (string, http.Handler) {
+	h := &Handler{srv: srv}
+	return v1connect.NewFrostLibraryServiceHandler(h)
+}
+
 func (h *Handler) Get(ctx context.Context, c *connect.Request[v1.GetRequest]) (*connect.Response[v1.GetResponse], error) {
 	get, err := h.srv.store.Get(ctx, int(c.Msg.Id))
 	if err != nil {
@@ -25,6 +30,20 @@ func (h *Handler) Get(ctx context.Context, c *connect.Request[v1.GetRequest]) (*
 	return connect.NewResponse(&v1.GetResponse{
 		Lg: get.ToProto(),
 	}), nil
+}
+
+func (h *Handler) Cancel(_ context.Context, c *connect.Request[v1.CancelRequest]) (*connect.Response[v1.CancelResponse], error) {
+	err := h.srv.Cancel(int(c.Msg.Id))
+	if err != nil {
+		return nil, err
+	}
+
+	return connect.NewResponse(&v1.CancelResponse{}), nil
+}
+
+func (h *Handler) Pause(ctx context.Context, c *connect.Request[v1.PauseRequest]) (*connect.Response[v1.PauseResponse], error) {
+	//TODO implement me
+	panic("implement me")
 }
 
 func (h *Handler) Delete(ctx context.Context, c *connect.Request[v1.DeleteRequest]) (*connect.Response[v1.DeleteResponse], error) {
@@ -37,13 +56,14 @@ func (h *Handler) ListFiles(ctx context.Context, c *connect.Request[v1.ListFiles
 	panic("implement me")
 }
 
-func NewHandler(srv *Service) (string, http.Handler) {
-	h := &Handler{srv: srv}
-	return v1connect.NewFrostLibraryServiceHandler(h)
-}
-
 func (h *Handler) Download(ctx context.Context, c *connect.Request[v1.DownloadRequest]) (*connect.Response[v1.DownloadResponse], error) {
-	err := h.srv.Download(ctx, int(c.Msg.GameId), c.Msg.DownloadFolder)
+	err := h.srv.Download(
+		ctx,
+		int(c.Msg.GameId),
+		c.Msg.DownloadFolder,
+		c.Msg.Recheck,
+		c.Msg.Force,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -82,6 +102,7 @@ func (h *Handler) ListDownloading(ctx context.Context, c *connect.Request[v1.Lis
 		})
 
 		return &v1.DownloadProgress{
+			ID:        uint64(t.ID),
 			Thumbnail: t.Game.Meta.ThumbnailURL,
 			Title:     t.Game.Meta.Name,
 			Download:  t.Download.ToProto(),

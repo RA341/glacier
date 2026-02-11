@@ -51,8 +51,6 @@ func loginSessionHandler(login SessionCreate, hw HeaderWriter, headers http.Head
 func (h *Handler) Login(ctx context.Context, req *connect.Request[v1.LoginRequest]) (*connect.Response[v1.LoginResponse], error) {
 	resp := connect.NewResponse(&v1.LoginResponse{})
 
-	log.Info().Msg("test test")
-
 	normalLogin := func(sessionT SessionType) (session Session, sessionToken string, refreshToken string, err error) {
 		return h.srv.Login(
 			req.Msg.Username,

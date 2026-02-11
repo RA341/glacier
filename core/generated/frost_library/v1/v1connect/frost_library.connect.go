@@ -33,29 +33,37 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
-	// FrostLibraryServiceGetProcedure is the fully-qualified name of the FrostLibraryService's Get RPC.
-	FrostLibraryServiceGetProcedure = "/frost_library.v1.FrostLibraryService/Get"
-	// FrostLibraryServiceDeleteProcedure is the fully-qualified name of the FrostLibraryService's
-	// Delete RPC.
-	FrostLibraryServiceDeleteProcedure = "/frost_library.v1.FrostLibraryService/Delete"
 	// FrostLibraryServiceListFilesProcedure is the fully-qualified name of the FrostLibraryService's
 	// ListFiles RPC.
 	FrostLibraryServiceListFilesProcedure = "/frost_library.v1.FrostLibraryService/ListFiles"
 	// FrostLibraryServiceListDownloadingProcedure is the fully-qualified name of the
 	// FrostLibraryService's ListDownloading RPC.
 	FrostLibraryServiceListDownloadingProcedure = "/frost_library.v1.FrostLibraryService/ListDownloading"
+	// FrostLibraryServiceGetProcedure is the fully-qualified name of the FrostLibraryService's Get RPC.
+	FrostLibraryServiceGetProcedure = "/frost_library.v1.FrostLibraryService/Get"
+	// FrostLibraryServiceDeleteProcedure is the fully-qualified name of the FrostLibraryService's
+	// Delete RPC.
+	FrostLibraryServiceDeleteProcedure = "/frost_library.v1.FrostLibraryService/Delete"
 	// FrostLibraryServiceDownloadProcedure is the fully-qualified name of the FrostLibraryService's
 	// Download RPC.
 	FrostLibraryServiceDownloadProcedure = "/frost_library.v1.FrostLibraryService/Download"
+	// FrostLibraryServiceCancelProcedure is the fully-qualified name of the FrostLibraryService's
+	// Cancel RPC.
+	FrostLibraryServiceCancelProcedure = "/frost_library.v1.FrostLibraryService/Cancel"
+	// FrostLibraryServicePauseProcedure is the fully-qualified name of the FrostLibraryService's Pause
+	// RPC.
+	FrostLibraryServicePauseProcedure = "/frost_library.v1.FrostLibraryService/Pause"
 )
 
 // FrostLibraryServiceClient is a client for the frost_library.v1.FrostLibraryService service.
 type FrostLibraryServiceClient interface {
-	Get(context.Context, *connect.Request[v1.GetRequest]) (*connect.Response[v1.GetResponse], error)
-	Delete(context.Context, *connect.Request[v1.DeleteRequest]) (*connect.Response[v1.DeleteResponse], error)
 	ListFiles(context.Context, *connect.Request[v1.ListFilesRequest]) (*connect.Response[v1.ListFilesResponse], error)
 	ListDownloading(context.Context, *connect.Request[v1.ListDownloadingRequest]) (*connect.Response[v1.ListDownloadingResponse], error)
+	Get(context.Context, *connect.Request[v1.GetRequest]) (*connect.Response[v1.GetResponse], error)
+	Delete(context.Context, *connect.Request[v1.DeleteRequest]) (*connect.Response[v1.DeleteResponse], error)
 	Download(context.Context, *connect.Request[v1.DownloadRequest]) (*connect.Response[v1.DownloadResponse], error)
+	Cancel(context.Context, *connect.Request[v1.CancelRequest]) (*connect.Response[v1.CancelResponse], error)
+	Pause(context.Context, *connect.Request[v1.PauseRequest]) (*connect.Response[v1.PauseResponse], error)
 }
 
 // NewFrostLibraryServiceClient constructs a client for the frost_library.v1.FrostLibraryService
@@ -69,18 +77,6 @@ func NewFrostLibraryServiceClient(httpClient connect.HTTPClient, baseURL string,
 	baseURL = strings.TrimRight(baseURL, "/")
 	frostLibraryServiceMethods := v1.File_frost_library_v1_frost_library_proto.Services().ByName("FrostLibraryService").Methods()
 	return &frostLibraryServiceClient{
-		get: connect.NewClient[v1.GetRequest, v1.GetResponse](
-			httpClient,
-			baseURL+FrostLibraryServiceGetProcedure,
-			connect.WithSchema(frostLibraryServiceMethods.ByName("Get")),
-			connect.WithClientOptions(opts...),
-		),
-		delete: connect.NewClient[v1.DeleteRequest, v1.DeleteResponse](
-			httpClient,
-			baseURL+FrostLibraryServiceDeleteProcedure,
-			connect.WithSchema(frostLibraryServiceMethods.ByName("Delete")),
-			connect.WithClientOptions(opts...),
-		),
 		listFiles: connect.NewClient[v1.ListFilesRequest, v1.ListFilesResponse](
 			httpClient,
 			baseURL+FrostLibraryServiceListFilesProcedure,
@@ -93,10 +89,34 @@ func NewFrostLibraryServiceClient(httpClient connect.HTTPClient, baseURL string,
 			connect.WithSchema(frostLibraryServiceMethods.ByName("ListDownloading")),
 			connect.WithClientOptions(opts...),
 		),
+		get: connect.NewClient[v1.GetRequest, v1.GetResponse](
+			httpClient,
+			baseURL+FrostLibraryServiceGetProcedure,
+			connect.WithSchema(frostLibraryServiceMethods.ByName("Get")),
+			connect.WithClientOptions(opts...),
+		),
+		delete: connect.NewClient[v1.DeleteRequest, v1.DeleteResponse](
+			httpClient,
+			baseURL+FrostLibraryServiceDeleteProcedure,
+			connect.WithSchema(frostLibraryServiceMethods.ByName("Delete")),
+			connect.WithClientOptions(opts...),
+		),
 		download: connect.NewClient[v1.DownloadRequest, v1.DownloadResponse](
 			httpClient,
 			baseURL+FrostLibraryServiceDownloadProcedure,
 			connect.WithSchema(frostLibraryServiceMethods.ByName("Download")),
+			connect.WithClientOptions(opts...),
+		),
+		cancel: connect.NewClient[v1.CancelRequest, v1.CancelResponse](
+			httpClient,
+			baseURL+FrostLibraryServiceCancelProcedure,
+			connect.WithSchema(frostLibraryServiceMethods.ByName("Cancel")),
+			connect.WithClientOptions(opts...),
+		),
+		pause: connect.NewClient[v1.PauseRequest, v1.PauseResponse](
+			httpClient,
+			baseURL+FrostLibraryServicePauseProcedure,
+			connect.WithSchema(frostLibraryServiceMethods.ByName("Pause")),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -104,21 +124,13 @@ func NewFrostLibraryServiceClient(httpClient connect.HTTPClient, baseURL string,
 
 // frostLibraryServiceClient implements FrostLibraryServiceClient.
 type frostLibraryServiceClient struct {
-	get             *connect.Client[v1.GetRequest, v1.GetResponse]
-	delete          *connect.Client[v1.DeleteRequest, v1.DeleteResponse]
 	listFiles       *connect.Client[v1.ListFilesRequest, v1.ListFilesResponse]
 	listDownloading *connect.Client[v1.ListDownloadingRequest, v1.ListDownloadingResponse]
+	get             *connect.Client[v1.GetRequest, v1.GetResponse]
+	delete          *connect.Client[v1.DeleteRequest, v1.DeleteResponse]
 	download        *connect.Client[v1.DownloadRequest, v1.DownloadResponse]
-}
-
-// Get calls frost_library.v1.FrostLibraryService.Get.
-func (c *frostLibraryServiceClient) Get(ctx context.Context, req *connect.Request[v1.GetRequest]) (*connect.Response[v1.GetResponse], error) {
-	return c.get.CallUnary(ctx, req)
-}
-
-// Delete calls frost_library.v1.FrostLibraryService.Delete.
-func (c *frostLibraryServiceClient) Delete(ctx context.Context, req *connect.Request[v1.DeleteRequest]) (*connect.Response[v1.DeleteResponse], error) {
-	return c.delete.CallUnary(ctx, req)
+	cancel          *connect.Client[v1.CancelRequest, v1.CancelResponse]
+	pause           *connect.Client[v1.PauseRequest, v1.PauseResponse]
 }
 
 // ListFiles calls frost_library.v1.FrostLibraryService.ListFiles.
@@ -131,19 +143,41 @@ func (c *frostLibraryServiceClient) ListDownloading(ctx context.Context, req *co
 	return c.listDownloading.CallUnary(ctx, req)
 }
 
+// Get calls frost_library.v1.FrostLibraryService.Get.
+func (c *frostLibraryServiceClient) Get(ctx context.Context, req *connect.Request[v1.GetRequest]) (*connect.Response[v1.GetResponse], error) {
+	return c.get.CallUnary(ctx, req)
+}
+
+// Delete calls frost_library.v1.FrostLibraryService.Delete.
+func (c *frostLibraryServiceClient) Delete(ctx context.Context, req *connect.Request[v1.DeleteRequest]) (*connect.Response[v1.DeleteResponse], error) {
+	return c.delete.CallUnary(ctx, req)
+}
+
 // Download calls frost_library.v1.FrostLibraryService.Download.
 func (c *frostLibraryServiceClient) Download(ctx context.Context, req *connect.Request[v1.DownloadRequest]) (*connect.Response[v1.DownloadResponse], error) {
 	return c.download.CallUnary(ctx, req)
 }
 
+// Cancel calls frost_library.v1.FrostLibraryService.Cancel.
+func (c *frostLibraryServiceClient) Cancel(ctx context.Context, req *connect.Request[v1.CancelRequest]) (*connect.Response[v1.CancelResponse], error) {
+	return c.cancel.CallUnary(ctx, req)
+}
+
+// Pause calls frost_library.v1.FrostLibraryService.Pause.
+func (c *frostLibraryServiceClient) Pause(ctx context.Context, req *connect.Request[v1.PauseRequest]) (*connect.Response[v1.PauseResponse], error) {
+	return c.pause.CallUnary(ctx, req)
+}
+
 // FrostLibraryServiceHandler is an implementation of the frost_library.v1.FrostLibraryService
 // service.
 type FrostLibraryServiceHandler interface {
-	Get(context.Context, *connect.Request[v1.GetRequest]) (*connect.Response[v1.GetResponse], error)
-	Delete(context.Context, *connect.Request[v1.DeleteRequest]) (*connect.Response[v1.DeleteResponse], error)
 	ListFiles(context.Context, *connect.Request[v1.ListFilesRequest]) (*connect.Response[v1.ListFilesResponse], error)
 	ListDownloading(context.Context, *connect.Request[v1.ListDownloadingRequest]) (*connect.Response[v1.ListDownloadingResponse], error)
+	Get(context.Context, *connect.Request[v1.GetRequest]) (*connect.Response[v1.GetResponse], error)
+	Delete(context.Context, *connect.Request[v1.DeleteRequest]) (*connect.Response[v1.DeleteResponse], error)
 	Download(context.Context, *connect.Request[v1.DownloadRequest]) (*connect.Response[v1.DownloadResponse], error)
+	Cancel(context.Context, *connect.Request[v1.CancelRequest]) (*connect.Response[v1.CancelResponse], error)
+	Pause(context.Context, *connect.Request[v1.PauseRequest]) (*connect.Response[v1.PauseResponse], error)
 }
 
 // NewFrostLibraryServiceHandler builds an HTTP handler from the service implementation. It returns
@@ -153,18 +187,6 @@ type FrostLibraryServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewFrostLibraryServiceHandler(svc FrostLibraryServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	frostLibraryServiceMethods := v1.File_frost_library_v1_frost_library_proto.Services().ByName("FrostLibraryService").Methods()
-	frostLibraryServiceGetHandler := connect.NewUnaryHandler(
-		FrostLibraryServiceGetProcedure,
-		svc.Get,
-		connect.WithSchema(frostLibraryServiceMethods.ByName("Get")),
-		connect.WithHandlerOptions(opts...),
-	)
-	frostLibraryServiceDeleteHandler := connect.NewUnaryHandler(
-		FrostLibraryServiceDeleteProcedure,
-		svc.Delete,
-		connect.WithSchema(frostLibraryServiceMethods.ByName("Delete")),
-		connect.WithHandlerOptions(opts...),
-	)
 	frostLibraryServiceListFilesHandler := connect.NewUnaryHandler(
 		FrostLibraryServiceListFilesProcedure,
 		svc.ListFiles,
@@ -177,24 +199,52 @@ func NewFrostLibraryServiceHandler(svc FrostLibraryServiceHandler, opts ...conne
 		connect.WithSchema(frostLibraryServiceMethods.ByName("ListDownloading")),
 		connect.WithHandlerOptions(opts...),
 	)
+	frostLibraryServiceGetHandler := connect.NewUnaryHandler(
+		FrostLibraryServiceGetProcedure,
+		svc.Get,
+		connect.WithSchema(frostLibraryServiceMethods.ByName("Get")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frostLibraryServiceDeleteHandler := connect.NewUnaryHandler(
+		FrostLibraryServiceDeleteProcedure,
+		svc.Delete,
+		connect.WithSchema(frostLibraryServiceMethods.ByName("Delete")),
+		connect.WithHandlerOptions(opts...),
+	)
 	frostLibraryServiceDownloadHandler := connect.NewUnaryHandler(
 		FrostLibraryServiceDownloadProcedure,
 		svc.Download,
 		connect.WithSchema(frostLibraryServiceMethods.ByName("Download")),
 		connect.WithHandlerOptions(opts...),
 	)
+	frostLibraryServiceCancelHandler := connect.NewUnaryHandler(
+		FrostLibraryServiceCancelProcedure,
+		svc.Cancel,
+		connect.WithSchema(frostLibraryServiceMethods.ByName("Cancel")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frostLibraryServicePauseHandler := connect.NewUnaryHandler(
+		FrostLibraryServicePauseProcedure,
+		svc.Pause,
+		connect.WithSchema(frostLibraryServiceMethods.ByName("Pause")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/frost_library.v1.FrostLibraryService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
-		case FrostLibraryServiceGetProcedure:
-			frostLibraryServiceGetHandler.ServeHTTP(w, r)
-		case FrostLibraryServiceDeleteProcedure:
-			frostLibraryServiceDeleteHandler.ServeHTTP(w, r)
 		case FrostLibraryServiceListFilesProcedure:
 			frostLibraryServiceListFilesHandler.ServeHTTP(w, r)
 		case FrostLibraryServiceListDownloadingProcedure:
 			frostLibraryServiceListDownloadingHandler.ServeHTTP(w, r)
+		case FrostLibraryServiceGetProcedure:
+			frostLibraryServiceGetHandler.ServeHTTP(w, r)
+		case FrostLibraryServiceDeleteProcedure:
+			frostLibraryServiceDeleteHandler.ServeHTTP(w, r)
 		case FrostLibraryServiceDownloadProcedure:
 			frostLibraryServiceDownloadHandler.ServeHTTP(w, r)
+		case FrostLibraryServiceCancelProcedure:
+			frostLibraryServiceCancelHandler.ServeHTTP(w, r)
+		case FrostLibraryServicePauseProcedure:
+			frostLibraryServicePauseHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -204,14 +254,6 @@ func NewFrostLibraryServiceHandler(svc FrostLibraryServiceHandler, opts ...conne
 // UnimplementedFrostLibraryServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedFrostLibraryServiceHandler struct{}
 
-func (UnimplementedFrostLibraryServiceHandler) Get(context.Context, *connect.Request[v1.GetRequest]) (*connect.Response[v1.GetResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("frost_library.v1.FrostLibraryService.Get is not implemented"))
-}
-
-func (UnimplementedFrostLibraryServiceHandler) Delete(context.Context, *connect.Request[v1.DeleteRequest]) (*connect.Response[v1.DeleteResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("frost_library.v1.FrostLibraryService.Delete is not implemented"))
-}
-
 func (UnimplementedFrostLibraryServiceHandler) ListFiles(context.Context, *connect.Request[v1.ListFilesRequest]) (*connect.Response[v1.ListFilesResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("frost_library.v1.FrostLibraryService.ListFiles is not implemented"))
 }
@@ -220,6 +262,22 @@ func (UnimplementedFrostLibraryServiceHandler) ListDownloading(context.Context, 
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("frost_library.v1.FrostLibraryService.ListDownloading is not implemented"))
 }
 
+func (UnimplementedFrostLibraryServiceHandler) Get(context.Context, *connect.Request[v1.GetRequest]) (*connect.Response[v1.GetResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("frost_library.v1.FrostLibraryService.Get is not implemented"))
+}
+
+func (UnimplementedFrostLibraryServiceHandler) Delete(context.Context, *connect.Request[v1.DeleteRequest]) (*connect.Response[v1.DeleteResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("frost_library.v1.FrostLibraryService.Delete is not implemented"))
+}
+
 func (UnimplementedFrostLibraryServiceHandler) Download(context.Context, *connect.Request[v1.DownloadRequest]) (*connect.Response[v1.DownloadResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("frost_library.v1.FrostLibraryService.Download is not implemented"))
+}
+
+func (UnimplementedFrostLibraryServiceHandler) Cancel(context.Context, *connect.Request[v1.CancelRequest]) (*connect.Response[v1.CancelResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("frost_library.v1.FrostLibraryService.Cancel is not implemented"))
+}
+
+func (UnimplementedFrostLibraryServiceHandler) Pause(context.Context, *connect.Request[v1.PauseRequest]) (*connect.Response[v1.PauseResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("frost_library.v1.FrostLibraryService.Pause is not implemented"))
 }

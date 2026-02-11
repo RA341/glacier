@@ -3,6 +3,7 @@ package manifest
 import (
 	"context"
 	"encoding/gob"
+	"errors"
 	"fmt"
 	"io"
 	"io/fs"
@@ -50,7 +51,10 @@ func (s *Service) CheckManifest(ctx context.Context) error {
 	for _, in := range infs {
 		eg.Go(func() error {
 			_, err := s.GenerateManifest(ctx, in.ID, in.DownloadPath)
-			return err
+			if err != nil && !errors.Is(err, context.Canceled) {
+				return err
+			}
+			return nil
 		})
 	}
 
@@ -61,7 +65,10 @@ func (s *Service) CheckManifest(ctx context.Context) error {
 func (s *Service) GetGameManifest(ctx context.Context, gameId int, downloadPath string, writer io.Writer) error {
 	meta, err := s.GenerateManifest(ctx, gameId, downloadPath)
 	if err != nil {
-		return err
+		if !errors.Is(err, context.Canceled) {
+			return err
+		}
+		return nil
 	}
 
 	encoder := gob.NewEncoder(writer)
@@ -92,6 +99,7 @@ func (s *Service) GenerateManifest(ctx context.Context, gameId int, downloadPath
 	workResult.result, workResult.err = s.realGenerateManifest(ctx, gameId, downloadPath)
 
 	close(workResult.done)
+	s.activeChecks.Delete(gameId)
 
 	return workResult.result, workResult.err
 }
@@ -113,7 +121,7 @@ func (s *Service) realGenerateManifest(ctx context.Context, gameId int, download
 		}
 
 		eg.Go(func() error {
-			return s.gatherMeta(metadataChan, path, downloadPath, &prevMeta)
+			return s.gatherMeta(ctx, metadataChan, path, downloadPath, &prevMeta)
 		})
 
 		return nil
@@ -155,6 +163,15 @@ func (s *Service) realGenerateManifest(ctx context.Context, gameId int, download
 		return nil, err
 	}
 
+	cleaned := make([]FileManifest, 0)
+	for _, f := range finalMeta.FileInfo {
+		// remove any empty slots in case files were added/deleted
+		if f.RelPath != "" {
+			cleaned = append(cleaned, f)
+		}
+	}
+	finalMeta.FileInfo = cleaned
+
 	err = s.folderMetaStore.Add(ctx, gameId, &finalMeta)
 	if err != nil {
 		return nil, err
@@ -175,12 +192,7 @@ type MetaResult struct {
 	Update      bool
 }
 
-func (s *Service) gatherMeta(
-	metadataChan chan MetaResult,
-	path string,
-	downloadPath string,
-	prevMeta *FolderManifest,
-) error {
+func (s *Service) gatherMeta(ctx context.Context, metadataChan chan MetaResult, path string, downloadPath string, prevMeta *FolderManifest) error {
 	relPath, err := filepath.Rel(downloadPath, path)
 	if err != nil {
 		return err
@@ -224,7 +236,7 @@ func (s *Service) gatherMeta(
 		Str("file", relPath).
 		Msg("metadata cache miss")
 
-	hash, err := GetHash(path)
+	hash, err := GetHash(ctx, path)
 	if err != nil {
 		return err
 	}
@@ -243,7 +255,13 @@ func (s *Service) gatherMeta(
 	return nil
 }
 
-func GetHash(path string) (string, error) {
+// GetHash now accepts a context.Context
+func GetHash(ctx context.Context, path string) (string, error) {
+	// 1. Check if context is already canceled before starting
+	if err := ctx.Err(); err != nil {
+		return "0", err
+	}
+
 	f, err := os.Open(path)
 	if err != nil {
 		return "0", err
@@ -251,13 +269,30 @@ func GetHash(path string) (string, error) {
 	defer fileutil.Close(f)
 
 	h := xxhash.New()
-	// 1MB buffer to keep the pipeline full
 	buf := make([]byte, 1024*1024)
-	if _, err := io.CopyBuffer(h, f, buf); err != nil {
+
+	reader := &contextReader{ctx: ctx, r: f}
+
+	if _, err := io.CopyBuffer(h, reader, buf); err != nil {
 		return "0", err
 	}
 
 	sum64 := h.Sum64()
-
 	return strconv.FormatUint(sum64, 10), nil
+}
+
+// contextReader intercepts Read calls to check for context cancellation
+type contextReader struct {
+	ctx context.Context
+	r   io.Reader
+}
+
+func (cr *contextReader) Read(p []byte) (n int, err error) {
+	// Check context before performing the read
+	select {
+	case <-cr.ctx.Done():
+		return 0, cr.ctx.Err()
+	default:
+		return cr.r.Read(p)
+	}
 }

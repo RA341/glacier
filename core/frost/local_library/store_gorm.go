@@ -37,11 +37,16 @@ func (s *StoreGorm) Add(ctx context.Context, game *LocalGame) error {
 	return s.db.WithContext(ctx).Create(game).Error
 }
 
+func (s *StoreGorm) Exists(ctx context.Context, id int) error {
+	return s.db.WithContext(ctx).Select("id").First(&LocalGame{}, id).Error
+}
+
 func (s *StoreGorm) Get(ctx context.Context, id int) (LocalGame, error) {
 	var game LocalGame
-	err := s.db.WithContext(ctx).First(&game, id).Error
+	err := s.db.WithContext(ctx).Where("game_id = ?", id).First(&game).Error
 	return game, err
 }
+
 func (s *StoreGorm) Edit(ctx context.Context, id int, game *LocalGame) error {
 	game.ID = uint(id)
 	return s.db.WithContext(ctx).Save(game).Error

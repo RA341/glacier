@@ -1,7 +1,5 @@
 <script lang="ts">
     import GameHero from "./GameHero.svelte";
-    import FrontPageTab from "./FrontPageTab.svelte";
-    import ManageTab from "./ManageTab.svelte";
     import {AlertCircleIcon, LoaderIcon, Save, ServerIcon, Trash2} from '@lucide/svelte';
     import {type Game, GameSchema, LibraryService} from "$lib/gen/library/v1/library_pb";
     import {glacierCli, isFrost} from "$lib/api/api";
@@ -10,25 +8,32 @@
     import {page} from "$app/state";
     import {toJson} from "@bufbuild/protobuf";
     import {goto} from "$app/navigation";
-    import FrostTab from "./FrostTab.svelte";
+    import TabFrost from "./TabFrost.svelte";
     import GameDownloadButton from "./ButtonDownload.svelte";
+    import TabFrontPage from "./TabFrontPage.svelte";
+    import TabManage from "./TabManage.svelte";
 
-    let activeTab = $state('details');
-    let gameIdStr = page.params.slug
-    let gameId = $derived(BigInt(gameIdStr!))
+    let activeTab = $derived(page.url.searchParams.get('tab') || 'details');
+
+    let gameIdStr = page.params.slug;
+    let gameId = $derived(BigInt(gameIdStr!));
+
+    function setTab(tab: string) {
+        const newUrl = new URL(page.url);
+        newUrl.searchParams.set('tab', tab);
+        goto(newUrl.toString(), {replaceState: true, noScroll: true});
+    }
 
     let libSrv = glacierCli(LibraryService)
     let gameRpc = createRPCRunner(() => libSrv.getGame({gameId: gameId}))
 
     function getGame() {
-        console.log(`Fetching game... ${gameIdStr}`);
         if (gameIdStr) {
             gameRpc.runner()
         }
     }
 
     let originalGame = $derived(gameRpc.value?.game)
-
     let editGame = $state<Game | null>(null)
 
     $effect(() => {
@@ -50,7 +55,6 @@
         libSrv.delete({gameId: BigInt(gameIdStr!)})
         goto("/library")
     }
-
 </script>
 
 {#if !gameIdStr}
@@ -71,61 +75,58 @@
     </div>
 {:else}
     <div class="max-w-7xl mx-auto p-6 space-y-8 bg-background text-foreground">
-
         <GameHero bind:game={editGame}/>
 
         <div class="flex items-center justify-between border-y border-border py-4 px-2">
             <div class="flex gap-4">
                 <div class="flex gap-1 bg-panel p-1 rounded-xl w-fit">
                     <button
-                            onclick={() => activeTab = 'details'}
+                            onclick={() => setTab('details')}
                             class="px-6 py-1.5 rounded-lg text-sm font-bold transition-all {activeTab === 'details' ? 'bg-surface shadow-sm text-frost-400' : 'text-muted hover:text-foreground'}"
                     >
                         Details
                     </button>
                     <button
-                            onclick={() => activeTab = 'local'}
+                            onclick={() => setTab('local')}
                             class="px-6 py-1.5 rounded-lg text-sm font-bold transition-all {activeTab === 'local' ? 'bg-surface shadow-sm text-frost-400' : 'text-muted hover:text-foreground'}"
                     >
                         Local
                     </button>
                     <button
-                            onclick={() => activeTab = 'manage'}
+                            onclick={() => setTab('manage')}
                             class="px-6 py-1.5 rounded-lg text-sm font-bold transition-all {activeTab === 'manage' ? 'bg-surface shadow-sm text-frost-400' : 'text-muted hover:text-foreground'}"
                     >
                         Manage
                     </button>
                 </div>
             </div>
-            <div class="flex gap-3">
-                <button
-                        onclick={() => deleteGame()}
-                        class="px-6 py-2 bg-panel border border-border rounded-xl text-sm font-bold hover:border-frost-500 transition-all flex items-center gap-2"
-                >
-                    <Trash2 size={16}/>
 
+            <div class="flex gap-3">
+                <button onclick={() => deleteGame()}
+                        class="px-6 py-2 bg-panel border border-border rounded-xl text-sm font-bold hover:border-frost-500 transition-all flex items-center gap-2">
+                    <Trash2 size={16}/>
                     Delete
                 </button>
                 <button
-                        disabled={isModified}
-                        onclick={() => isModified ? deleteGame(): {} }
+                        disabled={!isModified}
+                        onclick={() => {/* logic to save */}}
                         class="px-6 py-2 bg-panel border border-border rounded-xl text-sm font-bold hover:border-frost-500 transition-all flex items-center gap-2">
                     <Save size={16}/>
                     Save
                 </button>
                 {#if isFrost}
-                    <GameDownloadButton gameId={gameId} />
+                    <GameDownloadButton gameId={gameId}/>
                 {/if}
             </div>
         </div>
 
         <main>
             {#if activeTab === 'details'}
-                <FrontPageTab bind:game={editGame}/>
+                <TabFrontPage bind:game={editGame}/>
             {:else if activeTab === 'local'}
-                <FrostTab game={editGame}/>
-            {:else}
-                <ManageTab bind:game={editGame}/>
+                <TabFrost game={editGame}/>
+            {:else if activeTab === 'manage'}
+                <TabManage bind:game={editGame}/>
             {/if}
         </main>
     </div>

@@ -3,12 +3,14 @@ package download
 import (
 	"context"
 	"encoding/gob"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
 	"os"
 	"path/filepath"
+	"sync/atomic"
 	"time"
 
 	"github.com/ra341/glacier/internal/library/manifest"
@@ -19,67 +21,75 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-type Config interface {
-	getMaxConcurrentFiles() int
-	getChunkSize() int64
-	getMaxConcurrentFileChunks() int
-	getHttpClient() *http.Client
-}
-
-type ProgressUpdater interface {
-	EditStatus(ctx context.Context, id int, down *Info) error
-}
-
-type OnDone func(id int)
-
 type Download struct {
+	conf       *Config
+	editStatus EditStatus
+	onDone     OnDone
+	cacheStore CacheStore
+
 	ctx    context.Context
 	cancel context.CancelFunc
+	done   chan struct{}
 
-	conf   Config
-	gameId int
+	gameId         int
+	downloadFolder string
 
 	metadataUrlBase string
 	downloadUrlBase string
-
-	downloadFolder string
-	OnDone         OnDone
-	cacheStore     CacheStore
-	progress       ProgressUpdater
+	paused          chan struct{}
 }
 
 const MetadataFolder = ".frost.cache"
 
-func NewDownload(
-	config Config,
-	OnDone OnDone,
-	progress ProgressUpdater,
-	baseUrl, downloadFolder string,
-	gameId int,
+type EditStatus func(ctx context.Context, id int, down *Info) error
+type OnDone func(id int)
 
+func NewDownload(
+	config *Config,
+	editStatus EditStatus,
+	onDone OnDone,
+	gameId int,
+	downloadFolder string,
+	force bool,
 ) (*Download, error) {
 	metaPath := filepath.Join(downloadFolder, MetadataFolder)
+
+	if _, err := os.Stat(metaPath); err == nil {
+		log.Info().Str("path", metaPath).Msg("Found previous metadata folder")
+		if force {
+			log.Info().Msg("force downloading, removing cache folder...")
+
+			err := os.RemoveAll(downloadFolder)
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
+
 	db, err := NewCacheStoreBadger(metaPath)
 	if err != nil {
 		return nil, err
 	}
 
 	ctx, cancel := context.WithCancel(context.Background())
+	a := atomic.Bool{}
+	a.Store(false)
+
 	d := &Download{
+		conf:       config,
+		onDone:     onDone,
+		editStatus: editStatus,
+		cacheStore: db,
+
 		ctx:    ctx,
 		cancel: cancel,
+		done:   make(chan struct{}),
+		paused: make(chan struct{}),
 
-		OnDone: OnDone,
-
-		downloadUrlBase: fmt.Sprintf("%s/load/%d", baseUrl, gameId),
-		metadataUrlBase: fmt.Sprintf("%s/meta/%d", baseUrl, gameId),
 		gameId:          gameId,
 		downloadFolder:  downloadFolder,
-
-		conf:     config,
-		progress: progress,
-
-		cacheStore: db,
+		downloadUrlBase: fmt.Sprintf("%s/load/%d", config.base, gameId),
+		metadataUrlBase: fmt.Sprintf("%s/meta/%d", config.base, gameId),
 	}
 	go d.Start()
 
@@ -87,51 +97,70 @@ func NewDownload(
 }
 
 func (d *Download) Start() {
+	defer func() {
+		close(d.done)
+		// remove from download tracker
+		d.onDone(d.gameId)
+	}()
 	defer fileutil.Close(d.cacheStore)
 
-	warnIfErr(d.progress.EditStatus(d.ctx, d.gameId, &Info{
+	warnIfErr(d.editStatus(d.ctx, d.gameId, &Info{
 		Status:        StatusMetadata,
-		StatusMessage: "Downloading Metadata",
+		StatusMessage: "downloading manifest",
 	}))
 
 	var meta manifest.FolderManifest
 	err := d.downloadMetadata(&meta)
 	if err != nil {
-		warnIfErr(d.progress.EditStatus(d.ctx, d.gameId, &Info{
+		warnIfErr(d.editStatus(d.ctx, d.gameId, &Info{
 			Status:        StatusError,
-			StatusMessage: "could not download metadata",
+			StatusMessage: "could not download manifest",
 		}))
 		return
 	}
 
-	warnIfErr(d.progress.EditStatus(d.ctx, d.gameId, &Info{
+	warnIfErr(d.editStatus(d.ctx, d.gameId, &Info{
 		Status:        StatusDownloading,
-		StatusMessage: "starting file download",
+		StatusMessage: "downloading files",
 	}))
 
 	eg := errgroup.Group{}
-	eg.SetLimit(d.conf.getMaxConcurrentFileChunks())
+	eg.SetLimit(d.conf.MaxConcurrentFileChunks)
 
 	for _, fi := range meta.FileInfo {
 		eg.Go(func() error {
-			err := d.setupFile(&fi)
-			if err != nil {
-				return fmt.Errorf("could not setup file metadata: %w", err)
-			}
+			select {
+			case <-d.ctx.Done():
+				return d.ctx.Err()
+			default:
+				err := d.setupFile(&fi)
+				if err != nil {
+					return fmt.Errorf("could not setup file metadata: %w", err)
+				}
 
-			err = d.downloadFile(&fi)
-			if err != nil {
-				return fmt.Errorf("could not download file: %w", err)
-			}
+				err = d.downloadFile(&fi)
+				if err != nil {
+					return fmt.Errorf("could not download file: %w", err)
+				}
 
-			return nil
+				warnIfErr(d.editStatus(d.ctx, d.gameId, &Info{
+					StatusMessage: "downloaded " + fi.RelPath,
+				}))
+
+				return nil
+			}
 		})
 	}
 
 	err = eg.Wait()
 	if err != nil {
+		if d.ctx.Err() != nil {
+			log.Warn().Msg("download canceled by user")
+			return
+		}
+
 		log.Error().Err(err).Msg("error downloading")
-		warnIfErr(d.progress.EditStatus(d.ctx, d.gameId, &Info{
+		warnIfErr(d.editStatus(d.ctx, d.gameId, &Info{
 			Status:        StatusError,
 			StatusMessage: "error downloading: " + err.Error(),
 		}))
@@ -142,15 +171,57 @@ func (d *Download) Start() {
 		Int("game", d.gameId).
 		Msg("download finished")
 
-	// remove from download tracker
-	d.OnDone(d.gameId)
-
-	warnIfErr(d.progress.EditStatus(d.ctx, d.gameId, &Info{
+	warnIfErr(d.editStatus(d.ctx, d.gameId, &Info{
 		Status:        StatusComplete,
 		StatusMessage: "Download Complete",
 		Done:          time.Now(),
 	}))
 }
+
+func (d *Download) Cancel() {
+	d.cancel()
+}
+
+// todo pause downloads
+//func (d *Download) Pause() {
+//	if d.isPaused.CompareAndSwap(false, true) {
+//		d.pauseMu.Lock()
+//		d.pauseCond = make(chan struct{}) // Open the gate (blocks)
+//		d.pauseMu.Unlock()
+//		log.Info().Msg("Download paused")
+//	}
+//}
+//
+//func (d *Download) Resume() {
+//	if d.isPaused.CompareAndSwap(true, false) {
+//		d.pauseMu.Lock()
+//		close(d.pauseCond) // Close the gate (unblocks)
+//		d.pauseMu.Unlock()
+//		log.Info().Msg("Download resumed")
+//	}
+//}
+//
+//// waitIfPaused blocks if the download is paused.
+//// It also returns an error if the context is cancelled while waiting.
+//func (d *Download) waitIfPaused() error {
+//	d.pauseMu.Lock()
+//	gate := d.pauseCond
+//	d.pauseMu.Unlock()
+//
+//	select {
+//	case <-gate:
+//		return nil
+//	case <-d.ctx.Done():
+//		return d.ctx.Err()
+//	}
+//}
+//
+//func (d *Download) Unpause() {
+//	select {
+//	case <-d.paused:
+//	default:
+//	}
+//}
 
 func (d *Download) Progress() (complete []FileProgress, total error) {
 	return d.cacheStore.Progress()
@@ -170,7 +241,12 @@ func (d *Download) Close() {
 // metadata step
 
 func (d *Download) downloadMetadata(meta *manifest.FolderManifest) error {
-	resp, err := d.conf.getHttpClient().Get(d.metadataUrlBase)
+	req, err := http.NewRequestWithContext(d.ctx, "GET", d.metadataUrlBase, nil)
+	if err != nil {
+		return err
+	}
+
+	resp, err := d.conf.httpCli.Do(req)
 	if err != nil {
 		return err
 	}
@@ -186,6 +262,11 @@ func (d *Download) downloadMetadata(meta *manifest.FolderManifest) error {
 }
 
 func (d *Download) setupFile(fm *manifest.FileManifest) error {
+	if fm.RelPath == "" {
+		log.Warn().Msg("relative path is empty THIS SHOULD NEVER HAPPEN")
+		return nil
+	}
+
 	started := time.Now()
 
 	fullPath := filepath.Join(d.downloadFolder, fm.RelPath)
@@ -228,8 +309,8 @@ func (d *Download) setupFile(fm *manifest.FileManifest) error {
 
 	var chunkList []Chunk
 	totalSize := fm.Size
-	for start := int64(0); start < totalSize; start += d.conf.getChunkSize() {
-		end := start + d.conf.getChunkSize() - 1
+	for start := int64(0); start < totalSize; start += d.conf.ChunkSizeInMB {
+		end := start + d.conf.ChunkSizeInMB - 1
 		// if it's the last chunk,
 		// make sure not to overshoot the file size
 		if end >= totalSize {
@@ -290,32 +371,42 @@ func (d *Download) downloadFile(fm *manifest.FileManifest) error {
 	fileUrl := fmt.Sprintf("%s/%s", d.downloadUrlBase, escaped)
 
 	eg := errgroup.Group{}
-	eg.SetLimit(d.conf.getMaxConcurrentFileChunks())
+
+	eg.SetLimit(d.conf.MaxConcurrentFileChunks)
 
 	for i, chunk := range chunks {
 		eg.Go(func() error {
-			if chunk.State == ChunkComplete {
-				log.Debug().Str("file", filepath.Base(fullPath)).
-					Any("chunk", chunks).
-					Msg("chunk complete")
+			select {
+			case <-d.ctx.Done():
+				return d.ctx.Err()
+			default:
+				if chunk.State == ChunkComplete {
+					log.Debug().Str("file", filepath.Base(fullPath)).
+						Any("chunk", chunks).
+						Msg("chunk complete")
+					return nil
+				}
+
+				errInner := d.downloadWithRange(fileUrl, &chunk, file, fm.ModTime)
+				if errInner != nil {
+					if errors.Is(errInner, context.Canceled) {
+						//log.Debug().Msg("download cancelled")
+						return nil
+					}
+					log.Error().Err(errInner).
+						Int64("start", chunk.Start).Int64("end", chunk.End).
+						Msg("could not download chunk")
+					chunk.State = ChunkError
+				} else {
+					chunk.State = ChunkComplete
+				}
+
+				err := d.cacheStore.Update(fullPath, i, &chunk)
+				if err != nil {
+					log.Warn().Err(err).Msg("could not update chunk to cache")
+				}
 				return nil
 			}
-
-			errInner := d.downloadWithRange(fileUrl, &chunk, file, fm.ModTime)
-			if errInner != nil {
-				log.Error().Err(errInner).
-					Int64("start", chunk.Start).Int64("end", chunk.End).
-					Msg("could not download chunk")
-				chunk.State = ChunkError
-			} else {
-				chunk.State = ChunkComplete
-			}
-
-			err := d.cacheStore.Update(fullPath, i, &chunk)
-			if err != nil {
-				log.Warn().Err(err).Msg("could not update chunk to cache")
-			}
-			return nil
 		})
 	}
 
@@ -324,7 +415,7 @@ func (d *Download) downloadFile(fm *manifest.FileManifest) error {
 		return err
 	}
 
-	hash, err := manifest.GetHash(fullPath)
+	hash, err := manifest.GetHash(d.ctx, fullPath)
 	if err != nil {
 		return err
 	}
@@ -354,14 +445,14 @@ func (d *Download) downloadFile(fm *manifest.FileManifest) error {
 }
 
 func (d *Download) downloadWithRange(url string, chunk *Chunk, writer io.WriterAt, modTime time.Time) error {
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequestWithContext(d.ctx, "GET", url, nil)
 	if err != nil {
 		return err
 	}
 	req.Header.Set("Range", fmt.Sprintf("bytes=%d-%d", chunk.Start, chunk.End))
 	req.Header.Set("If-Range", modTime.UTC().Format(http.TimeFormat))
 
-	resp, err := d.conf.getHttpClient().Do(req)
+	resp, err := d.conf.httpCli.Do(req)
 	if err != nil {
 		return err
 	}

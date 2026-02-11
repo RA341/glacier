@@ -18,6 +18,7 @@ type Store interface {
 	Edit(ctx context.Context, id int, game *LocalGame) error
 	EditStatus(ctx context.Context, id int, down *download.Info) error
 	Delete(ctx context.Context, id int) error
+	Exists(ctx context.Context, id int) error
 }
 
 type GamePlay struct {

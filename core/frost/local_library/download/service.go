@@ -4,37 +4,31 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 
 	hc "github.com/ra341/glacier/frost/http_client"
 	"github.com/ra341/glacier/pkg/syncmap"
+	"github.com/rs/zerolog/log"
 )
 
 const MB = 1024 * 1024
 
 type Service struct {
-	progress ProgressUpdater
-
-	baseurl    string
-	httpClient *http.Client
-
-	maxConcurrentFiles      int
-	maxConcurrentFileChunks int
-	chunkSize               int64
-
+	Config          *Config
+	editStatus      EditStatus
 	ActiveDownloads syncmap.Map[int, *Download]
 }
 
 // New
 //
-// basepath must be: "http://localhost:6699//"
+// basepath must be: "http://localhost:6699"
 func New(
-	basepath string,
+	baseurl string,
+	config *Config,
 	httpCliFactory hc.HttpCliFactory,
-	progress ProgressUpdater,
-	maxConcurrentFiles, maxConcurrentFileChunks int,
+	editStatus EditStatus,
 ) *Service {
 	transport := &http.Transport{
 		// MaxIdleConns is the total connections across all hosts
@@ -50,31 +44,31 @@ func New(
 		TLSHandshakeTimeout: 10 * time.Second,
 	}
 
+	config.httpCli = httpCliFactory(transport)
+	config.base = fmt.Sprintf(
+		"%s/library/download",
+		strings.TrimRight(baseurl, "/"),
+	)
+
 	return &Service{
-		httpClient:              httpCliFactory(transport),
-		baseurl:                 fmt.Sprintf("%s/library/download", basepath),
-		progress:                progress,
-		maxConcurrentFiles:      maxConcurrentFiles,
-		maxConcurrentFileChunks: maxConcurrentFileChunks,
-		chunkSize:               MB * 128,
+		Config:     config,
+		editStatus: editStatus,
 	}
 }
 
-func (d *Service) Download(gameId int, downloadFolder string) error {
-	gameDownload := filepath.Join(downloadFolder, strconv.Itoa(gameId))
-	err := os.MkdirAll(gameDownload, 0755)
-	if err != nil {
-		return err
+func (d *Service) Download(gameId int, downloadPath string, force bool) error {
+	if _, ok := d.ActiveDownloads.Load(gameId); ok {
+		log.Debug().Msg("download already in progress")
+		return nil
 	}
 
-	// todo check for avail space
 	download, err := NewDownload(
-		d,
+		d.Config,
+		d.editStatus,
 		d.onDone,
-		d.progress,
-		d.baseurl,
-		gameDownload,
 		gameId,
+		downloadPath,
+		force,
 	)
 	if err != nil {
 		return fmt.Errorf("could not start download: %w", err)
@@ -84,25 +78,30 @@ func (d *Service) Download(gameId int, downloadFolder string) error {
 
 	return nil
 }
+
+func (d *Service) Pause(gameId int) error {
+	return fmt.Errorf("not implemented")
+}
+
+func (d *Service) Cancel(gameId int) error {
+	val, ok := d.ActiveDownloads.LoadAndDelete(gameId)
+	if !ok {
+		return fmt.Errorf("game not found " + strconv.Itoa(gameId))
+	}
+
+	val.Cancel()
+	<-val.done // wait for download to stop
+
+	log.Info().Msg("download stopped")
+
+	err := os.RemoveAll(val.downloadFolder)
+	if err != nil {
+		return fmt.Errorf("could not remove download folder: %w", err)
+	}
+
+	return nil
+}
+
 func (d *Service) onDone(gameId int) {
 	d.ActiveDownloads.Delete(gameId)
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// satisfies Config in downloader.go
-
-func (d *Service) getMaxConcurrentFiles() int {
-	return d.maxConcurrentFiles
-}
-
-func (d *Service) getChunkSize() int64 {
-	return d.chunkSize
-}
-
-func (d *Service) getMaxConcurrentFileChunks() int {
-	return d.maxConcurrentFileChunks
-}
-
-func (d *Service) getHttpClient() *http.Client {
-	return d.httpClient
 }

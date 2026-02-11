@@ -1,20 +1,26 @@
 <script lang="ts">
     import {
-        CheckCircle2Icon, ChevronDownIcon, ClockIcon, ImageIcon,
-        TimerIcon, ActivityIcon, HourglassIcon
+        ActivityIcon,
+        CheckCircle2Icon,
+        ChevronDownIcon,
+        ClockIcon,
+        HourglassIcon,
+        ImageIcon,
+        PauseIcon,
+        XIcon
     } from "@lucide/svelte";
     import {slide} from 'svelte/transition';
-    import type {DownloadProgress} from "$lib/gen/frost_library/v1/frost_library_pb";
+    import {type DownloadProgress, FrostLibraryService} from "$lib/gen/frost_library/v1/frost_library_pb";
     import {formatBytes} from "$lib/api/byte-math";
+    import {callRPC, frostCli} from "$lib/api/api";
+    import {getSnackbarCtx} from "$lib/components/snackbar/snackbar-provider.svelte";
 
     let {detail}: { detail: DownloadProgress } = $props();
 
     let isExpanded = $state(false);
 
-    // --- TIME ELAPSED LOGIC ---
     let now = $state(Date.now());
 
-    // Update 'now' every second to keep the elapsed timer live
     $effect(() => {
         const interval = setInterval(() => {
             now = Date.now();
@@ -39,7 +45,6 @@
 
         return parts.join(':');
     });
-    // --------------------------
 
     const totalComplete = $derived(Number(detail.progress?.Complete ?? 0));
     const totalLeft = $derived(Number(detail.progress?.Left ?? 0));
@@ -59,14 +64,33 @@
         const l = Number(left);
         return (c + l) > 0 ? (c / (c + l)) * 100 : 0;
     };
+
+    const frostLib = frostCli(FrostLibraryService)
+    const sm = getSnackbarCtx()
+
+    async function pause(ID: bigint) {
+        const {err}  = await callRPC(() => frostLib.pause({id: ID}))
+        if (err) {
+            sm.push(`Could not cancel game: ${err}`, 'error')
+        }
+    }
+
+    async function cancel(ID: bigint) {
+        const {err}  = await callRPC(() => frostLib.cancel({id: ID}))
+        if (err) {
+            sm.push(`Could not cancel game: ${err}`, 'error')
+        }
+    }
 </script>
 
 <div class="bg-panel/30 border border-border rounded-2xl overflow-hidden transition-all duration-300 {isExpanded ? 'border-frost-500/30 ring-1 ring-frost-500/10' : ''}">
 
     <!-- ACCORDION HEADER -->
-    <button
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
+    <div
             onclick={() => isExpanded = !isExpanded}
-            class="w-full flex items-center gap-4 p-3 hover:bg-panel/50 transition-colors text-left group"
+            class="w-full flex items-center gap-4 p-3 hover:bg-panel/50 transition-colors text-left group cursor-pointer"
     >
         <!-- THUMBNAIL -->
         <div class="w-12 h-16 bg-surface border border-border rounded-xl overflow-hidden shrink-0 flex items-center justify-center text-muted/20">
@@ -81,30 +105,30 @@
         <!-- MAIN INFO SECTION -->
         <div class="flex-1 min-w-0 space-y-1.5">
             <div class="flex justify-between items-center gap-2">
-                <span class="font-bold text-sm text-foreground truncate tracking-tight">
-                    {detail.Title || 'Unknown Package'}
-                </span>
+            <span class="font-bold text-sm text-foreground truncate tracking-tight">
+                {detail.Title || 'Unknown Package'}
+            </span>
                 <span class="px-2 py-0.5 rounded-md bg-panel/50 border border-border text-[10px] font-mono font-bold text-frost-400">
-                    {overallProgress.toFixed(1)}%
-                </span>
+                {overallProgress.toFixed(1)}%
+            </span>
             </div>
 
             <!-- Meta Row: State, Message, Elapsed -->
             <div class="flex items-center gap-3 text-[10px] font-medium">
-                <span class="px-1.5 py-0.5 rounded border uppercase tracking-tighter shrink-0 {getStateColor(detail.download?.State)}">
-                    {detail.download?.State || 'Pending'}
-                </span>
+            <span class="px-1.5 py-0.5 rounded border uppercase tracking-tighter shrink-0 {getStateColor(detail.download?.State)}">
+                {detail.download?.State || 'Pending'}
+            </span>
 
                 <span class="text-muted/60 truncate flex items-center gap-1 max-w-[200px]">
-                    <ActivityIcon size={10} class="shrink-0 opacity-50"/>
+                <ActivityIcon size={10} class="shrink-0 opacity-50"/>
                     {detail.download?.Message || 'Connecting...'}
-                </span>
+            </span>
 
                 {#if elapsedTime}
-                    <span class="text-muted/50 ml-auto whitespace-nowrap flex items-center gap-1 font-mono">
-                        <HourglassIcon size={10} class="text-frost-500/50"/>
-                        {elapsedTime}
-                    </span>
+                <span class="text-muted/50 ml-auto whitespace-nowrap flex items-center gap-1 font-mono">
+                    <HourglassIcon size={10} class="text-frost-500/50"/>
+                    {elapsedTime}
+                </span>
                 {/if}
             </div>
 
@@ -123,6 +147,27 @@
                 <span class="text-foreground/60">{formatBytes(totalComplete)} Done</span>
                 <span>{formatBytes(totalLeft)} Left</span>
             </div>
+
+            <!-- Action Buttons: Stop propagation so they don't toggle the accordion -->
+            {#if overallProgress < 100}
+                <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0 ml-2">
+                    <button
+                            onclick={(e) => { e.stopPropagation(); pause(detail.ID); }}
+                            class="p-1.5 rounded-lg text-muted hover:text-amber-400 hover:bg-amber-400/10 transition-all"
+                            title="Pause Download"
+                    >
+                        <PauseIcon size={14}/>
+                    </button>
+                    <button
+                            onclick={(e) => { e.stopPropagation(); cancel(detail.ID); }}
+                            class="p-1.5 rounded-lg text-muted hover:text-red-400 hover:bg-red-400/10 transition-all"
+                            title="Cancel Download"
+                    >
+                        <XIcon size={14}/>
+                    </button>
+                </div>
+            {/if}
+
             <div class="p-1 rounded-lg hover:bg-panel transition-colors text-muted">
                 <ChevronDownIcon
                         size={18}
@@ -130,9 +175,8 @@
                 />
             </div>
         </div>
-    </button>
+    </div>
 
-    <!-- ACCORDION CONTENT (File List) -->
     {#if isExpanded}
         <div transition:slide={{ duration: 300 }} class="border-t border-border bg-black/10">
             <div class="p-2 space-y-1 max-h-80 overflow-y-auto custom-scrollbar">
@@ -141,7 +185,7 @@
                     {@const isDone = Number(file.Left) === 0}
 
                     <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-panel/40 transition-colors group">
-                        <div class="text-muted/40 group-hover:text-frost-400/50 transition-colors">
+                        <div class="text-muted/40 group-hover:text-frost-400/50 transition-colors shrink-0">
                             {#if isDone}
                                 <CheckCircle2Icon size={14} class="text-green-500/60"/>
                             {:else}

@@ -10,7 +10,7 @@ COPY ui/ .
 
 RUN npm run build
 
-FROM golang:1-alpine AS go_builder
+FROM golang:1.26-alpine AS go_builder
 
 # for sqlite
 ENV CGO_ENABLED=1
