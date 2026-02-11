@@ -15,6 +15,10 @@ jobs:
       contents: read
       deployments: write
 
+    defaults:
+      run:
+        working-directory: website
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -24,18 +28,17 @@ jobs:
         with:
           node-version: 22
           cache: 'npm'
+          cache-dependency-path: website/package-lock.json
 
       - name: Install dependencies
-        working-directory: website
         run: npm install
 
       - name: Build Docusaurus
-        working-directory: website
         run: npm run build
 
       - name: Deploy to Cloudflare Pages
-        working-directory: website
         run: npm run deploy
         env:
-          apiToken: ${{ secrets.CLOUDFLARE_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # Wrangler specifically looks for these EXACT variable names
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
