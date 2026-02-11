@@ -1,7 +1,7 @@
 <script lang="ts">
     import {glacierCli} from "$lib/api/api";
     import {type Game, LibraryService} from "$lib/gen/library/v1/library_pb";
-    import {createRPCRunner} from "$lib/api/svelte-api.svelte";
+    import {createRPCRunner} from "$lib/api/rpc.svelte.js";
     import {onMount} from "svelte";
     import {goto} from "$app/navigation";
 

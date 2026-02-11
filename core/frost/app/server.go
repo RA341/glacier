@@ -105,6 +105,12 @@ func (s *Server) RegisterFrostRoutes(mux *http.ServeMux) {
 	})
 
 	mux.Handle(ll.NewHandler(s.LocalLibrarySrv))
+
+	api.WithSubRouter(
+		mux,
+		"/launcher",
+		ll.NewHandlerHttp(s.LocalLibrarySrv),
+	)
 }
 
 func (s *Server) registerGlacierProxy(mux *http.ServeMux) {

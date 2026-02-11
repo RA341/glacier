@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {createRPCRunner} from "$lib/api/svelte-api.svelte";
+    import {createRPCRunner} from "$lib/api/rpc.svelte.js";
     import {type GameMetadata, SearchService} from "$lib/gen/search/v1/search_pb";
     import {glacierCli} from "$lib/api/api";
     import {CircleAlert, ImageIcon, LoaderIcon, PlusIcon, SearchIcon, SearchXIcon} from '@lucide/svelte';

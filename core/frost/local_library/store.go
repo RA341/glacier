@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/ra341/glacier/frost/local_library/download"
-	v1 "github.com/ra341/glacier/generated/frost_library/v1"
 	"github.com/ra341/glacier/internal/library"
 	"gorm.io/gorm"
 )
@@ -15,15 +14,16 @@ type Store interface {
 
 	Get(ctx context.Context, id int) (LocalGame, error)
 	Add(ctx context.Context, game *LocalGame) error
-	Edit(ctx context.Context, id int, game *LocalGame) error
-	EditStatus(ctx context.Context, id int, down *download.Info) error
+	Edit(ctx context.Context, game *LocalGame) error
+	EditStatus(ctx context.Context, id int, down *download.LocalDownload) error
 	Delete(ctx context.Context, id int) error
 	Exists(ctx context.Context, id int) error
+	GetByGameId(ctx context.Context, id uint64, localDownload bool) (*LocalGame, error)
 }
 
 type GamePlay struct {
-	InstallerPath string
-	ExePath       string
+	// this is the final game exe that actually runs
+	LaunchExe string
 }
 
 type LocalGame struct {
@@ -32,15 +32,6 @@ type LocalGame struct {
 	GameId int
 	Game   library.Game `gorm:"embedded"`
 
-	Download download.Info `gorm:"embedded"`
-	Play     GamePlay      `gorm:"embedded"`
-}
-
-func (g *LocalGame) ToProto() *v1.LocalGame {
-	return &v1.LocalGame{
-		ID:            uint64(g.ID),
-		DownloadPath:  g.Download.DownloadPath,
-		Status:        g.Download.Status.String(),
-		StatusMessage: g.Download.StatusMessage,
-	}
+	Download download.LocalDownload `gorm:"embedded"`
+	Play     GamePlay               `gorm:"embedded"`
 }

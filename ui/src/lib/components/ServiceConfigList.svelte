@@ -12,7 +12,7 @@
     } from "@lucide/svelte";
     import {callRPC, glacierCli} from "$lib/api/api";
     import {type ServiceConfig, ServiceConfigService} from "$lib/gen/service_config/v1/service_config_pb";
-    import {createRPCRunner} from "$lib/api/svelte-api.svelte";
+    import {createRPCRunner} from "$lib/api/rpc.svelte.js";
     import {onMount} from "svelte";
 
     let {ServiceType}: { ServiceType: string } = $props();

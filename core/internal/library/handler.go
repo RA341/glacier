@@ -23,6 +23,18 @@ func NewHandler(srv *Service) (string, http.Handler) {
 	return v1connect.NewLibraryServiceHandler(svc)
 }
 
+func (h *Handler) Edit(ctx context.Context, c *connect.Request[v1.EditRequest]) (*connect.Response[v1.EditResponse], error) {
+	var game Game
+	game.FromProto(c.Msg.Game)
+
+	err := h.srv.store.Edit(ctx, &game)
+	if err != nil {
+		return nil, err
+	}
+
+	return connect.NewResponse(&v1.EditResponse{}), nil
+}
+
 func (h *Handler) ListWithState(ctx context.Context, c *connect.Request[v1.ListWithStateRequest]) (*connect.Response[v1.ListWithStateResponse], error) {
 	list, err := h.srv.ListDownloading(ctx, c.Msg.State)
 	if err != nil {

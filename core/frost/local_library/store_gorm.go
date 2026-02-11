@@ -43,20 +43,35 @@ func (s *StoreGorm) Exists(ctx context.Context, id int) error {
 
 func (s *StoreGorm) Get(ctx context.Context, id int) (LocalGame, error) {
 	var game LocalGame
-	err := s.db.WithContext(ctx).Where("game_id = ?", id).First(&game).Error
+	err := s.db.WithContext(ctx).First(&game, id).Error
 	return game, err
 }
 
-func (s *StoreGorm) Edit(ctx context.Context, id int, game *LocalGame) error {
-	game.ID = uint(id)
-	return s.db.WithContext(ctx).Save(game).Error
+func (s *StoreGorm) GetByGameId(ctx context.Context, id uint64, localDownload bool) (*LocalGame, error) {
+	game := &LocalGame{}
+	tx := s.db.
+		WithContext(ctx).
+		Where("game_id = ?", id)
+
+	//if localDownload {
+	//	tx = tx.Select("download").Select("play")
+	//}
+
+	err := tx.
+		First(&game).
+		Error
+	return game, err
+}
+
+func (s *StoreGorm) Edit(ctx context.Context, game *LocalGame) error {
+	return s.db.WithContext(ctx).Updates(game).Error
 }
 
 func (s *StoreGorm) Delete(ctx context.Context, id int) error {
 	return s.db.WithContext(ctx).Unscoped().Delete(&LocalGame{}, id).Error
 }
 
-func (s *StoreGorm) EditStatus(ctx context.Context, id int, down *download.Info) error {
+func (s *StoreGorm) EditStatus(ctx context.Context, id int, down *download.LocalDownload) error {
 	return s.db.WithContext(ctx).
 		Model(&LocalGame{}).
 		Where("id = ?", id).

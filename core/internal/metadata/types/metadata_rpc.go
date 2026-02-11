@@ -27,6 +27,10 @@ func (m *Meta) ToProto() *v1.GameMetadata {
 }
 
 func (m *Meta) FromProto(rpcMeta *v1.GameMetadata) {
+	if rpcMeta == nil {
+		return
+	}
+
 	// there shouldn't be an issue parsing, even if there, it's fine to set as default
 	parsedDate, _ := time.Parse(time.RFC3339, rpcMeta.ReleaseDate)
 

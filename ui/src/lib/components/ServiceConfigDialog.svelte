@@ -2,7 +2,7 @@
     import {AlertTriangleIcon, ArrowLeftIcon, ChevronRightIcon, SaveIcon, XIcon} from '@lucide/svelte';
 
     import {fade, fly} from 'svelte/transition';
-    import {createRPCRunner} from "$lib/api/svelte-api.svelte";
+    import {createRPCRunner} from "$lib/api/rpc.svelte.js";
     import {callRPC, glacierCli} from "$lib/api/api";
     import {type ServiceConfig, ServiceConfigService} from "$lib/gen/service_config/v1/service_config_pb";
     import DynForm from "$lib/components/DynForm.svelte";

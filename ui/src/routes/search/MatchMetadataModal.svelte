@@ -13,7 +13,7 @@
     import {fade, fly} from 'svelte/transition';
     import {callRPC, glacierCli} from "$lib/api/api";
     import {type GameMetadata, type GameSource, SearchService} from "$lib/gen/search/v1/search_pb";
-    import {createRPCRunner} from "$lib/api/svelte-api.svelte";
+    import {createRPCRunner} from "$lib/api/rpc.svelte.js";
     import {GameSchema, LibraryService} from "$lib/gen/library/v1/library_pb";
     import {create} from "@bufbuild/protobuf";
     import {DownloaderService} from "$lib/gen/downloader/v1/downloader_pb";

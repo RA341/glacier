@@ -2,9 +2,12 @@ package download
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"net/http"
 
 	"connectrpc.com/connect"
+	"github.com/ncruces/zenity"
 	"github.com/ra341/glacier/frost/local_library/download"
 	v1 "github.com/ra341/glacier/generated/frost_library/v1"
 	"github.com/ra341/glacier/generated/frost_library/v1/v1connect"
@@ -32,6 +35,51 @@ func (h *Handler) Get(ctx context.Context, c *connect.Request[v1.GetRequest]) (*
 	}), nil
 }
 
+func (h *Handler) LaunchFilePicker(ctx context.Context, c *connect.Request[v1.LaunchFilePickerRequest]) (*connect.Response[v1.LaunchFilePickerResponse], error) {
+	file, err := zenity.SelectFile(
+		zenity.Filename(c.Msg.BaseDir),
+		zenity.Title("Pick the exe that launches the game"),
+		zenity.DisallowEmpty(),
+	)
+	if err != nil && !errors.Is(err, zenity.ErrCanceled) {
+		return nil, err
+	}
+
+	return connect.NewResponse(&v1.LaunchFilePickerResponse{Path: file}), nil
+}
+
+func (h *Handler) Edit(ctx context.Context, c *connect.Request[v1.EditRequest]) (*connect.Response[v1.EditResponse], error) {
+	var ll LocalGame
+	ll.FromProto(c.Msg.LocalGame)
+
+	err := h.srv.store.Edit(ctx, &ll)
+	if err != nil {
+		return nil, err
+	}
+
+	return connect.NewResponse(&v1.EditResponse{}), nil
+}
+
+func (h *Handler) Launch(ctx context.Context, c *connect.Request[v1.LaunchRequest]) (*connect.Response[v1.LaunchResponse], error) {
+	err := h.srv.Launch(ctx, int(c.Msg.Id))
+	if err != nil {
+		return nil, err
+	}
+
+	return connect.NewResponse(&v1.LaunchResponse{}), nil
+}
+
+func (h *Handler) GetByGameId(ctx context.Context, c *connect.Request[v1.GetByGameIdRequest]) (*connect.Response[v1.GetByGameIdResponse], error) {
+	id, err := h.srv.store.GetByGameId(ctx, c.Msg.Id, c.Msg.LocalDownload)
+	if err != nil {
+		return nil, err
+	}
+
+	return connect.NewResponse(&v1.GetByGameIdResponse{
+		Download: id.ToProto(),
+	}), nil
+}
+
 func (h *Handler) Cancel(_ context.Context, c *connect.Request[v1.CancelRequest]) (*connect.Response[v1.CancelResponse], error) {
 	err := h.srv.Cancel(int(c.Msg.Id))
 	if err != nil {
@@ -43,17 +91,21 @@ func (h *Handler) Cancel(_ context.Context, c *connect.Request[v1.CancelRequest]
 
 func (h *Handler) Pause(ctx context.Context, c *connect.Request[v1.PauseRequest]) (*connect.Response[v1.PauseResponse], error) {
 	//TODO implement me
-	panic("implement me")
+	return nil, fmt.Errorf("pause implement me")
 }
 
 func (h *Handler) Delete(ctx context.Context, c *connect.Request[v1.DeleteRequest]) (*connect.Response[v1.DeleteResponse], error) {
-	//TODO implement me
-	panic("implement me")
+	err := h.srv.Delete(ctx, c.Msg.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	return connect.NewResponse(&v1.DeleteResponse{}), nil
 }
 
 func (h *Handler) ListFiles(ctx context.Context, c *connect.Request[v1.ListFilesRequest]) (*connect.Response[v1.ListFilesResponse], error) {
 	//TODO implement me
-	panic("implement me")
+	return nil, fmt.Errorf("ListFiles implement me")
 }
 
 func (h *Handler) Download(ctx context.Context, c *connect.Request[v1.DownloadRequest]) (*connect.Response[v1.DownloadResponse], error) {

@@ -3,7 +3,7 @@
     import {fade} from 'svelte/transition';
     import {frostCli, glacierCli} from "$lib/api/api";
     import {FrostLibraryService} from "$lib/gen/frost_library/v1/frost_library_pb";
-    import {createRPCRunner} from "$lib/api/svelte-api.svelte";
+    import {createRPCRunner} from "$lib/api/rpc.svelte.js";
     import DownloadItem from "./DownloadItem.svelte";
     import {onMount} from "svelte";
 

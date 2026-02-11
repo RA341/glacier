@@ -115,13 +115,13 @@
 
             <!-- Meta Row: State, Message, Elapsed -->
             <div class="flex items-center gap-3 text-[10px] font-medium">
-            <span class="px-1.5 py-0.5 rounded border uppercase tracking-tighter shrink-0 {getStateColor(detail.download?.State)}">
-                {detail.download?.State || 'Pending'}
+            <span class="px-1.5 py-0.5 rounded border uppercase tracking-tighter shrink-0 {getStateColor(detail.download?.Status)}">
+                {detail.download?.Status || 'Pending'}
             </span>
 
-                <span class="text-muted/60 truncate flex items-center gap-1 max-w-[200px]">
+                <span class="text-muted/60 truncate flex items-center gap-1 max-w-50">
                 <ActivityIcon size={10} class="shrink-0 opacity-50"/>
-                    {detail.download?.Message || 'Connecting...'}
+                    {detail.download?.Status || 'Connecting...'}
             </span>
 
                 {#if elapsedTime}

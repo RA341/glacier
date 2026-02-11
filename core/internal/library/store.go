@@ -19,13 +19,14 @@ type Game struct {
 	Download download.Download `gorm:"embedded"`
 	// Source of the Indexer
 	Source indexer.Source `gorm:"embedded"`
-
+	// exe paths and other metadata
+	File GameFile `gorm:"embedded"`
 	// Manifest game file inf
 	Manifest manifest.FolderManifest `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
-type GameConfig struct {
-	ExePath string
+type GameFile struct {
+	Exe string `gorm:"type:uniqueIndex"`
 }
 
 func (g *Game) SetErr(err error) {

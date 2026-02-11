@@ -6,7 +6,7 @@
     import {fade, fly} from 'svelte/transition';
     import {type User, UserService} from "$lib/gen/user/v1/user_pb";
     import {glacierCli} from "$lib/api/api";
-    import {createRPCRunner} from "$lib/api/svelte-api.svelte.ts";
+    import {createRPCRunner} from "$lib/api/rpc.svelte.ts";
     import {callRPC} from "$lib/api/api.ts";
     import {getSnackbarCtx} from "$lib/components/snackbar/snackbar-provider.svelte";
 

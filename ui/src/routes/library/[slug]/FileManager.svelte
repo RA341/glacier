@@ -12,12 +12,12 @@
     } from "@lucide/svelte";
     import {fade, fly} from 'svelte/transition';
     import {callRPC, glacierCli} from "$lib/api/api";
-    import {LibraryService} from "$lib/gen/library/v1/library_pb";
-    import {createRPCRunner} from "$lib/api/svelte-api.svelte";
+    import {type Game, LibraryService} from "$lib/gen/library/v1/library_pb";
+    import {createRPCRunner} from "$lib/api/rpc.svelte.js";
     import {formatBytes} from "$lib/api/byte-math";
     import {getSnackbarCtx} from "$lib/components/snackbar/snackbar-provider.svelte";
 
-    let {gameId}: { gameId: bigint } = $props();
+    let {game}: { game: Game } = $props();
 
     const libSrv = glacierCli(LibraryService);
 
@@ -26,7 +26,7 @@
     let pendingDeletePath = $state<string | null>(null);
 
     let fileRpc = createRPCRunner(() => libSrv.listFiles({
-        GameId: gameId,
+        GameId: game.ID,
         BasePath: base,
         Downloaded: downloaded,
     }));
@@ -54,7 +54,7 @@
         const {err} = await callRPC(() => libSrv.deleteFile({
             Path: `${base}/${pendingDeletePath}`,
             Downloaded: downloaded,
-            GameId: gameId,
+            GameId: game.ID,
         }));
 
         if (err) {
@@ -64,6 +64,23 @@
         }
 
         pendingDeletePath = null;
+        await fileRpc.runner();
+    }
+
+    async function markAsExe(RelPath: string) {
+        const {err} = await callRPC(() => libSrv.edit({
+            game: {
+                ID: game.ID,
+                file: {
+                    Exe: RelPath,
+                }
+            }
+        }))
+
+        if (err) {
+            sm.push(`Error marking exe: ${err}`, 'error');
+        }
+
         await fileRpc.runner();
     }
 </script>
@@ -127,18 +144,36 @@
 
                 {#if fileRpc.value?.files && fileRpc.value.files.length > 0}
                     {#each fileRpc.value.files as file}
-                        <div class="flex items-center justify-between px-4 py-2 border-b border-border/20 last:border-0 hover:bg-panel/50 transition-colors group">
+                        {@const isSelected = game.file?.Exe === file.RelPath}
+                        <div class="flex items-center justify-between px-4 py-2 border-b border-border/20 last:border-0 transition-colors group
+                            {isSelected
+                                ? 'bg-frost-500/10 border-l-2 border-l-frost-400 hover:bg-frost-500/15'
+                                : 'hover:bg-panel/50'}
+                        ">
                             <button
                                     onclick={() => file.IsDir ? navigateTo(file.RelPath.split('/').pop()!) : null}
                                     class="flex items-center gap-2 min-w-0 flex-1 text-left"
                             >
-                                <span class="shrink-0 text-muted group-hover:text-frost-400">
+                                <span class="shrink-0 {isSelected ? 'text-frost-400' : 'text-muted group-hover:text-frost-400'}">
                                     {#if file.IsDir}<FolderIcon size={14}/>{:else}<FileIcon size={14}/>{/if}
                                 </span>
-                                <span class="text-[11px] truncate {file.IsDir ? 'font-bold text-foreground' : 'text-muted'}">
+                                <span class="text-[11px] truncate {file.IsDir ? 'font-bold text-foreground' : isSelected ? 'text-frost-300' : 'text-muted'}">
                                     {file.RelPath.split('/').pop()}
                                 </span>
+                                <span class="text-[11px] truncate {file.IsDir ? 'font-bold text-foreground' : isSelected ? 'text-frost-300' : 'text-muted'}">
+                                    {isSelected ? "EXE" : "" }
+                                </span>
                             </button>
+
+                            {#if !isSelected}
+                                <button
+                                        onclick={() => markAsExe(file.RelPath)}
+                                        class="p-1.5 text-muted hover:text-frost-500 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                                        title="Mark Exe"
+                                >
+                                    Mark as Exe
+                                </button>
+                            {/if}
 
                             <span class="text-[9px] font-mono text-muted/40 shrink-0 mr-2">{formatBytes(file.Size)}</span>
 

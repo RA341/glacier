@@ -12,7 +12,7 @@
     import {fade, fly} from 'svelte/transition';
     import {glacierCli} from "$lib/api/api";
     import {LibraryService} from "$lib/gen/library/v1/library_pb";
-    import {createRPCRunner} from "$lib/api/svelte-api.svelte";
+    import {createRPCRunner} from "$lib/api/rpc.svelte.js";
     import {onMount} from "svelte";
     import {calculatePercent, formatBytes} from "$lib/api/byte-math";
 

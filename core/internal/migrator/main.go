@@ -8,6 +8,7 @@ import (
 	"ariga.io/atlas-provider-gorm/gormschema"
 	"github.com/ra341/glacier/internal/auth"
 	"github.com/ra341/glacier/internal/library"
+	"github.com/ra341/glacier/internal/library/manifest"
 	"github.com/ra341/glacier/internal/services_manager"
 	"github.com/ra341/glacier/internal/user"
 )
@@ -17,7 +18,7 @@ func main() {
 		New("sqlite").
 		Load(
 			&library.Game{},
-			&library.FolderManifest{},
+			&manifest.FolderManifest{},
 			&services_manager.ServiceConfig{},
 			&user.User{},
 			&auth.Session{},

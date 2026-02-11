@@ -11,7 +11,7 @@
     } from "@lucide/svelte";
     import {callRPC, glacierCli} from "$lib/api/api";
     import {UserService} from "$lib/gen/user/v1/user_pb";
-    import {createRPCRunner} from "$lib/api/svelte-api.svelte";
+    import {createRPCRunner} from "$lib/api/rpc.svelte.js";
     import {onMount} from "svelte";
     import {fade} from "svelte/transition";
     import {getSnackbarCtx} from "$lib/components/snackbar/snackbar-provider.svelte";

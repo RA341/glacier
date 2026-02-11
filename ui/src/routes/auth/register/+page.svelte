@@ -3,7 +3,7 @@
     import {KeyIcon, LoaderIcon, TriangleAlert, UserIcon} from '@lucide/svelte';
     import {glacierPubCli} from "$lib/api/api";
     import {AuthService} from "$lib/gen/auth/v1/auth_pb";
-    import {createRPCRunner} from "$lib/api/svelte-api.svelte";
+    import {createRPCRunner} from "$lib/api/rpc.svelte.js";
     import {goto} from "$app/navigation";
 
     let username = $state("");

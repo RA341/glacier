@@ -41,7 +41,7 @@ type Download struct {
 
 const MetadataFolder = ".frost.cache"
 
-type EditStatus func(ctx context.Context, id int, down *Info) error
+type EditStatus func(ctx context.Context, id int, down *LocalDownload) error
 type OnDone func(id int)
 
 func NewDownload(
@@ -104,7 +104,7 @@ func (d *Download) Start() {
 	}()
 	defer fileutil.Close(d.cacheStore)
 
-	warnIfErr(d.editStatus(d.ctx, d.gameId, &Info{
+	warnIfErr(d.editStatus(d.ctx, d.gameId, &LocalDownload{
 		Status:        StatusMetadata,
 		StatusMessage: "downloading manifest",
 	}))
@@ -112,14 +112,14 @@ func (d *Download) Start() {
 	var meta manifest.FolderManifest
 	err := d.downloadMetadata(&meta)
 	if err != nil {
-		warnIfErr(d.editStatus(d.ctx, d.gameId, &Info{
+		warnIfErr(d.editStatus(d.ctx, d.gameId, &LocalDownload{
 			Status:        StatusError,
 			StatusMessage: "could not download manifest",
 		}))
 		return
 	}
 
-	warnIfErr(d.editStatus(d.ctx, d.gameId, &Info{
+	warnIfErr(d.editStatus(d.ctx, d.gameId, &LocalDownload{
 		Status:        StatusDownloading,
 		StatusMessage: "downloading files",
 	}))
@@ -143,7 +143,7 @@ func (d *Download) Start() {
 					return fmt.Errorf("could not download file: %w", err)
 				}
 
-				warnIfErr(d.editStatus(d.ctx, d.gameId, &Info{
+				warnIfErr(d.editStatus(d.ctx, d.gameId, &LocalDownload{
 					StatusMessage: "downloaded " + fi.RelPath,
 				}))
 
@@ -160,7 +160,7 @@ func (d *Download) Start() {
 		}
 
 		log.Error().Err(err).Msg("error downloading")
-		warnIfErr(d.editStatus(d.ctx, d.gameId, &Info{
+		warnIfErr(d.editStatus(d.ctx, d.gameId, &LocalDownload{
 			Status:        StatusError,
 			StatusMessage: "error downloading: " + err.Error(),
 		}))
@@ -171,7 +171,7 @@ func (d *Download) Start() {
 		Int("game", d.gameId).
 		Msg("download finished")
 
-	warnIfErr(d.editStatus(d.ctx, d.gameId, &Info{
+	warnIfErr(d.editStatus(d.ctx, d.gameId, &LocalDownload{
 		Status:        StatusComplete,
 		StatusMessage: "Download Complete",
 		Done:          time.Now(),

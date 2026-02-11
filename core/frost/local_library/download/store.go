@@ -43,7 +43,7 @@ type CacheStore interface {
 	Progress() (progress []FileProgress, err error)
 }
 
-type Info struct {
+type LocalDownload struct {
 	DownloadPath  string
 	Status        Status
 	StatusMessage string
@@ -51,11 +51,38 @@ type Info struct {
 	Done          time.Time
 }
 
-func (g *Info) ToProto() *v1.DownloadInf {
-	return &v1.DownloadInf{
-		State:        g.Status.String(),
-		Message:      g.StatusMessage,
-		TimeStarted:  g.Started.Format(time.RFC3339),
-		DownloadPath: g.DownloadPath,
+func (g *LocalDownload) ToProto() *v1.LocalDownload {
+	return &v1.LocalDownload{
+		DownloadPath:  g.DownloadPath,
+		Status:        g.Status.String(),
+		StatusMessage: g.StatusMessage,
+		Started:       g.Started.Format(time.RFC3339),
+		Done:          g.Done.Format(time.RFC3339),
 	}
+}
+
+func (g *LocalDownload) FromProto(download *v1.LocalDownload) {
+	if download == nil {
+		return
+	}
+
+	g.DownloadPath = download.DownloadPath
+
+	statusString, err := StatusString(download.Status)
+	if err != nil {
+		statusString = StatusError
+	}
+	g.Status = statusString
+
+	g.Started, err = time.Parse(time.RFC3339, download.Started)
+	if err != nil {
+		g.Started = time.Now()
+	}
+
+	g.Done, err = time.Parse(time.RFC3339, download.Done)
+	if err != nil {
+		g.Done = time.Now()
+	}
+
+	g.StatusMessage = download.StatusMessage
 }

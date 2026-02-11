@@ -18,6 +18,10 @@ func (g *Download) ToProto() *v1.Download {
 }
 
 func (g *Download) FromProto(rpcDownload *v1.Download) {
+	if rpcDownload == nil {
+		return
+	}
+
 	g.Client = rpcDownload.Client
 	g.DownloadPath = rpcDownload.DownloadPath
 	g.DownloadUrl = rpcDownload.DownloadUrl

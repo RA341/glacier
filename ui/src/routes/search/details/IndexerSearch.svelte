@@ -1,7 +1,7 @@
 <script lang="ts">
     import {ChevronDownIcon, CircleAlert, HardDriveIcon, ImageIcon, LoaderIcon, SearchIcon} from '@lucide/svelte';
     import {glacierCli} from "$lib/api/api";
-    import {createRPCRunner} from "$lib/api/svelte-api.svelte";
+    import {createRPCRunner} from "$lib/api/rpc.svelte.js";
     import {type GameMetadata, type GameSource, SearchService} from "$lib/gen/search/v1/search_pb";
     import {ServiceConfigService} from "$lib/gen/service_config/v1/service_config_pb";
 

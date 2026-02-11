@@ -11,6 +11,7 @@ service LibraryService {
   rpc ListWithState(ListWithStateRequest) returns (ListWithStateResponse) {}
   rpc Delete(DeleteRequest) returns (DeleteResponse) {}
   rpc Exists(ExistsRequest) returns (ExistsResponse) {}
+  rpc Edit(EditRequest) returns (EditResponse) {}
 
 
   rpc TriggerTracker(TriggerTrackerRequest) returns (TriggerTrackerResponse) {}
@@ -21,6 +22,13 @@ service LibraryService {
 
   rpc Add(AddRequest) returns (AddResponse) {}
 }
+
+
+message EditRequest {
+  Game game = 1;
+}
+
+message EditResponse {}
 
 message DeleteFileRequest {
   uint64 GameId = 1;
@@ -103,9 +111,14 @@ message Game {
   uint64 ID = 1;
   string CreatedAt = 2;
   string EditedAt = 3;
-  Download DownloadState = 7;
-  search.v1.GameMetadata Meta = 4;
-  search.v1.GameSource Source = 8;
+  Download DownloadState = 4;
+  search.v1.GameMetadata Meta = 5;
+  search.v1.GameSource Source = 6;
+  GameFile file = 7;
+}
+
+message GameFile {
+  string Exe = 1;
 }
 
 message Download {

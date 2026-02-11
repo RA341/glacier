@@ -18,6 +18,10 @@ func (ig *Source) ToProto() *v1.GameSource {
 }
 
 func (ig *Source) FromProto(rpcGame *v1.GameSource) {
+	if rpcGame == nil {
+		return
+	}
+
 	indexerType, err := IndexerTypeString(rpcGame.IndexerType)
 	if err != nil {
 		log.Warn().Err(err).Str("name", rpcGame.IndexerType).Msg("invalid indexer type")

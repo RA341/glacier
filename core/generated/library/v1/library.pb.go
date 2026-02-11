@@ -22,6 +22,86 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type EditRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Game          *Game                  `protobuf:"bytes,1,opt,name=game,proto3" json:"game,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *EditRequest) Reset() {
+	*x = EditRequest{}
+	mi := &file_library_v1_library_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *EditRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EditRequest) ProtoMessage() {}
+
+func (x *EditRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_library_v1_library_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use EditRequest.ProtoReflect.Descriptor instead.
+func (*EditRequest) Descriptor() ([]byte, []int) {
+	return file_library_v1_library_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *EditRequest) GetGame() *Game {
+	if x != nil {
+		return x.Game
+	}
+	return nil
+}
+
+type EditResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *EditResponse) Reset() {
+	*x = EditResponse{}
+	mi := &file_library_v1_library_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *EditResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EditResponse) ProtoMessage() {}
+
+func (x *EditResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_library_v1_library_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use EditResponse.ProtoReflect.Descriptor instead.
+func (*EditResponse) Descriptor() ([]byte, []int) {
+	return file_library_v1_library_proto_rawDescGZIP(), []int{1}
+}
+
 type DeleteFileRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	GameId        uint64                 `protobuf:"varint,1,opt,name=GameId,proto3" json:"GameId,omitempty"`
@@ -33,7 +113,7 @@ type DeleteFileRequest struct {
 
 func (x *DeleteFileRequest) Reset() {
 	*x = DeleteFileRequest{}
-	mi := &file_library_v1_library_proto_msgTypes[0]
+	mi := &file_library_v1_library_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -45,7 +125,7 @@ func (x *DeleteFileRequest) String() string {
 func (*DeleteFileRequest) ProtoMessage() {}
 
 func (x *DeleteFileRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_library_v1_library_proto_msgTypes[0]
+	mi := &file_library_v1_library_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -58,7 +138,7 @@ func (x *DeleteFileRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteFileRequest.ProtoReflect.Descriptor instead.
 func (*DeleteFileRequest) Descriptor() ([]byte, []int) {
-	return file_library_v1_library_proto_rawDescGZIP(), []int{0}
+	return file_library_v1_library_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *DeleteFileRequest) GetGameId() uint64 {
@@ -90,7 +170,7 @@ type DeleteFileResponse struct {
 
 func (x *DeleteFileResponse) Reset() {
 	*x = DeleteFileResponse{}
-	mi := &file_library_v1_library_proto_msgTypes[1]
+	mi := &file_library_v1_library_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -102,7 +182,7 @@ func (x *DeleteFileResponse) String() string {
 func (*DeleteFileResponse) ProtoMessage() {}
 
 func (x *DeleteFileResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_library_v1_library_proto_msgTypes[1]
+	mi := &file_library_v1_library_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -115,7 +195,7 @@ func (x *DeleteFileResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteFileResponse.ProtoReflect.Descriptor instead.
 func (*DeleteFileResponse) Descriptor() ([]byte, []int) {
-	return file_library_v1_library_proto_rawDescGZIP(), []int{1}
+	return file_library_v1_library_proto_rawDescGZIP(), []int{3}
 }
 
 type ListFilesRequest struct {
@@ -129,7 +209,7 @@ type ListFilesRequest struct {
 
 func (x *ListFilesRequest) Reset() {
 	*x = ListFilesRequest{}
-	mi := &file_library_v1_library_proto_msgTypes[2]
+	mi := &file_library_v1_library_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -141,7 +221,7 @@ func (x *ListFilesRequest) String() string {
 func (*ListFilesRequest) ProtoMessage() {}
 
 func (x *ListFilesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_library_v1_library_proto_msgTypes[2]
+	mi := &file_library_v1_library_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -154,7 +234,7 @@ func (x *ListFilesRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListFilesRequest.ProtoReflect.Descriptor instead.
 func (*ListFilesRequest) Descriptor() ([]byte, []int) {
-	return file_library_v1_library_proto_rawDescGZIP(), []int{2}
+	return file_library_v1_library_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *ListFilesRequest) GetGameId() uint64 {
@@ -190,7 +270,7 @@ type File struct {
 
 func (x *File) Reset() {
 	*x = File{}
-	mi := &file_library_v1_library_proto_msgTypes[3]
+	mi := &file_library_v1_library_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -202,7 +282,7 @@ func (x *File) String() string {
 func (*File) ProtoMessage() {}
 
 func (x *File) ProtoReflect() protoreflect.Message {
-	mi := &file_library_v1_library_proto_msgTypes[3]
+	mi := &file_library_v1_library_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -215,7 +295,7 @@ func (x *File) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use File.ProtoReflect.Descriptor instead.
 func (*File) Descriptor() ([]byte, []int) {
-	return file_library_v1_library_proto_rawDescGZIP(), []int{3}
+	return file_library_v1_library_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *File) GetRelPath() string {
@@ -255,7 +335,7 @@ type ListFilesResponse struct {
 
 func (x *ListFilesResponse) Reset() {
 	*x = ListFilesResponse{}
-	mi := &file_library_v1_library_proto_msgTypes[4]
+	mi := &file_library_v1_library_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -267,7 +347,7 @@ func (x *ListFilesResponse) String() string {
 func (*ListFilesResponse) ProtoMessage() {}
 
 func (x *ListFilesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_library_v1_library_proto_msgTypes[4]
+	mi := &file_library_v1_library_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -280,7 +360,7 @@ func (x *ListFilesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListFilesResponse.ProtoReflect.Descriptor instead.
 func (*ListFilesResponse) Descriptor() ([]byte, []int) {
-	return file_library_v1_library_proto_rawDescGZIP(), []int{4}
+	return file_library_v1_library_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *ListFilesResponse) GetFiles() []*File {
@@ -300,7 +380,7 @@ type ExistsRequest struct {
 
 func (x *ExistsRequest) Reset() {
 	*x = ExistsRequest{}
-	mi := &file_library_v1_library_proto_msgTypes[5]
+	mi := &file_library_v1_library_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -312,7 +392,7 @@ func (x *ExistsRequest) String() string {
 func (*ExistsRequest) ProtoMessage() {}
 
 func (x *ExistsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_library_v1_library_proto_msgTypes[5]
+	mi := &file_library_v1_library_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -325,7 +405,7 @@ func (x *ExistsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ExistsRequest.ProtoReflect.Descriptor instead.
 func (*ExistsRequest) Descriptor() ([]byte, []int) {
-	return file_library_v1_library_proto_rawDescGZIP(), []int{5}
+	return file_library_v1_library_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *ExistsRequest) GetMetadataGameId() string {
@@ -351,7 +431,7 @@ type ExistsResponse struct {
 
 func (x *ExistsResponse) Reset() {
 	*x = ExistsResponse{}
-	mi := &file_library_v1_library_proto_msgTypes[6]
+	mi := &file_library_v1_library_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -363,7 +443,7 @@ func (x *ExistsResponse) String() string {
 func (*ExistsResponse) ProtoMessage() {}
 
 func (x *ExistsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_library_v1_library_proto_msgTypes[6]
+	mi := &file_library_v1_library_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -376,7 +456,7 @@ func (x *ExistsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ExistsResponse.ProtoReflect.Descriptor instead.
 func (*ExistsResponse) Descriptor() ([]byte, []int) {
-	return file_library_v1_library_proto_rawDescGZIP(), []int{6}
+	return file_library_v1_library_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *ExistsResponse) GetGameId() uint64 {
@@ -395,7 +475,7 @@ type DeleteRequest struct {
 
 func (x *DeleteRequest) Reset() {
 	*x = DeleteRequest{}
-	mi := &file_library_v1_library_proto_msgTypes[7]
+	mi := &file_library_v1_library_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -407,7 +487,7 @@ func (x *DeleteRequest) String() string {
 func (*DeleteRequest) ProtoMessage() {}
 
 func (x *DeleteRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_library_v1_library_proto_msgTypes[7]
+	mi := &file_library_v1_library_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -420,7 +500,7 @@ func (x *DeleteRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteRequest.ProtoReflect.Descriptor instead.
 func (*DeleteRequest) Descriptor() ([]byte, []int) {
-	return file_library_v1_library_proto_rawDescGZIP(), []int{7}
+	return file_library_v1_library_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *DeleteRequest) GetGameId() int64 {
@@ -438,7 +518,7 @@ type DeleteResponse struct {
 
 func (x *DeleteResponse) Reset() {
 	*x = DeleteResponse{}
-	mi := &file_library_v1_library_proto_msgTypes[8]
+	mi := &file_library_v1_library_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -450,7 +530,7 @@ func (x *DeleteResponse) String() string {
 func (*DeleteResponse) ProtoMessage() {}
 
 func (x *DeleteResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_library_v1_library_proto_msgTypes[8]
+	mi := &file_library_v1_library_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -463,7 +543,7 @@ func (x *DeleteResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteResponse.ProtoReflect.Descriptor instead.
 func (*DeleteResponse) Descriptor() ([]byte, []int) {
-	return file_library_v1_library_proto_rawDescGZIP(), []int{8}
+	return file_library_v1_library_proto_rawDescGZIP(), []int{10}
 }
 
 type ListWithStateRequest struct {
@@ -475,7 +555,7 @@ type ListWithStateRequest struct {
 
 func (x *ListWithStateRequest) Reset() {
 	*x = ListWithStateRequest{}
-	mi := &file_library_v1_library_proto_msgTypes[9]
+	mi := &file_library_v1_library_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -487,7 +567,7 @@ func (x *ListWithStateRequest) String() string {
 func (*ListWithStateRequest) ProtoMessage() {}
 
 func (x *ListWithStateRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_library_v1_library_proto_msgTypes[9]
+	mi := &file_library_v1_library_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -500,7 +580,7 @@ func (x *ListWithStateRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListWithStateRequest.ProtoReflect.Descriptor instead.
 func (*ListWithStateRequest) Descriptor() ([]byte, []int) {
-	return file_library_v1_library_proto_rawDescGZIP(), []int{9}
+	return file_library_v1_library_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *ListWithStateRequest) GetState() string {
@@ -519,7 +599,7 @@ type ListWithStateResponse struct {
 
 func (x *ListWithStateResponse) Reset() {
 	*x = ListWithStateResponse{}
-	mi := &file_library_v1_library_proto_msgTypes[10]
+	mi := &file_library_v1_library_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -531,7 +611,7 @@ func (x *ListWithStateResponse) String() string {
 func (*ListWithStateResponse) ProtoMessage() {}
 
 func (x *ListWithStateResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_library_v1_library_proto_msgTypes[10]
+	mi := &file_library_v1_library_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -544,7 +624,7 @@ func (x *ListWithStateResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListWithStateResponse.ProtoReflect.Descriptor instead.
 func (*ListWithStateResponse) Descriptor() ([]byte, []int) {
-	return file_library_v1_library_proto_rawDescGZIP(), []int{10}
+	return file_library_v1_library_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *ListWithStateResponse) GetGame() []*Game {
@@ -563,7 +643,7 @@ type GetGameRequest struct {
 
 func (x *GetGameRequest) Reset() {
 	*x = GetGameRequest{}
-	mi := &file_library_v1_library_proto_msgTypes[11]
+	mi := &file_library_v1_library_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -575,7 +655,7 @@ func (x *GetGameRequest) String() string {
 func (*GetGameRequest) ProtoMessage() {}
 
 func (x *GetGameRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_library_v1_library_proto_msgTypes[11]
+	mi := &file_library_v1_library_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -588,7 +668,7 @@ func (x *GetGameRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetGameRequest.ProtoReflect.Descriptor instead.
 func (*GetGameRequest) Descriptor() ([]byte, []int) {
-	return file_library_v1_library_proto_rawDescGZIP(), []int{11}
+	return file_library_v1_library_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *GetGameRequest) GetGameId() uint64 {
@@ -607,7 +687,7 @@ type GetGameResponse struct {
 
 func (x *GetGameResponse) Reset() {
 	*x = GetGameResponse{}
-	mi := &file_library_v1_library_proto_msgTypes[12]
+	mi := &file_library_v1_library_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -619,7 +699,7 @@ func (x *GetGameResponse) String() string {
 func (*GetGameResponse) ProtoMessage() {}
 
 func (x *GetGameResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_library_v1_library_proto_msgTypes[12]
+	mi := &file_library_v1_library_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -632,7 +712,7 @@ func (x *GetGameResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetGameResponse.ProtoReflect.Descriptor instead.
 func (*GetGameResponse) Descriptor() ([]byte, []int) {
-	return file_library_v1_library_proto_rawDescGZIP(), []int{12}
+	return file_library_v1_library_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *GetGameResponse) GetGame() *Game {
@@ -650,7 +730,7 @@ type TriggerTrackerRequest struct {
 
 func (x *TriggerTrackerRequest) Reset() {
 	*x = TriggerTrackerRequest{}
-	mi := &file_library_v1_library_proto_msgTypes[13]
+	mi := &file_library_v1_library_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -662,7 +742,7 @@ func (x *TriggerTrackerRequest) String() string {
 func (*TriggerTrackerRequest) ProtoMessage() {}
 
 func (x *TriggerTrackerRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_library_v1_library_proto_msgTypes[13]
+	mi := &file_library_v1_library_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -675,7 +755,7 @@ func (x *TriggerTrackerRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TriggerTrackerRequest.ProtoReflect.Descriptor instead.
 func (*TriggerTrackerRequest) Descriptor() ([]byte, []int) {
-	return file_library_v1_library_proto_rawDescGZIP(), []int{13}
+	return file_library_v1_library_proto_rawDescGZIP(), []int{15}
 }
 
 type TriggerTrackerResponse struct {
@@ -686,7 +766,7 @@ type TriggerTrackerResponse struct {
 
 func (x *TriggerTrackerResponse) Reset() {
 	*x = TriggerTrackerResponse{}
-	mi := &file_library_v1_library_proto_msgTypes[14]
+	mi := &file_library_v1_library_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -698,7 +778,7 @@ func (x *TriggerTrackerResponse) String() string {
 func (*TriggerTrackerResponse) ProtoMessage() {}
 
 func (x *TriggerTrackerResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_library_v1_library_proto_msgTypes[14]
+	mi := &file_library_v1_library_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -711,7 +791,7 @@ func (x *TriggerTrackerResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TriggerTrackerResponse.ProtoReflect.Descriptor instead.
 func (*TriggerTrackerResponse) Descriptor() ([]byte, []int) {
-	return file_library_v1_library_proto_rawDescGZIP(), []int{14}
+	return file_library_v1_library_proto_rawDescGZIP(), []int{16}
 }
 
 type ListRequest struct {
@@ -725,7 +805,7 @@ type ListRequest struct {
 
 func (x *ListRequest) Reset() {
 	*x = ListRequest{}
-	mi := &file_library_v1_library_proto_msgTypes[15]
+	mi := &file_library_v1_library_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -737,7 +817,7 @@ func (x *ListRequest) String() string {
 func (*ListRequest) ProtoMessage() {}
 
 func (x *ListRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_library_v1_library_proto_msgTypes[15]
+	mi := &file_library_v1_library_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -750,7 +830,7 @@ func (x *ListRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListRequest.ProtoReflect.Descriptor instead.
 func (*ListRequest) Descriptor() ([]byte, []int) {
-	return file_library_v1_library_proto_rawDescGZIP(), []int{15}
+	return file_library_v1_library_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *ListRequest) GetQuery() string {
@@ -783,7 +863,7 @@ type ListResponse struct {
 
 func (x *ListResponse) Reset() {
 	*x = ListResponse{}
-	mi := &file_library_v1_library_proto_msgTypes[16]
+	mi := &file_library_v1_library_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -795,7 +875,7 @@ func (x *ListResponse) String() string {
 func (*ListResponse) ProtoMessage() {}
 
 func (x *ListResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_library_v1_library_proto_msgTypes[16]
+	mi := &file_library_v1_library_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -808,7 +888,7 @@ func (x *ListResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListResponse.ProtoReflect.Descriptor instead.
 func (*ListResponse) Descriptor() ([]byte, []int) {
-	return file_library_v1_library_proto_rawDescGZIP(), []int{16}
+	return file_library_v1_library_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *ListResponse) GetGameList() []*Game {
@@ -827,7 +907,7 @@ type AddRequest struct {
 
 func (x *AddRequest) Reset() {
 	*x = AddRequest{}
-	mi := &file_library_v1_library_proto_msgTypes[17]
+	mi := &file_library_v1_library_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -839,7 +919,7 @@ func (x *AddRequest) String() string {
 func (*AddRequest) ProtoMessage() {}
 
 func (x *AddRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_library_v1_library_proto_msgTypes[17]
+	mi := &file_library_v1_library_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -852,7 +932,7 @@ func (x *AddRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AddRequest.ProtoReflect.Descriptor instead.
 func (*AddRequest) Descriptor() ([]byte, []int) {
-	return file_library_v1_library_proto_rawDescGZIP(), []int{17}
+	return file_library_v1_library_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *AddRequest) GetGame() *Game {
@@ -867,16 +947,17 @@ type Game struct {
 	ID            uint64                 `protobuf:"varint,1,opt,name=ID,proto3" json:"ID,omitempty"`
 	CreatedAt     string                 `protobuf:"bytes,2,opt,name=CreatedAt,proto3" json:"CreatedAt,omitempty"`
 	EditedAt      string                 `protobuf:"bytes,3,opt,name=EditedAt,proto3" json:"EditedAt,omitempty"`
-	DownloadState *Download              `protobuf:"bytes,7,opt,name=DownloadState,proto3" json:"DownloadState,omitempty"`
-	Meta          *v1.GameMetadata       `protobuf:"bytes,4,opt,name=Meta,proto3" json:"Meta,omitempty"`
-	Source        *v1.GameSource         `protobuf:"bytes,8,opt,name=Source,proto3" json:"Source,omitempty"`
+	DownloadState *Download              `protobuf:"bytes,4,opt,name=DownloadState,proto3" json:"DownloadState,omitempty"`
+	Meta          *v1.GameMetadata       `protobuf:"bytes,5,opt,name=Meta,proto3" json:"Meta,omitempty"`
+	Source        *v1.GameSource         `protobuf:"bytes,6,opt,name=Source,proto3" json:"Source,omitempty"`
+	File          *GameFile              `protobuf:"bytes,7,opt,name=file,proto3" json:"file,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *Game) Reset() {
 	*x = Game{}
-	mi := &file_library_v1_library_proto_msgTypes[18]
+	mi := &file_library_v1_library_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -888,7 +969,7 @@ func (x *Game) String() string {
 func (*Game) ProtoMessage() {}
 
 func (x *Game) ProtoReflect() protoreflect.Message {
-	mi := &file_library_v1_library_proto_msgTypes[18]
+	mi := &file_library_v1_library_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -901,7 +982,7 @@ func (x *Game) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Game.ProtoReflect.Descriptor instead.
 func (*Game) Descriptor() ([]byte, []int) {
-	return file_library_v1_library_proto_rawDescGZIP(), []int{18}
+	return file_library_v1_library_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *Game) GetID() uint64 {
@@ -946,6 +1027,57 @@ func (x *Game) GetSource() *v1.GameSource {
 	return nil
 }
 
+func (x *Game) GetFile() *GameFile {
+	if x != nil {
+		return x.File
+	}
+	return nil
+}
+
+type GameFile struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Exe           string                 `protobuf:"bytes,1,opt,name=Exe,proto3" json:"Exe,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GameFile) Reset() {
+	*x = GameFile{}
+	mi := &file_library_v1_library_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GameFile) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GameFile) ProtoMessage() {}
+
+func (x *GameFile) ProtoReflect() protoreflect.Message {
+	mi := &file_library_v1_library_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GameFile.ProtoReflect.Descriptor instead.
+func (*GameFile) Descriptor() ([]byte, []int) {
+	return file_library_v1_library_proto_rawDescGZIP(), []int{21}
+}
+
+func (x *GameFile) GetExe() string {
+	if x != nil {
+		return x.Exe
+	}
+	return ""
+}
+
 type Download struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Client        string                 `protobuf:"bytes,1,opt,name=Client,proto3" json:"Client,omitempty"`
@@ -962,7 +1094,7 @@ type Download struct {
 
 func (x *Download) Reset() {
 	*x = Download{}
-	mi := &file_library_v1_library_proto_msgTypes[19]
+	mi := &file_library_v1_library_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -974,7 +1106,7 @@ func (x *Download) String() string {
 func (*Download) ProtoMessage() {}
 
 func (x *Download) ProtoReflect() protoreflect.Message {
-	mi := &file_library_v1_library_proto_msgTypes[19]
+	mi := &file_library_v1_library_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -987,7 +1119,7 @@ func (x *Download) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Download.ProtoReflect.Descriptor instead.
 func (*Download) Descriptor() ([]byte, []int) {
-	return file_library_v1_library_proto_rawDescGZIP(), []int{19}
+	return file_library_v1_library_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *Download) GetClient() string {
@@ -1054,7 +1186,7 @@ type AddResponse struct {
 
 func (x *AddResponse) Reset() {
 	*x = AddResponse{}
-	mi := &file_library_v1_library_proto_msgTypes[20]
+	mi := &file_library_v1_library_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1066,7 +1198,7 @@ func (x *AddResponse) String() string {
 func (*AddResponse) ProtoMessage() {}
 
 func (x *AddResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_library_v1_library_proto_msgTypes[20]
+	mi := &file_library_v1_library_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1079,7 +1211,7 @@ func (x *AddResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AddResponse.ProtoReflect.Descriptor instead.
 func (*AddResponse) Descriptor() ([]byte, []int) {
-	return file_library_v1_library_proto_rawDescGZIP(), []int{20}
+	return file_library_v1_library_proto_rawDescGZIP(), []int{23}
 }
 
 var File_library_v1_library_proto protoreflect.FileDescriptor
@@ -1087,7 +1219,10 @@ var File_library_v1_library_proto protoreflect.FileDescriptor
 const file_library_v1_library_proto_rawDesc = "" +
 	"\n" +
 	"\x18library/v1/library.proto\x12\n" +
-	"library.v1\x1a\x16search/v1/search.proto\"_\n" +
+	"library.v1\x1a\x16search/v1/search.proto\"3\n" +
+	"\vEditRequest\x12$\n" +
+	"\x04game\x18\x01 \x01(\v2\x10.library.v1.GameR\x04game\"\x0e\n" +
+	"\fEditResponse\"_\n" +
 	"\x11DeleteFileRequest\x12\x16\n" +
 	"\x06GameId\x18\x01 \x01(\x04R\x06GameId\x12\x1e\n" +
 	"\n" +
@@ -1134,14 +1269,17 @@ const file_library_v1_library_proto_rawDesc = "" +
 	"\bgameList\x18\x01 \x03(\v2\x10.library.v1.GameR\bgameList\"2\n" +
 	"\n" +
 	"AddRequest\x12$\n" +
-	"\x04game\x18\x01 \x01(\v2\x10.library.v1.GameR\x04game\"\xe8\x01\n" +
+	"\x04game\x18\x01 \x01(\v2\x10.library.v1.GameR\x04game\"\x92\x02\n" +
 	"\x04Game\x12\x0e\n" +
 	"\x02ID\x18\x01 \x01(\x04R\x02ID\x12\x1c\n" +
 	"\tCreatedAt\x18\x02 \x01(\tR\tCreatedAt\x12\x1a\n" +
 	"\bEditedAt\x18\x03 \x01(\tR\bEditedAt\x12:\n" +
-	"\rDownloadState\x18\a \x01(\v2\x14.library.v1.DownloadR\rDownloadState\x12+\n" +
-	"\x04Meta\x18\x04 \x01(\v2\x17.search.v1.GameMetadataR\x04Meta\x12-\n" +
-	"\x06Source\x18\b \x01(\v2\x15.search.v1.GameSourceR\x06Source\"\xea\x01\n" +
+	"\rDownloadState\x18\x04 \x01(\v2\x14.library.v1.DownloadR\rDownloadState\x12+\n" +
+	"\x04Meta\x18\x05 \x01(\v2\x17.search.v1.GameMetadataR\x04Meta\x12-\n" +
+	"\x06Source\x18\x06 \x01(\v2\x15.search.v1.GameSourceR\x06Source\x12(\n" +
+	"\x04file\x18\a \x01(\v2\x14.library.v1.GameFileR\x04file\"\x1c\n" +
+	"\bGameFile\x12\x10\n" +
+	"\x03Exe\x18\x01 \x01(\tR\x03Exe\"\xea\x01\n" +
 	"\bDownload\x12\x16\n" +
 	"\x06Client\x18\x01 \x01(\tR\x06Client\x12\x1e\n" +
 	"\n" +
@@ -1153,12 +1291,13 @@ const file_library_v1_library_proto_rawDesc = "" +
 	"\x04Left\x18\b \x01(\x04R\x04Left\x12\"\n" +
 	"\fDownloadPath\x18\x05 \x01(\tR\fDownloadPath\x12 \n" +
 	"\vDownloadUrl\x18\x06 \x01(\tR\vDownloadUrl\"\r\n" +
-	"\vAddResponse2\xa1\x05\n" +
+	"\vAddResponse2\xde\x05\n" +
 	"\x0eLibraryService\x12;\n" +
 	"\x04List\x12\x17.library.v1.ListRequest\x1a\x18.library.v1.ListResponse\"\x00\x12V\n" +
 	"\rListWithState\x12 .library.v1.ListWithStateRequest\x1a!.library.v1.ListWithStateResponse\"\x00\x12A\n" +
 	"\x06Delete\x12\x19.library.v1.DeleteRequest\x1a\x1a.library.v1.DeleteResponse\"\x00\x12A\n" +
-	"\x06Exists\x12\x19.library.v1.ExistsRequest\x1a\x1a.library.v1.ExistsResponse\"\x00\x12Y\n" +
+	"\x06Exists\x12\x19.library.v1.ExistsRequest\x1a\x1a.library.v1.ExistsResponse\"\x00\x12;\n" +
+	"\x04Edit\x12\x17.library.v1.EditRequest\x1a\x18.library.v1.EditResponse\"\x00\x12Y\n" +
 	"\x0eTriggerTracker\x12!.library.v1.TriggerTrackerRequest\x1a\".library.v1.TriggerTrackerResponse\"\x00\x12D\n" +
 	"\aGetGame\x12\x1a.library.v1.GetGameRequest\x1a\x1b.library.v1.GetGameResponse\"\x00\x12J\n" +
 	"\tListFiles\x12\x1c.library.v1.ListFilesRequest\x1a\x1d.library.v1.ListFilesResponse\"\x00\x12M\n" +
@@ -1181,64 +1320,71 @@ func file_library_v1_library_proto_rawDescGZIP() []byte {
 	return file_library_v1_library_proto_rawDescData
 }
 
-var file_library_v1_library_proto_msgTypes = make([]protoimpl.MessageInfo, 21)
+var file_library_v1_library_proto_msgTypes = make([]protoimpl.MessageInfo, 24)
 var file_library_v1_library_proto_goTypes = []any{
-	(*DeleteFileRequest)(nil),      // 0: library.v1.DeleteFileRequest
-	(*DeleteFileResponse)(nil),     // 1: library.v1.DeleteFileResponse
-	(*ListFilesRequest)(nil),       // 2: library.v1.ListFilesRequest
-	(*File)(nil),                   // 3: library.v1.File
-	(*ListFilesResponse)(nil),      // 4: library.v1.ListFilesResponse
-	(*ExistsRequest)(nil),          // 5: library.v1.ExistsRequest
-	(*ExistsResponse)(nil),         // 6: library.v1.ExistsResponse
-	(*DeleteRequest)(nil),          // 7: library.v1.DeleteRequest
-	(*DeleteResponse)(nil),         // 8: library.v1.DeleteResponse
-	(*ListWithStateRequest)(nil),   // 9: library.v1.ListWithStateRequest
-	(*ListWithStateResponse)(nil),  // 10: library.v1.ListWithStateResponse
-	(*GetGameRequest)(nil),         // 11: library.v1.GetGameRequest
-	(*GetGameResponse)(nil),        // 12: library.v1.GetGameResponse
-	(*TriggerTrackerRequest)(nil),  // 13: library.v1.TriggerTrackerRequest
-	(*TriggerTrackerResponse)(nil), // 14: library.v1.TriggerTrackerResponse
-	(*ListRequest)(nil),            // 15: library.v1.ListRequest
-	(*ListResponse)(nil),           // 16: library.v1.ListResponse
-	(*AddRequest)(nil),             // 17: library.v1.AddRequest
-	(*Game)(nil),                   // 18: library.v1.Game
-	(*Download)(nil),               // 19: library.v1.Download
-	(*AddResponse)(nil),            // 20: library.v1.AddResponse
-	(*v1.GameMetadata)(nil),        // 21: search.v1.GameMetadata
-	(*v1.GameSource)(nil),          // 22: search.v1.GameSource
+	(*EditRequest)(nil),            // 0: library.v1.EditRequest
+	(*EditResponse)(nil),           // 1: library.v1.EditResponse
+	(*DeleteFileRequest)(nil),      // 2: library.v1.DeleteFileRequest
+	(*DeleteFileResponse)(nil),     // 3: library.v1.DeleteFileResponse
+	(*ListFilesRequest)(nil),       // 4: library.v1.ListFilesRequest
+	(*File)(nil),                   // 5: library.v1.File
+	(*ListFilesResponse)(nil),      // 6: library.v1.ListFilesResponse
+	(*ExistsRequest)(nil),          // 7: library.v1.ExistsRequest
+	(*ExistsResponse)(nil),         // 8: library.v1.ExistsResponse
+	(*DeleteRequest)(nil),          // 9: library.v1.DeleteRequest
+	(*DeleteResponse)(nil),         // 10: library.v1.DeleteResponse
+	(*ListWithStateRequest)(nil),   // 11: library.v1.ListWithStateRequest
+	(*ListWithStateResponse)(nil),  // 12: library.v1.ListWithStateResponse
+	(*GetGameRequest)(nil),         // 13: library.v1.GetGameRequest
+	(*GetGameResponse)(nil),        // 14: library.v1.GetGameResponse
+	(*TriggerTrackerRequest)(nil),  // 15: library.v1.TriggerTrackerRequest
+	(*TriggerTrackerResponse)(nil), // 16: library.v1.TriggerTrackerResponse
+	(*ListRequest)(nil),            // 17: library.v1.ListRequest
+	(*ListResponse)(nil),           // 18: library.v1.ListResponse
+	(*AddRequest)(nil),             // 19: library.v1.AddRequest
+	(*Game)(nil),                   // 20: library.v1.Game
+	(*GameFile)(nil),               // 21: library.v1.GameFile
+	(*Download)(nil),               // 22: library.v1.Download
+	(*AddResponse)(nil),            // 23: library.v1.AddResponse
+	(*v1.GameMetadata)(nil),        // 24: search.v1.GameMetadata
+	(*v1.GameSource)(nil),          // 25: search.v1.GameSource
 }
 var file_library_v1_library_proto_depIdxs = []int32{
-	3,  // 0: library.v1.ListFilesResponse.files:type_name -> library.v1.File
-	18, // 1: library.v1.ListWithStateResponse.game:type_name -> library.v1.Game
-	18, // 2: library.v1.GetGameResponse.game:type_name -> library.v1.Game
-	18, // 3: library.v1.ListResponse.gameList:type_name -> library.v1.Game
-	18, // 4: library.v1.AddRequest.game:type_name -> library.v1.Game
-	19, // 5: library.v1.Game.DownloadState:type_name -> library.v1.Download
-	21, // 6: library.v1.Game.Meta:type_name -> search.v1.GameMetadata
-	22, // 7: library.v1.Game.Source:type_name -> search.v1.GameSource
-	15, // 8: library.v1.LibraryService.List:input_type -> library.v1.ListRequest
-	9,  // 9: library.v1.LibraryService.ListWithState:input_type -> library.v1.ListWithStateRequest
-	7,  // 10: library.v1.LibraryService.Delete:input_type -> library.v1.DeleteRequest
-	5,  // 11: library.v1.LibraryService.Exists:input_type -> library.v1.ExistsRequest
-	13, // 12: library.v1.LibraryService.TriggerTracker:input_type -> library.v1.TriggerTrackerRequest
-	11, // 13: library.v1.LibraryService.GetGame:input_type -> library.v1.GetGameRequest
-	2,  // 14: library.v1.LibraryService.ListFiles:input_type -> library.v1.ListFilesRequest
-	0,  // 15: library.v1.LibraryService.DeleteFile:input_type -> library.v1.DeleteFileRequest
-	17, // 16: library.v1.LibraryService.Add:input_type -> library.v1.AddRequest
-	16, // 17: library.v1.LibraryService.List:output_type -> library.v1.ListResponse
-	10, // 18: library.v1.LibraryService.ListWithState:output_type -> library.v1.ListWithStateResponse
-	8,  // 19: library.v1.LibraryService.Delete:output_type -> library.v1.DeleteResponse
-	6,  // 20: library.v1.LibraryService.Exists:output_type -> library.v1.ExistsResponse
-	14, // 21: library.v1.LibraryService.TriggerTracker:output_type -> library.v1.TriggerTrackerResponse
-	12, // 22: library.v1.LibraryService.GetGame:output_type -> library.v1.GetGameResponse
-	4,  // 23: library.v1.LibraryService.ListFiles:output_type -> library.v1.ListFilesResponse
-	1,  // 24: library.v1.LibraryService.DeleteFile:output_type -> library.v1.DeleteFileResponse
-	20, // 25: library.v1.LibraryService.Add:output_type -> library.v1.AddResponse
-	17, // [17:26] is the sub-list for method output_type
-	8,  // [8:17] is the sub-list for method input_type
-	8,  // [8:8] is the sub-list for extension type_name
-	8,  // [8:8] is the sub-list for extension extendee
-	0,  // [0:8] is the sub-list for field type_name
+	20, // 0: library.v1.EditRequest.game:type_name -> library.v1.Game
+	5,  // 1: library.v1.ListFilesResponse.files:type_name -> library.v1.File
+	20, // 2: library.v1.ListWithStateResponse.game:type_name -> library.v1.Game
+	20, // 3: library.v1.GetGameResponse.game:type_name -> library.v1.Game
+	20, // 4: library.v1.ListResponse.gameList:type_name -> library.v1.Game
+	20, // 5: library.v1.AddRequest.game:type_name -> library.v1.Game
+	22, // 6: library.v1.Game.DownloadState:type_name -> library.v1.Download
+	24, // 7: library.v1.Game.Meta:type_name -> search.v1.GameMetadata
+	25, // 8: library.v1.Game.Source:type_name -> search.v1.GameSource
+	21, // 9: library.v1.Game.file:type_name -> library.v1.GameFile
+	17, // 10: library.v1.LibraryService.List:input_type -> library.v1.ListRequest
+	11, // 11: library.v1.LibraryService.ListWithState:input_type -> library.v1.ListWithStateRequest
+	9,  // 12: library.v1.LibraryService.Delete:input_type -> library.v1.DeleteRequest
+	7,  // 13: library.v1.LibraryService.Exists:input_type -> library.v1.ExistsRequest
+	0,  // 14: library.v1.LibraryService.Edit:input_type -> library.v1.EditRequest
+	15, // 15: library.v1.LibraryService.TriggerTracker:input_type -> library.v1.TriggerTrackerRequest
+	13, // 16: library.v1.LibraryService.GetGame:input_type -> library.v1.GetGameRequest
+	4,  // 17: library.v1.LibraryService.ListFiles:input_type -> library.v1.ListFilesRequest
+	2,  // 18: library.v1.LibraryService.DeleteFile:input_type -> library.v1.DeleteFileRequest
+	19, // 19: library.v1.LibraryService.Add:input_type -> library.v1.AddRequest
+	18, // 20: library.v1.LibraryService.List:output_type -> library.v1.ListResponse
+	12, // 21: library.v1.LibraryService.ListWithState:output_type -> library.v1.ListWithStateResponse
+	10, // 22: library.v1.LibraryService.Delete:output_type -> library.v1.DeleteResponse
+	8,  // 23: library.v1.LibraryService.Exists:output_type -> library.v1.ExistsResponse
+	1,  // 24: library.v1.LibraryService.Edit:output_type -> library.v1.EditResponse
+	16, // 25: library.v1.LibraryService.TriggerTracker:output_type -> library.v1.TriggerTrackerResponse
+	14, // 26: library.v1.LibraryService.GetGame:output_type -> library.v1.GetGameResponse
+	6,  // 27: library.v1.LibraryService.ListFiles:output_type -> library.v1.ListFilesResponse
+	3,  // 28: library.v1.LibraryService.DeleteFile:output_type -> library.v1.DeleteFileResponse
+	23, // 29: library.v1.LibraryService.Add:output_type -> library.v1.AddResponse
+	20, // [20:30] is the sub-list for method output_type
+	10, // [10:20] is the sub-list for method input_type
+	10, // [10:10] is the sub-list for extension type_name
+	10, // [10:10] is the sub-list for extension extendee
+	0,  // [0:10] is the sub-list for field type_name
 }
 
 func init() { file_library_v1_library_proto_init() }
@@ -1252,7 +1398,7 @@ func file_library_v1_library_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_library_v1_library_proto_rawDesc), len(file_library_v1_library_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   21,
+			NumMessages:   24,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

@@ -41,9 +41,21 @@ const (
 	FrostLibraryServiceListDownloadingProcedure = "/frost_library.v1.FrostLibraryService/ListDownloading"
 	// FrostLibraryServiceGetProcedure is the fully-qualified name of the FrostLibraryService's Get RPC.
 	FrostLibraryServiceGetProcedure = "/frost_library.v1.FrostLibraryService/Get"
+	// FrostLibraryServiceEditProcedure is the fully-qualified name of the FrostLibraryService's Edit
+	// RPC.
+	FrostLibraryServiceEditProcedure = "/frost_library.v1.FrostLibraryService/Edit"
+	// FrostLibraryServiceLaunchFilePickerProcedure is the fully-qualified name of the
+	// FrostLibraryService's LaunchFilePicker RPC.
+	FrostLibraryServiceLaunchFilePickerProcedure = "/frost_library.v1.FrostLibraryService/LaunchFilePicker"
 	// FrostLibraryServiceDeleteProcedure is the fully-qualified name of the FrostLibraryService's
 	// Delete RPC.
 	FrostLibraryServiceDeleteProcedure = "/frost_library.v1.FrostLibraryService/Delete"
+	// FrostLibraryServiceGetByGameIdProcedure is the fully-qualified name of the FrostLibraryService's
+	// GetByGameId RPC.
+	FrostLibraryServiceGetByGameIdProcedure = "/frost_library.v1.FrostLibraryService/GetByGameId"
+	// FrostLibraryServiceLaunchProcedure is the fully-qualified name of the FrostLibraryService's
+	// Launch RPC.
+	FrostLibraryServiceLaunchProcedure = "/frost_library.v1.FrostLibraryService/Launch"
 	// FrostLibraryServiceDownloadProcedure is the fully-qualified name of the FrostLibraryService's
 	// Download RPC.
 	FrostLibraryServiceDownloadProcedure = "/frost_library.v1.FrostLibraryService/Download"
@@ -60,7 +72,11 @@ type FrostLibraryServiceClient interface {
 	ListFiles(context.Context, *connect.Request[v1.ListFilesRequest]) (*connect.Response[v1.ListFilesResponse], error)
 	ListDownloading(context.Context, *connect.Request[v1.ListDownloadingRequest]) (*connect.Response[v1.ListDownloadingResponse], error)
 	Get(context.Context, *connect.Request[v1.GetRequest]) (*connect.Response[v1.GetResponse], error)
+	Edit(context.Context, *connect.Request[v1.EditRequest]) (*connect.Response[v1.EditResponse], error)
+	LaunchFilePicker(context.Context, *connect.Request[v1.LaunchFilePickerRequest]) (*connect.Response[v1.LaunchFilePickerResponse], error)
 	Delete(context.Context, *connect.Request[v1.DeleteRequest]) (*connect.Response[v1.DeleteResponse], error)
+	GetByGameId(context.Context, *connect.Request[v1.GetByGameIdRequest]) (*connect.Response[v1.GetByGameIdResponse], error)
+	Launch(context.Context, *connect.Request[v1.LaunchRequest]) (*connect.Response[v1.LaunchResponse], error)
 	Download(context.Context, *connect.Request[v1.DownloadRequest]) (*connect.Response[v1.DownloadResponse], error)
 	Cancel(context.Context, *connect.Request[v1.CancelRequest]) (*connect.Response[v1.CancelResponse], error)
 	Pause(context.Context, *connect.Request[v1.PauseRequest]) (*connect.Response[v1.PauseResponse], error)
@@ -95,10 +111,34 @@ func NewFrostLibraryServiceClient(httpClient connect.HTTPClient, baseURL string,
 			connect.WithSchema(frostLibraryServiceMethods.ByName("Get")),
 			connect.WithClientOptions(opts...),
 		),
+		edit: connect.NewClient[v1.EditRequest, v1.EditResponse](
+			httpClient,
+			baseURL+FrostLibraryServiceEditProcedure,
+			connect.WithSchema(frostLibraryServiceMethods.ByName("Edit")),
+			connect.WithClientOptions(opts...),
+		),
+		launchFilePicker: connect.NewClient[v1.LaunchFilePickerRequest, v1.LaunchFilePickerResponse](
+			httpClient,
+			baseURL+FrostLibraryServiceLaunchFilePickerProcedure,
+			connect.WithSchema(frostLibraryServiceMethods.ByName("LaunchFilePicker")),
+			connect.WithClientOptions(opts...),
+		),
 		delete: connect.NewClient[v1.DeleteRequest, v1.DeleteResponse](
 			httpClient,
 			baseURL+FrostLibraryServiceDeleteProcedure,
 			connect.WithSchema(frostLibraryServiceMethods.ByName("Delete")),
+			connect.WithClientOptions(opts...),
+		),
+		getByGameId: connect.NewClient[v1.GetByGameIdRequest, v1.GetByGameIdResponse](
+			httpClient,
+			baseURL+FrostLibraryServiceGetByGameIdProcedure,
+			connect.WithSchema(frostLibraryServiceMethods.ByName("GetByGameId")),
+			connect.WithClientOptions(opts...),
+		),
+		launch: connect.NewClient[v1.LaunchRequest, v1.LaunchResponse](
+			httpClient,
+			baseURL+FrostLibraryServiceLaunchProcedure,
+			connect.WithSchema(frostLibraryServiceMethods.ByName("Launch")),
 			connect.WithClientOptions(opts...),
 		),
 		download: connect.NewClient[v1.DownloadRequest, v1.DownloadResponse](
@@ -124,13 +164,17 @@ func NewFrostLibraryServiceClient(httpClient connect.HTTPClient, baseURL string,
 
 // frostLibraryServiceClient implements FrostLibraryServiceClient.
 type frostLibraryServiceClient struct {
-	listFiles       *connect.Client[v1.ListFilesRequest, v1.ListFilesResponse]
-	listDownloading *connect.Client[v1.ListDownloadingRequest, v1.ListDownloadingResponse]
-	get             *connect.Client[v1.GetRequest, v1.GetResponse]
-	delete          *connect.Client[v1.DeleteRequest, v1.DeleteResponse]
-	download        *connect.Client[v1.DownloadRequest, v1.DownloadResponse]
-	cancel          *connect.Client[v1.CancelRequest, v1.CancelResponse]
-	pause           *connect.Client[v1.PauseRequest, v1.PauseResponse]
+	listFiles        *connect.Client[v1.ListFilesRequest, v1.ListFilesResponse]
+	listDownloading  *connect.Client[v1.ListDownloadingRequest, v1.ListDownloadingResponse]
+	get              *connect.Client[v1.GetRequest, v1.GetResponse]
+	edit             *connect.Client[v1.EditRequest, v1.EditResponse]
+	launchFilePicker *connect.Client[v1.LaunchFilePickerRequest, v1.LaunchFilePickerResponse]
+	delete           *connect.Client[v1.DeleteRequest, v1.DeleteResponse]
+	getByGameId      *connect.Client[v1.GetByGameIdRequest, v1.GetByGameIdResponse]
+	launch           *connect.Client[v1.LaunchRequest, v1.LaunchResponse]
+	download         *connect.Client[v1.DownloadRequest, v1.DownloadResponse]
+	cancel           *connect.Client[v1.CancelRequest, v1.CancelResponse]
+	pause            *connect.Client[v1.PauseRequest, v1.PauseResponse]
 }
 
 // ListFiles calls frost_library.v1.FrostLibraryService.ListFiles.
@@ -148,9 +192,29 @@ func (c *frostLibraryServiceClient) Get(ctx context.Context, req *connect.Reques
 	return c.get.CallUnary(ctx, req)
 }
 
+// Edit calls frost_library.v1.FrostLibraryService.Edit.
+func (c *frostLibraryServiceClient) Edit(ctx context.Context, req *connect.Request[v1.EditRequest]) (*connect.Response[v1.EditResponse], error) {
+	return c.edit.CallUnary(ctx, req)
+}
+
+// LaunchFilePicker calls frost_library.v1.FrostLibraryService.LaunchFilePicker.
+func (c *frostLibraryServiceClient) LaunchFilePicker(ctx context.Context, req *connect.Request[v1.LaunchFilePickerRequest]) (*connect.Response[v1.LaunchFilePickerResponse], error) {
+	return c.launchFilePicker.CallUnary(ctx, req)
+}
+
 // Delete calls frost_library.v1.FrostLibraryService.Delete.
 func (c *frostLibraryServiceClient) Delete(ctx context.Context, req *connect.Request[v1.DeleteRequest]) (*connect.Response[v1.DeleteResponse], error) {
 	return c.delete.CallUnary(ctx, req)
+}
+
+// GetByGameId calls frost_library.v1.FrostLibraryService.GetByGameId.
+func (c *frostLibraryServiceClient) GetByGameId(ctx context.Context, req *connect.Request[v1.GetByGameIdRequest]) (*connect.Response[v1.GetByGameIdResponse], error) {
+	return c.getByGameId.CallUnary(ctx, req)
+}
+
+// Launch calls frost_library.v1.FrostLibraryService.Launch.
+func (c *frostLibraryServiceClient) Launch(ctx context.Context, req *connect.Request[v1.LaunchRequest]) (*connect.Response[v1.LaunchResponse], error) {
+	return c.launch.CallUnary(ctx, req)
 }
 
 // Download calls frost_library.v1.FrostLibraryService.Download.
@@ -174,7 +238,11 @@ type FrostLibraryServiceHandler interface {
 	ListFiles(context.Context, *connect.Request[v1.ListFilesRequest]) (*connect.Response[v1.ListFilesResponse], error)
 	ListDownloading(context.Context, *connect.Request[v1.ListDownloadingRequest]) (*connect.Response[v1.ListDownloadingResponse], error)
 	Get(context.Context, *connect.Request[v1.GetRequest]) (*connect.Response[v1.GetResponse], error)
+	Edit(context.Context, *connect.Request[v1.EditRequest]) (*connect.Response[v1.EditResponse], error)
+	LaunchFilePicker(context.Context, *connect.Request[v1.LaunchFilePickerRequest]) (*connect.Response[v1.LaunchFilePickerResponse], error)
 	Delete(context.Context, *connect.Request[v1.DeleteRequest]) (*connect.Response[v1.DeleteResponse], error)
+	GetByGameId(context.Context, *connect.Request[v1.GetByGameIdRequest]) (*connect.Response[v1.GetByGameIdResponse], error)
+	Launch(context.Context, *connect.Request[v1.LaunchRequest]) (*connect.Response[v1.LaunchResponse], error)
 	Download(context.Context, *connect.Request[v1.DownloadRequest]) (*connect.Response[v1.DownloadResponse], error)
 	Cancel(context.Context, *connect.Request[v1.CancelRequest]) (*connect.Response[v1.CancelResponse], error)
 	Pause(context.Context, *connect.Request[v1.PauseRequest]) (*connect.Response[v1.PauseResponse], error)
@@ -205,10 +273,34 @@ func NewFrostLibraryServiceHandler(svc FrostLibraryServiceHandler, opts ...conne
 		connect.WithSchema(frostLibraryServiceMethods.ByName("Get")),
 		connect.WithHandlerOptions(opts...),
 	)
+	frostLibraryServiceEditHandler := connect.NewUnaryHandler(
+		FrostLibraryServiceEditProcedure,
+		svc.Edit,
+		connect.WithSchema(frostLibraryServiceMethods.ByName("Edit")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frostLibraryServiceLaunchFilePickerHandler := connect.NewUnaryHandler(
+		FrostLibraryServiceLaunchFilePickerProcedure,
+		svc.LaunchFilePicker,
+		connect.WithSchema(frostLibraryServiceMethods.ByName("LaunchFilePicker")),
+		connect.WithHandlerOptions(opts...),
+	)
 	frostLibraryServiceDeleteHandler := connect.NewUnaryHandler(
 		FrostLibraryServiceDeleteProcedure,
 		svc.Delete,
 		connect.WithSchema(frostLibraryServiceMethods.ByName("Delete")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frostLibraryServiceGetByGameIdHandler := connect.NewUnaryHandler(
+		FrostLibraryServiceGetByGameIdProcedure,
+		svc.GetByGameId,
+		connect.WithSchema(frostLibraryServiceMethods.ByName("GetByGameId")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frostLibraryServiceLaunchHandler := connect.NewUnaryHandler(
+		FrostLibraryServiceLaunchProcedure,
+		svc.Launch,
+		connect.WithSchema(frostLibraryServiceMethods.ByName("Launch")),
 		connect.WithHandlerOptions(opts...),
 	)
 	frostLibraryServiceDownloadHandler := connect.NewUnaryHandler(
@@ -237,8 +329,16 @@ func NewFrostLibraryServiceHandler(svc FrostLibraryServiceHandler, opts ...conne
 			frostLibraryServiceListDownloadingHandler.ServeHTTP(w, r)
 		case FrostLibraryServiceGetProcedure:
 			frostLibraryServiceGetHandler.ServeHTTP(w, r)
+		case FrostLibraryServiceEditProcedure:
+			frostLibraryServiceEditHandler.ServeHTTP(w, r)
+		case FrostLibraryServiceLaunchFilePickerProcedure:
+			frostLibraryServiceLaunchFilePickerHandler.ServeHTTP(w, r)
 		case FrostLibraryServiceDeleteProcedure:
 			frostLibraryServiceDeleteHandler.ServeHTTP(w, r)
+		case FrostLibraryServiceGetByGameIdProcedure:
+			frostLibraryServiceGetByGameIdHandler.ServeHTTP(w, r)
+		case FrostLibraryServiceLaunchProcedure:
+			frostLibraryServiceLaunchHandler.ServeHTTP(w, r)
 		case FrostLibraryServiceDownloadProcedure:
 			frostLibraryServiceDownloadHandler.ServeHTTP(w, r)
 		case FrostLibraryServiceCancelProcedure:
@@ -266,8 +366,24 @@ func (UnimplementedFrostLibraryServiceHandler) Get(context.Context, *connect.Req
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("frost_library.v1.FrostLibraryService.Get is not implemented"))
 }
 
+func (UnimplementedFrostLibraryServiceHandler) Edit(context.Context, *connect.Request[v1.EditRequest]) (*connect.Response[v1.EditResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("frost_library.v1.FrostLibraryService.Edit is not implemented"))
+}
+
+func (UnimplementedFrostLibraryServiceHandler) LaunchFilePicker(context.Context, *connect.Request[v1.LaunchFilePickerRequest]) (*connect.Response[v1.LaunchFilePickerResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("frost_library.v1.FrostLibraryService.LaunchFilePicker is not implemented"))
+}
+
 func (UnimplementedFrostLibraryServiceHandler) Delete(context.Context, *connect.Request[v1.DeleteRequest]) (*connect.Response[v1.DeleteResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("frost_library.v1.FrostLibraryService.Delete is not implemented"))
+}
+
+func (UnimplementedFrostLibraryServiceHandler) GetByGameId(context.Context, *connect.Request[v1.GetByGameIdRequest]) (*connect.Response[v1.GetByGameIdResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("frost_library.v1.FrostLibraryService.GetByGameId is not implemented"))
+}
+
+func (UnimplementedFrostLibraryServiceHandler) Launch(context.Context, *connect.Request[v1.LaunchRequest]) (*connect.Response[v1.LaunchResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("frost_library.v1.FrostLibraryService.Launch is not implemented"))
 }
 
 func (UnimplementedFrostLibraryServiceHandler) Download(context.Context, *connect.Request[v1.DownloadRequest]) (*connect.Response[v1.DownloadResponse], error) {

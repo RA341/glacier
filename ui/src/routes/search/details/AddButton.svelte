@@ -4,7 +4,7 @@
     import {create} from "@bufbuild/protobuf";
     import {DownloadSchema, GameSchema, LibraryService} from "$lib/gen/library/v1/library_pb";
     import {type GameMetadata, type GameSource} from "$lib/gen/search/v1/search_pb";
-    import {createRPCRunner} from "$lib/api/svelte-api.svelte";
+    import {createRPCRunner} from "$lib/api/rpc.svelte.js";
     import {goto} from "$app/navigation";
     import {onMount} from "svelte";
     import {AlertCircleIcon, ArrowRightIcon, LibraryIcon, LoaderIcon, PlusIcon} from "@lucide/svelte";

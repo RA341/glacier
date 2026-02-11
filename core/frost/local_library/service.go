@@ -11,6 +11,7 @@ import (
 
 	"connectrpc.com/connect"
 	hc "github.com/ra341/glacier/frost/http_client"
+	"github.com/ra341/glacier/frost/launcher"
 	"github.com/ra341/glacier/frost/local_library/download"
 	librpc "github.com/ra341/glacier/generated/library/v1"
 	glacier "github.com/ra341/glacier/generated/library/v1/v1connect"
@@ -19,10 +20,12 @@ import (
 )
 
 type Service struct {
-	store      Store
-	baseurl    string
+	baseurl string
+	store   Store
+	lib     glacier.LibraryServiceClient
+
 	downloader *download.Service
-	lib        glacier.LibraryServiceClient
+	launcher   *launcher.Service
 }
 
 func New(baseurl string, store Store, downloader *download.Service, cli hc.HttpCliFactory) *Service {
@@ -31,10 +34,41 @@ func New(baseurl string, store Store, downloader *download.Service, cli hc.HttpC
 		store:      store,
 		baseurl:    baseurl,
 		downloader: downloader,
+		launcher:   launcher.New(),
 	}
 	s.loadDownloading()
 
 	return s
+}
+
+func (s *Service) Running(ctx context.Context, gameID int, exe string) error {
+	get, err := s.store.Get(ctx, gameID)
+	if err != nil {
+		return err
+	}
+
+	exe = get.Game.File.Exe
+	if exe == "" {
+		return fmt.Errorf("game exe not found please")
+	}
+	fullPath := filepath.Join(get.Download.DownloadPath, exe)
+
+	return s.launcher.Running(ctx, fullPath)
+}
+
+func (s *Service) Launch(ctx context.Context, gameID int) error {
+	get, err := s.store.Get(ctx, gameID)
+	if err != nil {
+		return err
+	}
+
+	exe := get.Game.File.Exe
+	if exe == "" {
+		return fmt.Errorf("game exe not found please")
+	}
+	fullPath := filepath.Join(get.Download.DownloadPath, exe)
+
+	return s.launcher.Launch(fullPath)
 }
 
 func (s *Service) Download(
@@ -45,7 +79,7 @@ func (s *Service) Download(
 	force bool,
 ) error {
 	if recheck {
-		game, err := s.store.Get(ctx, gameId)
+		game, err := s.store.GetByGameId(ctx, uint64(gameId), false)
 		if err != nil {
 			return fmt.Errorf("could not find game, did you add it first ?: %w", err)
 		}
@@ -146,4 +180,18 @@ func (s *Service) loadDownloading() {
 			log.Warn().Err(err).Msg("could not restart game download")
 		}
 	}
+}
+
+func (s *Service) Delete(ctx context.Context, id uint64) error {
+	localGame, err := s.store.Get(ctx, int(id))
+	if err != nil {
+		return err
+	}
+
+	err = os.RemoveAll(localGame.Download.DownloadPath)
+	if err != nil {
+		return err
+	}
+
+	return s.store.Delete(ctx, int(id))
 }

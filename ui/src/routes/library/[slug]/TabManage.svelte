@@ -52,7 +52,9 @@
             </div>
             <!-- File List -->
             <div class="lg:col-span-7 flex flex-col h-95 bg-panel/30 border border-border rounded-2xl overflow-hidden">
-                <FileManager gameId={game?.ID ?? BigInt(0)}/>
+                {#if game}
+                    <FileManager game={game}/>
+                {/if}
             </div>
         </div>
     </section>
