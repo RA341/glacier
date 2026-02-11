@@ -2,7 +2,7 @@
 
 REPO="RA341/glacier"
 ASSET_NAME="frost-linux.zip"
-DOWNLOAD_URL="https://github.com/$REPO/releases/latest/download/$ASSET_NAME"
+DOWNLOAD_URL="https://github.com/$REPO/releases/download/canary/$ASSET_NAME"
 
 TARGET_DIR=$(pwd)
 

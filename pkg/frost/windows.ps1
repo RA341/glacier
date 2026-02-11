@@ -1,6 +1,6 @@
 $repo = "RA341/glacier"
 $assetName = "frost-windows.zip"
-$downloadUrl = "https://github.com/$repo/releases/latest/download/$assetName"
+$downloadUrl = "https://github.com/$repo/releases/download/canary/$assetName"
 
 $targetDir = Get-Location # Default to current working directory
 
