@@ -122,13 +122,12 @@ func (s *Server) registerGlacierProxy(mux *http.ServeMux) {
 		log.Fatal().Err(err).Msg("Error parsing url")
 	}
 
-	proxy := httputil.NewSingleHostReverseProxy(target)
-	originalDirector := proxy.Director
-	proxy.Director = func(req *http.Request) {
-		req.Header.Set(auth.FrostHeader, "true")
-
-		originalDirector(req)
-		req.Host = target.Host
+	proxy := &httputil.ReverseProxy{
+		Rewrite: func(pr *httputil.ProxyRequest) {
+			pr.SetURL(target)
+			pr.Out.Header.Set(auth.FrostHeader, "true")
+			pr.SetXForwarded()
+		},
 	}
 
 	proxy.ModifyResponse = func(resp *http.Response) error {
