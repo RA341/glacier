@@ -2,46 +2,22 @@
 sidebar_position: 1
 ---
 
-# Tutorial Intro
+# Glacier
 
-Let's discover **Docusaurus in less than 5 minutes**.
+Glacier is Steam's COOLER cousin. 
 
-## Getting Started
+Why
 
-Get started by **creating a new site**.
+download your isoa from your favorite sources
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
+store them In a nice pretty library
 
-### What you'll need
+use the frost client to quickly download your games and play
 
-- [Node.js](https://nodejs.org/en/download/) version 20.0 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
+your way, your games
 
-## Generate a new site
+share your lib with your friends 
 
-Generate a new Docusaurus site using the **classic template**.
+Glacier is the coolest way to store your games
 
-The classic template will automatically be added to your project after you run the command:
-
-```bash
-npm init docusaurus@latest my-website classic
-```
-
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
-
-The command also installs all necessary dependencies you need to run Docusaurus.
-
-## Start your site
-
-Run the development server:
-
-```bash
-cd my-website
-npm run start
-```
-
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
-
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
-
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+grab your jacket and install Glacier today !!
