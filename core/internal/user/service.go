@@ -122,7 +122,13 @@ func (s *Service) Edit(user *User, editorUser *User) (err error) {
 		}
 	}
 
-	return s.store.Edit(user)
+	err = s.store.Edit(user)
+	if err != nil {
+		if errors.Is(err, gorm.ErrDuplicatedKey) {
+			return fmt.Errorf("invalid username, use something else")
+		}
+	}
+	return err
 }
 
 func (s *Service) Delete(id uint, deleteBy *User) error {

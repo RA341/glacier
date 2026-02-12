@@ -4,6 +4,7 @@
     import {glacierPubCli, isFrost} from "$lib/api/api";
     import {AuthService} from "$lib/gen/auth/v1/auth_pb";
     import {goto} from "$app/navigation";
+    import {getUserCtx} from "$lib/components/user/provider.svelte";
 
     const isActive = (href: string) => page.url.pathname.startsWith(href);
 
@@ -13,10 +14,16 @@
         {label: 'Downloads', href: '/downloads', icon: DownloadIcon},
     ];
 
+    const user = getUserCtx()
+
     const footerLinks = [
-        {label: 'Server Settings', href: '/settings/glacier', icon: MountainSnow},
-        {label: 'Profile', href: '/settings/user', icon: UserIcon},
+        {label: 'Profile', href: '/settings/user', icon: UserIcon}
     ];
+
+    if (user.isOmni) {
+        footerLinks.unshift({label: 'Server Settings', href: '/settings/glacier', icon: MountainSnow});
+    }
+
     if (isFrost) {
         footerLinks.unshift({label: 'Frost Settings', href: '/settings/frost', icon: Snowflake});
     }

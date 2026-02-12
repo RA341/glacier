@@ -7,8 +7,10 @@ import (
 	"connectrpc.com/connect"
 	v1 "github.com/ra341/glacier/generated/service_config/v1"
 	"github.com/ra341/glacier/generated/service_config/v1/v1connect"
+	"github.com/ra341/glacier/internal/user"
 	"github.com/ra341/glacier/pkg/listutils"
 	"github.com/ra341/glacier/pkg/mapsct"
+	"github.com/ra341/glacier/shared/api"
 )
 
 type Handler struct {
@@ -17,7 +19,15 @@ type Handler struct {
 
 func NewHandler(srv *Service) (string, http.Handler) {
 	h := &Handler{srv: srv}
-	return v1connect.NewServiceConfigServiceHandler(h)
+	path, hand := v1connect.NewServiceConfigServiceHandler(h)
+
+	// allow listing active services for users
+	mid := api.SkipIfPath(
+		[]string{v1connect.ServiceConfigServiceGetActiveServiceProcedure},
+		user.OmniMiddleware,
+	)
+
+	return path, mid(hand)
 }
 
 func (h *Handler) GetSupportedValues(ctx context.Context, c *connect.Request[v1.GetSupportedValuesRequest]) (*connect.Response[v1.GetSupportedValuesResponse], error) {

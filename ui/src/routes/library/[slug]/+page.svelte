@@ -2,7 +2,7 @@
     import GameHero from "./GameHero.svelte";
     import {AlertCircleIcon, LoaderIcon, Save, ServerIcon, Trash2} from '@lucide/svelte';
     import {type Game, GameSchema, LibraryService} from "$lib/gen/library/v1/library_pb";
-    import {glacierCli, isFrost} from "$lib/api/api";
+    import {callRPC, glacierCli, isFrost} from "$lib/api/api";
     import {createRPCRunner} from "$lib/api/rpc.svelte.js";
     import {onMount} from "svelte";
     import {page} from "$app/state";
@@ -12,6 +12,8 @@
     import GameDownloadButton from "./ButtonDownload.svelte";
     import TabFrontPage from "./TabFrontPage.svelte";
     import TabManage from "./TabManage.svelte";
+    import {getSnackbarCtx} from "$lib/components/snackbar/snackbar-provider.svelte";
+    import {getUserCtx} from "$lib/components/user/provider.svelte";
 
     let activeTab = $derived(page.url.searchParams.get('tab') || 'details');
 
@@ -51,10 +53,18 @@
         getGame()
     })
 
-    function deleteGame() {
-        libSrv.delete({gameId: BigInt(gameIdStr!)})
+    const sm = getSnackbarCtx()
+
+    async function deleteGame() {
+        const {err} = await callRPC(() => libSrv.delete({gameId: BigInt(gameIdStr!)}))
+        if (err) {
+            sm.push(`Error deleting: ${err}`, 'error')
+            return
+        }
         goto("/library")
     }
+
+    const user = getUserCtx()
 </script>
 
 {#if !gameIdStr}
@@ -86,6 +96,7 @@
                     >
                         Details
                     </button>
+
                     {#if isFrost}
                         <button
                                 onclick={() => setTab('local')}
@@ -94,28 +105,36 @@
                             Local
                         </button>
                     {/if}
-                    <button
-                            onclick={() => setTab('manage')}
-                            class="px-6 py-1.5 rounded-lg text-sm font-bold transition-all {activeTab === 'manage' ? 'bg-surface shadow-sm text-frost-400' : 'text-muted hover:text-foreground'}"
-                    >
-                        Manage
-                    </button>
+                    {#if user.isOmni}
+                        <button
+                                onclick={() => setTab('manage')}
+                                class="px-6 py-1.5 rounded-lg text-sm font-bold transition-all {activeTab === 'manage' ? 'bg-surface shadow-sm text-frost-400' : 'text-muted hover:text-foreground'}"
+                        >
+                            Manage
+                        </button>
+                    {/if}
                 </div>
             </div>
 
             <div class="flex gap-3">
-                <button onclick={() => deleteGame()}
-                        class="px-6 py-2 bg-panel border border-border rounded-xl text-sm font-bold hover:border-frost-500 transition-all flex items-center gap-2">
-                    <Trash2 size={16}/>
-                    Delete
-                </button>
-                <button
-                        disabled={!isModified}
-                        onclick={() => {/* logic to save */}}
-                        class="px-6 py-2 bg-panel border border-border rounded-xl text-sm font-bold hover:border-frost-500 transition-all flex items-center gap-2">
-                    <Save size={16}/>
-                    Save
-                </button>
+                {#if user.isOmni}
+                    <button onclick={() => deleteGame()}
+                            class="px-6 py-2 bg-panel border border-border rounded-xl text-sm font-bold hover:border-frost-500 transition-all flex items-center gap-2">
+                        <Trash2 size={16}/>
+                        Delete
+                    </button>
+                {/if}
+
+                {#if user.isOmni}
+                    <button
+                            disabled={!isModified}
+                            onclick={() => {/* logic to save */}}
+                            class="px-6 py-2 bg-panel border border-border rounded-xl text-sm font-bold hover:border-frost-500 transition-all flex items-center gap-2">
+                        <Save size={16}/>
+                        Save
+                    </button>
+                {/if}
+
                 {#if isFrost}
                     <GameDownloadButton gameId={gameId}/>
                 {/if}

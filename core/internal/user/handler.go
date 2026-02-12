@@ -8,6 +8,7 @@ import (
 	v1 "github.com/ra341/glacier/generated/user/v1"
 	"github.com/ra341/glacier/generated/user/v1/v1connect"
 	"github.com/ra341/glacier/pkg/listutils"
+	"github.com/ra341/glacier/shared/api"
 )
 
 type Handler struct {
@@ -18,7 +19,17 @@ func NewHandler(srv *Service) (string, http.Handler) {
 	h := &Handler{
 		srv: srv,
 	}
-	return v1connect.NewUserServiceHandler(h)
+
+	finalMiddleware := api.SkipIfPath(
+		[]string{
+			v1connect.UserServiceSelfProcedure,
+			v1connect.UserServiceEditProcedure,
+		},
+		OmniMiddleware,
+	)
+
+	path, hand := v1connect.NewUserServiceHandler(h)
+	return path, finalMiddleware(hand)
 }
 
 func (h *Handler) Self(ctx context.Context, c *connect.Request[v1.SelfRequest]) (*connect.Response[v1.SelfResponse], error) {

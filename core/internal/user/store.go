@@ -18,6 +18,14 @@ type Store interface {
 //go:generate go run github.com/dmarkham/enumer@latest -sql -type=Role -output=enum_user_role.go
 type Role int
 
+func (r Role) IsOmnissiah() bool {
+	return r == Omnissiah
+}
+
+func (r Role) IsLessThenTechPriest() bool {
+	return r < TechPriest
+}
+
 const (
 	// Omnissiah Superuser: the first user account created by system the highest privilege can never be deleted
 	Omnissiah Role = iota
@@ -33,5 +41,25 @@ type User struct {
 	Email             string `gorm:"uniqueIndex"`
 	EncryptedPassword string
 
+	//Perms Permissions `gorm:"embedded;embeddedPrefix:perms"`
 	Role Role
+}
+
+type Permissions struct {
+	// Config modify config endpoints
+	Config Permission `gorm:"embedded;embeddedPrefix:config_"`
+
+	// ServiceConfig external services endpoints indexers/download/clients etc
+	ServiceConfig Permission `gorm:"embedded;embeddedPrefix:service_config_"`
+
+	// Library access library endpoints
+	Library Permission `gorm:"embedded;embeddedPrefix:library_"`
+
+	// Download view active downloads
+	Download Permission `gorm:"embedded;embeddedPrefix:download_"`
+}
+
+type Permission struct {
+	Read  bool
+	Write bool
 }

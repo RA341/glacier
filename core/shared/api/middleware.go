@@ -4,12 +4,40 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"slices"
 	"time"
 
 	connectcors "connectrpc.com/cors"
 	"github.com/rs/cors"
 	"github.com/rs/zerolog/log"
 )
+
+type Mid func(next http.Handler) http.Handler
+
+func NewMiddleware(handFn Mid) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return handFn(next)
+	}
+}
+
+func SkipIfPath(
+	excludedPath []string,
+	// this is the next handler in the chain
+	// if the path is not equal this will be called otherwise bypassed
+	nextHandler func(http.Handler) http.Handler,
+) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		newNext := nextHandler(next)
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if slices.Contains(excludedPath, r.URL.Path) {
+				next.ServeHTTP(w, r)
+				return
+			}
+
+			newNext.ServeHTTP(w, r)
+		})
+	}
+}
 
 func WithProxy(target string) http.Handler {
 	u, _ := url.Parse(target)

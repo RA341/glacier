@@ -7,39 +7,39 @@ import (
 	"net/http"
 
 	"connectrpc.com/connect"
-	"github.com/ra341/glacier/generated/service_config/v1/v1connect"
 	"github.com/ra341/glacier/shared/api"
 )
 
 var ErrNotAuthorized = errors.New("insufficient permissions")
 
-func AdminMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path == v1connect.ServiceConfigServiceGetActiveServiceProcedure {
+var OmniMiddleware = RequireRole(Omnissiah)
+
+func RequireRole(minRole Role) func(http.Handler) http.Handler {
+	return api.NewMiddleware(func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			user, err := GetUserCtx(r.Context())
+			if err != nil {
+				api.WriteErr(
+					w,
+					http.StatusUnauthorized,
+					connect.CodeUnauthenticated,
+					"user info not found",
+				)
+				return
+			}
+
+			if user.Role > minRole {
+				api.WriteErr(
+					w,
+					http.StatusForbidden,
+					connect.CodePermissionDenied,
+					"insufficient permission",
+				)
+				return
+			}
+
 			next.ServeHTTP(w, r)
-			return
-		}
-
-		user, err := GetUserCtx(r.Context())
-		if err != nil {
-			api.WriteErr(w,
-				http.StatusBadRequest,
-				connect.CodeUnauthenticated,
-				"user info not found in context",
-			)
-			return
-		}
-
-		if user.Role > Magos {
-			api.WriteErr(w,
-				http.StatusBadRequest,
-				connect.CodeUnauthenticated,
-				"insufficient permission to access this resource",
-			)
-			return
-		}
-
-		next.ServeHTTP(w, r)
+		})
 	})
 }
 

@@ -127,18 +127,15 @@ func (s *Server) registerProtectedRoutes(mux *http.ServeMux) {
 	)
 
 	mux.Handle(config.NewHandler(s.Conf))
-
 	mux.Handle(user.NewHandler(s.User))
-
-	adminMiddleware := NewMiddleware(user.AdminMiddleware)
-	mux.Handle(adminMiddleware(sm.NewHandler(s.ConfigManager)))
+	mux.Handle(sm.NewHandler(s.ConfigManager))
 }
 
 type NewHandler func(string, http.Handler) (string, http.Handler)
 
 type Middleware func(http.Handler) http.Handler
 
-func NewMiddleware(m Middleware) NewHandler {
+func NewConnectMiddleware(m Middleware) NewHandler {
 	return func(path string, h http.Handler) (string, http.Handler) {
 		return path, m(h)
 	}

@@ -8,6 +8,7 @@ import (
 	"connectrpc.com/connect"
 	v1 "github.com/ra341/glacier/generated/config/v1"
 	"github.com/ra341/glacier/generated/config/v1/v1connect"
+	"github.com/ra341/glacier/internal/user"
 	"github.com/ra341/glacier/shared/config"
 )
 
@@ -19,7 +20,10 @@ func NewHandler(srv *config.Service[Config]) (string, http.Handler) {
 	h := &Handler{
 		srv: srv,
 	}
-	return v1connect.NewConfigServiceHandler(h)
+
+	path, handler := v1connect.NewConfigServiceHandler(h)
+	omniMiddleware := user.RequireRole(user.Omnissiah)
+	return path, omniMiddleware(handler)
 }
 
 func (h *Handler) Get(ctx context.Context, req *connect.Request[v1.GetRequest]) (*connect.Response[v1.GetResponse], error) {
