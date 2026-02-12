@@ -10,7 +10,41 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file config/v1/config.proto.
  */
 export const file_config_v1_config: GenFile = /*@__PURE__*/
-  fileDesc("ChZjb25maWcvdjEvY29uZmlnLnByb3RvEgljb25maWcudjEiIgoKU2V0UmVxdWVzdBIUCgxjb25maWdTY2hlbWEYASABKAkiDQoLU2V0UmVzcG9uc2UiDAoKR2V0UmVxdWVzdCIjCgtHZXRSZXNwb25zZRIUCgxjb25maWdTY2hlbWEYASABKAkyfwoNQ29uZmlnU2VydmljZRI2CgNHZXQSFS5jb25maWcudjEuR2V0UmVxdWVzdBoWLmNvbmZpZy52MS5HZXRSZXNwb25zZSIAEjYKA1NldBIVLmNvbmZpZy52MS5TZXRSZXF1ZXN0GhYuY29uZmlnLnYxLlNldFJlc3BvbnNlIgBCjwEKDWNvbS5jb25maWcudjFCC0NvbmZpZ1Byb3RvUAFaLGdpdGh1Yi5jb20vcmEzNDEvZ2xhY2llci9nZW5lcmF0ZWQvY29uZmlnL3YxogIDQ1hYqgIJQ29uZmlnLlYxygIJQ29uZmlnXFYx4gIVQ29uZmlnXFYxXEdQQk1ldGFkYXRh6gIKQ29uZmlnOjpWMWIGcHJvdG8z");
+  fileDesc("ChZjb25maWcvdjEvY29uZmlnLnByb3RvEgljb25maWcudjEiIAoQTGlzdEZpbGVzUmVxdWVzdBIMCgRiYXNlGAEgASgJIiIKEUxpc3RGaWxlc1Jlc3BvbnNlEg0KBWZpbGVzGAEgAygJIiIKClNldFJlcXVlc3QSFAoMY29uZmlnU2NoZW1hGAEgASgJIg0KC1NldFJlc3BvbnNlIgwKCkdldFJlcXVlc3QiIwoLR2V0UmVzcG9uc2USFAoMY29uZmlnU2NoZW1hGAEgASgJMskBCg1Db25maWdTZXJ2aWNlEjYKA0dldBIVLmNvbmZpZy52MS5HZXRSZXF1ZXN0GhYuY29uZmlnLnYxLkdldFJlc3BvbnNlIgASNgoDU2V0EhUuY29uZmlnLnYxLlNldFJlcXVlc3QaFi5jb25maWcudjEuU2V0UmVzcG9uc2UiABJICglMaXN0RmlsZXMSGy5jb25maWcudjEuTGlzdEZpbGVzUmVxdWVzdBocLmNvbmZpZy52MS5MaXN0RmlsZXNSZXNwb25zZSIAQo8BCg1jb20uY29uZmlnLnYxQgtDb25maWdQcm90b1ABWixnaXRodWIuY29tL3JhMzQxL2dsYWNpZXIvZ2VuZXJhdGVkL2NvbmZpZy92MaICA0NYWKoCCUNvbmZpZy5WMcoCCUNvbmZpZ1xWMeICFUNvbmZpZ1xWMVxHUEJNZXRhZGF0YeoCCkNvbmZpZzo6VjFiBnByb3RvMw");
+
+/**
+ * @generated from message config.v1.ListFilesRequest
+ */
+export type ListFilesRequest = Message<"config.v1.ListFilesRequest"> & {
+  /**
+   * @generated from field: string base = 1;
+   */
+  base: string;
+};
+
+/**
+ * Describes the message config.v1.ListFilesRequest.
+ * Use `create(ListFilesRequestSchema)` to create a new message.
+ */
+export const ListFilesRequestSchema: GenMessage<ListFilesRequest> = /*@__PURE__*/
+  messageDesc(file_config_v1_config, 0);
+
+/**
+ * @generated from message config.v1.ListFilesResponse
+ */
+export type ListFilesResponse = Message<"config.v1.ListFilesResponse"> & {
+  /**
+   * @generated from field: repeated string files = 1;
+   */
+  files: string[];
+};
+
+/**
+ * Describes the message config.v1.ListFilesResponse.
+ * Use `create(ListFilesResponseSchema)` to create a new message.
+ */
+export const ListFilesResponseSchema: GenMessage<ListFilesResponse> = /*@__PURE__*/
+  messageDesc(file_config_v1_config, 1);
 
 /**
  * @generated from message config.v1.SetRequest
@@ -27,7 +61,7 @@ export type SetRequest = Message<"config.v1.SetRequest"> & {
  * Use `create(SetRequestSchema)` to create a new message.
  */
 export const SetRequestSchema: GenMessage<SetRequest> = /*@__PURE__*/
-  messageDesc(file_config_v1_config, 0);
+  messageDesc(file_config_v1_config, 2);
 
 /**
  * @generated from message config.v1.SetResponse
@@ -40,7 +74,7 @@ export type SetResponse = Message<"config.v1.SetResponse"> & {
  * Use `create(SetResponseSchema)` to create a new message.
  */
 export const SetResponseSchema: GenMessage<SetResponse> = /*@__PURE__*/
-  messageDesc(file_config_v1_config, 1);
+  messageDesc(file_config_v1_config, 3);
 
 /**
  * @generated from message config.v1.GetRequest
@@ -53,7 +87,7 @@ export type GetRequest = Message<"config.v1.GetRequest"> & {
  * Use `create(GetRequestSchema)` to create a new message.
  */
 export const GetRequestSchema: GenMessage<GetRequest> = /*@__PURE__*/
-  messageDesc(file_config_v1_config, 2);
+  messageDesc(file_config_v1_config, 4);
 
 /**
  * @generated from message config.v1.GetResponse
@@ -70,7 +104,7 @@ export type GetResponse = Message<"config.v1.GetResponse"> & {
  * Use `create(GetResponseSchema)` to create a new message.
  */
 export const GetResponseSchema: GenMessage<GetResponse> = /*@__PURE__*/
-  messageDesc(file_config_v1_config, 3);
+  messageDesc(file_config_v1_config, 5);
 
 /**
  * @generated from service config.v1.ConfigService
@@ -91,6 +125,14 @@ export const ConfigService: GenService<{
     methodKind: "unary";
     input: typeof SetRequestSchema;
     output: typeof SetResponseSchema;
+  },
+  /**
+   * @generated from rpc config.v1.ConfigService.ListFiles
+   */
+  listFiles: {
+    methodKind: "unary";
+    input: typeof ListFilesRequestSchema;
+    output: typeof ListFilesResponseSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_config_v1_config, 0);

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"path/filepath"
 	"reflect"
 	"sync/atomic"
 
@@ -111,6 +112,28 @@ func (s *Service[T]) Get() *T {
 	return s.conf.Load()
 }
 
+func (s *Service[T]) ListFiles(base string) ([]string, error) {
+	abs, err := filepath.Abs(base)
+	if err != nil {
+		return nil, err
+	}
+
+	dirs, err := os.ReadDir(abs)
+	if err != nil {
+		return nil, err
+	}
+
+	var files = make([]string, 0, len(dirs))
+	for _, f := range dirs {
+		if !f.IsDir() {
+			continue
+		}
+		files = append(files, filepath.Join(base, f.Name()))
+	}
+
+	return files, nil
+}
+
 func (s *Service[T]) storeAndLoad(loadCopy *T) error {
 	err := s.cy.writeAndLoad(loadCopy)
 	if err != nil {
@@ -142,6 +165,7 @@ type FieldVal struct {
 	Env      string
 	EnvSet   bool
 	Default  string
+	IsFolder bool
 	IsSecret bool
 
 	Nested map[string]FieldVal
@@ -193,6 +217,8 @@ func (s *Service[T]) parseConf(v reflect.Value) map[string]FieldVal {
 		env := fieldT.Tag.Get("env")
 
 		_, hide := fieldT.Tag.Lookup("hide")
+		_, isFolder := fieldT.Tag.Lookup("folder")
+
 		fieldVal := FieldVal{
 			Key:       keyName,
 			Value:     actualValue,
@@ -200,6 +226,7 @@ func (s *Service[T]) parseConf(v reflect.Value) map[string]FieldVal {
 			Help:      fieldT.Tag.Get("help"),
 			Env:       defaultPrefixer(env),
 			IsSecret:  hide,
+			IsFolder:  isFolder,
 			Default:   fieldT.Tag.Get("default"),
 			EnvSet:    os.Getenv(defaultPrefixer(env)) != "",
 		}

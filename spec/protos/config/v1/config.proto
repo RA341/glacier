@@ -7,7 +7,19 @@ option go_package = "github.com/ra341/glacier/generated/config/v1";
 service ConfigService {
   rpc Get(GetRequest) returns (GetResponse) {}
   rpc Set(SetRequest) returns (SetResponse) {}
+  rpc ListFiles(ListFilesRequest) returns (ListFilesResponse) {}
+
 }
+
+
+message ListFilesRequest {
+  string base = 1;
+}
+
+message ListFilesResponse {
+  repeated string files = 1;
+}
+
 
 message SetRequest {
   string configSchema = 1;

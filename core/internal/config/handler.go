@@ -49,3 +49,14 @@ func (h *Handler) Set(ctx context.Context, req *connect.Request[v1.SetRequest]) 
 	return connect.NewResponse(&v1.SetResponse{}), nil
 
 }
+
+func (h *Handler) ListFiles(ctx context.Context, c *connect.Request[v1.ListFilesRequest]) (*connect.Response[v1.ListFilesResponse], error) {
+	files, err := h.srv.ListFiles(c.Msg.Base)
+	if err != nil {
+		return nil, err
+	}
+
+	return connect.NewResponse(&v1.ListFilesResponse{
+		Files: files,
+	}), nil
+}

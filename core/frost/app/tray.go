@@ -46,8 +46,7 @@ func NewDesktop(opts ...api.ServerOpt) {
 		serverOpts: opts,
 		conf:       conf,
 	}
-	l := t.makeLogger("tray")
-	t.trayLog = &l
+	t.trayLog = new(t.makeLogger("tray"))
 
 	go func() {
 		err := sm.setupSocketHandler(context.Background(), t.StartUI)

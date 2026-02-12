@@ -1,7 +1,9 @@
 <script lang="ts">
     import {EyeIcon, EyeOffIcon, InfoIcon, LockIcon} from '@lucide/svelte';
+    import CopyButton from "$lib/components/CopyButton.svelte";
     import Self from './ConfigField.svelte'
     import {splitCamelCase} from '$lib/api/strings'
+    import FolderPicker from "$lib/components/FolderPicker.svelte";
 
     let {schema, level = 0} = $props();
 
@@ -62,23 +64,28 @@
                             {/if}
                         </div>
                         {#if item.Default}
-                            <code class="text-[9px] font-mono ">Default: {item.Default}</code>
+                            {#if item.Default}
+                                <CopyButton label="Default" value={item.Default}/>
+                            {/if}
                         {/if}
 
                         {#if item.Env}
-                            <code class="text-[9px] font-mono ">ENV: {item.Env}</code>
+                            {#if item.Default}
+                                <CopyButton label="Env" value={item.Env}/>
+                            {/if}
                         {/if}
                     </div>
 
                     <div class="relative flex items-center gap-2">
-                        {#if item.FieldType === 'bool'}
+                        {#if item.IsFolder}
+                            <FolderPicker disabled={item.EnvSet} bind:value={item.Value}/>
+                        {:else if item.FieldType === 'bool'}
                             <label class="relative inline-flex items-center" class:cursor-not-allowed={item.EnvSet}
                                    class:cursor-pointer={!item.EnvSet}>
                                 <input type="checkbox" bind:checked={item.Value} disabled={item.EnvSet}
                                        class="sr-only peer">
                                 <div class="w-11 h-6 bg-panel border border-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-muted after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-frost-500 peer-checked:after:bg-background opacity-100 peer-disabled:opacity-40"></div>
                             </label>
-
                         {:else if item.FieldType === 'int'}
                             <input
                                     type="number"

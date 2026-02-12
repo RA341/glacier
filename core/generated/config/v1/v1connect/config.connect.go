@@ -37,12 +37,15 @@ const (
 	ConfigServiceGetProcedure = "/config.v1.ConfigService/Get"
 	// ConfigServiceSetProcedure is the fully-qualified name of the ConfigService's Set RPC.
 	ConfigServiceSetProcedure = "/config.v1.ConfigService/Set"
+	// ConfigServiceListFilesProcedure is the fully-qualified name of the ConfigService's ListFiles RPC.
+	ConfigServiceListFilesProcedure = "/config.v1.ConfigService/ListFiles"
 )
 
 // ConfigServiceClient is a client for the config.v1.ConfigService service.
 type ConfigServiceClient interface {
 	Get(context.Context, *connect.Request[v1.GetRequest]) (*connect.Response[v1.GetResponse], error)
 	Set(context.Context, *connect.Request[v1.SetRequest]) (*connect.Response[v1.SetResponse], error)
+	ListFiles(context.Context, *connect.Request[v1.ListFilesRequest]) (*connect.Response[v1.ListFilesResponse], error)
 }
 
 // NewConfigServiceClient constructs a client for the config.v1.ConfigService service. By default,
@@ -68,13 +71,20 @@ func NewConfigServiceClient(httpClient connect.HTTPClient, baseURL string, opts 
 			connect.WithSchema(configServiceMethods.ByName("Set")),
 			connect.WithClientOptions(opts...),
 		),
+		listFiles: connect.NewClient[v1.ListFilesRequest, v1.ListFilesResponse](
+			httpClient,
+			baseURL+ConfigServiceListFilesProcedure,
+			connect.WithSchema(configServiceMethods.ByName("ListFiles")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // configServiceClient implements ConfigServiceClient.
 type configServiceClient struct {
-	get *connect.Client[v1.GetRequest, v1.GetResponse]
-	set *connect.Client[v1.SetRequest, v1.SetResponse]
+	get       *connect.Client[v1.GetRequest, v1.GetResponse]
+	set       *connect.Client[v1.SetRequest, v1.SetResponse]
+	listFiles *connect.Client[v1.ListFilesRequest, v1.ListFilesResponse]
 }
 
 // Get calls config.v1.ConfigService.Get.
@@ -87,10 +97,16 @@ func (c *configServiceClient) Set(ctx context.Context, req *connect.Request[v1.S
 	return c.set.CallUnary(ctx, req)
 }
 
+// ListFiles calls config.v1.ConfigService.ListFiles.
+func (c *configServiceClient) ListFiles(ctx context.Context, req *connect.Request[v1.ListFilesRequest]) (*connect.Response[v1.ListFilesResponse], error) {
+	return c.listFiles.CallUnary(ctx, req)
+}
+
 // ConfigServiceHandler is an implementation of the config.v1.ConfigService service.
 type ConfigServiceHandler interface {
 	Get(context.Context, *connect.Request[v1.GetRequest]) (*connect.Response[v1.GetResponse], error)
 	Set(context.Context, *connect.Request[v1.SetRequest]) (*connect.Response[v1.SetResponse], error)
+	ListFiles(context.Context, *connect.Request[v1.ListFilesRequest]) (*connect.Response[v1.ListFilesResponse], error)
 }
 
 // NewConfigServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -112,12 +128,20 @@ func NewConfigServiceHandler(svc ConfigServiceHandler, opts ...connect.HandlerOp
 		connect.WithSchema(configServiceMethods.ByName("Set")),
 		connect.WithHandlerOptions(opts...),
 	)
+	configServiceListFilesHandler := connect.NewUnaryHandler(
+		ConfigServiceListFilesProcedure,
+		svc.ListFiles,
+		connect.WithSchema(configServiceMethods.ByName("ListFiles")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/config.v1.ConfigService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case ConfigServiceGetProcedure:
 			configServiceGetHandler.ServeHTTP(w, r)
 		case ConfigServiceSetProcedure:
 			configServiceSetHandler.ServeHTTP(w, r)
+		case ConfigServiceListFilesProcedure:
+			configServiceListFilesHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -133,4 +157,8 @@ func (UnimplementedConfigServiceHandler) Get(context.Context, *connect.Request[v
 
 func (UnimplementedConfigServiceHandler) Set(context.Context, *connect.Request[v1.SetRequest]) (*connect.Response[v1.SetResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("config.v1.ConfigService.Set is not implemented"))
+}
+
+func (UnimplementedConfigServiceHandler) ListFiles(context.Context, *connect.Request[v1.ListFilesRequest]) (*connect.Response[v1.ListFilesResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("config.v1.ConfigService.ListFiles is not implemented"))
 }

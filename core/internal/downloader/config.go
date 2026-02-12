@@ -10,7 +10,7 @@ type ConfigLoader func() *Config
 
 type Config struct {
 	CheckInterval  string `yaml:"checkInterval" default:"30m" env:"DOWNLOAD_CHECK_TIME" help:"time between checking games status"`
-	IncompletePath string `yaml:"incompletePath" default:"./incomplete" env:"INCOMPLETE_DIR" help:"places downloading games here"`
+	IncompletePath string `yaml:"incompletePath" default:"./incomplete" env:"INCOMPLETE_DIR" help:"places downloading games here" folder:""`
 }
 
 func (c *Config) Interval() time.Duration {
