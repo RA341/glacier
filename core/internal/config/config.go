@@ -17,7 +17,7 @@ type Config struct {
 
 type Glacier struct {
 	// holds db and the yml file
-	ConfigDir string `yaml:"config" env:"CONFIG_DIR" default:"./config" help:"path to the config dir"`
+	ConfigDir string `yaml:"config" env:"CONFIG_DIR" default:"./config" help:"path to the config dir" folder:""`
 }
 
 type Server struct {

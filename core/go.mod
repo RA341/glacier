@@ -6,6 +6,7 @@ require (
 	ariga.io/atlas-provider-gorm v0.6.0
 	connectrpc.com/connect v1.19.1
 	connectrpc.com/cors v0.1.0
+	dario.cat/mergo v1.0.2
 	fyne.io/systray v1.12.0
 	github.com/cespare/xxhash/v2 v2.3.0
 	github.com/coreos/go-oidc/v3 v3.17.0

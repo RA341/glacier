@@ -2,8 +2,6 @@ package app
 
 import (
 	"fmt"
-	"os"
-	"path/filepath"
 	"reflect"
 
 	"github.com/ra341/glacier/frost/config"
@@ -13,11 +11,12 @@ import (
 	"github.com/ra341/glacier/frost/local_library/download"
 	"github.com/ra341/glacier/frost/secrets"
 	"github.com/ra341/glacier/pkg/logger"
+	sharedConfig "github.com/ra341/glacier/shared/config"
 	"github.com/rs/zerolog/log"
 )
 
 type App struct {
-	Conf            *config.Service
+	Conf            *sharedConfig.Service[config.Config]
 	LocalLibrarySrv *ll.Service
 	Secret          *secrets.Service
 }
@@ -27,15 +26,6 @@ func New() *App {
 	get := conf.Get()
 
 	logger.InitConsole(get.Logger.Level, get.Logger.Verbose)
-
-	abs, err := filepath.Abs(get.Files.ConfigDir)
-	if err != nil {
-		log.Fatal().Err(err).Msg("could not get config path")
-	}
-	err = os.MkdirAll(abs, os.ModePerm)
-	if err != nil {
-		log.Fatal().Err(err).Msg("could create config path")
-	}
 
 	db := database.New(get.Files.ConfigDir, false)
 
@@ -71,7 +61,7 @@ func New() *App {
 		LocalLibrarySrv: llibSrv,
 		Secret:          ss,
 	}
-	err = a.VerifyServices()
+	err := a.VerifyServices()
 	if err != nil {
 		log.Fatal().Err(err).Msg("could not load services")
 	}

@@ -2,6 +2,7 @@ package argos
 
 import (
 	"os"
+	"path/filepath"
 	"reflect"
 	"strconv"
 	"strings"
@@ -100,9 +101,27 @@ func hasEnvTag(fieldType reflect.StructField, field reflect.Value, prefixer Pref
 	return false
 }
 
+func resolveFolder(path string) string {
+	abs, err := filepath.Abs(path)
+	if err != nil {
+		log.Warn().Err(err).Msg("Failed to resolve path")
+		return path
+	}
+
+	err = os.MkdirAll(abs, os.ModePerm)
+	if err != nil {
+		log.Warn().Err(err).Msg("Failed to create folder")
+	}
+
+	return abs
+}
+
 func setField(fieldType reflect.StructField, field reflect.Value, value string) {
 	switch field.Kind() {
 	case reflect.String:
+		if _, ok := fieldType.Tag.Lookup("folder"); ok {
+			value = resolveFolder(value)
+		}
 		field.SetString(value)
 		break
 	case reflect.Int:

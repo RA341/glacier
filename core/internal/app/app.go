@@ -18,6 +18,7 @@ import (
 	"github.com/ra341/glacier/internal/services_manager"
 	"github.com/ra341/glacier/internal/user"
 	"github.com/ra341/glacier/pkg/logger"
+	sharedConfig "github.com/ra341/glacier/shared/config"
 
 	"github.com/rs/zerolog/log"
 )
@@ -29,7 +30,7 @@ func InitMeta(flavour info.FlavourType) {
 }
 
 type App struct {
-	Conf *config.Service
+	Conf *sharedConfig.Service[config.Config]
 
 	Library       *library.Service
 	DownloadSrv   *downloader.Service

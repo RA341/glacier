@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/ra341/glacier/internal/auth"
+	"github.com/ra341/glacier/internal/config"
 	"github.com/ra341/glacier/internal/indexer"
 	"github.com/ra341/glacier/internal/library"
 	"github.com/ra341/glacier/internal/search"
@@ -124,6 +125,8 @@ func (s *Server) registerProtectedRoutes(mux *http.ServeMux) {
 		"/library/download",
 		library.NewHandlerHttp(s.Library),
 	)
+
+	mux.Handle(config.NewHandler(s.Conf))
 
 	mux.Handle(user.NewHandler(s.User))
 

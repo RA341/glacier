@@ -8,34 +8,44 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/goccy/go-yaml"
 	"github.com/ra341/glacier/pkg/fileutil"
+
+	"github.com/goccy/go-yaml"
 	"github.com/rs/zerolog/log"
 )
 
-type ConfigYml struct {
-	path string
-	rw   *sync.RWMutex
+type Yml[T any] struct {
+	ymlPathEnv  string
+	ymlFileName string
+	path        string
+
+	rw *sync.RWMutex
 }
 
-func NewYml() ConfigYml {
-	yml := ConfigYml{
+func NewYml[T any](
+	ymlPathEnv string,
+	ymlFileName string,
+) Yml[T] {
+	yml := Yml[T]{
+		ymlPathEnv:  ymlPathEnv,
+		ymlFileName: ymlFileName,
+
 		rw: new(sync.RWMutex),
 	}
 	yml.loadPath()
 	return yml
 }
 
-func (cy *ConfigYml) loadPath() {
+func (cy *Yml[T]) loadPath() {
 	defer func() {
 		if cy.path == "" {
-			log.Fatal().Msg("loadPath did not load a path lol")
+			log.Fatal().Msg("loadPath did not load a path lmao")
 		}
 
 		log.Info().Str("path", cy.path).Msg("using config path")
 	}()
 
-	if loadPath := os.Getenv(GlacierYmlPathEnv); loadPath != "" {
+	if loadPath := os.Getenv(cy.ymlPathEnv); loadPath != "" {
 		if !strings.HasSuffix(loadPath, ".yml") {
 			log.Fatal().Str("path", loadPath).Msg("custom config file path must end with .yml")
 		}
@@ -53,12 +63,12 @@ func (cy *ConfigYml) loadPath() {
 	if err != nil {
 		log.Fatal().Err(err).Msg("can't get executable path")
 	}
-	configPath = filepath.Join(filepath.Dir(configPath), GlacierYml)
+	configPath = filepath.Join(filepath.Dir(configPath), cy.ymlFileName)
 
 	cy.path = configPath
 }
 
-func (cy *ConfigYml) writeAndLoad(conf *Config) error {
+func (cy *Yml[T]) writeAndLoad(conf *T) error {
 	cy.rw.Lock()
 	defer cy.rw.Unlock()
 
@@ -70,7 +80,7 @@ func (cy *ConfigYml) writeAndLoad(conf *Config) error {
 	return cy.writeYml(conf)
 }
 
-func (cy *ConfigYml) writeYml(conf *Config) error {
+func (cy *Yml[T]) writeYml(conf *T) error {
 	contents, err := yaml.Marshal(conf)
 	if err != nil {
 		return err
@@ -78,14 +88,14 @@ func (cy *ConfigYml) writeYml(conf *Config) error {
 
 	return os.WriteFile(cy.path, contents, os.ModePerm)
 }
-func (cy *ConfigYml) backupCurrent() error {
+func (cy *Yml[T]) backupCurrent() error {
 	src, err := os.OpenFile(cy.path, os.O_RDONLY|os.O_CREATE, os.ModePerm)
 	if err != nil {
 		return err
 	}
 	defer fileutil.Close(src)
 
-	backFilename := fmt.Sprintf("%s.%s", GlacierYml, "bak")
+	backFilename := fmt.Sprintf("%s.%s", cy.ymlFileName, "bak")
 	backupFilePath := filepath.Join(filepath.Dir(cy.path), backFilename)
 	dst, err := os.OpenFile(backupFilePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, os.ModePerm)
 	defer fileutil.Close(dst)
@@ -99,7 +109,7 @@ func (cy *ConfigYml) backupCurrent() error {
 	return nil
 }
 
-func (cy *ConfigYml) loadYml(conf *Config) error {
+func (cy *Yml[T]) loadYml(conf *T) error {
 	file, err := os.OpenFile(cy.path, os.O_RDONLY|os.O_CREATE, os.ModePerm)
 	if err != nil {
 		return err

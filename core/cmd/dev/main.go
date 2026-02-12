@@ -5,8 +5,9 @@ import (
 	"os"
 
 	"github.com/ra341/glacier/internal/app"
-	"github.com/ra341/glacier/internal/config"
+	galcierConfig "github.com/ra341/glacier/internal/config"
 	"github.com/ra341/glacier/internal/info"
+	"github.com/ra341/glacier/pkg/argos"
 	"github.com/ra341/glacier/shared/api"
 )
 
@@ -15,7 +16,8 @@ func init() {
 }
 
 func main() {
-	prefixer := config.DefaultPrefixer()
+	prefixer := argos.WithPrefixer(galcierConfig.EnvPrefix)
+
 	envs := map[string]string{
 		"LOGGER_VERBOSE": "true",
 		"LOGGER_LEVEL":   "debug",

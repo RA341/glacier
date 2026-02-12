@@ -3,7 +3,7 @@
 
     let {children} = $props();
 
-    const prefix = '/settings/server';
+    const prefix = '/settings/glacier';
 
     const tabs = [
         {label: 'General', href: 'general', desc: 'Configure basic server settings'},
@@ -26,7 +26,7 @@
     <header class="px-8 pt-8 pb-0">
         <div class="flex items-baseline gap-4 mb-6">
             <h1 class="text-3xl font-bold tracking-tight text-foreground">
-                Server Settings
+                Glacier
             </h1>
 
             {#if activeTab}

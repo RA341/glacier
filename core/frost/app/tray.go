@@ -17,11 +17,12 @@ import (
 	"github.com/ra341/glacier/frost/config"
 	"github.com/ra341/glacier/pkg/logger"
 	"github.com/ra341/glacier/shared/api"
+	sharedConfig "github.com/ra341/glacier/shared/config"
 	"github.com/rs/zerolog"
 )
 
 type Tray struct {
-	conf       *config.Service
+	conf       *sharedConfig.Service[config.Config]
 	serverOpts []api.ServerOpt
 
 	ctx    context.Context

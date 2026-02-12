@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package config.v1;
+
+option go_package = "github.com/ra341/glacier/generated/config/v1";
+
+service ConfigService {
+  rpc Get(GetRequest) returns (GetResponse) {}
+  rpc Set(SetRequest) returns (SetResponse) {}
+}
+
+message SetRequest {
+  string configSchema = 1;
+}
+
+message SetResponse {
+
+}
+
+
+message GetRequest {}
+
+message GetResponse {
+  string configSchema = 1;
+}

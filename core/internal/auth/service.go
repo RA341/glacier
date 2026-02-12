@@ -41,18 +41,18 @@ func New(store Store, userSrv *user.Service, conf ConfigLoader) *Service {
 	}
 
 	config := conf()
-	if config.OIDCEnable {
+	if config.OidcEnable {
 		ctx := getOidcContext(nil)
 
-		provider, err := oidc.NewProvider(ctx, config.OIDCIssuerURL)
+		provider, err := oidc.NewProvider(ctx, config.OidcIssuerUrl)
 		if err != nil {
 			log.Fatal().Err(err).Msg("failed to query OIDC provider")
 		}
 
 		oauth2Config := &oauth2.Config{
-			ClientID:     config.OIDCClientID,
-			ClientSecret: config.OIDCClientSecret,
-			RedirectURL:  config.OIDCRedirectURL,
+			ClientID:     config.OidcClientId,
+			ClientSecret: config.OidcClientSecret,
+			RedirectURL:  config.OidcRedirectUrl,
 			Endpoint:     provider.Endpoint(),
 			Scopes:       []string{oidc.ScopeOpenID, "profile", "email"},
 		}
@@ -125,7 +125,7 @@ func getOidcContext(ctx context.Context) context.Context {
 }
 
 func (s *Service) GetOIDCLoginURL(state string) (string, error) {
-	if !s.conf().OIDCEnable {
+	if !s.conf().OidcEnable {
 		return "", fmt.Errorf("OIDC is disabled")
 	}
 
@@ -148,7 +148,7 @@ func (s *Service) LoginOIDC(
 		return Session{}, "", "", fmt.Errorf("no id_token field in oauth2 token")
 	}
 
-	verifier := s.oidcProvider.Verifier(&oidc.Config{ClientID: s.conf().OIDCClientID})
+	verifier := s.oidcProvider.Verifier(&oidc.Config{ClientID: s.conf().OidcClientId})
 	idToken, err := verifier.Verify(ctx, rawIDToken)
 	if err != nil {
 		return Session{}, "", "", fmt.Errorf("failed to verify ID Token: %w", err)

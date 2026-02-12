@@ -1,7 +1,15 @@
 <script lang="ts">
     import {page} from '$app/state';
-    import {DownloadIcon, LibraryIcon, LogOutIcon, SearchIcon, ServerIcon, UserIcon} from "@lucide/svelte";
-    import {glacierPubCli} from "$lib/api/api";
+    import {
+        DownloadIcon,
+        LibraryIcon,
+        LogOutIcon,
+        SearchIcon,
+        IceCreamCone,
+        ServerIcon,
+        UserIcon
+    } from "@lucide/svelte";
+    import {glacierPubCli, isFrost} from "$lib/api/api";
     import {AuthService} from "$lib/gen/auth/v1/auth_pb";
     import {goto} from "$app/navigation";
 
@@ -14,9 +22,12 @@
     ];
 
     const footerLinks = [
-        {label: 'Server Settings', href: '/settings/server', icon: ServerIcon},
+        {label: 'Server Settings', href: '/settings/glacier', icon: ServerIcon},
         {label: 'Profile', href: '/settings/user', icon: UserIcon},
     ];
+    if (isFrost) {
+        footerLinks.unshift({label: 'Frost Settings', href: '/settings/frost', icon: IceCreamCone});
+    }
 
     const auth = glacierPubCli(AuthService)
 

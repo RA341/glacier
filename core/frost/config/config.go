@@ -25,8 +25,8 @@ type Downloader struct {
 }
 
 type Files struct {
-	ConfigDir string `yaml:"configDir" env:"CONFIG_DIR" default:"./config" help:"frost config directory"`
-	LogsDir   string `yaml:"logsDir" env:"LOG_DIR" default:"./logs" help:"log output"`
+	ConfigDir string `yaml:"configDir" env:"CONFIG_DIR" default:"./config" help:"frost config directory" folder:""`
+	LogsDir   string `yaml:"logsDir" env:"LOG_DIR" default:"./logs" help:"log output" folder:""`
 }
 
 type Logger struct {

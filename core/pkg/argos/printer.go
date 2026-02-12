@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"strings"
 	"unicode/utf8"
+
+	"github.com/goccy/go-yaml"
 )
 
 const (
@@ -128,6 +130,24 @@ func PrintInfo(c interface{}, footer string, opts ...FieldPrintConfig) {
 	printInBox("Config", contentBuilder.String())
 }
 
+func GetStructMeta(c interface{}, tags ...string) ([]FieldVal, error) {
+	marshal, err := yaml.Marshal(c)
+	if err != nil {
+		return nil, err
+	}
+
+	a := string(marshal)
+	fmt.Printf("%s\n", a)
+
+	// start with an empty structPrefix since its at tippity top
+	pairs := flattenStruct(
+		reflect.ValueOf(c),
+		"",
+		tags...,
+	)
+	return pairs, nil
+}
+
 func WithUnderLine(value string) string {
 	return Colorize(value, ColorRed+ColorUnderline)
 }
@@ -189,6 +209,13 @@ func flattenStruct(v reflect.Value, structPrefix string, tags ...string) []Field
 				continue
 			}
 			fieldVal.Tags[tag] = tagValue
+		}
+
+		_, ok := fieldT.Tag.Lookup("hide")
+		if ok {
+			fieldVal.Value = Colorize("REDACTED;)", ColorRed)
+			topPairs = append(topPairs, fieldVal)
+			continue
 		}
 
 		switch fieldV.Kind() {

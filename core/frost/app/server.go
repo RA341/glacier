@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/ra341/glacier/frost/config"
 	ll "github.com/ra341/glacier/frost/local_library"
 	"github.com/ra341/glacier/internal/auth"
 	"github.com/ra341/glacier/shared/api"
@@ -105,6 +106,7 @@ func (s *Server) RegisterFrostRoutes(mux *http.ServeMux) {
 	})
 
 	mux.Handle(ll.NewHandler(s.LocalLibrarySrv))
+	mux.Handle(config.NewHandler(s.Conf))
 
 	api.WithSubRouter(
 		mux,
