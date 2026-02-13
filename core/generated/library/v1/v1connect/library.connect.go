@@ -44,6 +44,9 @@ const (
 	LibraryServiceExistsProcedure = "/library.v1.LibraryService/Exists"
 	// LibraryServiceEditProcedure is the fully-qualified name of the LibraryService's Edit RPC.
 	LibraryServiceEditProcedure = "/library.v1.LibraryService/Edit"
+	// LibraryServiceRedownloadProcedure is the fully-qualified name of the LibraryService's Redownload
+	// RPC.
+	LibraryServiceRedownloadProcedure = "/library.v1.LibraryService/Redownload"
 	// LibraryServiceTriggerTrackerProcedure is the fully-qualified name of the LibraryService's
 	// TriggerTracker RPC.
 	LibraryServiceTriggerTrackerProcedure = "/library.v1.LibraryService/TriggerTracker"
@@ -66,6 +69,7 @@ type LibraryServiceClient interface {
 	Delete(context.Context, *connect.Request[v1.DeleteRequest]) (*connect.Response[v1.DeleteResponse], error)
 	Exists(context.Context, *connect.Request[v1.ExistsRequest]) (*connect.Response[v1.ExistsResponse], error)
 	Edit(context.Context, *connect.Request[v1.EditRequest]) (*connect.Response[v1.EditResponse], error)
+	Redownload(context.Context, *connect.Request[v1.RedownloadRequest]) (*connect.Response[v1.RedownloadResponse], error)
 	TriggerTracker(context.Context, *connect.Request[v1.TriggerTrackerRequest]) (*connect.Response[v1.TriggerTrackerResponse], error)
 	GetGame(context.Context, *connect.Request[v1.GetGameRequest]) (*connect.Response[v1.GetGameResponse], error)
 	ListFiles(context.Context, *connect.Request[v1.ListFilesRequest]) (*connect.Response[v1.ListFilesResponse], error)
@@ -114,6 +118,12 @@ func NewLibraryServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(libraryServiceMethods.ByName("Edit")),
 			connect.WithClientOptions(opts...),
 		),
+		redownload: connect.NewClient[v1.RedownloadRequest, v1.RedownloadResponse](
+			httpClient,
+			baseURL+LibraryServiceRedownloadProcedure,
+			connect.WithSchema(libraryServiceMethods.ByName("Redownload")),
+			connect.WithClientOptions(opts...),
+		),
 		triggerTracker: connect.NewClient[v1.TriggerTrackerRequest, v1.TriggerTrackerResponse](
 			httpClient,
 			baseURL+LibraryServiceTriggerTrackerProcedure,
@@ -154,6 +164,7 @@ type libraryServiceClient struct {
 	delete         *connect.Client[v1.DeleteRequest, v1.DeleteResponse]
 	exists         *connect.Client[v1.ExistsRequest, v1.ExistsResponse]
 	edit           *connect.Client[v1.EditRequest, v1.EditResponse]
+	redownload     *connect.Client[v1.RedownloadRequest, v1.RedownloadResponse]
 	triggerTracker *connect.Client[v1.TriggerTrackerRequest, v1.TriggerTrackerResponse]
 	getGame        *connect.Client[v1.GetGameRequest, v1.GetGameResponse]
 	listFiles      *connect.Client[v1.ListFilesRequest, v1.ListFilesResponse]
@@ -184,6 +195,11 @@ func (c *libraryServiceClient) Exists(ctx context.Context, req *connect.Request[
 // Edit calls library.v1.LibraryService.Edit.
 func (c *libraryServiceClient) Edit(ctx context.Context, req *connect.Request[v1.EditRequest]) (*connect.Response[v1.EditResponse], error) {
 	return c.edit.CallUnary(ctx, req)
+}
+
+// Redownload calls library.v1.LibraryService.Redownload.
+func (c *libraryServiceClient) Redownload(ctx context.Context, req *connect.Request[v1.RedownloadRequest]) (*connect.Response[v1.RedownloadResponse], error) {
+	return c.redownload.CallUnary(ctx, req)
 }
 
 // TriggerTracker calls library.v1.LibraryService.TriggerTracker.
@@ -218,6 +234,7 @@ type LibraryServiceHandler interface {
 	Delete(context.Context, *connect.Request[v1.DeleteRequest]) (*connect.Response[v1.DeleteResponse], error)
 	Exists(context.Context, *connect.Request[v1.ExistsRequest]) (*connect.Response[v1.ExistsResponse], error)
 	Edit(context.Context, *connect.Request[v1.EditRequest]) (*connect.Response[v1.EditResponse], error)
+	Redownload(context.Context, *connect.Request[v1.RedownloadRequest]) (*connect.Response[v1.RedownloadResponse], error)
 	TriggerTracker(context.Context, *connect.Request[v1.TriggerTrackerRequest]) (*connect.Response[v1.TriggerTrackerResponse], error)
 	GetGame(context.Context, *connect.Request[v1.GetGameRequest]) (*connect.Response[v1.GetGameResponse], error)
 	ListFiles(context.Context, *connect.Request[v1.ListFilesRequest]) (*connect.Response[v1.ListFilesResponse], error)
@@ -262,6 +279,12 @@ func NewLibraryServiceHandler(svc LibraryServiceHandler, opts ...connect.Handler
 		connect.WithSchema(libraryServiceMethods.ByName("Edit")),
 		connect.WithHandlerOptions(opts...),
 	)
+	libraryServiceRedownloadHandler := connect.NewUnaryHandler(
+		LibraryServiceRedownloadProcedure,
+		svc.Redownload,
+		connect.WithSchema(libraryServiceMethods.ByName("Redownload")),
+		connect.WithHandlerOptions(opts...),
+	)
 	libraryServiceTriggerTrackerHandler := connect.NewUnaryHandler(
 		LibraryServiceTriggerTrackerProcedure,
 		svc.TriggerTracker,
@@ -304,6 +327,8 @@ func NewLibraryServiceHandler(svc LibraryServiceHandler, opts ...connect.Handler
 			libraryServiceExistsHandler.ServeHTTP(w, r)
 		case LibraryServiceEditProcedure:
 			libraryServiceEditHandler.ServeHTTP(w, r)
+		case LibraryServiceRedownloadProcedure:
+			libraryServiceRedownloadHandler.ServeHTTP(w, r)
 		case LibraryServiceTriggerTrackerProcedure:
 			libraryServiceTriggerTrackerHandler.ServeHTTP(w, r)
 		case LibraryServiceGetGameProcedure:
@@ -341,6 +366,10 @@ func (UnimplementedLibraryServiceHandler) Exists(context.Context, *connect.Reque
 
 func (UnimplementedLibraryServiceHandler) Edit(context.Context, *connect.Request[v1.EditRequest]) (*connect.Response[v1.EditResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("library.v1.LibraryService.Edit is not implemented"))
+}
+
+func (UnimplementedLibraryServiceHandler) Redownload(context.Context, *connect.Request[v1.RedownloadRequest]) (*connect.Response[v1.RedownloadResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("library.v1.LibraryService.Redownload is not implemented"))
 }
 
 func (UnimplementedLibraryServiceHandler) TriggerTracker(context.Context, *connect.Request[v1.TriggerTrackerRequest]) (*connect.Response[v1.TriggerTrackerResponse], error) {

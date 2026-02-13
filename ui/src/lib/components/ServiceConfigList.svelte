@@ -95,48 +95,45 @@
                 </div>
             {:else}
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {#each listRpc.value.conf as client (client.ID)}
-                        <!-- Update the grid to auto-fill based on a fixed minimum width -->
-                        <div class="grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-4">
-                            {#each listRpc.value.conf as client (client.ID)}
-                                <div class="group relative flex flex-col p-5 bg-panel/30 border border-border rounded-3xl hover:bg-panel/50 hover:border-frost-500/30 transition-all shadow-sm">
+                    <div class="grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-4">
+                        {#each listRpc.value.conf as client (client.ID)}
+                            <div class="group relative flex flex-col p-5 bg-panel/30 border border-border rounded-3xl hover:bg-panel/50 hover:border-frost-500/30 transition-all shadow-sm">
 
-                                    <!-- Top Section: Status and Actions -->
-                                    <div class="flex justify-between items-start mb-4">
-                                        <div class="relative">
-                                            <div class="p-3 bg-surface border border-border rounded-2xl text-muted group-hover:text-frost-400 transition-colors">
-                                                <Settings2Icon size={24}/>
-                                            </div>
-                                            <div class="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full border-2 border-background {client.Enabled ? 'bg-green-500' : 'bg-red-500'}"></div>
+                                <!-- Top Section: Status and Actions -->
+                                <div class="flex justify-between items-start mb-4">
+                                    <div class="relative">
+                                        <div class="p-3 bg-surface border border-border rounded-2xl text-muted group-hover:text-frost-400 transition-colors">
+                                            <Settings2Icon size={24}/>
                                         </div>
-
-                                        <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <button
-                                                    onclick={()=>openEdit(client)}
-                                                    class="p-2 text-muted hover:text-frost-400 hover:bg-frost-500/10 rounded-lg transition-all">
-                                                <Edit3Icon size={16}/>
-                                            </button>
-                                            <button
-                                                    onclick={()=>deleteClient(client)}
-                                                    class="p-2 text-muted hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all">
-                                                <Trash2Icon size={16}/>
-                                            </button>
-                                        </div>
+                                        <div class="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full border-2 border-background {client.Enabled ? 'bg-green-500' : 'bg-red-500'}"></div>
                                     </div>
 
-                                    <!-- Bottom Section: Info -->
-                                    <div class="space-y-1">
-                                        <h3 class="font-bold text-lg text-foreground truncate">{client.Name}</h3>
-                                        <div class="flex items-center gap-2">
+                                    <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <button
+                                                onclick={()=>openEdit(client)}
+                                                class="p-2 text-muted hover:text-frost-400 hover:bg-frost-500/10 rounded-lg transition-all">
+                                            <Edit3Icon size={16}/>
+                                        </button>
+                                        <button
+                                                onclick={()=>deleteClient(client)}
+                                                class="p-2 text-muted hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all">
+                                            <Trash2Icon size={16}/>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Bottom Section: Info -->
+                                <div class="space-y-1">
+                                    <h3 class="font-bold text-lg text-foreground truncate">{client.Name}</h3>
+                                    <div class="flex items-center gap-2">
                                             <span class="text-[10px] font-bold text-muted uppercase tracking-widest bg-panel border border-border px-2 py-0.5 rounded-md">
                                                 {client.Flavour}
                                             </span>
-                                        </div>
                                     </div>
                                 </div>
-                            {/each}
-                        </div>
-                    {/each}
+                            </div>
+                        {/each}
+                    </div>
                 </div>
             {/if}
         {/if}

@@ -1,11 +1,29 @@
 <script lang="ts">
-    import {FileTextIcon, ImageIcon, SearchIcon, ShieldCheckIcon} from '@lucide/svelte';
+    import {FileTextIcon, ImageIcon, SearchIcon, ShieldCheckIcon, XIcon} from '@lucide/svelte';
     import {fade} from "svelte/transition";
-    import type {Game} from "$lib/gen/library/v1/library_pb";
+    import {type Game, LibraryService} from "$lib/gen/library/v1/library_pb";
     import IndexerSearch from "$lib/components/IndexerSearch.svelte";
     import FileManager from "./FileManager.svelte";
+    import {callRPC, glacierCli} from "$lib/api/api";
+    import {getSnackbarCtx} from "$lib/components/snackbar/snackbar-provider.svelte";
 
-    let {game = $bindable(null)}: { game: Game | null } = $props();
+    let {game = $bindable(null)}: { game: Game | null; refresh: () => Promise<void> } = $props();
+
+    const lib = glacierCli(LibraryService)
+    const sm = getSnackbarCtx()
+
+    async function handleRedownload() {
+        if (!game?.ID) {
+            return
+        }
+
+        const {err} = await callRPC(() => lib.redownload({gameId: game.ID}))
+        if (err) {
+            sm.push(`Could not redownload ${err}`, 'error')
+        }
+        await refresh()
+
+    }
 
 </script>
 
@@ -16,6 +34,11 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 p-6 bg-surface border border-border rounded-3xl">
             <!-- State Info -->
             <div class="lg:col-span-5 grid grid-cols-2 gap-y-6 gap-x-4 border-r border-border pr-6">
+                <div>
+                    <button onclick={handleRedownload} class="text-frost-400 hover:text-foreground p-1">
+                        Retry
+                    </button>
+                </div>
                 <div>
                     <p class="text-[9px] font-bold text-muted uppercase">Client Type</p>
                     <p class="text-sm font-bold">{game?.DownloadState?.Client}</p>

@@ -3,6 +3,7 @@ package services_manager
 import (
 	"fmt"
 
+	"github.com/ra341/glacier/internal/downloader/clients/qbit"
 	"github.com/ra341/glacier/internal/downloader/clients/transmission"
 	downloaderTypes "github.com/ra341/glacier/internal/downloader/types"
 	"github.com/ra341/glacier/pkg/mapsct"
@@ -36,6 +37,10 @@ func NewDownloaderMap(store Store) ServiceConfigMap[downloaderTypes.Downloader] 
 			downloaderTypes.ClientTransmission: {
 				InitFn: transmission.New,
 				Config: transmission.Config{},
+			},
+			downloaderTypes.ClientQbit: {
+				InitFn: qbit.New,
+				Config: qbit.Config{},
 			},
 		},
 	}

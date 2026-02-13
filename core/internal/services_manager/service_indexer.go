@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/ra341/glacier/internal/indexer/indexers/hydra"
+	"github.com/ra341/glacier/internal/indexer/indexers/prowlar"
 	indexTypes "github.com/ra341/glacier/internal/indexer/types"
 	"github.com/ra341/glacier/pkg/mapsct"
 	"github.com/ra341/glacier/pkg/syncmap"
@@ -23,6 +24,10 @@ func NewIndexerMap(store Store) ServiceConfigMap[indexTypes.Indexer] {
 			indexTypes.IndexerHydra: {
 				InitFn: hydra.New,
 				Config: hydra.Config{},
+			},
+			indexTypes.IndexerProwlarr: {
+				InitFn: prowlar.New,
+				Config: prowlar.Config{},
 			},
 		},
 	}

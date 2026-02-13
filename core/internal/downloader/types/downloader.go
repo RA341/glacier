@@ -8,6 +8,7 @@ type ClientType int
 const (
 	ClientUnknown ClientType = iota
 	ClientTransmission
+	ClientQbit
 )
 
 //go:generate go run github.com/dmarkham/enumer@latest -sql -type=DownloadState -output=enum_download_state.go

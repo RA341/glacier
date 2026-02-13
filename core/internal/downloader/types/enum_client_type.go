@@ -8,11 +8,11 @@ import (
 	"strings"
 )
 
-const _ClientTypeName = "ClientUnknownClientTransmission"
+const _ClientTypeName = "ClientUnknownClientTransmissionClientQbit"
 
-var _ClientTypeIndex = [...]uint8{0, 13, 31}
+var _ClientTypeIndex = [...]uint8{0, 13, 31, 41}
 
-const _ClientTypeLowerName = "clientunknownclienttransmission"
+const _ClientTypeLowerName = "clientunknownclienttransmissionclientqbit"
 
 func (i ClientType) String() string {
 	if i < 0 || i >= ClientType(len(_ClientTypeIndex)-1) {
@@ -27,20 +27,24 @@ func _ClientTypeNoOp() {
 	var x [1]struct{}
 	_ = x[ClientUnknown-(0)]
 	_ = x[ClientTransmission-(1)]
+	_ = x[ClientQbit-(2)]
 }
 
-var _ClientTypeValues = []ClientType{ClientUnknown, ClientTransmission}
+var _ClientTypeValues = []ClientType{ClientUnknown, ClientTransmission, ClientQbit}
 
 var _ClientTypeNameToValueMap = map[string]ClientType{
 	_ClientTypeName[0:13]:       ClientUnknown,
 	_ClientTypeLowerName[0:13]:  ClientUnknown,
 	_ClientTypeName[13:31]:      ClientTransmission,
 	_ClientTypeLowerName[13:31]: ClientTransmission,
+	_ClientTypeName[31:41]:      ClientQbit,
+	_ClientTypeLowerName[31:41]: ClientQbit,
 }
 
 var _ClientTypeNames = []string{
 	_ClientTypeName[0:13],
 	_ClientTypeName[13:31],
+	_ClientTypeName[31:41],
 }
 
 // ClientTypeString retrieves an enum value from the enum constants string name.

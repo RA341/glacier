@@ -45,6 +45,23 @@ services:
     depends_on:
       - caddy
 
+  qbit:
+    container_name: qbittorrent
+    image: lscr.io/linuxserver/qbittorrent:latest
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - WEBUI_PORT=8080
+      - TORRENTING_PORT=6881
+    volumes:
+      - .build/qbittorrent/appdata:/config
+      - .build/qbittorrent/downloads:/downloads
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    depends_on:
+      - caddy
 volumes:
   caddy_data:
   caddy_config:

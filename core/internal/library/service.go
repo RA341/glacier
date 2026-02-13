@@ -162,6 +162,21 @@ func (s *Service) getFolder(ctx context.Context, id uint, downloaded bool) (stri
 	return readPath, nil
 }
 
+func (s *Service) Redownload(ctx context.Context, gameId uint) error {
+	game, err := s.store.GetById(ctx, gameId)
+	if err != nil {
+		return err
+	}
+
+	err = s.downloader.Add(ctx, &game)
+	if err != nil {
+		game.SetErr(err)
+		return s.store.UpdateDownloadProgress(ctx, game.ID, game.Download)
+	}
+
+	return nil
+}
+
 func checkPerms(ctx context.Context) error {
 	userInf, err := user.GetUserCtx(ctx)
 	if err != nil {

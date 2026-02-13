@@ -13,7 +13,7 @@ service LibraryService {
   rpc Exists(ExistsRequest) returns (ExistsResponse) {}
   rpc Edit(EditRequest) returns (EditResponse) {}
 
-
+  rpc Redownload(RedownloadRequest) returns (RedownloadResponse) {}
   rpc TriggerTracker(TriggerTrackerRequest) returns (TriggerTrackerResponse) {}
   rpc GetGame(GetGameRequest) returns (GetGameResponse) {}
 
@@ -23,6 +23,12 @@ service LibraryService {
   rpc Add(AddRequest) returns (AddResponse) {}
 }
 
+
+message RedownloadRequest {
+  uint64 gameId = 1;
+}
+
+message RedownloadResponse {}
 
 message EditRequest {
   Game game = 1;

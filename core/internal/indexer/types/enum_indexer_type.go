@@ -8,11 +8,11 @@ import (
 	"strings"
 )
 
-const _IndexerTypeName = "IndexerUnknownIndexerHydra"
+const _IndexerTypeName = "IndexerUnknownIndexerHydraIndexerProwlarr"
 
-var _IndexerTypeIndex = [...]uint8{0, 14, 26}
+var _IndexerTypeIndex = [...]uint8{0, 14, 26, 41}
 
-const _IndexerTypeLowerName = "indexerunknownindexerhydra"
+const _IndexerTypeLowerName = "indexerunknownindexerhydraindexerprowlarr"
 
 func (i IndexerType) String() string {
 	if i < 0 || i >= IndexerType(len(_IndexerTypeIndex)-1) {
@@ -27,20 +27,24 @@ func _IndexerTypeNoOp() {
 	var x [1]struct{}
 	_ = x[IndexerUnknown-(0)]
 	_ = x[IndexerHydra-(1)]
+	_ = x[IndexerProwlarr-(2)]
 }
 
-var _IndexerTypeValues = []IndexerType{IndexerUnknown, IndexerHydra}
+var _IndexerTypeValues = []IndexerType{IndexerUnknown, IndexerHydra, IndexerProwlarr}
 
 var _IndexerTypeNameToValueMap = map[string]IndexerType{
 	_IndexerTypeName[0:14]:       IndexerUnknown,
 	_IndexerTypeLowerName[0:14]:  IndexerUnknown,
 	_IndexerTypeName[14:26]:      IndexerHydra,
 	_IndexerTypeLowerName[14:26]: IndexerHydra,
+	_IndexerTypeName[26:41]:      IndexerProwlarr,
+	_IndexerTypeLowerName[26:41]: IndexerProwlarr,
 }
 
 var _IndexerTypeNames = []string{
 	_IndexerTypeName[0:14],
 	_IndexerTypeName[14:26],
+	_IndexerTypeName[26:41],
 }
 
 // IndexerTypeString retrieves an enum value from the enum constants string name.

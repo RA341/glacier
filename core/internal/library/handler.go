@@ -141,6 +141,15 @@ func (h *Handler) Delete(ctx context.Context, c *connect.Request[v1.DeleteReques
 	return connect.NewResponse(&v1.DeleteResponse{}), nil
 }
 
+func (h *Handler) Redownload(ctx context.Context, c *connect.Request[v1.RedownloadRequest]) (*connect.Response[v1.RedownloadResponse], error) {
+	err := h.srv.Redownload(ctx, uint(c.Msg.GameId))
+	if err != nil {
+		return nil, err
+	}
+
+	return connect.NewResponse(&v1.RedownloadResponse{}), nil
+}
+
 func (h *Handler) TriggerTracker(ctx context.Context, req *connect.Request[v1.TriggerTrackerRequest]) (*connect.Response[v1.TriggerTrackerResponse], error) {
 	h.srv.downloader.TriggerTracker()
 	return connect.NewResponse(&v1.TriggerTrackerResponse{}), nil

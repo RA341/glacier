@@ -26,6 +26,7 @@ type IndexerType int
 const (
 	IndexerUnknown IndexerType = iota
 	IndexerHydra
+	IndexerProwlarr
 )
 
 type Indexer interface {

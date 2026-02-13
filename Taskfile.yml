@@ -202,6 +202,13 @@ tasks:
   cli:
     cmds:
       - docker compose up trasmission caddy
+
+  lcli:*:
+    vars:
+      CMD: "{{index .MATCH 0}}"
+    cmds:
+      - docker compose up {{.CMD}}
+
   pocket:
     cmds:
       - docker compose up pocket caddy

@@ -11,7 +11,7 @@
     import TabFrost from "./TabFrost.svelte";
     import GameDownloadButton from "./ButtonDownload.svelte";
     import TabFrontPage from "./TabFrontPage.svelte";
-    import TabManage from "./TabManage.svelte";
+    import TabGlacier from "./TabGlacier.svelte";
     import {getSnackbarCtx} from "$lib/components/snackbar/snackbar-provider.svelte";
     import {getUserCtx} from "$lib/components/user/provider.svelte";
 
@@ -61,7 +61,7 @@
             sm.push(`Error deleting: ${err}`, 'error')
             return
         }
-        goto("/library")
+        await goto("/library")
     }
 
     const user = getUserCtx()
@@ -147,7 +147,7 @@
             {:else if activeTab === 'local'}
                 <TabFrost game={editGame}/>
             {:else if activeTab === 'manage'}
-                <TabManage bind:game={editGame}/>
+                <TabGlacier refresh={gameRpc.runner} bind:game={editGame}/>
             {/if}
         </main>
     </div>

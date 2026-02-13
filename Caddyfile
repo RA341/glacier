@@ -1,3 +1,11 @@
 auth.localhost {
     reverse_proxy pocket:1411
 }
+
+tr.localhost {
+    reverse_proxy qbit:9091
+}
+
+qbit.localhost {
+    reverse_proxy qbit:8080
+}
