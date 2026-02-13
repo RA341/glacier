@@ -13,7 +13,6 @@ import (
 	"github.com/ra341/glacier/pkg/logger"
 	sharedConfig "github.com/ra341/glacier/shared/config"
 	"github.com/rs/zerolog/log"
-	"golang.org/x/time/rate"
 )
 
 type App struct {
@@ -36,7 +35,7 @@ func New() *App {
 
 	frostProtectedBase := initConf.Server.GlacierUrl + "/api/server/protected"
 
-	ls := hc.NewLimiterService(rate.Inf)
+	ls := hc.NewLimiterService(initConf.Downloader.GetSpeedThrottle())
 
 	// The internet speed counter
 	var totalBytes uint64

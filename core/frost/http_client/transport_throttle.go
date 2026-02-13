@@ -19,9 +19,9 @@ func NewLimiterService(initialLimit rate.Limit) *LimiterService {
 		initialLimit = rate.Inf
 	}
 
-	ls := &LimiterService{}
-	ls.lm = rate.NewLimiter(initialLimit, DefaultBurst)
-	return ls
+	return &LimiterService{
+		lm: rate.NewLimiter(initialLimit, DefaultBurst),
+	}
 }
 
 func (s *LimiterService) Set(limit rate.Limit) {
