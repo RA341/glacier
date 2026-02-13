@@ -1,11 +1,13 @@
 package config
 
+import "github.com/ra341/glacier/frost/local_library/download"
+
 type Config struct {
 	Desktop    Desktop
 	Server     Server
 	Files      Files
 	Logger     Logger
-	Downloader Downloader
+	Downloader download.Config
 }
 
 type Desktop struct {
@@ -17,11 +19,6 @@ type Server struct {
 	AllowedOrigins []string `yaml:"origins" env:"ORIGINS" default:"*" help:"Allowed origins in CSV"`
 
 	GlacierUrl string `yaml:"glacierUrl" env:"GLACIER_URL" default:"http://localhost:6699" help:"url of glacier server"`
-}
-
-type Downloader struct {
-	MaxConcurrentFiles int `yaml:"maxConcurrentFiles" env:"MAX_FILES" default:"50" help:"Maximum number of concurrent files"`
-	MaxFileChunks      int `yaml:"maxFileChunks" env:"MAX_CHUNKS" default:"100" help:"Maximum number of chunks in a file to process"`
 }
 
 type Files struct {

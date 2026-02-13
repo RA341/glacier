@@ -309,8 +309,8 @@ func (d *Download) setupFile(fm *manifest.FileManifest) error {
 
 	var chunkList []Chunk
 	totalSize := fm.Size
-	for start := int64(0); start < totalSize; start += d.conf.ChunkSizeInMB {
-		end := start + d.conf.ChunkSizeInMB - 1
+	for start := int64(0); start < totalSize; start += d.conf.GetChunkSize() {
+		end := start + d.conf.GetChunkSize() - 1
 		// if it's the last chunk,
 		// make sure not to overshoot the file size
 		if end >= totalSize {

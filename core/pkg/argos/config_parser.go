@@ -124,12 +124,24 @@ func setField(fieldType reflect.StructField, field reflect.Value, value string) 
 		}
 		field.SetString(value)
 		break
-	case reflect.Int:
-		i, _ := strconv.Atoi(value)
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		i, err := strconv.Atoi(value)
+		if err != nil {
+			log.Fatal().Err(err).Str("val", value).Msg("Failed to convert value to int")
+		}
 		field.SetInt(int64(i))
 		break
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		i, err := strconv.ParseUint(value, 10, 64)
+		if err != nil {
+			log.Fatal().Err(err).Str("val", value).Msg("Failed to convert value to uint")
+		}
+		field.SetUint(i)
 	case reflect.Bool:
-		b, _ := strconv.ParseBool(value)
+		b, err := strconv.ParseBool(value)
+		if err != nil {
+			log.Fatal().Err(err).Str("val", value).Msg("Failed to convert value to bool")
+		}
 		field.SetBool(b)
 		break
 	case reflect.Slice:

@@ -16,9 +16,10 @@ import (
 const MB = 1024 * 1024
 
 type Service struct {
-	Config          *Config
-	editStatus      EditStatus
-	ActiveDownloads syncmap.Map[int, *Download]
+	Config             *Config
+	editStatus         EditStatus
+	ActiveDownloads    syncmap.Map[int, *Download]
+	DownloadTotalBytes *uint64
 }
 
 // New
@@ -29,6 +30,7 @@ func New(
 	config *Config,
 	httpCliFactory hc.HttpCliFactory,
 	editStatus EditStatus,
+	downloadSpeedCounter *uint64,
 ) *Service {
 	transport := &http.Transport{
 		// MaxIdleConns is the total connections across all hosts
@@ -51,8 +53,9 @@ func New(
 	)
 
 	return &Service{
-		Config:     config,
-		editStatus: editStatus,
+		Config:             config,
+		editStatus:         editStatus,
+		DownloadTotalBytes: downloadSpeedCounter,
 	}
 }
 

@@ -23,37 +23,37 @@ type App struct {
 
 func New() *App {
 	conf := config.New(true)
-	get := conf.Get()
+	initConf := conf.Get()
 
-	logger.InitConsole(get.Logger.Level, get.Logger.Verbose)
+	logger.InitConsole(initConf.Logger.Level, initConf.Logger.Verbose)
 
-	db := database.New(get.Files.ConfigDir, false)
+	db := database.New(initConf.Files.ConfigDir, false)
 
 	const appName = "dev.radn.glacier.frost"
 	secretStore := secrets.NewKeyringStore(appName)
 	ss := secrets.NewService(secretStore)
 
-	httpCliFac := hc.NewFrostHttpClientFactory(ss)
+	frostProtectedBase := initConf.Server.GlacierUrl + "/api/server/protected"
 
-	frostProtectedBase := get.Server.GlacierUrl + "/api/server/protected"
-
+	// The internet speed counter
+	var totalBytes uint64
+	downloaderHttpCliFac := hc.NewFrostHttpClientFactory(ss, &totalBytes)
 	llStore := ll.NewStoreGorm(db)
 	downloader := download.New(
 		frostProtectedBase,
-		&download.Config{
-			MaxConcurrentFiles:      5,
-			MaxConcurrentFileChunks: 50,
-			ChunkSizeInMB:           128 * download.MB,
-		}, // todo
-		httpCliFac,
+		&initConf.Downloader,
+		downloaderHttpCliFac,
 		llStore.EditStatus,
+		&totalBytes,
 	)
 
+	// don't need to track speed for library api usage
+	libraryHttpCliFac := hc.NewFrostHttpClientFactory(ss, nil)
 	llibSrv := ll.New(
 		frostProtectedBase,
 		llStore,
 		downloader,
-		httpCliFac,
+		libraryHttpCliFac,
 	)
 
 	a := &App{
