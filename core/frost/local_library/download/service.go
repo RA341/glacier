@@ -23,19 +23,14 @@ type Service struct {
 	ActiveDownloads    syncmap.Map[int, *Download]
 	DownloadTotalBytes *uint64
 
-	workers *errgroup.Group
+	workers      *errgroup.Group
+	SpeedLimiter *hc.LimiterService
 }
 
 // New
 //
 // basepath must be: "http://localhost:6699"
-func New(
-	baseurl string,
-	config *Config,
-	httpCliFactory hc.HttpCliFactory,
-	editStatus EditStatus,
-	downloadSpeedCounter *uint64,
-) *Service {
+func New(baseurl string, config *Config, httpCliFactory hc.HttpCliFactory, editStatus EditStatus, ls *hc.LimiterService, downloadSpeedCounter *uint64) *Service {
 	transport := &http.Transport{
 		// MaxIdleConns is the total connections across all hosts
 		MaxIdleConns: 100,
@@ -61,6 +56,7 @@ func New(
 
 	return &Service{
 		Config:             config,
+		SpeedLimiter:       ls,
 		editStatus:         editStatus,
 		DownloadTotalBytes: downloadSpeedCounter,
 		workers:            &group,
@@ -94,10 +90,12 @@ func (d *Service) Download(ctx context.Context, gameId int, downloadPath string,
 		return fmt.Errorf("could not start download: %w", err)
 	}
 
-	d.workers.Go(func() error {
-		download.Start()
-		return nil
-	})
+	go func() {
+		d.workers.Go(func() error {
+			download.Start()
+			return nil
+		})
+	}()
 
 	d.ActiveDownloads.Store(gameId, download)
 

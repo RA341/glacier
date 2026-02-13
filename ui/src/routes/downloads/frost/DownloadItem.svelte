@@ -14,7 +14,7 @@
     import {formatBytes} from "$lib/api/byte-math";
     import {callRPC, frostCli} from "$lib/api/api";
     import {getSnackbarCtx} from "$lib/components/snackbar/snackbar-provider.svelte";
-    import {trimPrefix} from "$lib/api/strings.ts";
+    import {trimPrefix} from "$lib/api/strings";
 
     let {detail}: { detail: DownloadProgress } = $props();
 

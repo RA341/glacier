@@ -56,6 +56,9 @@ const (
 	// FrostLibraryServiceLaunchProcedure is the fully-qualified name of the FrostLibraryService's
 	// Launch RPC.
 	FrostLibraryServiceLaunchProcedure = "/frost_library.v1.FrostLibraryService/Launch"
+	// FrostLibraryServiceThrottleSpeedProcedure is the fully-qualified name of the
+	// FrostLibraryService's ThrottleSpeed RPC.
+	FrostLibraryServiceThrottleSpeedProcedure = "/frost_library.v1.FrostLibraryService/ThrottleSpeed"
 	// FrostLibraryServiceDownloadProcedure is the fully-qualified name of the FrostLibraryService's
 	// Download RPC.
 	FrostLibraryServiceDownloadProcedure = "/frost_library.v1.FrostLibraryService/Download"
@@ -77,6 +80,7 @@ type FrostLibraryServiceClient interface {
 	Delete(context.Context, *connect.Request[v1.DeleteRequest]) (*connect.Response[v1.DeleteResponse], error)
 	GetByGameId(context.Context, *connect.Request[v1.GetByGameIdRequest]) (*connect.Response[v1.GetByGameIdResponse], error)
 	Launch(context.Context, *connect.Request[v1.LaunchRequest]) (*connect.Response[v1.LaunchResponse], error)
+	ThrottleSpeed(context.Context, *connect.Request[v1.ThrottleSpeedRequest]) (*connect.Response[v1.ThrottleSpeedResponse], error)
 	Download(context.Context, *connect.Request[v1.DownloadRequest]) (*connect.Response[v1.DownloadResponse], error)
 	Cancel(context.Context, *connect.Request[v1.CancelRequest]) (*connect.Response[v1.CancelResponse], error)
 	Pause(context.Context, *connect.Request[v1.PauseRequest]) (*connect.Response[v1.PauseResponse], error)
@@ -141,6 +145,12 @@ func NewFrostLibraryServiceClient(httpClient connect.HTTPClient, baseURL string,
 			connect.WithSchema(frostLibraryServiceMethods.ByName("Launch")),
 			connect.WithClientOptions(opts...),
 		),
+		throttleSpeed: connect.NewClient[v1.ThrottleSpeedRequest, v1.ThrottleSpeedResponse](
+			httpClient,
+			baseURL+FrostLibraryServiceThrottleSpeedProcedure,
+			connect.WithSchema(frostLibraryServiceMethods.ByName("ThrottleSpeed")),
+			connect.WithClientOptions(opts...),
+		),
 		download: connect.NewClient[v1.DownloadRequest, v1.DownloadResponse](
 			httpClient,
 			baseURL+FrostLibraryServiceDownloadProcedure,
@@ -172,6 +182,7 @@ type frostLibraryServiceClient struct {
 	delete           *connect.Client[v1.DeleteRequest, v1.DeleteResponse]
 	getByGameId      *connect.Client[v1.GetByGameIdRequest, v1.GetByGameIdResponse]
 	launch           *connect.Client[v1.LaunchRequest, v1.LaunchResponse]
+	throttleSpeed    *connect.Client[v1.ThrottleSpeedRequest, v1.ThrottleSpeedResponse]
 	download         *connect.Client[v1.DownloadRequest, v1.DownloadResponse]
 	cancel           *connect.Client[v1.CancelRequest, v1.CancelResponse]
 	pause            *connect.Client[v1.PauseRequest, v1.PauseResponse]
@@ -217,6 +228,11 @@ func (c *frostLibraryServiceClient) Launch(ctx context.Context, req *connect.Req
 	return c.launch.CallUnary(ctx, req)
 }
 
+// ThrottleSpeed calls frost_library.v1.FrostLibraryService.ThrottleSpeed.
+func (c *frostLibraryServiceClient) ThrottleSpeed(ctx context.Context, req *connect.Request[v1.ThrottleSpeedRequest]) (*connect.Response[v1.ThrottleSpeedResponse], error) {
+	return c.throttleSpeed.CallUnary(ctx, req)
+}
+
 // Download calls frost_library.v1.FrostLibraryService.Download.
 func (c *frostLibraryServiceClient) Download(ctx context.Context, req *connect.Request[v1.DownloadRequest]) (*connect.Response[v1.DownloadResponse], error) {
 	return c.download.CallUnary(ctx, req)
@@ -243,6 +259,7 @@ type FrostLibraryServiceHandler interface {
 	Delete(context.Context, *connect.Request[v1.DeleteRequest]) (*connect.Response[v1.DeleteResponse], error)
 	GetByGameId(context.Context, *connect.Request[v1.GetByGameIdRequest]) (*connect.Response[v1.GetByGameIdResponse], error)
 	Launch(context.Context, *connect.Request[v1.LaunchRequest]) (*connect.Response[v1.LaunchResponse], error)
+	ThrottleSpeed(context.Context, *connect.Request[v1.ThrottleSpeedRequest]) (*connect.Response[v1.ThrottleSpeedResponse], error)
 	Download(context.Context, *connect.Request[v1.DownloadRequest]) (*connect.Response[v1.DownloadResponse], error)
 	Cancel(context.Context, *connect.Request[v1.CancelRequest]) (*connect.Response[v1.CancelResponse], error)
 	Pause(context.Context, *connect.Request[v1.PauseRequest]) (*connect.Response[v1.PauseResponse], error)
@@ -303,6 +320,12 @@ func NewFrostLibraryServiceHandler(svc FrostLibraryServiceHandler, opts ...conne
 		connect.WithSchema(frostLibraryServiceMethods.ByName("Launch")),
 		connect.WithHandlerOptions(opts...),
 	)
+	frostLibraryServiceThrottleSpeedHandler := connect.NewUnaryHandler(
+		FrostLibraryServiceThrottleSpeedProcedure,
+		svc.ThrottleSpeed,
+		connect.WithSchema(frostLibraryServiceMethods.ByName("ThrottleSpeed")),
+		connect.WithHandlerOptions(opts...),
+	)
 	frostLibraryServiceDownloadHandler := connect.NewUnaryHandler(
 		FrostLibraryServiceDownloadProcedure,
 		svc.Download,
@@ -339,6 +362,8 @@ func NewFrostLibraryServiceHandler(svc FrostLibraryServiceHandler, opts ...conne
 			frostLibraryServiceGetByGameIdHandler.ServeHTTP(w, r)
 		case FrostLibraryServiceLaunchProcedure:
 			frostLibraryServiceLaunchHandler.ServeHTTP(w, r)
+		case FrostLibraryServiceThrottleSpeedProcedure:
+			frostLibraryServiceThrottleSpeedHandler.ServeHTTP(w, r)
 		case FrostLibraryServiceDownloadProcedure:
 			frostLibraryServiceDownloadHandler.ServeHTTP(w, r)
 		case FrostLibraryServiceCancelProcedure:
@@ -384,6 +409,10 @@ func (UnimplementedFrostLibraryServiceHandler) GetByGameId(context.Context, *con
 
 func (UnimplementedFrostLibraryServiceHandler) Launch(context.Context, *connect.Request[v1.LaunchRequest]) (*connect.Response[v1.LaunchResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("frost_library.v1.FrostLibraryService.Launch is not implemented"))
+}
+
+func (UnimplementedFrostLibraryServiceHandler) ThrottleSpeed(context.Context, *connect.Request[v1.ThrottleSpeedRequest]) (*connect.Response[v1.ThrottleSpeedResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("frost_library.v1.FrostLibraryService.ThrottleSpeed is not implemented"))
 }
 
 func (UnimplementedFrostLibraryServiceHandler) Download(context.Context, *connect.Request[v1.DownloadRequest]) (*connect.Response[v1.DownloadResponse], error) {

@@ -23,7 +23,6 @@ service LibraryService {
   rpc Add(AddRequest) returns (AddResponse) {}
 }
 
-
 message RedownloadRequest {
   uint64 gameId = 1;
 }

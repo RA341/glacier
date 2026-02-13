@@ -1,12 +1,13 @@
 <script lang="ts">
     import {CircleAlert, CloudIcon, LoaderIcon, RefreshCcwDot, TrendingUpIcon} from '@lucide/svelte';
     import {fade, fly} from 'svelte/transition';
-    import {Frost, frostCli} from "$lib/api/api";
+    import {callRPC, Frost, frostCli} from "$lib/api/api";
     import {FrostLibraryService} from "$lib/gen/frost_library/v1/frost_library_pb";
     import {createRPCRunner} from "$lib/api/rpc.svelte.js";
     import DownloadItem from "./DownloadItem.svelte";
     import {onMount, untrack} from "svelte";
     import {handleProcessStatus} from "$lib/api/websockets";
+    import DownloadThrottle from "./DownloadThrottle.svelte";
 
     const frostLib = frostCli(FrostLibraryService)
     let downloadingRpc = createRPCRunner(() => frostLib.listDownloading({}))
@@ -73,6 +74,7 @@
             speed = "";
         };
     }
+
 </script>
 
 <div class="space-y-6">
@@ -90,7 +92,7 @@
                 />
                 Refresh
             </button>
-
+            <DownloadThrottle />
             <!-- LIVE SPEED BADGE -->
             {#if speed && hasDownloads}
                 <div in:fade

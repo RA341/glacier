@@ -13,6 +13,7 @@ import (
 	"github.com/ra341/glacier/generated/frost_library/v1/v1connect"
 	"github.com/ra341/glacier/pkg/listutils"
 	"github.com/rs/zerolog/log"
+	"golang.org/x/time/rate"
 )
 
 type Handler struct {
@@ -22,6 +23,12 @@ type Handler struct {
 func NewHandler(srv *Service) (string, http.Handler) {
 	h := &Handler{srv: srv}
 	return v1connect.NewFrostLibraryServiceHandler(h)
+}
+
+func (h *Handler) ThrottleSpeed(ctx context.Context, c *connect.Request[v1.ThrottleSpeedRequest]) (*connect.Response[v1.ThrottleSpeedResponse], error) {
+	newLm := rate.Limit(c.Msg.Limit)
+	h.srv.downloader.SpeedLimiter.Set(newLm)
+	return &connect.Response[v1.ThrottleSpeedResponse]{}, nil
 }
 
 func (h *Handler) Get(ctx context.Context, c *connect.Request[v1.GetRequest]) (*connect.Response[v1.GetResponse], error) {

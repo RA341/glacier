@@ -13,15 +13,23 @@ service FrostLibraryService {
   rpc Edit(EditRequest) returns (EditResponse) {}
 
   rpc LaunchFilePicker(LaunchFilePickerRequest) returns (LaunchFilePickerResponse) {}
-  
+
   rpc Delete(DeleteRequest) returns (DeleteResponse) {}
   rpc GetByGameId(GetByGameIdRequest) returns (GetByGameIdResponse) {}
   rpc Launch(LaunchRequest) returns (LaunchResponse) {}
 
+  rpc ThrottleSpeed(ThrottleSpeedRequest) returns (ThrottleSpeedResponse) {}
   rpc Download(DownloadRequest) returns (DownloadResponse) {}
   rpc Cancel(CancelRequest) returns (CancelResponse) {}
   rpc Pause(PauseRequest) returns (PauseResponse) {}
 }
+
+message ThrottleSpeedRequest {
+  float limit = 1;
+}
+
+message ThrottleSpeedResponse {}
+
 
 message LaunchFilePickerRequest {
   string baseDir = 1;

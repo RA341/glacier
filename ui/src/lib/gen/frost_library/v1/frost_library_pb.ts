@@ -12,7 +12,37 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file frost_library/v1/frost_library.proto.
  */
 export const file_frost_library_v1_frost_library: GenFile = /*@__PURE__*/
-  fileDesc("CiRmcm9zdF9saWJyYXJ5L3YxL2Zyb3N0X2xpYnJhcnkucHJvdG8SEGZyb3N0X2xpYnJhcnkudjEiKgoXTGF1bmNoRmlsZVBpY2tlclJlcXVlc3QSDwoHYmFzZURpchgBIAEoCSIoChhMYXVuY2hGaWxlUGlja2VyUmVzcG9uc2USDAoEcGF0aBgBIAEoCSI9CgtFZGl0UmVxdWVzdBIuCglMb2NhbEdhbWUYASABKAsyGy5mcm9zdF9saWJyYXJ5LnYxLkxvY2FsR2FtZSIOCgxFZGl0UmVzcG9uc2UiGwoNTGF1bmNoUmVxdWVzdBIKCgJJZBgBIAEoBCIQCg5MYXVuY2hSZXNwb25zZSI3ChJHZXRCeUdhbWVJZFJlcXVlc3QSCgoCaWQYASABKAQSFQoNbG9jYWxEb3dubG9hZBgCIAEoCCJEChNHZXRCeUdhbWVJZFJlc3BvbnNlEi0KCGRvd25sb2FkGAEgASgLMhsuZnJvc3RfbGlicmFyeS52MS5Mb2NhbEdhbWUiGgoMUGF1c2VSZXF1ZXN0EgoKAmlkGAEgASgEIg8KDVBhdXNlUmVzcG9uc2UiGwoNQ2FuY2VsUmVxdWVzdBIKCgJpZBgBIAEoBCIQCg5DYW5jZWxSZXNwb25zZSIsChBMaXN0RmlsZXNSZXF1ZXN0EgoKAmlkGAEgASgEEgwKBHBhdGgYAiABKAkiEwoRTGlzdEZpbGVzUmVzcG9uc2UiGAoKR2V0UmVxdWVzdBIKCgJpZBgBIAEoBCJrCg1Mb2NhbERvd25sb2FkEhQKDERvd25sb2FkUGF0aBgBIAEoCRIOCgZTdGF0dXMYAiABKAkSFQoNU3RhdHVzTWVzc2FnZRgDIAEoCRIPCgdTdGFydGVkGAQgASgJEgwKBERvbmUYBSABKAkiHQoIR2FtZVBsYXkSEQoJTGF1bmNoRXhlGAIgASgJIqQBCglMb2NhbEdhbWUSCgoCSUQYASABKAQSDgoGR2FtZUlEGAIgASgEEh4KBGdhbWUYAyABKAsyEC5saWJyYXJ5LnYxLkdhbWUSMQoIRG93bmxvYWQYBCABKAsyHy5mcm9zdF9saWJyYXJ5LnYxLkxvY2FsRG93bmxvYWQSKAoEUGxheRgFIAEoCzIaLmZyb3N0X2xpYnJhcnkudjEuR2FtZVBsYXkiNgoLR2V0UmVzcG9uc2USJwoCbGcYASABKAsyGy5mcm9zdF9saWJyYXJ5LnYxLkxvY2FsR2FtZSIbCg1EZWxldGVSZXF1ZXN0EgoKAmlkGAEgASgEIhAKDkRlbGV0ZVJlc3BvbnNlIlkKD0Rvd25sb2FkUmVxdWVzdBIOCgZnYW1lSWQYASABKAMSFgoOZG93bmxvYWRGb2xkZXIYAiABKAkSDQoFZm9yY2UYAyABKAgSDwoHcmVjaGVjaxgEIAEoCCISChBEb3dubG9hZFJlc3BvbnNlIhgKFkxpc3REb3dubG9hZGluZ1JlcXVlc3QiPAoMRmlsZVByb2dyZXNzEgwKBE5hbWUYASABKAkSEAoIQ29tcGxldGUYAiABKAQSDAoETGVmdBgDIAEoBCJfCg5Gb2xkZXJQcm9ncmVzcxIQCghDb21wbGV0ZRgBIAEoAxIMCgRMZWZ0GAIgASgDEi0KBWZpbGVzGAMgAygLMh4uZnJvc3RfbGlicmFyeS52MS5GaWxlUHJvZ3Jlc3MipwEKEERvd25sb2FkUHJvZ3Jlc3MSCgoCSUQYBSABKAQSEQoJVGh1bWJuYWlsGAEgASgJEg0KBVRpdGxlGAIgASgJEjEKCGRvd25sb2FkGAMgASgLMh8uZnJvc3RfbGlicmFyeS52MS5Mb2NhbERvd25sb2FkEjIKCHByb2dyZXNzGAQgASgLMiAuZnJvc3RfbGlicmFyeS52MS5Gb2xkZXJQcm9ncmVzcyJQChdMaXN0RG93bmxvYWRpbmdSZXNwb25zZRI1Cglkb3dubG9hZHMYASADKAsyIi5mcm9zdF9saWJyYXJ5LnYxLkRvd25sb2FkUHJvZ3Jlc3MyvwcKE0Zyb3N0TGlicmFyeVNlcnZpY2USVgoJTGlzdEZpbGVzEiIuZnJvc3RfbGlicmFyeS52MS5MaXN0RmlsZXNSZXF1ZXN0GiMuZnJvc3RfbGlicmFyeS52MS5MaXN0RmlsZXNSZXNwb25zZSIAEmgKD0xpc3REb3dubG9hZGluZxIoLmZyb3N0X2xpYnJhcnkudjEuTGlzdERvd25sb2FkaW5nUmVxdWVzdBopLmZyb3N0X2xpYnJhcnkudjEuTGlzdERvd25sb2FkaW5nUmVzcG9uc2UiABJECgNHZXQSHC5mcm9zdF9saWJyYXJ5LnYxLkdldFJlcXVlc3QaHS5mcm9zdF9saWJyYXJ5LnYxLkdldFJlc3BvbnNlIgASRwoERWRpdBIdLmZyb3N0X2xpYnJhcnkudjEuRWRpdFJlcXVlc3QaHi5mcm9zdF9saWJyYXJ5LnYxLkVkaXRSZXNwb25zZSIAEmsKEExhdW5jaEZpbGVQaWNrZXISKS5mcm9zdF9saWJyYXJ5LnYxLkxhdW5jaEZpbGVQaWNrZXJSZXF1ZXN0GiouZnJvc3RfbGlicmFyeS52MS5MYXVuY2hGaWxlUGlja2VyUmVzcG9uc2UiABJNCgZEZWxldGUSHy5mcm9zdF9saWJyYXJ5LnYxLkRlbGV0ZVJlcXVlc3QaIC5mcm9zdF9saWJyYXJ5LnYxLkRlbGV0ZVJlc3BvbnNlIgASXAoLR2V0QnlHYW1lSWQSJC5mcm9zdF9saWJyYXJ5LnYxLkdldEJ5R2FtZUlkUmVxdWVzdBolLmZyb3N0X2xpYnJhcnkudjEuR2V0QnlHYW1lSWRSZXNwb25zZSIAEk0KBkxhdW5jaBIfLmZyb3N0X2xpYnJhcnkudjEuTGF1bmNoUmVxdWVzdBogLmZyb3N0X2xpYnJhcnkudjEuTGF1bmNoUmVzcG9uc2UiABJTCghEb3dubG9hZBIhLmZyb3N0X2xpYnJhcnkudjEuRG93bmxvYWRSZXF1ZXN0GiIuZnJvc3RfbGlicmFyeS52MS5Eb3dubG9hZFJlc3BvbnNlIgASTQoGQ2FuY2VsEh8uZnJvc3RfbGlicmFyeS52MS5DYW5jZWxSZXF1ZXN0GiAuZnJvc3RfbGlicmFyeS52MS5DYW5jZWxSZXNwb25zZSIAEkoKBVBhdXNlEh4uZnJvc3RfbGlicmFyeS52MS5QYXVzZVJlcXVlc3QaHy5mcm9zdF9saWJyYXJ5LnYxLlBhdXNlUmVzcG9uc2UiAEK7AQoUY29tLmZyb3N0X2xpYnJhcnkudjFCEUZyb3N0TGlicmFyeVByb3RvUAFaM2dpdGh1Yi5jb20vcmEzNDEvZ2xhY2llci9nZW5lcmF0ZWQvZnJvc3RfbGlicmFyeS92MaICA0ZYWKoCD0Zyb3N0TGlicmFyeS5WMcoCD0Zyb3N0TGlicmFyeVxWMeICG0Zyb3N0TGlicmFyeVxWMVxHUEJNZXRhZGF0YeoCEEZyb3N0TGlicmFyeTo6VjFiBnByb3RvMw", [file_library_v1_library]);
+  fileDesc("CiRmcm9zdF9saWJyYXJ5L3YxL2Zyb3N0X2xpYnJhcnkucHJvdG8SEGZyb3N0X2xpYnJhcnkudjEiJQoUVGhyb3R0bGVTcGVlZFJlcXVlc3QSDQoFbGltaXQYASABKAIiFwoVVGhyb3R0bGVTcGVlZFJlc3BvbnNlIioKF0xhdW5jaEZpbGVQaWNrZXJSZXF1ZXN0Eg8KB2Jhc2VEaXIYASABKAkiKAoYTGF1bmNoRmlsZVBpY2tlclJlc3BvbnNlEgwKBHBhdGgYASABKAkiPQoLRWRpdFJlcXVlc3QSLgoJTG9jYWxHYW1lGAEgASgLMhsuZnJvc3RfbGlicmFyeS52MS5Mb2NhbEdhbWUiDgoMRWRpdFJlc3BvbnNlIhsKDUxhdW5jaFJlcXVlc3QSCgoCSWQYASABKAQiEAoOTGF1bmNoUmVzcG9uc2UiNwoSR2V0QnlHYW1lSWRSZXF1ZXN0EgoKAmlkGAEgASgEEhUKDWxvY2FsRG93bmxvYWQYAiABKAgiRAoTR2V0QnlHYW1lSWRSZXNwb25zZRItCghkb3dubG9hZBgBIAEoCzIbLmZyb3N0X2xpYnJhcnkudjEuTG9jYWxHYW1lIhoKDFBhdXNlUmVxdWVzdBIKCgJpZBgBIAEoBCIPCg1QYXVzZVJlc3BvbnNlIhsKDUNhbmNlbFJlcXVlc3QSCgoCaWQYASABKAQiEAoOQ2FuY2VsUmVzcG9uc2UiLAoQTGlzdEZpbGVzUmVxdWVzdBIKCgJpZBgBIAEoBBIMCgRwYXRoGAIgASgJIhMKEUxpc3RGaWxlc1Jlc3BvbnNlIhgKCkdldFJlcXVlc3QSCgoCaWQYASABKAQiawoNTG9jYWxEb3dubG9hZBIUCgxEb3dubG9hZFBhdGgYASABKAkSDgoGU3RhdHVzGAIgASgJEhUKDVN0YXR1c01lc3NhZ2UYAyABKAkSDwoHU3RhcnRlZBgEIAEoCRIMCgREb25lGAUgASgJIh0KCEdhbWVQbGF5EhEKCUxhdW5jaEV4ZRgCIAEoCSKkAQoJTG9jYWxHYW1lEgoKAklEGAEgASgEEg4KBkdhbWVJRBgCIAEoBBIeCgRnYW1lGAMgASgLMhAubGlicmFyeS52MS5HYW1lEjEKCERvd25sb2FkGAQgASgLMh8uZnJvc3RfbGlicmFyeS52MS5Mb2NhbERvd25sb2FkEigKBFBsYXkYBSABKAsyGi5mcm9zdF9saWJyYXJ5LnYxLkdhbWVQbGF5IjYKC0dldFJlc3BvbnNlEicKAmxnGAEgASgLMhsuZnJvc3RfbGlicmFyeS52MS5Mb2NhbEdhbWUiGwoNRGVsZXRlUmVxdWVzdBIKCgJpZBgBIAEoBCIQCg5EZWxldGVSZXNwb25zZSJZCg9Eb3dubG9hZFJlcXVlc3QSDgoGZ2FtZUlkGAEgASgDEhYKDmRvd25sb2FkRm9sZGVyGAIgASgJEg0KBWZvcmNlGAMgASgIEg8KB3JlY2hlY2sYBCABKAgiEgoQRG93bmxvYWRSZXNwb25zZSIYChZMaXN0RG93bmxvYWRpbmdSZXF1ZXN0IjwKDEZpbGVQcm9ncmVzcxIMCgROYW1lGAEgASgJEhAKCENvbXBsZXRlGAIgASgEEgwKBExlZnQYAyABKAQiXwoORm9sZGVyUHJvZ3Jlc3MSEAoIQ29tcGxldGUYASABKAMSDAoETGVmdBgCIAEoAxItCgVmaWxlcxgDIAMoCzIeLmZyb3N0X2xpYnJhcnkudjEuRmlsZVByb2dyZXNzIqcBChBEb3dubG9hZFByb2dyZXNzEgoKAklEGAUgASgEEhEKCVRodW1ibmFpbBgBIAEoCRINCgVUaXRsZRgCIAEoCRIxCghkb3dubG9hZBgDIAEoCzIfLmZyb3N0X2xpYnJhcnkudjEuTG9jYWxEb3dubG9hZBIyCghwcm9ncmVzcxgEIAEoCzIgLmZyb3N0X2xpYnJhcnkudjEuRm9sZGVyUHJvZ3Jlc3MiUAoXTGlzdERvd25sb2FkaW5nUmVzcG9uc2USNQoJZG93bmxvYWRzGAEgAygLMiIuZnJvc3RfbGlicmFyeS52MS5Eb3dubG9hZFByb2dyZXNzMqMIChNGcm9zdExpYnJhcnlTZXJ2aWNlElYKCUxpc3RGaWxlcxIiLmZyb3N0X2xpYnJhcnkudjEuTGlzdEZpbGVzUmVxdWVzdBojLmZyb3N0X2xpYnJhcnkudjEuTGlzdEZpbGVzUmVzcG9uc2UiABJoCg9MaXN0RG93bmxvYWRpbmcSKC5mcm9zdF9saWJyYXJ5LnYxLkxpc3REb3dubG9hZGluZ1JlcXVlc3QaKS5mcm9zdF9saWJyYXJ5LnYxLkxpc3REb3dubG9hZGluZ1Jlc3BvbnNlIgASRAoDR2V0EhwuZnJvc3RfbGlicmFyeS52MS5HZXRSZXF1ZXN0Gh0uZnJvc3RfbGlicmFyeS52MS5HZXRSZXNwb25zZSIAEkcKBEVkaXQSHS5mcm9zdF9saWJyYXJ5LnYxLkVkaXRSZXF1ZXN0Gh4uZnJvc3RfbGlicmFyeS52MS5FZGl0UmVzcG9uc2UiABJrChBMYXVuY2hGaWxlUGlja2VyEikuZnJvc3RfbGlicmFyeS52MS5MYXVuY2hGaWxlUGlja2VyUmVxdWVzdBoqLmZyb3N0X2xpYnJhcnkudjEuTGF1bmNoRmlsZVBpY2tlclJlc3BvbnNlIgASTQoGRGVsZXRlEh8uZnJvc3RfbGlicmFyeS52MS5EZWxldGVSZXF1ZXN0GiAuZnJvc3RfbGlicmFyeS52MS5EZWxldGVSZXNwb25zZSIAElwKC0dldEJ5R2FtZUlkEiQuZnJvc3RfbGlicmFyeS52MS5HZXRCeUdhbWVJZFJlcXVlc3QaJS5mcm9zdF9saWJyYXJ5LnYxLkdldEJ5R2FtZUlkUmVzcG9uc2UiABJNCgZMYXVuY2gSHy5mcm9zdF9saWJyYXJ5LnYxLkxhdW5jaFJlcXVlc3QaIC5mcm9zdF9saWJyYXJ5LnYxLkxhdW5jaFJlc3BvbnNlIgASYgoNVGhyb3R0bGVTcGVlZBImLmZyb3N0X2xpYnJhcnkudjEuVGhyb3R0bGVTcGVlZFJlcXVlc3QaJy5mcm9zdF9saWJyYXJ5LnYxLlRocm90dGxlU3BlZWRSZXNwb25zZSIAElMKCERvd25sb2FkEiEuZnJvc3RfbGlicmFyeS52MS5Eb3dubG9hZFJlcXVlc3QaIi5mcm9zdF9saWJyYXJ5LnYxLkRvd25sb2FkUmVzcG9uc2UiABJNCgZDYW5jZWwSHy5mcm9zdF9saWJyYXJ5LnYxLkNhbmNlbFJlcXVlc3QaIC5mcm9zdF9saWJyYXJ5LnYxLkNhbmNlbFJlc3BvbnNlIgASSgoFUGF1c2USHi5mcm9zdF9saWJyYXJ5LnYxLlBhdXNlUmVxdWVzdBofLmZyb3N0X2xpYnJhcnkudjEuUGF1c2VSZXNwb25zZSIAQrsBChRjb20uZnJvc3RfbGlicmFyeS52MUIRRnJvc3RMaWJyYXJ5UHJvdG9QAVozZ2l0aHViLmNvbS9yYTM0MS9nbGFjaWVyL2dlbmVyYXRlZC9mcm9zdF9saWJyYXJ5L3YxogIDRlhYqgIPRnJvc3RMaWJyYXJ5LlYxygIPRnJvc3RMaWJyYXJ5XFYx4gIbRnJvc3RMaWJyYXJ5XFYxXEdQQk1ldGFkYXRh6gIQRnJvc3RMaWJyYXJ5OjpWMWIGcHJvdG8z", [file_library_v1_library]);
+
+/**
+ * @generated from message frost_library.v1.ThrottleSpeedRequest
+ */
+export type ThrottleSpeedRequest = Message<"frost_library.v1.ThrottleSpeedRequest"> & {
+  /**
+   * @generated from field: float limit = 1;
+   */
+  limit: number;
+};
+
+/**
+ * Describes the message frost_library.v1.ThrottleSpeedRequest.
+ * Use `create(ThrottleSpeedRequestSchema)` to create a new message.
+ */
+export const ThrottleSpeedRequestSchema: GenMessage<ThrottleSpeedRequest> = /*@__PURE__*/
+  messageDesc(file_frost_library_v1_frost_library, 0);
+
+/**
+ * @generated from message frost_library.v1.ThrottleSpeedResponse
+ */
+export type ThrottleSpeedResponse = Message<"frost_library.v1.ThrottleSpeedResponse"> & {
+};
+
+/**
+ * Describes the message frost_library.v1.ThrottleSpeedResponse.
+ * Use `create(ThrottleSpeedResponseSchema)` to create a new message.
+ */
+export const ThrottleSpeedResponseSchema: GenMessage<ThrottleSpeedResponse> = /*@__PURE__*/
+  messageDesc(file_frost_library_v1_frost_library, 1);
 
 /**
  * @generated from message frost_library.v1.LaunchFilePickerRequest
@@ -29,7 +59,7 @@ export type LaunchFilePickerRequest = Message<"frost_library.v1.LaunchFilePicker
  * Use `create(LaunchFilePickerRequestSchema)` to create a new message.
  */
 export const LaunchFilePickerRequestSchema: GenMessage<LaunchFilePickerRequest> = /*@__PURE__*/
-  messageDesc(file_frost_library_v1_frost_library, 0);
+  messageDesc(file_frost_library_v1_frost_library, 2);
 
 /**
  * @generated from message frost_library.v1.LaunchFilePickerResponse
@@ -46,7 +76,7 @@ export type LaunchFilePickerResponse = Message<"frost_library.v1.LaunchFilePicke
  * Use `create(LaunchFilePickerResponseSchema)` to create a new message.
  */
 export const LaunchFilePickerResponseSchema: GenMessage<LaunchFilePickerResponse> = /*@__PURE__*/
-  messageDesc(file_frost_library_v1_frost_library, 1);
+  messageDesc(file_frost_library_v1_frost_library, 3);
 
 /**
  * @generated from message frost_library.v1.EditRequest
@@ -63,7 +93,7 @@ export type EditRequest = Message<"frost_library.v1.EditRequest"> & {
  * Use `create(EditRequestSchema)` to create a new message.
  */
 export const EditRequestSchema: GenMessage<EditRequest> = /*@__PURE__*/
-  messageDesc(file_frost_library_v1_frost_library, 2);
+  messageDesc(file_frost_library_v1_frost_library, 4);
 
 /**
  * @generated from message frost_library.v1.EditResponse
@@ -76,7 +106,7 @@ export type EditResponse = Message<"frost_library.v1.EditResponse"> & {
  * Use `create(EditResponseSchema)` to create a new message.
  */
 export const EditResponseSchema: GenMessage<EditResponse> = /*@__PURE__*/
-  messageDesc(file_frost_library_v1_frost_library, 3);
+  messageDesc(file_frost_library_v1_frost_library, 5);
 
 /**
  * @generated from message frost_library.v1.LaunchRequest
@@ -93,7 +123,7 @@ export type LaunchRequest = Message<"frost_library.v1.LaunchRequest"> & {
  * Use `create(LaunchRequestSchema)` to create a new message.
  */
 export const LaunchRequestSchema: GenMessage<LaunchRequest> = /*@__PURE__*/
-  messageDesc(file_frost_library_v1_frost_library, 4);
+  messageDesc(file_frost_library_v1_frost_library, 6);
 
 /**
  * @generated from message frost_library.v1.LaunchResponse
@@ -106,7 +136,7 @@ export type LaunchResponse = Message<"frost_library.v1.LaunchResponse"> & {
  * Use `create(LaunchResponseSchema)` to create a new message.
  */
 export const LaunchResponseSchema: GenMessage<LaunchResponse> = /*@__PURE__*/
-  messageDesc(file_frost_library_v1_frost_library, 5);
+  messageDesc(file_frost_library_v1_frost_library, 7);
 
 /**
  * @generated from message frost_library.v1.GetByGameIdRequest
@@ -128,7 +158,7 @@ export type GetByGameIdRequest = Message<"frost_library.v1.GetByGameIdRequest"> 
  * Use `create(GetByGameIdRequestSchema)` to create a new message.
  */
 export const GetByGameIdRequestSchema: GenMessage<GetByGameIdRequest> = /*@__PURE__*/
-  messageDesc(file_frost_library_v1_frost_library, 6);
+  messageDesc(file_frost_library_v1_frost_library, 8);
 
 /**
  * @generated from message frost_library.v1.GetByGameIdResponse
@@ -145,7 +175,7 @@ export type GetByGameIdResponse = Message<"frost_library.v1.GetByGameIdResponse"
  * Use `create(GetByGameIdResponseSchema)` to create a new message.
  */
 export const GetByGameIdResponseSchema: GenMessage<GetByGameIdResponse> = /*@__PURE__*/
-  messageDesc(file_frost_library_v1_frost_library, 7);
+  messageDesc(file_frost_library_v1_frost_library, 9);
 
 /**
  * @generated from message frost_library.v1.PauseRequest
@@ -162,7 +192,7 @@ export type PauseRequest = Message<"frost_library.v1.PauseRequest"> & {
  * Use `create(PauseRequestSchema)` to create a new message.
  */
 export const PauseRequestSchema: GenMessage<PauseRequest> = /*@__PURE__*/
-  messageDesc(file_frost_library_v1_frost_library, 8);
+  messageDesc(file_frost_library_v1_frost_library, 10);
 
 /**
  * @generated from message frost_library.v1.PauseResponse
@@ -175,7 +205,7 @@ export type PauseResponse = Message<"frost_library.v1.PauseResponse"> & {
  * Use `create(PauseResponseSchema)` to create a new message.
  */
 export const PauseResponseSchema: GenMessage<PauseResponse> = /*@__PURE__*/
-  messageDesc(file_frost_library_v1_frost_library, 9);
+  messageDesc(file_frost_library_v1_frost_library, 11);
 
 /**
  * @generated from message frost_library.v1.CancelRequest
@@ -192,7 +222,7 @@ export type CancelRequest = Message<"frost_library.v1.CancelRequest"> & {
  * Use `create(CancelRequestSchema)` to create a new message.
  */
 export const CancelRequestSchema: GenMessage<CancelRequest> = /*@__PURE__*/
-  messageDesc(file_frost_library_v1_frost_library, 10);
+  messageDesc(file_frost_library_v1_frost_library, 12);
 
 /**
  * @generated from message frost_library.v1.CancelResponse
@@ -205,7 +235,7 @@ export type CancelResponse = Message<"frost_library.v1.CancelResponse"> & {
  * Use `create(CancelResponseSchema)` to create a new message.
  */
 export const CancelResponseSchema: GenMessage<CancelResponse> = /*@__PURE__*/
-  messageDesc(file_frost_library_v1_frost_library, 11);
+  messageDesc(file_frost_library_v1_frost_library, 13);
 
 /**
  * @generated from message frost_library.v1.ListFilesRequest
@@ -227,7 +257,7 @@ export type ListFilesRequest = Message<"frost_library.v1.ListFilesRequest"> & {
  * Use `create(ListFilesRequestSchema)` to create a new message.
  */
 export const ListFilesRequestSchema: GenMessage<ListFilesRequest> = /*@__PURE__*/
-  messageDesc(file_frost_library_v1_frost_library, 12);
+  messageDesc(file_frost_library_v1_frost_library, 14);
 
 /**
  * @generated from message frost_library.v1.ListFilesResponse
@@ -240,7 +270,7 @@ export type ListFilesResponse = Message<"frost_library.v1.ListFilesResponse"> & 
  * Use `create(ListFilesResponseSchema)` to create a new message.
  */
 export const ListFilesResponseSchema: GenMessage<ListFilesResponse> = /*@__PURE__*/
-  messageDesc(file_frost_library_v1_frost_library, 13);
+  messageDesc(file_frost_library_v1_frost_library, 15);
 
 /**
  * @generated from message frost_library.v1.GetRequest
@@ -257,7 +287,7 @@ export type GetRequest = Message<"frost_library.v1.GetRequest"> & {
  * Use `create(GetRequestSchema)` to create a new message.
  */
 export const GetRequestSchema: GenMessage<GetRequest> = /*@__PURE__*/
-  messageDesc(file_frost_library_v1_frost_library, 14);
+  messageDesc(file_frost_library_v1_frost_library, 16);
 
 /**
  * @generated from message frost_library.v1.LocalDownload
@@ -294,7 +324,7 @@ export type LocalDownload = Message<"frost_library.v1.LocalDownload"> & {
  * Use `create(LocalDownloadSchema)` to create a new message.
  */
 export const LocalDownloadSchema: GenMessage<LocalDownload> = /*@__PURE__*/
-  messageDesc(file_frost_library_v1_frost_library, 15);
+  messageDesc(file_frost_library_v1_frost_library, 17);
 
 /**
  * @generated from message frost_library.v1.GamePlay
@@ -311,7 +341,7 @@ export type GamePlay = Message<"frost_library.v1.GamePlay"> & {
  * Use `create(GamePlaySchema)` to create a new message.
  */
 export const GamePlaySchema: GenMessage<GamePlay> = /*@__PURE__*/
-  messageDesc(file_frost_library_v1_frost_library, 16);
+  messageDesc(file_frost_library_v1_frost_library, 18);
 
 /**
  * @generated from message frost_library.v1.LocalGame
@@ -348,7 +378,7 @@ export type LocalGame = Message<"frost_library.v1.LocalGame"> & {
  * Use `create(LocalGameSchema)` to create a new message.
  */
 export const LocalGameSchema: GenMessage<LocalGame> = /*@__PURE__*/
-  messageDesc(file_frost_library_v1_frost_library, 17);
+  messageDesc(file_frost_library_v1_frost_library, 19);
 
 /**
  * @generated from message frost_library.v1.GetResponse
@@ -365,7 +395,7 @@ export type GetResponse = Message<"frost_library.v1.GetResponse"> & {
  * Use `create(GetResponseSchema)` to create a new message.
  */
 export const GetResponseSchema: GenMessage<GetResponse> = /*@__PURE__*/
-  messageDesc(file_frost_library_v1_frost_library, 18);
+  messageDesc(file_frost_library_v1_frost_library, 20);
 
 /**
  * @generated from message frost_library.v1.DeleteRequest
@@ -382,7 +412,7 @@ export type DeleteRequest = Message<"frost_library.v1.DeleteRequest"> & {
  * Use `create(DeleteRequestSchema)` to create a new message.
  */
 export const DeleteRequestSchema: GenMessage<DeleteRequest> = /*@__PURE__*/
-  messageDesc(file_frost_library_v1_frost_library, 19);
+  messageDesc(file_frost_library_v1_frost_library, 21);
 
 /**
  * @generated from message frost_library.v1.DeleteResponse
@@ -395,7 +425,7 @@ export type DeleteResponse = Message<"frost_library.v1.DeleteResponse"> & {
  * Use `create(DeleteResponseSchema)` to create a new message.
  */
 export const DeleteResponseSchema: GenMessage<DeleteResponse> = /*@__PURE__*/
-  messageDesc(file_frost_library_v1_frost_library, 20);
+  messageDesc(file_frost_library_v1_frost_library, 22);
 
 /**
  * @generated from message frost_library.v1.DownloadRequest
@@ -431,7 +461,7 @@ export type DownloadRequest = Message<"frost_library.v1.DownloadRequest"> & {
  * Use `create(DownloadRequestSchema)` to create a new message.
  */
 export const DownloadRequestSchema: GenMessage<DownloadRequest> = /*@__PURE__*/
-  messageDesc(file_frost_library_v1_frost_library, 21);
+  messageDesc(file_frost_library_v1_frost_library, 23);
 
 /**
  * @generated from message frost_library.v1.DownloadResponse
@@ -444,7 +474,7 @@ export type DownloadResponse = Message<"frost_library.v1.DownloadResponse"> & {
  * Use `create(DownloadResponseSchema)` to create a new message.
  */
 export const DownloadResponseSchema: GenMessage<DownloadResponse> = /*@__PURE__*/
-  messageDesc(file_frost_library_v1_frost_library, 22);
+  messageDesc(file_frost_library_v1_frost_library, 24);
 
 /**
  * @generated from message frost_library.v1.ListDownloadingRequest
@@ -457,7 +487,7 @@ export type ListDownloadingRequest = Message<"frost_library.v1.ListDownloadingRe
  * Use `create(ListDownloadingRequestSchema)` to create a new message.
  */
 export const ListDownloadingRequestSchema: GenMessage<ListDownloadingRequest> = /*@__PURE__*/
-  messageDesc(file_frost_library_v1_frost_library, 23);
+  messageDesc(file_frost_library_v1_frost_library, 25);
 
 /**
  * @generated from message frost_library.v1.FileProgress
@@ -484,7 +514,7 @@ export type FileProgress = Message<"frost_library.v1.FileProgress"> & {
  * Use `create(FileProgressSchema)` to create a new message.
  */
 export const FileProgressSchema: GenMessage<FileProgress> = /*@__PURE__*/
-  messageDesc(file_frost_library_v1_frost_library, 24);
+  messageDesc(file_frost_library_v1_frost_library, 26);
 
 /**
  * @generated from message frost_library.v1.FolderProgress
@@ -511,7 +541,7 @@ export type FolderProgress = Message<"frost_library.v1.FolderProgress"> & {
  * Use `create(FolderProgressSchema)` to create a new message.
  */
 export const FolderProgressSchema: GenMessage<FolderProgress> = /*@__PURE__*/
-  messageDesc(file_frost_library_v1_frost_library, 25);
+  messageDesc(file_frost_library_v1_frost_library, 27);
 
 /**
  * @generated from message frost_library.v1.DownloadProgress
@@ -548,7 +578,7 @@ export type DownloadProgress = Message<"frost_library.v1.DownloadProgress"> & {
  * Use `create(DownloadProgressSchema)` to create a new message.
  */
 export const DownloadProgressSchema: GenMessage<DownloadProgress> = /*@__PURE__*/
-  messageDesc(file_frost_library_v1_frost_library, 26);
+  messageDesc(file_frost_library_v1_frost_library, 28);
 
 /**
  * @generated from message frost_library.v1.ListDownloadingResponse
@@ -565,7 +595,7 @@ export type ListDownloadingResponse = Message<"frost_library.v1.ListDownloadingR
  * Use `create(ListDownloadingResponseSchema)` to create a new message.
  */
 export const ListDownloadingResponseSchema: GenMessage<ListDownloadingResponse> = /*@__PURE__*/
-  messageDesc(file_frost_library_v1_frost_library, 27);
+  messageDesc(file_frost_library_v1_frost_library, 29);
 
 /**
  * @generated from service frost_library.v1.FrostLibraryService
@@ -634,6 +664,14 @@ export const FrostLibraryService: GenService<{
     methodKind: "unary";
     input: typeof LaunchRequestSchema;
     output: typeof LaunchResponseSchema;
+  },
+  /**
+   * @generated from rpc frost_library.v1.FrostLibraryService.ThrottleSpeed
+   */
+  throttleSpeed: {
+    methodKind: "unary";
+    input: typeof ThrottleSpeedRequestSchema;
+    output: typeof ThrottleSpeedResponseSchema;
   },
   /**
    * @generated from rpc frost_library.v1.FrostLibraryService.Download
