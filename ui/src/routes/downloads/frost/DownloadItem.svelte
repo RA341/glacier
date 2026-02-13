@@ -1,8 +1,8 @@
 <script lang="ts">
     import {
         ActivityIcon,
-        CheckCircle2Icon,
         ChevronDownIcon,
+        CircleCheck,
         ClockIcon,
         HourglassIcon,
         ImageIcon,
@@ -29,8 +29,8 @@
     });
 
     const elapsedTime = $derived.by(() => {
-        if (!detail.download?.TimeStarted) return null;
-        const start = new Date(detail.download.TimeStarted).getTime();
+        if (!detail.download?.Started) return null;
+        const start = new Date(detail.download.Started).getTime();
         const diff = Math.max(0, now - start);
 
         const seconds = Math.floor((diff / 1000) % 60);
@@ -187,7 +187,7 @@
                     <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-panel/40 transition-colors group">
                         <div class="text-muted/40 group-hover:text-frost-400/50 transition-colors shrink-0">
                             {#if isDone}
-                                <CheckCircle2Icon size={14} class="text-green-500/60"/>
+                                <CircleCheck size={14} class="text-green-500/60"/>
                             {:else}
                                 <ClockIcon size={14}/>
                             {/if}
