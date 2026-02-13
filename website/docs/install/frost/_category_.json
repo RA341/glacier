@@ -1,0 +1,8 @@
+{
+  "label": "Frost",
+  "position": 2,
+  "link": {
+    "type": "doc",
+    "id": "install/frost/index"
+  }
+}

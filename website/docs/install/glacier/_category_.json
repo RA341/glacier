@@ -1,0 +1,8 @@
+{
+  "label": "Glacier",
+  "position": 1,
+  "link": {
+    "type": "doc",
+    "id": "install/glacier/index"
+  }
+}

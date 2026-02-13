@@ -2,13 +2,13 @@
 sidebar_position: 1
 ---
 
-# Glacier
+# About
 
 Glacier is Steam's COOLER cousin. 
 
 Why
 
-download your isoa from your favorite sources
+download your iso's from your favorite sources
 
 store them In a nice pretty library
 
@@ -18,6 +18,6 @@ your way, your games
 
 share your lib with your friends 
 
-Glacier is the coolest way to store your games
+Glacier is the COOLest way to store your games
 
-grab your jacket and install Glacier today !!
+install Glacier today !!
