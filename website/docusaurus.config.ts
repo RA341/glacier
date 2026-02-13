@@ -6,7 +6,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
     title: 'Glacier',
-    tagline: 'Self-hostable game distribution',
+    tagline: 'Cold storage for your games',
     favicon: 'img/favicon.png',
 
     // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
