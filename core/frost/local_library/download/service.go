@@ -1,6 +1,7 @@
 package download
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"os"
@@ -11,6 +12,7 @@ import (
 	hc "github.com/ra341/glacier/frost/http_client"
 	"github.com/ra341/glacier/pkg/syncmap"
 	"github.com/rs/zerolog/log"
+	"golang.org/x/sync/errgroup"
 )
 
 const MB = 1024 * 1024
@@ -20,6 +22,8 @@ type Service struct {
 	editStatus         EditStatus
 	ActiveDownloads    syncmap.Map[int, *Download]
 	DownloadTotalBytes *uint64
+
+	workers *errgroup.Group
 }
 
 // New
@@ -52,17 +56,30 @@ func New(
 		strings.TrimRight(baseurl, "/"),
 	)
 
+	group := errgroup.Group{}
+	group.SetLimit(config.MaxConcurrentGames)
+
 	return &Service{
 		Config:             config,
 		editStatus:         editStatus,
 		DownloadTotalBytes: downloadSpeedCounter,
+		workers:            &group,
 	}
 }
 
-func (d *Service) Download(gameId int, downloadPath string, force bool) error {
+func (d *Service) Download(ctx context.Context, gameId int, downloadPath string, force bool) error {
 	if _, ok := d.ActiveDownloads.Load(gameId); ok {
 		log.Debug().Msg("download already in progress")
 		return nil
+	}
+
+	err := d.editStatus(ctx, gameId, &LocalDownload{
+		Status:  StatusQueued,
+		Started: time.Now(),
+		Done:    time.Time{},
+	})
+	if err != nil {
+		return fmt.Errorf("could not update status %w", err)
 	}
 
 	download, err := NewDownload(
@@ -76,6 +93,11 @@ func (d *Service) Download(gameId int, downloadPath string, force bool) error {
 	if err != nil {
 		return fmt.Errorf("could not start download: %w", err)
 	}
+
+	d.workers.Go(func() error {
+		download.Start()
+		return nil
+	})
 
 	d.ActiveDownloads.Store(gameId, download)
 

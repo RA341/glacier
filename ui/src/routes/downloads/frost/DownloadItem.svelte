@@ -14,6 +14,7 @@
     import {formatBytes} from "$lib/api/byte-math";
     import {callRPC, frostCli} from "$lib/api/api";
     import {getSnackbarCtx} from "$lib/components/snackbar/snackbar-provider.svelte";
+    import {trimPrefix} from "$lib/api/strings.ts";
 
     let {detail}: { detail: DownloadProgress } = $props();
 
@@ -53,9 +54,8 @@
 
     function getStateColor(state: string = "") {
         const s = state.toLowerCase();
-        if (s.includes('error') || s.includes('fail')) return 'text-red-400 bg-red-400/10 border-red-400/20';
-        if (s.includes('complete') || s.includes('done')) return 'text-green-400 bg-green-400/10 border-green-400/20';
-        if (s.includes('pause')) return 'text-amber-400 bg-amber-400/10 border-amber-400/20';
+        if (s.includes('downloading') || s.includes('done')) return 'text-green-400 bg-green-400/10 border-green-400/20';
+        if (s.includes('queued')) return 'text-amber-400 bg-amber-400/10 border-amber-400/20';
         return 'text-frost-400 bg-frost-400/10 border-frost-400/20';
     }
 
@@ -69,14 +69,14 @@
     const sm = getSnackbarCtx()
 
     async function pause(ID: bigint) {
-        const {err}  = await callRPC(() => frostLib.pause({id: ID}))
+        const {err} = await callRPC(() => frostLib.pause({id: ID}))
         if (err) {
             sm.push(`Could not cancel game: ${err}`, 'error')
         }
     }
 
     async function cancel(ID: bigint) {
-        const {err}  = await callRPC(() => frostLib.cancel({id: ID}))
+        const {err} = await callRPC(() => frostLib.cancel({id: ID}))
         if (err) {
             sm.push(`Could not cancel game: ${err}`, 'error')
         }
@@ -116,19 +116,13 @@
             <!-- Meta Row: State, Message, Elapsed -->
             <div class="flex items-center gap-3 text-[10px] font-medium">
             <span class="px-1.5 py-0.5 rounded border uppercase tracking-tighter shrink-0 {getStateColor(detail.download?.Status)}">
-                {detail.download?.Status || 'Pending'}
+                {trimPrefix(detail.download?.Status ?? "", "Status") || 'Waiting'}
             </span>
-
-                <span class="text-muted/60 truncate flex items-center gap-1 max-w-50">
-                <ActivityIcon size={10} class="shrink-0 opacity-50"/>
-                    {detail.download?.Status || 'Connecting...'}
-            </span>
-
                 {#if elapsedTime}
-                <span class="text-muted/50 ml-auto whitespace-nowrap flex items-center gap-1 font-mono">
-                    <HourglassIcon size={10} class="text-frost-500/50"/>
-                    {elapsedTime}
-                </span>
+                    <span class="text-white ml-auto whitespace-nowrap flex items-center gap-1 font-mono">
+                        <HourglassIcon size={10} class="text-frost-500/50"/>
+                        {elapsedTime}
+                    </span>
                 {/if}
             </div>
 

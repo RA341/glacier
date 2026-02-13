@@ -83,7 +83,9 @@ func (s *Service) Download(
 		if err != nil {
 			return fmt.Errorf("could not find game, did you add it first ?: %w", err)
 		}
+
 		return s.downloader.Download(
+			ctx,
 			gameId,
 			game.Download.DownloadPath,
 			force,
@@ -128,6 +130,7 @@ func (s *Service) Download(
 	}
 
 	return s.downloader.Download(
+		ctx,
 		gameId,
 		ll.Download.DownloadPath,
 		force,

@@ -29,6 +29,7 @@ func (s *StoreGorm) ListWithState(ctx context.Context, status ...download.Status
 	var games []LocalGame
 	err := s.db.WithContext(ctx).
 		Where("status IN ?", status).
+		Order("status DESC").
 		Find(&games).Error
 	return games, err
 }

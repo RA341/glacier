@@ -10,6 +10,7 @@ type Config struct {
 	MaxConcurrentFiles      int `yaml:"maxConcurrentFiles" env:"MAX_FILES" default:"50" help:"Maximum number of concurrent files"`
 	MaxConcurrentFileChunks int `yaml:"maxConcurrentFileChunks" env:"MAX_CHUNKS" default:"100" help:"Maximum number of chunks in a file to process"`
 	ChunkSizeInMB           int `yaml:"chunkSize" env:"CHUNK_SIZE" default:"128" help:"file chunk size in MB"`
+	MaxConcurrentGames      int `yaml:"maxConcurrentGames" env:"MAX_GAMES" default:"1" help:"how many games to download at a time"`
 }
 
 func (c *Config) GetChunkSize() int64 {

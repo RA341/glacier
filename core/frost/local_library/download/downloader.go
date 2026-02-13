@@ -91,7 +91,6 @@ func NewDownload(
 		downloadUrlBase: fmt.Sprintf("%s/load/%d", config.base, gameId),
 		metadataUrlBase: fmt.Sprintf("%s/meta/%d", config.base, gameId),
 	}
-	go d.Start()
 
 	return d, nil
 }
