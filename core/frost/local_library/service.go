@@ -72,7 +72,7 @@ func (s *Service) Launch(ctx context.Context, gameID int) error {
 	}
 
 	if !filepath.IsAbs(launchExe) {
-		return fmt.Errorf("game exe is not absolute")
+		return fmt.Errorf("exe is not absolute %s", launchExe)
 	}
 
 	return s.launcher.Launch(launchExe)
