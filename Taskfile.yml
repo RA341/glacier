@@ -127,10 +127,15 @@ tasks:
       - "go.*"
     cmds:
       - '{{if eq .OUT_EXE .DEFAULT_OUT_EXE}} {{.CU}} mkdir -p {{.OUT}} {{end}}'
-      - task ggen
+      - task syso
       - CGO_ENABLED=1 go build -ldflags "{{.LDFLAGS}}" -v
         -o {{ .OUT_EXE }}{{.EXE_EXT}}
         ./{{.GO_CMD_DIR}}/{{.CMD_NAME}}
+
+  syso:
+    dir: "{{.CORE_DIR}}/frost/app/syso"
+    cmds:
+      - go generate
 
   ggen:
     dir: "{{.CORE_DIR}}"
