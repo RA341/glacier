@@ -62,7 +62,7 @@ func (s *Service) Launch(ctx context.Context, gameID int) error {
 		return err
 	}
 
-	launchExe := get.Game.File.Exe
+	launchExe := get.Play.LaunchExe
 	if get.Play.LaunchExe == "" {
 		launchExe = get.Game.File.Exe
 		if launchExe == "" {
