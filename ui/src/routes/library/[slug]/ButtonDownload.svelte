@@ -60,7 +60,7 @@
     let cleanupWs: (() => void) | null = null; // To store the unsubscribe/close function
 
     function watchProcess() {
-        const exe = localGame?.game?.file?.Exe;
+        const exe = localGame?.Play?.LaunchExe ?? localGame?.game?.file?.Exe;
         if (!exe || !localGame?.ID || cleanupWs) return;
 
         const proc = `${Frost.base}/launcher/running/${localGame.ID}?exe=${encodeURIComponent(exe)}`;
