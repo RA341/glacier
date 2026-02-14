@@ -75,11 +75,14 @@ jobs:
 
       - name: Zip Artifacts
         if: runner.os == 'Linux'
-        run: zip -r ${{ matrix.zip_name }} ${{ matrix.output_path }}
+        run: |
+          cd ${{ matrix.output_path }}
+          zip -r ../../../${{ matrix.zip_name }} .
 
       - name: Zip Artifacts
         if: runner.os == 'Windows'
-        run: Compress-Archive -Path ${{ matrix.output_path }} -DestinationPath ${{ matrix.zip_name }}
+        run: |
+          Compress-Archive -Path "${{ matrix.output_path }}\*" -DestinationPath ${{ matrix.zip_name }}
 
       - name: Upload to Canary Release
         uses: softprops/action-gh-release@v2
