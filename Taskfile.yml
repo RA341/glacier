@@ -127,6 +127,7 @@ tasks:
       - "go.*"
     cmds:
       - '{{if eq .OUT_EXE .DEFAULT_OUT_EXE}} {{.CU}} mkdir -p {{.OUT}} {{end}}'
+      - task ggen
       - CGO_ENABLED=1 go build -ldflags "{{.LDFLAGS}}" -v
         -o {{ .OUT_EXE }}{{.EXE_EXT}}
         ./{{.GO_CMD_DIR}}/{{.CMD_NAME}}
