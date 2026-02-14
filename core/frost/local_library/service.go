@@ -62,13 +62,20 @@ func (s *Service) Launch(ctx context.Context, gameID int) error {
 		return err
 	}
 
-	exe := get.Game.File.Exe
-	if exe == "" {
-		return fmt.Errorf("game exe not found please")
+	launchExe := get.Game.File.Exe
+	if get.Play.LaunchExe == "" {
+		launchExe = get.Game.File.Exe
+		if launchExe == "" {
+			return fmt.Errorf("game exe not found please")
+		}
+		launchExe = filepath.Join(get.Download.DownloadPath, launchExe)
 	}
-	fullPath := filepath.Join(get.Download.DownloadPath, exe)
 
-	return s.launcher.Launch(fullPath)
+	if !filepath.IsAbs(launchExe) {
+		return fmt.Errorf("game exe is not absolute")
+	}
+
+	return s.launcher.Launch(launchExe)
 }
 
 func (s *Service) Download(
