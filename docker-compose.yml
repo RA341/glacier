@@ -30,6 +30,15 @@ services:
       - caddy
     restart: unless-stopped
 
+  yt:
+    container_name: yt-relay
+    image: ghcr.io/ra341/ytrelay:latest
+#    environment:
+#      CACHE_DURATION_MINUTES: 60
+#      API_KEY: someSecretKey
+    ports:
+      - "3002:3000"
+
   transmission:
     image: lscr.io/linuxserver/transmission:latest
     environment:

@@ -9,12 +9,10 @@
     import {getSnackbarCtx} from "$lib/components/snackbar/snackbar-provider.svelte";
     import type {Game} from "$lib/gen/library/v1/library_pb";
 
-    let {game}: { game: Game | null } = $props();
+    let {game}: { game?: Game } = $props();
 
     const frostLib = frostCli(FrostLibraryService);
     const sm = getSnackbarCtx();
-
-    console.log()
 
     let isProcessing = $state(false);
     let showDeleteConfirm = $state(false);

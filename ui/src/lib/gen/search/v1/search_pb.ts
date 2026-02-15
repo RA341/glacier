@@ -10,7 +10,46 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file search/v1/search.proto.
  */
 export const file_search_v1_search: GenFile = /*@__PURE__*/
-  fileDesc("ChZzZWFyY2gvdjEvc2VhcmNoLnByb3RvEglzZWFyY2gudjEiJwoFUXVlcnkSDQoFcXVlcnkYASABKAkSDwoHaW5kZXhlchgCIAEoCSI0ChVTZWFyY2hJbmRleGVyc1JlcXVlc3QSGwoBcRgBIAEoCzIQLnNlYXJjaC52MS5RdWVyeSJAChZTZWFyY2hJbmRleGVyc1Jlc3BvbnNlEiYKB3Jlc3VsdHMYASADKAsyFS5zZWFyY2gudjEuR2FtZVNvdXJjZSKPAQoKR2FtZVNvdXJjZRITCgtJbmRleGVyVHlwZRgGIAEoCRIQCghHYW1lVHlwZRgHIAEoCRINCgVUaXRsZRgBIAEoCRITCgtEb3dubG9hZFVybBgCIAEoCRIQCghJbWFnZVVSTBgDIAEoCRIQCghGaWxlU2l6ZRgEIAEoCRISCgpDcmVhdGVkSVNPGAUgASgJIjQKFVNlYXJjaE1ldGFkYXRhUmVxdWVzdBIbCgFxGAEgASgLMhAuc2VhcmNoLnYxLlF1ZXJ5IkMKFlNlYXJjaE1ldGFkYXRhUmVzcG9uc2USKQoIbWV0YWRhdGEYASADKAsyFy5zZWFyY2gudjEuR2FtZU1ldGFkYXRhIp0CCgxHYW1lTWV0YWRhdGESFAoMUHJvdmlkZXJUeXBlGA8gASgJEgoKAklEGA4gASgJEgwKBE5hbWUYASABKAkSDwoHU3VtbWFyeRgCIAEoCRITCgtEZXNjcmlwdGlvbhgDIAEoCRILCgNVUkwYBCABKAkSFAoMVGh1bWJuYWlsVVJMGAUgASgJEg4KBlZpZGVvcxgGIAMoCRIRCglQbGF0Zm9ybXMYByADKAkSDgoGR2VucmVzGAggAygJEg4KBlJhdGluZxgJIAEoCRITCgtSYXRpbmdDb3VudBgKIAEoDRITCgtSZWxlYXNlRGF0ZRgLIAEoCRIVCg1SZWxlYXNlU3RhdHVzGAwgASgJEhAKCENhdGVnb3J5GA0gASgJMsEBCg1TZWFyY2hTZXJ2aWNlElcKDlNlYXJjaEluZGV4ZXJzEiAuc2VhcmNoLnYxLlNlYXJjaEluZGV4ZXJzUmVxdWVzdBohLnNlYXJjaC52MS5TZWFyY2hJbmRleGVyc1Jlc3BvbnNlIgASVwoOU2VhcmNoTWV0YWRhdGESIC5zZWFyY2gudjEuU2VhcmNoTWV0YWRhdGFSZXF1ZXN0GiEuc2VhcmNoLnYxLlNlYXJjaE1ldGFkYXRhUmVzcG9uc2UiAEKPAQoNY29tLnNlYXJjaC52MUILU2VhcmNoUHJvdG9QAVosZ2l0aHViLmNvbS9yYTM0MS9nbGFjaWVyL2dlbmVyYXRlZC9zZWFyY2gvdjGiAgNTWFiqAglTZWFyY2guVjHKAglTZWFyY2hcVjHiAhVTZWFyY2hcVjFcR1BCTWV0YWRhdGHqAgpTZWFyY2g6OlYxYgZwcm90bzM");
+  fileDesc("ChZzZWFyY2gvdjEvc2VhcmNoLnByb3RvEglzZWFyY2gudjEiOAoSR2V0R2FtZU1ldGFSZXF1ZXN0EhAKCHByb3ZpZGVyGAEgASgJEhAKCGdhbWVEYklkGAIgASgJIjwKE0dldEdhbWVNZXRhUmVzcG9uc2USJQoEbWV0YRgBIAEoCzIXLnNlYXJjaC52MS5HYW1lTWV0YWRhdGEiJwoFUXVlcnkSDQoFcXVlcnkYASABKAkSDwoHaW5kZXhlchgCIAEoCSI0ChVTZWFyY2hJbmRleGVyc1JlcXVlc3QSGwoBcRgBIAEoCzIQLnNlYXJjaC52MS5RdWVyeSJAChZTZWFyY2hJbmRleGVyc1Jlc3BvbnNlEiYKB3Jlc3VsdHMYASADKAsyFS5zZWFyY2gudjEuR2FtZVNvdXJjZSKPAQoKR2FtZVNvdXJjZRITCgtJbmRleGVyVHlwZRgGIAEoCRIQCghHYW1lVHlwZRgHIAEoCRINCgVUaXRsZRgBIAEoCRITCgtEb3dubG9hZFVybBgCIAEoCRIQCghJbWFnZVVSTBgDIAEoCRIQCghGaWxlU2l6ZRgEIAEoCRISCgpDcmVhdGVkSVNPGAUgASgJIjQKFVNlYXJjaE1ldGFkYXRhUmVxdWVzdBIbCgFxGAEgASgLMhAuc2VhcmNoLnYxLlF1ZXJ5IkMKFlNlYXJjaE1ldGFkYXRhUmVzcG9uc2USKQoIbWV0YWRhdGEYASADKAsyFy5zZWFyY2gudjEuR2FtZU1ldGFkYXRhIlcKBUFzc2V0EgoKAklEGAEgASgEEg4KBkdhbWVJZBgCIAEoBBIMCgRUeXBlGAMgASgJEhEKCVJlbW90ZVVybBgEIAEoCRIRCglMb2NhbFBhdGgYBSABKAkimQIKDEdhbWVNZXRhZGF0YRIUCgxQcm92aWRlclR5cGUYDyABKAkSCgoCSUQYDiABKAkSDAoETmFtZRgBIAEoCRIPCgdTdW1tYXJ5GAIgASgJEhMKC0Rlc2NyaXB0aW9uGAMgASgJEgsKA1VSTBgEIAEoCRIgCgZhc3NldHMYBSADKAsyEC5zZWFyY2gudjEuQXNzZXQSEQoJUGxhdGZvcm1zGAcgAygJEg4KBkdlbnJlcxgIIAMoCRIOCgZSYXRpbmcYCSABKAkSEwoLUmF0aW5nQ291bnQYCiABKA0SEwoLUmVsZWFzZURhdGUYCyABKAkSFQoNUmVsZWFzZVN0YXR1cxgMIAEoCRIQCghDYXRlZ29yeRgNIAEoCTKRAgoNU2VhcmNoU2VydmljZRJOCgtHZXRHYW1lTWV0YRIdLnNlYXJjaC52MS5HZXRHYW1lTWV0YVJlcXVlc3QaHi5zZWFyY2gudjEuR2V0R2FtZU1ldGFSZXNwb25zZSIAElcKDlNlYXJjaEluZGV4ZXJzEiAuc2VhcmNoLnYxLlNlYXJjaEluZGV4ZXJzUmVxdWVzdBohLnNlYXJjaC52MS5TZWFyY2hJbmRleGVyc1Jlc3BvbnNlIgASVwoOU2VhcmNoTWV0YWRhdGESIC5zZWFyY2gudjEuU2VhcmNoTWV0YWRhdGFSZXF1ZXN0GiEuc2VhcmNoLnYxLlNlYXJjaE1ldGFkYXRhUmVzcG9uc2UiAEKPAQoNY29tLnNlYXJjaC52MUILU2VhcmNoUHJvdG9QAVosZ2l0aHViLmNvbS9yYTM0MS9nbGFjaWVyL2dlbmVyYXRlZC9zZWFyY2gvdjGiAgNTWFiqAglTZWFyY2guVjHKAglTZWFyY2hcVjHiAhVTZWFyY2hcVjFcR1BCTWV0YWRhdGHqAgpTZWFyY2g6OlYxYgZwcm90bzM");
+
+/**
+ * @generated from message search.v1.GetGameMetaRequest
+ */
+export type GetGameMetaRequest = Message<"search.v1.GetGameMetaRequest"> & {
+  /**
+   * @generated from field: string provider = 1;
+   */
+  provider: string;
+
+  /**
+   * @generated from field: string gameDbId = 2;
+   */
+  gameDbId: string;
+};
+
+/**
+ * Describes the message search.v1.GetGameMetaRequest.
+ * Use `create(GetGameMetaRequestSchema)` to create a new message.
+ */
+export const GetGameMetaRequestSchema: GenMessage<GetGameMetaRequest> = /*@__PURE__*/
+  messageDesc(file_search_v1_search, 0);
+
+/**
+ * @generated from message search.v1.GetGameMetaResponse
+ */
+export type GetGameMetaResponse = Message<"search.v1.GetGameMetaResponse"> & {
+  /**
+   * @generated from field: search.v1.GameMetadata meta = 1;
+   */
+  meta?: GameMetadata;
+};
+
+/**
+ * Describes the message search.v1.GetGameMetaResponse.
+ * Use `create(GetGameMetaResponseSchema)` to create a new message.
+ */
+export const GetGameMetaResponseSchema: GenMessage<GetGameMetaResponse> = /*@__PURE__*/
+  messageDesc(file_search_v1_search, 1);
 
 /**
  * @generated from message search.v1.Query
@@ -32,7 +71,7 @@ export type Query = Message<"search.v1.Query"> & {
  * Use `create(QuerySchema)` to create a new message.
  */
 export const QuerySchema: GenMessage<Query> = /*@__PURE__*/
-  messageDesc(file_search_v1_search, 0);
+  messageDesc(file_search_v1_search, 2);
 
 /**
  * @generated from message search.v1.SearchIndexersRequest
@@ -49,7 +88,7 @@ export type SearchIndexersRequest = Message<"search.v1.SearchIndexersRequest"> &
  * Use `create(SearchIndexersRequestSchema)` to create a new message.
  */
 export const SearchIndexersRequestSchema: GenMessage<SearchIndexersRequest> = /*@__PURE__*/
-  messageDesc(file_search_v1_search, 1);
+  messageDesc(file_search_v1_search, 3);
 
 /**
  * @generated from message search.v1.SearchIndexersResponse
@@ -66,7 +105,7 @@ export type SearchIndexersResponse = Message<"search.v1.SearchIndexersResponse">
  * Use `create(SearchIndexersResponseSchema)` to create a new message.
  */
 export const SearchIndexersResponseSchema: GenMessage<SearchIndexersResponse> = /*@__PURE__*/
-  messageDesc(file_search_v1_search, 2);
+  messageDesc(file_search_v1_search, 4);
 
 /**
  * @generated from message search.v1.GameSource
@@ -113,7 +152,7 @@ export type GameSource = Message<"search.v1.GameSource"> & {
  * Use `create(GameSourceSchema)` to create a new message.
  */
 export const GameSourceSchema: GenMessage<GameSource> = /*@__PURE__*/
-  messageDesc(file_search_v1_search, 3);
+  messageDesc(file_search_v1_search, 5);
 
 /**
  * @generated from message search.v1.SearchMetadataRequest
@@ -130,7 +169,7 @@ export type SearchMetadataRequest = Message<"search.v1.SearchMetadataRequest"> &
  * Use `create(SearchMetadataRequestSchema)` to create a new message.
  */
 export const SearchMetadataRequestSchema: GenMessage<SearchMetadataRequest> = /*@__PURE__*/
-  messageDesc(file_search_v1_search, 4);
+  messageDesc(file_search_v1_search, 6);
 
 /**
  * @generated from message search.v1.SearchMetadataResponse
@@ -147,7 +186,44 @@ export type SearchMetadataResponse = Message<"search.v1.SearchMetadataResponse">
  * Use `create(SearchMetadataResponseSchema)` to create a new message.
  */
 export const SearchMetadataResponseSchema: GenMessage<SearchMetadataResponse> = /*@__PURE__*/
-  messageDesc(file_search_v1_search, 5);
+  messageDesc(file_search_v1_search, 7);
+
+/**
+ * @generated from message search.v1.Asset
+ */
+export type Asset = Message<"search.v1.Asset"> & {
+  /**
+   * @generated from field: uint64 ID = 1;
+   */
+  ID: bigint;
+
+  /**
+   * @generated from field: uint64 GameId = 2;
+   */
+  GameId: bigint;
+
+  /**
+   * @generated from field: string Type = 3;
+   */
+  Type: string;
+
+  /**
+   * @generated from field: string RemoteUrl = 4;
+   */
+  RemoteUrl: string;
+
+  /**
+   * @generated from field: string LocalPath = 5;
+   */
+  LocalPath: string;
+};
+
+/**
+ * Describes the message search.v1.Asset.
+ * Use `create(AssetSchema)` to create a new message.
+ */
+export const AssetSchema: GenMessage<Asset> = /*@__PURE__*/
+  messageDesc(file_search_v1_search, 8);
 
 /**
  * @generated from message search.v1.GameMetadata
@@ -184,14 +260,9 @@ export type GameMetadata = Message<"search.v1.GameMetadata"> & {
   URL: string;
 
   /**
-   * @generated from field: string ThumbnailURL = 5;
+   * @generated from field: repeated search.v1.Asset assets = 5;
    */
-  ThumbnailURL: string;
-
-  /**
-   * @generated from field: repeated string Videos = 6;
-   */
-  Videos: string[];
+  assets: Asset[];
 
   /**
    * @generated from field: repeated string Platforms = 7;
@@ -234,12 +305,20 @@ export type GameMetadata = Message<"search.v1.GameMetadata"> & {
  * Use `create(GameMetadataSchema)` to create a new message.
  */
 export const GameMetadataSchema: GenMessage<GameMetadata> = /*@__PURE__*/
-  messageDesc(file_search_v1_search, 6);
+  messageDesc(file_search_v1_search, 9);
 
 /**
  * @generated from service search.v1.SearchService
  */
 export const SearchService: GenService<{
+  /**
+   * @generated from rpc search.v1.SearchService.GetGameMeta
+   */
+  getGameMeta: {
+    methodKind: "unary";
+    input: typeof GetGameMetaRequestSchema;
+    output: typeof GetGameMetaResponseSchema;
+  },
   /**
    * @generated from rpc search.v1.SearchService.SearchIndexers
    */

@@ -90,7 +90,7 @@ func (s *StoreGorm) UpdateDownloadProgress(ctx context.Context, id uint, downloa
 
 func (s *StoreGorm) GetById(ctx context.Context, id uint) (Game, error) {
 	var game Game
-	err := s.Q(ctx).First(&game, id).Error
+	err := s.Q(ctx).Preload("Assets").First(&game, id).Error
 	return game, err
 }
 

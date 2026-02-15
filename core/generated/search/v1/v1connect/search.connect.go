@@ -33,6 +33,9 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
+	// SearchServiceGetGameMetaProcedure is the fully-qualified name of the SearchService's GetGameMeta
+	// RPC.
+	SearchServiceGetGameMetaProcedure = "/search.v1.SearchService/GetGameMeta"
 	// SearchServiceSearchIndexersProcedure is the fully-qualified name of the SearchService's
 	// SearchIndexers RPC.
 	SearchServiceSearchIndexersProcedure = "/search.v1.SearchService/SearchIndexers"
@@ -43,6 +46,7 @@ const (
 
 // SearchServiceClient is a client for the search.v1.SearchService service.
 type SearchServiceClient interface {
+	GetGameMeta(context.Context, *connect.Request[v1.GetGameMetaRequest]) (*connect.Response[v1.GetGameMetaResponse], error)
 	SearchIndexers(context.Context, *connect.Request[v1.SearchIndexersRequest]) (*connect.Response[v1.SearchIndexersResponse], error)
 	SearchMetadata(context.Context, *connect.Request[v1.SearchMetadataRequest]) (*connect.Response[v1.SearchMetadataResponse], error)
 }
@@ -58,6 +62,12 @@ func NewSearchServiceClient(httpClient connect.HTTPClient, baseURL string, opts 
 	baseURL = strings.TrimRight(baseURL, "/")
 	searchServiceMethods := v1.File_search_v1_search_proto.Services().ByName("SearchService").Methods()
 	return &searchServiceClient{
+		getGameMeta: connect.NewClient[v1.GetGameMetaRequest, v1.GetGameMetaResponse](
+			httpClient,
+			baseURL+SearchServiceGetGameMetaProcedure,
+			connect.WithSchema(searchServiceMethods.ByName("GetGameMeta")),
+			connect.WithClientOptions(opts...),
+		),
 		searchIndexers: connect.NewClient[v1.SearchIndexersRequest, v1.SearchIndexersResponse](
 			httpClient,
 			baseURL+SearchServiceSearchIndexersProcedure,
@@ -75,8 +85,14 @@ func NewSearchServiceClient(httpClient connect.HTTPClient, baseURL string, opts 
 
 // searchServiceClient implements SearchServiceClient.
 type searchServiceClient struct {
+	getGameMeta    *connect.Client[v1.GetGameMetaRequest, v1.GetGameMetaResponse]
 	searchIndexers *connect.Client[v1.SearchIndexersRequest, v1.SearchIndexersResponse]
 	searchMetadata *connect.Client[v1.SearchMetadataRequest, v1.SearchMetadataResponse]
+}
+
+// GetGameMeta calls search.v1.SearchService.GetGameMeta.
+func (c *searchServiceClient) GetGameMeta(ctx context.Context, req *connect.Request[v1.GetGameMetaRequest]) (*connect.Response[v1.GetGameMetaResponse], error) {
+	return c.getGameMeta.CallUnary(ctx, req)
 }
 
 // SearchIndexers calls search.v1.SearchService.SearchIndexers.
@@ -91,6 +107,7 @@ func (c *searchServiceClient) SearchMetadata(ctx context.Context, req *connect.R
 
 // SearchServiceHandler is an implementation of the search.v1.SearchService service.
 type SearchServiceHandler interface {
+	GetGameMeta(context.Context, *connect.Request[v1.GetGameMetaRequest]) (*connect.Response[v1.GetGameMetaResponse], error)
 	SearchIndexers(context.Context, *connect.Request[v1.SearchIndexersRequest]) (*connect.Response[v1.SearchIndexersResponse], error)
 	SearchMetadata(context.Context, *connect.Request[v1.SearchMetadataRequest]) (*connect.Response[v1.SearchMetadataResponse], error)
 }
@@ -102,6 +119,12 @@ type SearchServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewSearchServiceHandler(svc SearchServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	searchServiceMethods := v1.File_search_v1_search_proto.Services().ByName("SearchService").Methods()
+	searchServiceGetGameMetaHandler := connect.NewUnaryHandler(
+		SearchServiceGetGameMetaProcedure,
+		svc.GetGameMeta,
+		connect.WithSchema(searchServiceMethods.ByName("GetGameMeta")),
+		connect.WithHandlerOptions(opts...),
+	)
 	searchServiceSearchIndexersHandler := connect.NewUnaryHandler(
 		SearchServiceSearchIndexersProcedure,
 		svc.SearchIndexers,
@@ -116,6 +139,8 @@ func NewSearchServiceHandler(svc SearchServiceHandler, opts ...connect.HandlerOp
 	)
 	return "/search.v1.SearchService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
+		case SearchServiceGetGameMetaProcedure:
+			searchServiceGetGameMetaHandler.ServeHTTP(w, r)
 		case SearchServiceSearchIndexersProcedure:
 			searchServiceSearchIndexersHandler.ServeHTTP(w, r)
 		case SearchServiceSearchMetadataProcedure:
@@ -128,6 +153,10 @@ func NewSearchServiceHandler(svc SearchServiceHandler, opts ...connect.HandlerOp
 
 // UnimplementedSearchServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedSearchServiceHandler struct{}
+
+func (UnimplementedSearchServiceHandler) GetGameMeta(context.Context, *connect.Request[v1.GetGameMetaRequest]) (*connect.Response[v1.GetGameMetaResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("search.v1.SearchService.GetGameMeta is not implemented"))
+}
 
 func (UnimplementedSearchServiceHandler) SearchIndexers(context.Context, *connect.Request[v1.SearchIndexersRequest]) (*connect.Response[v1.SearchIndexersResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("search.v1.SearchService.SearchIndexers is not implemented"))

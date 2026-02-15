@@ -21,6 +21,102 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type GetGameMetaRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Provider      string                 `protobuf:"bytes,1,opt,name=provider,proto3" json:"provider,omitempty"`
+	GameDbId      string                 `protobuf:"bytes,2,opt,name=gameDbId,proto3" json:"gameDbId,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetGameMetaRequest) Reset() {
+	*x = GetGameMetaRequest{}
+	mi := &file_search_v1_search_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetGameMetaRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetGameMetaRequest) ProtoMessage() {}
+
+func (x *GetGameMetaRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_search_v1_search_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetGameMetaRequest.ProtoReflect.Descriptor instead.
+func (*GetGameMetaRequest) Descriptor() ([]byte, []int) {
+	return file_search_v1_search_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *GetGameMetaRequest) GetProvider() string {
+	if x != nil {
+		return x.Provider
+	}
+	return ""
+}
+
+func (x *GetGameMetaRequest) GetGameDbId() string {
+	if x != nil {
+		return x.GameDbId
+	}
+	return ""
+}
+
+type GetGameMetaResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Meta          *GameMetadata          `protobuf:"bytes,1,opt,name=meta,proto3" json:"meta,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetGameMetaResponse) Reset() {
+	*x = GetGameMetaResponse{}
+	mi := &file_search_v1_search_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetGameMetaResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetGameMetaResponse) ProtoMessage() {}
+
+func (x *GetGameMetaResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_search_v1_search_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetGameMetaResponse.ProtoReflect.Descriptor instead.
+func (*GetGameMetaResponse) Descriptor() ([]byte, []int) {
+	return file_search_v1_search_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *GetGameMetaResponse) GetMeta() *GameMetadata {
+	if x != nil {
+		return x.Meta
+	}
+	return nil
+}
+
 type Query struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Query         string                 `protobuf:"bytes,1,opt,name=query,proto3" json:"query,omitempty"`
@@ -31,7 +127,7 @@ type Query struct {
 
 func (x *Query) Reset() {
 	*x = Query{}
-	mi := &file_search_v1_search_proto_msgTypes[0]
+	mi := &file_search_v1_search_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -43,7 +139,7 @@ func (x *Query) String() string {
 func (*Query) ProtoMessage() {}
 
 func (x *Query) ProtoReflect() protoreflect.Message {
-	mi := &file_search_v1_search_proto_msgTypes[0]
+	mi := &file_search_v1_search_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -56,7 +152,7 @@ func (x *Query) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Query.ProtoReflect.Descriptor instead.
 func (*Query) Descriptor() ([]byte, []int) {
-	return file_search_v1_search_proto_rawDescGZIP(), []int{0}
+	return file_search_v1_search_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *Query) GetQuery() string {
@@ -82,7 +178,7 @@ type SearchIndexersRequest struct {
 
 func (x *SearchIndexersRequest) Reset() {
 	*x = SearchIndexersRequest{}
-	mi := &file_search_v1_search_proto_msgTypes[1]
+	mi := &file_search_v1_search_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -94,7 +190,7 @@ func (x *SearchIndexersRequest) String() string {
 func (*SearchIndexersRequest) ProtoMessage() {}
 
 func (x *SearchIndexersRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_search_v1_search_proto_msgTypes[1]
+	mi := &file_search_v1_search_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -107,7 +203,7 @@ func (x *SearchIndexersRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchIndexersRequest.ProtoReflect.Descriptor instead.
 func (*SearchIndexersRequest) Descriptor() ([]byte, []int) {
-	return file_search_v1_search_proto_rawDescGZIP(), []int{1}
+	return file_search_v1_search_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *SearchIndexersRequest) GetQ() *Query {
@@ -126,7 +222,7 @@ type SearchIndexersResponse struct {
 
 func (x *SearchIndexersResponse) Reset() {
 	*x = SearchIndexersResponse{}
-	mi := &file_search_v1_search_proto_msgTypes[2]
+	mi := &file_search_v1_search_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -138,7 +234,7 @@ func (x *SearchIndexersResponse) String() string {
 func (*SearchIndexersResponse) ProtoMessage() {}
 
 func (x *SearchIndexersResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_search_v1_search_proto_msgTypes[2]
+	mi := &file_search_v1_search_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -151,7 +247,7 @@ func (x *SearchIndexersResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchIndexersResponse.ProtoReflect.Descriptor instead.
 func (*SearchIndexersResponse) Descriptor() ([]byte, []int) {
-	return file_search_v1_search_proto_rawDescGZIP(), []int{2}
+	return file_search_v1_search_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *SearchIndexersResponse) GetResults() []*GameSource {
@@ -176,7 +272,7 @@ type GameSource struct {
 
 func (x *GameSource) Reset() {
 	*x = GameSource{}
-	mi := &file_search_v1_search_proto_msgTypes[3]
+	mi := &file_search_v1_search_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -188,7 +284,7 @@ func (x *GameSource) String() string {
 func (*GameSource) ProtoMessage() {}
 
 func (x *GameSource) ProtoReflect() protoreflect.Message {
-	mi := &file_search_v1_search_proto_msgTypes[3]
+	mi := &file_search_v1_search_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -201,7 +297,7 @@ func (x *GameSource) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GameSource.ProtoReflect.Descriptor instead.
 func (*GameSource) Descriptor() ([]byte, []int) {
-	return file_search_v1_search_proto_rawDescGZIP(), []int{3}
+	return file_search_v1_search_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *GameSource) GetIndexerType() string {
@@ -262,7 +358,7 @@ type SearchMetadataRequest struct {
 
 func (x *SearchMetadataRequest) Reset() {
 	*x = SearchMetadataRequest{}
-	mi := &file_search_v1_search_proto_msgTypes[4]
+	mi := &file_search_v1_search_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -274,7 +370,7 @@ func (x *SearchMetadataRequest) String() string {
 func (*SearchMetadataRequest) ProtoMessage() {}
 
 func (x *SearchMetadataRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_search_v1_search_proto_msgTypes[4]
+	mi := &file_search_v1_search_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -287,7 +383,7 @@ func (x *SearchMetadataRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchMetadataRequest.ProtoReflect.Descriptor instead.
 func (*SearchMetadataRequest) Descriptor() ([]byte, []int) {
-	return file_search_v1_search_proto_rawDescGZIP(), []int{4}
+	return file_search_v1_search_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *SearchMetadataRequest) GetQ() *Query {
@@ -306,7 +402,7 @@ type SearchMetadataResponse struct {
 
 func (x *SearchMetadataResponse) Reset() {
 	*x = SearchMetadataResponse{}
-	mi := &file_search_v1_search_proto_msgTypes[5]
+	mi := &file_search_v1_search_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -318,7 +414,7 @@ func (x *SearchMetadataResponse) String() string {
 func (*SearchMetadataResponse) ProtoMessage() {}
 
 func (x *SearchMetadataResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_search_v1_search_proto_msgTypes[5]
+	mi := &file_search_v1_search_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -331,7 +427,7 @@ func (x *SearchMetadataResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchMetadataResponse.ProtoReflect.Descriptor instead.
 func (*SearchMetadataResponse) Descriptor() ([]byte, []int) {
-	return file_search_v1_search_proto_rawDescGZIP(), []int{5}
+	return file_search_v1_search_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *SearchMetadataResponse) GetMetadata() []*GameMetadata {
@@ -339,6 +435,82 @@ func (x *SearchMetadataResponse) GetMetadata() []*GameMetadata {
 		return x.Metadata
 	}
 	return nil
+}
+
+type Asset struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ID            uint64                 `protobuf:"varint,1,opt,name=ID,proto3" json:"ID,omitempty"`
+	GameId        uint64                 `protobuf:"varint,2,opt,name=GameId,proto3" json:"GameId,omitempty"`
+	Type          string                 `protobuf:"bytes,3,opt,name=Type,proto3" json:"Type,omitempty"`
+	RemoteUrl     string                 `protobuf:"bytes,4,opt,name=RemoteUrl,proto3" json:"RemoteUrl,omitempty"`
+	LocalPath     string                 `protobuf:"bytes,5,opt,name=LocalPath,proto3" json:"LocalPath,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Asset) Reset() {
+	*x = Asset{}
+	mi := &file_search_v1_search_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Asset) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Asset) ProtoMessage() {}
+
+func (x *Asset) ProtoReflect() protoreflect.Message {
+	mi := &file_search_v1_search_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Asset.ProtoReflect.Descriptor instead.
+func (*Asset) Descriptor() ([]byte, []int) {
+	return file_search_v1_search_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *Asset) GetID() uint64 {
+	if x != nil {
+		return x.ID
+	}
+	return 0
+}
+
+func (x *Asset) GetGameId() uint64 {
+	if x != nil {
+		return x.GameId
+	}
+	return 0
+}
+
+func (x *Asset) GetType() string {
+	if x != nil {
+		return x.Type
+	}
+	return ""
+}
+
+func (x *Asset) GetRemoteUrl() string {
+	if x != nil {
+		return x.RemoteUrl
+	}
+	return ""
+}
+
+func (x *Asset) GetLocalPath() string {
+	if x != nil {
+		return x.LocalPath
+	}
+	return ""
 }
 
 type GameMetadata struct {
@@ -349,8 +521,7 @@ type GameMetadata struct {
 	Summary       string                 `protobuf:"bytes,2,opt,name=Summary,proto3" json:"Summary,omitempty"`
 	Description   string                 `protobuf:"bytes,3,opt,name=Description,proto3" json:"Description,omitempty"`
 	URL           string                 `protobuf:"bytes,4,opt,name=URL,proto3" json:"URL,omitempty"`
-	ThumbnailURL  string                 `protobuf:"bytes,5,opt,name=ThumbnailURL,proto3" json:"ThumbnailURL,omitempty"`
-	Videos        []string               `protobuf:"bytes,6,rep,name=Videos,proto3" json:"Videos,omitempty"`
+	Assets        []*Asset               `protobuf:"bytes,5,rep,name=assets,proto3" json:"assets,omitempty"`
 	Platforms     []string               `protobuf:"bytes,7,rep,name=Platforms,proto3" json:"Platforms,omitempty"`
 	Genres        []string               `protobuf:"bytes,8,rep,name=Genres,proto3" json:"Genres,omitempty"`
 	Rating        string                 `protobuf:"bytes,9,opt,name=Rating,proto3" json:"Rating,omitempty"`
@@ -364,7 +535,7 @@ type GameMetadata struct {
 
 func (x *GameMetadata) Reset() {
 	*x = GameMetadata{}
-	mi := &file_search_v1_search_proto_msgTypes[6]
+	mi := &file_search_v1_search_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -376,7 +547,7 @@ func (x *GameMetadata) String() string {
 func (*GameMetadata) ProtoMessage() {}
 
 func (x *GameMetadata) ProtoReflect() protoreflect.Message {
-	mi := &file_search_v1_search_proto_msgTypes[6]
+	mi := &file_search_v1_search_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -389,7 +560,7 @@ func (x *GameMetadata) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GameMetadata.ProtoReflect.Descriptor instead.
 func (*GameMetadata) Descriptor() ([]byte, []int) {
-	return file_search_v1_search_proto_rawDescGZIP(), []int{6}
+	return file_search_v1_search_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *GameMetadata) GetProviderType() string {
@@ -434,16 +605,9 @@ func (x *GameMetadata) GetURL() string {
 	return ""
 }
 
-func (x *GameMetadata) GetThumbnailURL() string {
+func (x *GameMetadata) GetAssets() []*Asset {
 	if x != nil {
-		return x.ThumbnailURL
-	}
-	return ""
-}
-
-func (x *GameMetadata) GetVideos() []string {
-	if x != nil {
-		return x.Videos
+		return x.Assets
 	}
 	return nil
 }
@@ -501,7 +665,12 @@ var File_search_v1_search_proto protoreflect.FileDescriptor
 
 const file_search_v1_search_proto_rawDesc = "" +
 	"\n" +
-	"\x16search/v1/search.proto\x12\tsearch.v1\"7\n" +
+	"\x16search/v1/search.proto\x12\tsearch.v1\"L\n" +
+	"\x12GetGameMetaRequest\x12\x1a\n" +
+	"\bprovider\x18\x01 \x01(\tR\bprovider\x12\x1a\n" +
+	"\bgameDbId\x18\x02 \x01(\tR\bgameDbId\"B\n" +
+	"\x13GetGameMetaResponse\x12+\n" +
+	"\x04meta\x18\x01 \x01(\v2\x17.search.v1.GameMetadataR\x04meta\"7\n" +
 	"\x05Query\x12\x14\n" +
 	"\x05query\x18\x01 \x01(\tR\x05query\x12\x18\n" +
 	"\aindexer\x18\x02 \x01(\tR\aindexer\"7\n" +
@@ -523,16 +692,21 @@ const file_search_v1_search_proto_rawDesc = "" +
 	"\x15SearchMetadataRequest\x12\x1e\n" +
 	"\x01q\x18\x01 \x01(\v2\x10.search.v1.QueryR\x01q\"M\n" +
 	"\x16SearchMetadataResponse\x123\n" +
-	"\bmetadata\x18\x01 \x03(\v2\x17.search.v1.GameMetadataR\bmetadata\"\xb4\x03\n" +
+	"\bmetadata\x18\x01 \x03(\v2\x17.search.v1.GameMetadataR\bmetadata\"\x7f\n" +
+	"\x05Asset\x12\x0e\n" +
+	"\x02ID\x18\x01 \x01(\x04R\x02ID\x12\x16\n" +
+	"\x06GameId\x18\x02 \x01(\x04R\x06GameId\x12\x12\n" +
+	"\x04Type\x18\x03 \x01(\tR\x04Type\x12\x1c\n" +
+	"\tRemoteUrl\x18\x04 \x01(\tR\tRemoteUrl\x12\x1c\n" +
+	"\tLocalPath\x18\x05 \x01(\tR\tLocalPath\"\xa2\x03\n" +
 	"\fGameMetadata\x12\"\n" +
 	"\fProviderType\x18\x0f \x01(\tR\fProviderType\x12\x0e\n" +
 	"\x02ID\x18\x0e \x01(\tR\x02ID\x12\x12\n" +
 	"\x04Name\x18\x01 \x01(\tR\x04Name\x12\x18\n" +
 	"\aSummary\x18\x02 \x01(\tR\aSummary\x12 \n" +
 	"\vDescription\x18\x03 \x01(\tR\vDescription\x12\x10\n" +
-	"\x03URL\x18\x04 \x01(\tR\x03URL\x12\"\n" +
-	"\fThumbnailURL\x18\x05 \x01(\tR\fThumbnailURL\x12\x16\n" +
-	"\x06Videos\x18\x06 \x03(\tR\x06Videos\x12\x1c\n" +
+	"\x03URL\x18\x04 \x01(\tR\x03URL\x12(\n" +
+	"\x06assets\x18\x05 \x03(\v2\x10.search.v1.AssetR\x06assets\x12\x1c\n" +
 	"\tPlatforms\x18\a \x03(\tR\tPlatforms\x12\x16\n" +
 	"\x06Genres\x18\b \x03(\tR\x06Genres\x12\x16\n" +
 	"\x06Rating\x18\t \x01(\tR\x06Rating\x12 \n" +
@@ -540,8 +714,9 @@ const file_search_v1_search_proto_rawDesc = "" +
 	" \x01(\rR\vRatingCount\x12 \n" +
 	"\vReleaseDate\x18\v \x01(\tR\vReleaseDate\x12$\n" +
 	"\rReleaseStatus\x18\f \x01(\tR\rReleaseStatus\x12\x1a\n" +
-	"\bCategory\x18\r \x01(\tR\bCategory2\xc1\x01\n" +
-	"\rSearchService\x12W\n" +
+	"\bCategory\x18\r \x01(\tR\bCategory2\x91\x02\n" +
+	"\rSearchService\x12N\n" +
+	"\vGetGameMeta\x12\x1d.search.v1.GetGameMetaRequest\x1a\x1e.search.v1.GetGameMetaResponse\"\x00\x12W\n" +
 	"\x0eSearchIndexers\x12 .search.v1.SearchIndexersRequest\x1a!.search.v1.SearchIndexersResponse\"\x00\x12W\n" +
 	"\x0eSearchMetadata\x12 .search.v1.SearchMetadataRequest\x1a!.search.v1.SearchMetadataResponse\"\x00B\x8f\x01\n" +
 	"\rcom.search.v1B\vSearchProtoP\x01Z,github.com/ra341/glacier/generated/search/v1\xa2\x02\x03SXX\xaa\x02\tSearch.V1\xca\x02\tSearch\\V1\xe2\x02\x15Search\\V1\\GPBMetadata\xea\x02\n" +
@@ -559,30 +734,37 @@ func file_search_v1_search_proto_rawDescGZIP() []byte {
 	return file_search_v1_search_proto_rawDescData
 }
 
-var file_search_v1_search_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_search_v1_search_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_search_v1_search_proto_goTypes = []any{
-	(*Query)(nil),                  // 0: search.v1.Query
-	(*SearchIndexersRequest)(nil),  // 1: search.v1.SearchIndexersRequest
-	(*SearchIndexersResponse)(nil), // 2: search.v1.SearchIndexersResponse
-	(*GameSource)(nil),             // 3: search.v1.GameSource
-	(*SearchMetadataRequest)(nil),  // 4: search.v1.SearchMetadataRequest
-	(*SearchMetadataResponse)(nil), // 5: search.v1.SearchMetadataResponse
-	(*GameMetadata)(nil),           // 6: search.v1.GameMetadata
+	(*GetGameMetaRequest)(nil),     // 0: search.v1.GetGameMetaRequest
+	(*GetGameMetaResponse)(nil),    // 1: search.v1.GetGameMetaResponse
+	(*Query)(nil),                  // 2: search.v1.Query
+	(*SearchIndexersRequest)(nil),  // 3: search.v1.SearchIndexersRequest
+	(*SearchIndexersResponse)(nil), // 4: search.v1.SearchIndexersResponse
+	(*GameSource)(nil),             // 5: search.v1.GameSource
+	(*SearchMetadataRequest)(nil),  // 6: search.v1.SearchMetadataRequest
+	(*SearchMetadataResponse)(nil), // 7: search.v1.SearchMetadataResponse
+	(*Asset)(nil),                  // 8: search.v1.Asset
+	(*GameMetadata)(nil),           // 9: search.v1.GameMetadata
 }
 var file_search_v1_search_proto_depIdxs = []int32{
-	0, // 0: search.v1.SearchIndexersRequest.q:type_name -> search.v1.Query
-	3, // 1: search.v1.SearchIndexersResponse.results:type_name -> search.v1.GameSource
-	0, // 2: search.v1.SearchMetadataRequest.q:type_name -> search.v1.Query
-	6, // 3: search.v1.SearchMetadataResponse.metadata:type_name -> search.v1.GameMetadata
-	1, // 4: search.v1.SearchService.SearchIndexers:input_type -> search.v1.SearchIndexersRequest
-	4, // 5: search.v1.SearchService.SearchMetadata:input_type -> search.v1.SearchMetadataRequest
-	2, // 6: search.v1.SearchService.SearchIndexers:output_type -> search.v1.SearchIndexersResponse
-	5, // 7: search.v1.SearchService.SearchMetadata:output_type -> search.v1.SearchMetadataResponse
-	6, // [6:8] is the sub-list for method output_type
-	4, // [4:6] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	9, // 0: search.v1.GetGameMetaResponse.meta:type_name -> search.v1.GameMetadata
+	2, // 1: search.v1.SearchIndexersRequest.q:type_name -> search.v1.Query
+	5, // 2: search.v1.SearchIndexersResponse.results:type_name -> search.v1.GameSource
+	2, // 3: search.v1.SearchMetadataRequest.q:type_name -> search.v1.Query
+	9, // 4: search.v1.SearchMetadataResponse.metadata:type_name -> search.v1.GameMetadata
+	8, // 5: search.v1.GameMetadata.assets:type_name -> search.v1.Asset
+	0, // 6: search.v1.SearchService.GetGameMeta:input_type -> search.v1.GetGameMetaRequest
+	3, // 7: search.v1.SearchService.SearchIndexers:input_type -> search.v1.SearchIndexersRequest
+	6, // 8: search.v1.SearchService.SearchMetadata:input_type -> search.v1.SearchMetadataRequest
+	1, // 9: search.v1.SearchService.GetGameMeta:output_type -> search.v1.GetGameMetaResponse
+	4, // 10: search.v1.SearchService.SearchIndexers:output_type -> search.v1.SearchIndexersResponse
+	7, // 11: search.v1.SearchService.SearchMetadata:output_type -> search.v1.SearchMetadataResponse
+	9, // [9:12] is the sub-list for method output_type
+	6, // [6:9] is the sub-list for method input_type
+	6, // [6:6] is the sub-list for extension type_name
+	6, // [6:6] is the sub-list for extension extendee
+	0, // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_search_v1_search_proto_init() }
@@ -596,7 +778,7 @@ func file_search_v1_search_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_search_v1_search_proto_rawDesc), len(file_search_v1_search_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

@@ -4,6 +4,9 @@
     import {createRPCRunner} from "$lib/api/rpc.svelte.js";
     import {onMount} from "svelte";
     import {goto} from "$app/navigation";
+    import {getAssetPath} from "$lib/api/assets";
+    import {ImageIcon, LoaderIcon} from "@lucide/svelte";
+    import AssetImg from "$lib/components/assets/AssetImg.svelte";
 
     const libSrv = glacierCli(LibraryService)
 
@@ -84,21 +87,32 @@
     {:else}
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             {#each libRpc.value?.gameList ?? [] as ga}
-                <div class="group bg-surface border border-border rounded-2xl overflow-hidden transition-all duration-300 hover:border-frost-500/50 hover:shadow-frost">
+                <div
+                        onclick={() => select(ga)}
+                        onkeydown={(e) => e.key === 'Enter' && select(ga)}
+                        role="button"
+                        tabindex="0"
+                        class="group cursor-pointer bg-surface border border-border rounded-2xl overflow-hidden transition-all duration-300 hover:border-frost-500/50 hover:shadow-frost focus:outline-none focus:ring-2 focus:ring-frost-500"
+                >
                     <div class="aspect-3/4 bg-panel flex items-center justify-center relative overflow-hidden">
-                        {#if ga.Meta?.ThumbnailURL}
-                            <img src={ga.Meta.ThumbnailURL} alt={ga.Meta?.Name} class="object-cover w-full h-full"/>
-                        {:else}
-                            <span class="text-muted text-sm font-medium uppercase tracking-widest">Game Photo</span>
-                        {/if}
-                        <div class="absolute inset-0 bg-linear-to-t from-background/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
-                            <button
-                                    onclick={() => select(ga)}
-                                    class="w-full py-2 bg-frost-500 text-white rounded-lg text-sm font-bold shadow-lg"
-                            >
-                                View Details
-                            </button>
-                        </div>
+                        <AssetImg
+                                src={getAssetPath({gameId: ga.ID, assetType: "AssetThumbnail"})}
+                                alt={ga.Meta?.Name ?? "Untitled"}
+                                class="object-cover w-full h-full"
+                        >
+                            {#snippet loadingSlot()}
+                                <div class="flex h-full w-full items-center justify-center bg-surface animate-pulse">
+                                    <LoaderIcon class="animate-spin text-muted"/>
+                                </div>
+                            {/snippet}
+
+                            {#snippet errorSlot()}
+                                <div class="flex h-full w-full flex-col items-center justify-center bg-surface">
+                                    <ImageIcon size={48} class="mb-5"/>
+                                    <p class="text-sm">Thumbnail Not found</p>
+                                </div>
+                            {/snippet}
+                        </AssetImg>
                     </div>
 
                     <!-- Info Area -->

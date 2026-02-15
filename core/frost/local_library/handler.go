@@ -161,8 +161,9 @@ func (h *Handler) ListDownloading(ctx context.Context, c *connect.Request[v1.Lis
 		})
 
 		return &v1.DownloadProgress{
-			ID:        uint64(t.ID),
-			Thumbnail: t.Game.Meta.ThumbnailURL,
+			ID: uint64(t.ID),
+			// todo replace with asset message
+			Thumbnail: t.Game.Meta.Assets[0].RemoteURL,
 			Title:     t.Game.Meta.Name,
 			Download:  t.Download.ToProto(),
 			Progress: &v1.FolderProgress{

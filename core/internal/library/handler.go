@@ -124,7 +124,7 @@ func (h *Handler) Edit(ctx context.Context, c *connect.Request[v1.EditRequest]) 
 	var game Game
 	game.FromProto(c.Msg.Game)
 
-	err := h.srv.store.Edit(ctx, &game)
+	err := h.srv.Edit(ctx, &game)
 	if err != nil {
 		return nil, err
 	}

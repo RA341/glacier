@@ -19,6 +19,21 @@ func New() *Updater {
 	}
 }
 
+func (d *Updater) ReplaceBinary(pathToNewBinary string) error {
+	// oldExe running
+	// oldExe execs pathToNewBinary --update --path=pathToOldBin
+	// oldExe stops
+
+	// newBin running in update mode
+	// newBin renames pathToOldBin.old
+	// newBin transfers its files using os.Executable and os read to pathToOldBin
+	// newBin calls pathToOldbin --cleanUpdate=pathToUpdateFolder
+	// newBin exits
+	// replacedOldbin is now running
+
+	return nil
+}
+
 func (d *Updater) CheckForUpdate() {
 
 }
@@ -36,9 +51,5 @@ func (d *Updater) FetchReleases(ctx context.Context) ([]*github.RepositoryReleas
 }
 
 func (d *Updater) DownloadUpdate(downloadUrl string) {
-
-}
-
-func (d *Updater) ReplaceBinary() {
 
 }

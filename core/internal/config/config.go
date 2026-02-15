@@ -4,6 +4,7 @@ import (
 	"github.com/ra341/glacier/internal/auth"
 	"github.com/ra341/glacier/internal/downloader"
 	"github.com/ra341/glacier/internal/library"
+	"github.com/ra341/glacier/internal/metadata/assets"
 )
 
 type Config struct {
@@ -13,6 +14,7 @@ type Config struct {
 	Auth     auth.Config       `yaml:"auth"`
 	Library  library.Config    `yaml:"library"`
 	Download downloader.Config `yaml:"downloader"`
+	Asset    assets.Config     `yaml:"asset"`
 }
 
 type Glacier struct {

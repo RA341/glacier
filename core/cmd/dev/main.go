@@ -33,6 +33,9 @@ func main() {
 		"AUTH_OIDC_CLIENT_SECRET": "xAsPzGKy4MGoExAy0r7kLbBN5Hvr9Pg9",
 		"AUTH_OIDC_REDIRECT_URL":  "http://localhost:6699/api/server/public/auth/oidc/callback",
 
+		"USE_YTDLP":    "true",
+		"YT_RELAY_URL": "http://localhost:3002",
+
 		"CONFIG_DIR":      "./config",
 		"GAME_DIR":        "./gamestop",
 		"CONFIG_YML_PATH": "./config/glacier.yml",

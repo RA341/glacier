@@ -20,9 +20,9 @@
         class="group relative flex flex-col bg-surface border border-border rounded-2xl overflow-hidden hover:border-frost-500/50 transition-all hover:-translate-y-1 shadow-sm active:scale-[0.98]"
 >
     <div class="aspect-3/4 w-full bg-panel relative overflow-hidden">
-        {#if game.ThumbnailURL}
+        {#if game.assets.at(0)?.RemoteUrl}
             <img
-                    src={game.ThumbnailURL}
+                    src={game.assets.at(0)?.RemoteUrl}
                     alt={game.Name}
                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             />

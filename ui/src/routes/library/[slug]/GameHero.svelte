@@ -1,43 +1,67 @@
 <script lang="ts">
-    import {CalendarIcon, ImageIcon, PlusIcon, StarIcon, SwatchBookIcon} from '@lucide/svelte';
+    import {CalendarIcon, LoaderIcon, ImageIcon, PlusIcon, StarIcon, SwatchBookIcon} from '@lucide/svelte';
     import type {Game} from "$lib/gen/library/v1/library_pb";
+    import {getAssetPath} from "$lib/api/assets";
+    import AssetImg from "$lib/components/assets/AssetImg.svelte";
+    import AssetVideo from "$lib/components/assets/AssetVideo.svelte";
+
 
     let {game = $bindable(null)}: { game: Game | null } = $props();
 
     let meta = $derived(game?.Meta)
+
+    const thumb = getAssetPath({gameId: game?.ID, assetType: "AssetThumbnail"})
+
+    const trailer = getAssetPath({gameId: game?.ID, assetType: "AssetTrailer"})
+    let videoError = $state(false);
+
 </script>
 
 <div class="space-y-6">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 h-75">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 h-80">
         <!-- Main Poster -->
         <div class="lg:col-span-2 bg-panel rounded-3xl border border-border overflow-hidden relative">
-            {#if meta?.ThumbnailURL}
-                <img src={meta?.ThumbnailURL} alt="" class="w-full h-full object-cover"/>
-            {:else}
-                <div class="w-full h-full flex items-center justify-center text-muted/20">
-                    <ImageIcon size={48}/>
-                </div>
-            {/if}
+            <AssetImg
+                    src={thumb}
+                    class="w-full h-full"
+            >
+                {#snippet loadingSlot()}
+                    <div class="flex h-full w-full items-center justify-center bg-surface animate-pulse">
+                        <LoaderIcon class="animate-spin text-muted"/>
+                    </div>
+                {/snippet}
+
+                {#snippet errorSlot()}
+                    <div class="flex h-full w-full items-center justify-center bg-surface text-muted/20">
+                        <ImageIcon size={48}/>
+                    </div>
+                {/snippet}
+            </AssetImg>
         </div>
 
         <!-- Video Trailer -->
         <div class="lg:col-span-8 bg-panel rounded-3xl border border-border flex items-center justify-center overflow-hidden relative group">
-            <div class="flex flex-col items-center gap-2">
-                {#if meta?.Videos}
-                    <iframe
-                            width="560"
-                            height="315"
-                            src="https://www.youtube.com/embed/{meta.Videos[0]}"
-                            title="YouTube video player"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen>
-                    </iframe>
-                {:else}
-                    <PlusIcon size={48} class="rotate-45"/>
-                    <p class="text-xs font-bold uppercase tracking-widest">No video found</p>
-                {/if}
-            </div>
+            <AssetVideo
+                    src={trailer}
+                    autoplay={true}
+                    muted={true}
+                    class="w-full h-full object-contain"
+            >
+                {#snippet loadingSlot()}
+                    <div class="flex h-full w-full items-center justify-center bg-black">
+                        <LoaderIcon class="animate-spin text-white/50"/>
+                    </div>
+                {/snippet}
+
+                {#snippet errorSlot()}
+                    <div class="flex flex-col h-full w-full items-center justify-center bg-surface text-muted-foreground">
+                        <PlusIcon size={48} class="rotate-45 opacity-50"/>
+                        <p class="text-xs font-bold uppercase tracking-widest">Video Unavailable</p>
+                    </div>
+                {/snippet}
+            </AssetVideo>
         </div>
+
         <!-- Quick Meta Tags -->
         <div class="lg:col-span-2 flex flex-col gap-3">
             <div class="p-4 bg-surface border border-border rounded-2xl flex flex-col gap-1">
@@ -49,8 +73,8 @@
             </div>
             <div class="p-4 bg-surface border border-border rounded-2xl flex flex-col gap-1">
                 <span class="text-[10px] font-bold text-muted uppercase">Genre</span>
-                <span class="text-sm font-bold flex items-center gap-2"><SwatchBookIcon size={14}
-                                                                                        class="text-frost-400"/> {meta?.Genres.join(", ")}</span>
+                <span class="text-sm font-bold flex items-center gap-2">
+                    <SwatchBookIcon size={14} class="text-frost-400"/> {meta?.Genres.join(", ")}</span>
             </div>
             <div class="p-4 bg-surface border border-border rounded-2xl flex flex-col gap-1">
                 <span class="text-[10px] font-bold text-muted uppercase">Rating</span>

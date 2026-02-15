@@ -7,6 +7,7 @@ import (
 	indexTypes "github.com/ra341/glacier/internal/indexer/types"
 	metadata "github.com/ra341/glacier/internal/metadata/types"
 	"github.com/ra341/glacier/pkg/mapsct"
+	"github.com/rs/zerolog/log"
 )
 
 type ServiceHandlers struct {
@@ -63,7 +64,47 @@ func New(store Store) *Service {
 		},
 	}
 
+	go s.LoadEnabled()
+
 	return s
+}
+
+func (s *Service) LoadEnabled() {
+	srvs := []ServiceType{Metadata, Indexer, Downloader}
+
+	for _, srv := range srvs {
+		enabled, err := s.store.ListEnabled(srv)
+		if err != nil {
+			log.Warn().Err(err).
+				Str("srv", srv.String()).
+				Msgf("Failed to get enabled services")
+		}
+
+		for _, en := range enabled {
+			switch en.ServiceType {
+			case Metadata:
+				_, err := s.Meta.LoadService(en.Name)
+				if err != nil {
+					log.Warn().Err(err).Msg("Failed to load Metadata service")
+				}
+			case Downloader:
+				_, err := s.Downloader.LoadService(en.Name)
+				if err != nil {
+					log.Warn().Err(err).Msg("Failed to load Downloader service")
+				}
+			case Indexer:
+				_, err := s.Indexer.LoadService(en.Name)
+				if err != nil {
+					log.Warn().Err(err).Msg("Failed to load Indexer service")
+				}
+			default:
+				log.Warn().
+					Str("st", en.ServiceType.String()).
+					Msg("Unknown service type, TF is this shit")
+			}
+		}
+	}
+
 }
 
 func (s *Service) TestAndSave(cf *ServiceConfig) error {

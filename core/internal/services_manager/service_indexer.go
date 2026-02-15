@@ -44,7 +44,7 @@ func (s *IndexerMap) LoadService(id string) (indexTypes.Indexer, error) {
 		return nil, err
 	}
 
-	service, err := s.initService(&conf)
+	service, err := s.initService(conf)
 	if err != nil {
 		return nil, err
 	}

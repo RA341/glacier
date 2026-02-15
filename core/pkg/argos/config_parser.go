@@ -68,7 +68,10 @@ func FieldProcessorTag(prefixer Prefixer) FieldProcessor {
 		if defaultValue == "" {
 			log.Fatal().
 				Str("field", fieldType.Name).
-				Msg("Default value not set for field, all non struct fields must have a default value")
+				Msg("Default value not set for field, all non struct fields must have a default value, if field has no default value mark it with '-'")
+		}
+		if defaultValue == "-" {
+			defaultValue = ""
 		}
 
 		if hasEnvTag(fieldType, field, prefixer) {

@@ -39,10 +39,10 @@ func (s *ServiceConfigManagerGorm) ListEnabled(ServiceType ServiceType) ([]Servi
 	return dest, err
 }
 
-func (s *ServiceConfigManagerGorm) Get(id string) (ServiceConfig, error) {
+func (s *ServiceConfigManagerGorm) Get(id string) (*ServiceConfig, error) {
 	var dest ServiceConfig
-	err := s.Q().Where("name = ?", id).First(&dest).Error
-	return dest, err
+	err := s.Q().Where("name = ?", id).Or("flavour = ?", id).First(&dest).Error
+	return &dest, err
 }
 
 func (s *ServiceConfigManagerGorm) New(conf *ServiceConfig) error {

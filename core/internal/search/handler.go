@@ -3,7 +3,6 @@ package search
 import (
 	"context"
 	"net/http"
-	"strings"
 
 	v1 "github.com/ra341/glacier/generated/search/v1"
 	"github.com/ra341/glacier/generated/search/v1/v1connect"
@@ -24,6 +23,17 @@ func NewHandler(srv *Service) (string, http.Handler) {
 	return v1connect.NewSearchServiceHandler(h)
 }
 
+func (h *Handler) GetGameMeta(ctx context.Context, c *connect.Request[v1.GetGameMetaRequest]) (*connect.Response[v1.GetGameMetaResponse], error) {
+	meta, err := h.srv.GetGameMeta(ctx, c.Msg.Provider, c.Msg.GameDbId)
+	if err != nil {
+		return nil, err
+	}
+
+	return connect.NewResponse(&v1.GetGameMetaResponse{
+		Meta: meta.ToProto(),
+	}), nil
+}
+
 func (h *Handler) SearchIndexers(ctx context.Context, req *connect.Request[v1.SearchIndexersRequest]) (*connect.Response[v1.SearchIndexersResponse], error) {
 	search, err := h.srv.GetIndexerResults(req.Msg.Q.Indexer, req.Msg.Q.Query)
 	if err != nil {
@@ -40,13 +50,12 @@ func (h *Handler) SearchIndexers(ctx context.Context, req *connect.Request[v1.Se
 }
 
 func (h *Handler) SearchMetadata(ctx context.Context, req *connect.Request[v1.SearchMetadataRequest]) (*connect.Response[v1.SearchMetadataResponse], error) {
-	search, err := h.srv.GetMetadataResults(req.Msg.Q.Indexer, req.Msg.Q.Query)
+	search, err := h.srv.GetMetadataResults(ctx, req.Msg.Q.Indexer, req.Msg.Q.Query)
 	if err != nil {
 		return nil, err
 	}
 
 	res := listutils.ToMap(search, func(t metaTypes.Meta) *v1.GameMetadata {
-		t.ThumbnailURL = strings.Replace(t.ThumbnailURL, "t_thumb", "t_cover_big", 1)
 		return t.ToProto()
 	})
 

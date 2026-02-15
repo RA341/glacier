@@ -11,6 +11,7 @@ import (
 	"github.com/ra341/glacier/internal/config"
 	"github.com/ra341/glacier/internal/indexer"
 	"github.com/ra341/glacier/internal/library"
+	"github.com/ra341/glacier/internal/metadata/assets"
 	"github.com/ra341/glacier/internal/search"
 	sm "github.com/ra341/glacier/internal/services_manager"
 	"github.com/ra341/glacier/internal/user"
@@ -31,14 +32,14 @@ func NewServer(opts ...api.ServerOpt) {
 	api.ParseOpts(&server.ServerBase, opts...)
 
 	server.App = NewApp()
-	config := server.Conf.Get().Server
+	configG := server.Conf.Get().Server
 
 	router := http.NewServeMux()
 	server.RegisterRoutes(router)
 
-	finalMux := api.WithCors(router, config.AllowedOrigins)
+	finalMux := api.WithCors(router, configG.AllowedOrigins)
 
-	port := fmt.Sprintf(":%d", config.Port)
+	port := fmt.Sprintf(":%d", configG.Port)
 	log.Info().Str("port", port).Msg("Starting server...")
 
 	srv := &http.Server{
@@ -121,6 +122,12 @@ func (s *Server) registerProtectedRoutes(mux *http.ServeMux) {
 	mux.Handle(indexer.NewHandler(s.Indexer))
 
 	mux.Handle(library.NewHandler(s.Library))
+	api.WithSubRouter(
+		mux,
+		"/assets",
+		assets.NewHandler(s.Assets),
+	)
+
 	api.WithSubRouter(mux,
 		"/library/download",
 		library.NewHandlerHttp(s.Library),

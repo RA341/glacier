@@ -23,6 +23,7 @@ func NewMetadataMap(store Store) ServiceConfigMap[metadata.Provider] {
 		},
 	}
 }
+
 func (m *MetadataMap) LoadService(id string) (metadata.Provider, error) {
 	val, ok := m.metaMap.Load(id)
 	if ok {
@@ -34,7 +35,7 @@ func (m *MetadataMap) LoadService(id string) (metadata.Provider, error) {
 		return nil, err
 	}
 
-	service, err := m.initService(&conf)
+	service, err := m.initService(conf)
 	if err != nil {
 		return nil, err
 	}

@@ -5,7 +5,7 @@ import (
 )
 
 type Store interface {
-	Get(id string) (ServiceConfig, error)
+	Get(id string) (*ServiceConfig, error)
 	New(conf *ServiceConfig) error
 	Edit(conf *ServiceConfig) error
 	Delete(id uint) error

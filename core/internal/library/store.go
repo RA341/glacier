@@ -15,6 +15,7 @@ type Game struct {
 	gorm.Model
 	// metadata of the Game
 	Meta metadata.Meta `gorm:"embedded"`
+
 	// client where the source is getting downloaded
 	Download download.Download `gorm:"embedded"`
 	// Source of the Indexer

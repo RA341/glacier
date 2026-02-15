@@ -57,7 +57,7 @@ func (d *DownloaderMap) LoadService(id string) (downloaderTypes.Downloader, erro
 		return nil, err
 	}
 
-	service, err := d.initService(&conf)
+	service, err := d.initService(conf)
 	if err != nil {
 		return nil, err
 	}

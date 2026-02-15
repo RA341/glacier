@@ -14,6 +14,7 @@ import (
 	"github.com/ra341/glacier/internal/library"
 	"github.com/ra341/glacier/internal/library/manifest"
 	"github.com/ra341/glacier/internal/metadata"
+	"github.com/ra341/glacier/internal/metadata/assets"
 	"github.com/ra341/glacier/internal/search"
 	"github.com/ra341/glacier/internal/services_manager"
 	"github.com/ra341/glacier/internal/user"
@@ -40,6 +41,7 @@ type App struct {
 
 	User    *user.Service
 	Session *auth.Service
+	Assets  *assets.Service
 }
 
 func NewApp() *App {
@@ -76,11 +78,32 @@ func NewApp() *App {
 	)
 	downSrv.StartTracker() // check for previous incomplete downloads
 
-	libSrv := library.New(libDb, fms,
+	assetStore := assets.NewStoreGorm(db)
+	assetSrv := assets.New(
+		func() *assets.Config {
+			return &conf.Get().Asset
+		},
+		assetStore,
+		func(ctx context.Context, gameId uint) (string, error) {
+			get, err := libDb.GetById(ctx, gameId)
+			if err != nil {
+				return "", err
+			}
+			dPa := get.Download.DownloadPath
+			if dPa == "" {
+				return "", fmt.Errorf("no download path")
+			}
+			return dPa, nil
+		},
+	)
+	libSrv := library.New(
+		libDb,
+		fms,
 		downSrv,
 		func() *library.Config {
-			return &c.Library
+			return &conf.Get().Library
 		},
+		assetSrv.DownloadAssets,
 	)
 
 	metaSrv := metadata.New(configManager.Meta.LoadService)
@@ -103,6 +126,7 @@ func NewApp() *App {
 	a := &App{
 		Conf:          conf,
 		Library:       libSrv,
+		Assets:        assetSrv,
 		DownloadSrv:   downSrv,
 		Search:        searchSrv,
 		Indexer:       indexerSrv,

@@ -18,10 +18,10 @@ type Config struct {
 	RefreshExpiryInMonths int `yaml:"refreshExpiryInMonths" env:"AUTH_REFRESH_EXPIRY" default:"12" help:"time limit for a refresh token"`
 
 	OidcEnable       bool   `yaml:"OIDCEnable" env:"AUTH_OIDC_ENABLE" default:"false" help:"enable OIDC support"`
-	OidcIssuerUrl    string `yaml:"OIDCIssuerURL" env:"AUTH_OIDC_ISSUER" default:"TODO" help:"url for your OIDC issuer"`
-	OidcClientId     string `yaml:"OIDCClientID" env:"AUTH_OIDC_CLIENT_ID" default:"TODO" help:"client id for OIDC" hide:"true"`
-	OidcClientSecret string `yaml:"OIDCClientSecret" env:"AUTH_OIDC_CLIENT_SECRET" default:"TODO" help:"client secret for OIDC" hide:"true"`
-	OidcRedirectUrl  string `yaml:"OIDCRedirectURL" env:"AUTH_OIDC_REDIRECT_URL" default:"TODO" help:"redirect url for OIDC"`
+	OidcIssuerUrl    string `yaml:"OIDCIssuerURL" env:"AUTH_OIDC_ISSUER" default:"-" help:"url for your OIDC issuer"`
+	OidcClientId     string `yaml:"OIDCClientID" env:"AUTH_OIDC_CLIENT_ID" default:"-" help:"client id for OIDC" hide:"true"`
+	OidcClientSecret string `yaml:"OIDCClientSecret" env:"AUTH_OIDC_CLIENT_SECRET" default:"-" help:"client secret for OIDC" hide:"true"`
+	OidcRedirectUrl  string `yaml:"OIDCRedirectURL" env:"AUTH_OIDC_REDIRECT_URL" default:"-" help:"redirect url for OIDC"`
 }
 
 func (c *Config) GetSessionExp() time.Duration {

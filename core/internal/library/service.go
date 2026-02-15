@@ -10,6 +10,7 @@ import (
 	"github.com/ra341/glacier/internal/downloader/types"
 	"github.com/ra341/glacier/internal/library/manifest"
 	"github.com/ra341/glacier/internal/user"
+	"github.com/ra341/glacier/shared/config"
 )
 
 type Downloader interface {
@@ -18,28 +19,31 @@ type Downloader interface {
 }
 
 type Service struct {
-	config     ConfigLoader
-	downloader Downloader
+	config         config.Provider[Config]
+	downloader     Downloader
+	downloadAssets DownloadAssetTrigger
 
 	store    Store
 	manifest *manifest.Service
 }
 
-type ConfigLoader func() *Config
+type DownloadAssetTrigger func(ctx context.Context, gameId uint) (err error)
 
 func New(
 	store Store,
 	fs *manifest.Service,
 	downloader Downloader,
-	config ConfigLoader,
+	config config.Provider[Config],
+	assets DownloadAssetTrigger,
 ) *Service {
-
-	return &Service{
-		downloader: downloader,
-		config:     config,
-		store:      store,
-		manifest:   fs,
+	s := &Service{
+		downloader:     downloader,
+		config:         config,
+		downloadAssets: assets,
+		store:          store,
+		manifest:       fs,
 	}
+	return s
 }
 
 func (s *Service) GetDownloadManifest(ctx context.Context, gid int, w http.ResponseWriter) error {
@@ -70,12 +74,17 @@ func (s *Service) Get(ctx context.Context, id uint) (Game, error) {
 }
 
 func (s *Service) Edit(ctx context.Context, game *Game) error {
-	err := checkPerms(ctx)
+	err := s.store.Edit(ctx, game)
 	if err != nil {
 		return err
 	}
 
-	return s.store.Edit(ctx, game)
+	err = s.downloadAssets(ctx, game.ID)
+	if err != nil {
+		return err
+	}
+
+	return err
 }
 
 func (s *Service) List(ctx context.Context, query string, offset, limit uint) ([]Game, error) {
@@ -107,6 +116,11 @@ func (s *Service) Add(ctx context.Context, game *Game) error {
 	if err != nil {
 		game.SetErr(err)
 		return s.store.UpdateDownloadProgress(ctx, game.ID, game.Download)
+	}
+
+	err = s.downloadAssets(ctx, game.ID)
+	if err != nil {
+		return err
 	}
 
 	return nil

@@ -4,18 +4,21 @@ import (
 	"time"
 
 	v1 "github.com/ra341/glacier/generated/search/v1"
+	"github.com/ra341/glacier/internal/metadata/assets"
+	"github.com/ra341/glacier/pkg/listutils"
 )
 
 func (m *Meta) ToProto() *v1.GameMetadata {
 	return &v1.GameMetadata{
-		ProviderType:  m.ProviderType.String(),
-		ID:            m.GameDBID,
-		Name:          m.Name,
-		Summary:       m.ShortDesc,
-		Description:   m.FullDesc,
-		URL:           m.URL,
-		ThumbnailURL:  m.ThumbnailURL,
-		Videos:        m.Videos,
+		ProviderType: m.ProviderType.String(),
+		ID:           m.GameDBID,
+		Name:         m.Name,
+		Summary:      m.ShortDesc,
+		Description:  m.FullDesc,
+		URL:          m.URL,
+		Assets: listutils.ToMap(m.Assets, func(t assets.Asset) *v1.Asset {
+			return t.ToProto()
+		}),
 		Platforms:     m.Platforms,
 		Genres:        m.Genres,
 		Rating:        m.Rating,
@@ -45,8 +48,13 @@ func (m *Meta) FromProto(rpcMeta *v1.GameMetadata) {
 	m.ShortDesc = rpcMeta.Summary
 	m.FullDesc = rpcMeta.Description
 	m.URL = rpcMeta.URL
-	m.ThumbnailURL = rpcMeta.ThumbnailURL
-	m.Videos = rpcMeta.Videos
+
+	m.Assets = listutils.ToMap(rpcMeta.Assets, func(t *v1.Asset) assets.Asset {
+		asset := assets.Asset{}
+		asset.FromProto(t)
+		return asset
+	})
+
 	m.Platforms = rpcMeta.Platforms
 	m.Genres = rpcMeta.Genres
 	m.Rating = rpcMeta.Rating

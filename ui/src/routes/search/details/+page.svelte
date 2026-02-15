@@ -70,7 +70,7 @@
         <!-- Metadata Content -->
         <div class="lg:col-span-3 bg-surface border border-border rounded-3xl p-8 flex gap-8">
             <div class="flex-1 space-y-4">
-                <img src={game?.ThumbnailURL} alt="game thumbnail"/>
+                <img src={game?.assets.at(0)?.RemoteUrl ?? ""} alt="game thumbnail"/>
             </div>
             <!-- Left: Title & Desc -->
             <div class="flex-1 space-y-4">

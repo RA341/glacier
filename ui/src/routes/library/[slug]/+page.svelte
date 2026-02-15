@@ -1,17 +1,15 @@
 <script lang="ts">
     import GameHero from "./GameHero.svelte";
-    import {AlertCircleIcon, LoaderIcon, Save, ServerIcon, Trash2} from '@lucide/svelte';
-    import {type Game, GameSchema, LibraryService} from "$lib/gen/library/v1/library_pb";
+    import {CircleAlert, LoaderIcon, Pen, ServerIcon, Trash2} from '@lucide/svelte';
+    import {LibraryService} from "$lib/gen/library/v1/library_pb";
     import {callRPC, glacierCli, isFrost} from "$lib/api/api";
     import {createRPCRunner} from "$lib/api/rpc.svelte.js";
     import {onMount} from "svelte";
     import {page} from "$app/state";
-    import {toJson} from "@bufbuild/protobuf";
     import {goto} from "$app/navigation";
     import TabFrost from "./TabFrost.svelte";
     import GameDownloadButton from "./ButtonDownload.svelte";
     import TabFrontPage from "./TabFrontPage.svelte";
-    import TabGlacier from "./TabGlacier.svelte";
     import {getSnackbarCtx} from "$lib/components/snackbar/snackbar-provider.svelte";
     import {getUserCtx} from "$lib/components/user/provider.svelte";
 
@@ -36,18 +34,6 @@
     }
 
     let originalGame = $derived(gameRpc.value?.game)
-    let editGame = $state<Game | null>(null)
-
-    $effect(() => {
-        if (originalGame) {
-            editGame = originalGame
-        }
-    })
-
-    let isModified = $derived(
-        editGame && originalGame &&
-        toJson(GameSchema, editGame) !== toJson(GameSchema, originalGame)
-    )
 
     onMount(() => {
         getGame()
@@ -65,6 +51,10 @@
     }
 
     const user = getUserCtx()
+
+    async function goToEdit() {
+        await goto("manage")
+    }
 </script>
 
 {#if !gameIdStr}
@@ -74,7 +64,7 @@
     </div>
 {:else if gameRpc.error}
     <div class="flex flex-col items-center justify-center h-96 text-red-400 gap-3">
-        <AlertCircleIcon size={48} strokeWidth={1}/>
+        <CircleAlert size={48} strokeWidth={1}/>
         <h3 class="font-bold">The game you are looking for does not exist</h3>
         <p class="text-xs opacity-80">{gameRpc.error}</p>
     </div>
@@ -85,7 +75,9 @@
     </div>
 {:else}
     <div class="max-w-7xl mx-auto p-6 space-y-8 bg-background text-foreground">
-        <GameHero bind:game={editGame}/>
+        {#if originalGame}
+            <GameHero bind:game={originalGame}/>
+        {/if}
 
         <div class="flex items-center justify-between border-y border-border py-4 px-2">
             <div class="flex gap-4">
@@ -105,49 +97,40 @@
                             Local
                         </button>
                     {/if}
-                    {#if user.isOmni}
-                        <button
-                                onclick={() => setTab('manage')}
-                                class="px-6 py-1.5 rounded-lg text-sm font-bold transition-all {activeTab === 'manage' ? 'bg-surface shadow-sm text-frost-400' : 'text-muted hover:text-foreground'}"
-                        >
-                            Manage
-                        </button>
-                    {/if}
                 </div>
             </div>
 
-            <div class="flex gap-3">
-                {#if user.isOmni}
+            {#if user.isOmni}
+                <div class="flex gap-3">
+                    <button
+                            onclick={goToEdit}
+                            class="px-6 py-2 bg-panel border border-border rounded-xl text-sm font-bold hover:border-frost-500 transition-all flex items-center gap-2">
+                        <Pen size={16}/>
+                        Manage
+                    </button>
+
+
                     <button onclick={() => deleteGame()}
                             class="px-6 py-2 bg-panel border border-border rounded-xl text-sm font-bold hover:border-frost-500 transition-all flex items-center gap-2">
                         <Trash2 size={16}/>
                         Delete
                     </button>
-                {/if}
+                </div>
+            {/if}
 
-                {#if user.isOmni}
-                    <button
-                            disabled={!isModified}
-                            onclick={() => {/* logic to save */}}
-                            class="px-6 py-2 bg-panel border border-border rounded-xl text-sm font-bold hover:border-frost-500 transition-all flex items-center gap-2">
-                        <Save size={16}/>
-                        Save
-                    </button>
-                {/if}
-
-                {#if isFrost}
+            {#if isFrost}
+                <div class="flex gap-3">
                     <GameDownloadButton gameId={gameId}/>
-                {/if}
-            </div>
+                </div>
+            {/if}
+
         </div>
 
         <main>
-            {#if activeTab === 'details'}
-                <TabFrontPage bind:game={editGame}/>
+            {#if activeTab === 'details' && originalGame}
+                <TabFrontPage bind:game={originalGame}/>
             {:else if activeTab === 'local'}
-                <TabFrost game={editGame}/>
-            {:else if activeTab === 'manage'}
-                <TabGlacier refresh={gameRpc.runner} bind:game={editGame}/>
+                <TabFrost game={originalGame}/>
             {/if}
         </main>
     </div>

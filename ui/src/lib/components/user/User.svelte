@@ -19,13 +19,6 @@
                 <p class="text-muted text-sm">Checking authentication...</p>
             </div>
         </div>
-    {:else if userCtx.error}
-        <div class="flex items-center justify-center w-full h-full">
-            <div class="flex flex-col items-center gap-4">
-                <p class="text-muted text-sm">Could not checked auth status, is the glacier running ?...</p>
-                <p class="text-muted text-sm">{userCtx.error}</p>
-            </div>
-        </div>
     {:else}
         {@render children()}
     {/if}
