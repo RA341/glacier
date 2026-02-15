@@ -21,6 +21,7 @@ const (
 	Downloading
 	Complete
 	Error
+	Manifest
 )
 
 // Download todo add download client type

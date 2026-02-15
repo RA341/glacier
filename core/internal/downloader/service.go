@@ -246,6 +246,9 @@ func (s *Service) completeGameDownload(game *library.Game) {
 	now := time.Now()
 	log.Info().Str("name", game.Meta.Name).Msg("generating manifest")
 
+	game.Download.State = types.Manifest
+	game.Download.Progress = "generating download manifest"
+
 	s.cmf(int(game.ID), game.Download.DownloadPath)
 
 	log.Debug().
