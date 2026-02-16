@@ -245,7 +245,6 @@
 <div class="relative inline-flex items-stretch gap-1">
     <!-- Main Action Button -->
     <div class="relative inline-flex items-stretch gap-1">
-        <!-- Main Action Button -->
         <button
                 onclick={handlePrimaryAction}
                 disabled={isSending || localGameRpc.loading}

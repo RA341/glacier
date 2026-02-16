@@ -25,6 +25,7 @@ func NewHandlerHttp(srv *Service) http.Handler {
 
 	mux := http.NewServeMux()
 
+	mux.HandleFunc("GET /{gameId}/t/{assetType}/", h.getAssetFromQuery)
 	mux.HandleFunc("GET /{gameId}/t/{assetType}", h.getAssetFromQuery)
 	mux.HandleFunc("GET /{gameId}/{assetPath}", h.getAsset)
 

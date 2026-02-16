@@ -10,7 +10,81 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file config/v1/config.proto.
  */
 export const file_config_v1_config: GenFile = /*@__PURE__*/
-  fileDesc("ChZjb25maWcvdjEvY29uZmlnLnByb3RvEgljb25maWcudjEiIAoQTGlzdEZpbGVzUmVxdWVzdBIMCgRiYXNlGAEgASgJIiIKEUxpc3RGaWxlc1Jlc3BvbnNlEg0KBWZpbGVzGAEgAygJIiIKClNldFJlcXVlc3QSFAoMY29uZmlnU2NoZW1hGAEgASgJIg0KC1NldFJlc3BvbnNlIgwKCkdldFJlcXVlc3QiIwoLR2V0UmVzcG9uc2USFAoMY29uZmlnU2NoZW1hGAEgASgJMskBCg1Db25maWdTZXJ2aWNlEjYKA0dldBIVLmNvbmZpZy52MS5HZXRSZXF1ZXN0GhYuY29uZmlnLnYxLkdldFJlc3BvbnNlIgASNgoDU2V0EhUuY29uZmlnLnYxLlNldFJlcXVlc3QaFi5jb25maWcudjEuU2V0UmVzcG9uc2UiABJICglMaXN0RmlsZXMSGy5jb25maWcudjEuTGlzdEZpbGVzUmVxdWVzdBocLmNvbmZpZy52MS5MaXN0RmlsZXNSZXNwb25zZSIAQo8BCg1jb20uY29uZmlnLnYxQgtDb25maWdQcm90b1ABWixnaXRodWIuY29tL3JhMzQxL2dsYWNpZXIvZ2VuZXJhdGVkL2NvbmZpZy92MaICA0NYWKoCCUNvbmZpZy5WMcoCCUNvbmZpZ1xWMeICFUNvbmZpZ1xWMVxHUEJNZXRhZGF0YeoCCkNvbmZpZzo6VjFiBnByb3RvMw");
+  fileDesc("ChZjb25maWcvdjEvY29uZmlnLnByb3RvEgljb25maWcudjEiLwoPU2V0RmllbGRSZXF1ZXN0Eg0KBUZpZWxkGAEgASgJEg0KBVZhbHVlGAIgASgJIhIKEFNldEZpZWxkUmVzcG9uc2UiIAoPR2V0RmllbGRSZXF1ZXN0Eg0KBUZpZWxkGAEgASgJIjAKEEdldEZpZWxkUmVzcG9uc2USDQoFVmFsdWUYASABKAkSDQoFRXJyb3IYAiABKAkiIAoQTGlzdEZpbGVzUmVxdWVzdBIMCgRiYXNlGAEgASgJIiIKEUxpc3RGaWxlc1Jlc3BvbnNlEg0KBWZpbGVzGAEgAygJIiIKClNldFJlcXVlc3QSFAoMY29uZmlnU2NoZW1hGAEgASgJIg0KC1NldFJlc3BvbnNlIgwKCkdldFJlcXVlc3QiIwoLR2V0UmVzcG9uc2USFAoMY29uZmlnU2NoZW1hGAEgASgJMtcCCg1Db25maWdTZXJ2aWNlEjYKA0dldBIVLmNvbmZpZy52MS5HZXRSZXF1ZXN0GhYuY29uZmlnLnYxLkdldFJlc3BvbnNlIgASNgoDU2V0EhUuY29uZmlnLnYxLlNldFJlcXVlc3QaFi5jb25maWcudjEuU2V0UmVzcG9uc2UiABJICglMaXN0RmlsZXMSGy5jb25maWcudjEuTGlzdEZpbGVzUmVxdWVzdBocLmNvbmZpZy52MS5MaXN0RmlsZXNSZXNwb25zZSIAEkUKCEdldEZpZWxkEhouY29uZmlnLnYxLkdldEZpZWxkUmVxdWVzdBobLmNvbmZpZy52MS5HZXRGaWVsZFJlc3BvbnNlIgASRQoIU2V0RmllbGQSGi5jb25maWcudjEuU2V0RmllbGRSZXF1ZXN0GhsuY29uZmlnLnYxLlNldEZpZWxkUmVzcG9uc2UiAEKPAQoNY29tLmNvbmZpZy52MUILQ29uZmlnUHJvdG9QAVosZ2l0aHViLmNvbS9yYTM0MS9nbGFjaWVyL2dlbmVyYXRlZC9jb25maWcvdjGiAgNDWFiqAglDb25maWcuVjHKAglDb25maWdcVjHiAhVDb25maWdcVjFcR1BCTWV0YWRhdGHqAgpDb25maWc6OlYxYgZwcm90bzM");
+
+/**
+ * @generated from message config.v1.SetFieldRequest
+ */
+export type SetFieldRequest = Message<"config.v1.SetFieldRequest"> & {
+  /**
+   * @generated from field: string Field = 1;
+   */
+  Field: string;
+
+  /**
+   * @generated from field: string Value = 2;
+   */
+  Value: string;
+};
+
+/**
+ * Describes the message config.v1.SetFieldRequest.
+ * Use `create(SetFieldRequestSchema)` to create a new message.
+ */
+export const SetFieldRequestSchema: GenMessage<SetFieldRequest> = /*@__PURE__*/
+  messageDesc(file_config_v1_config, 0);
+
+/**
+ * @generated from message config.v1.SetFieldResponse
+ */
+export type SetFieldResponse = Message<"config.v1.SetFieldResponse"> & {
+};
+
+/**
+ * Describes the message config.v1.SetFieldResponse.
+ * Use `create(SetFieldResponseSchema)` to create a new message.
+ */
+export const SetFieldResponseSchema: GenMessage<SetFieldResponse> = /*@__PURE__*/
+  messageDesc(file_config_v1_config, 1);
+
+/**
+ * @generated from message config.v1.GetFieldRequest
+ */
+export type GetFieldRequest = Message<"config.v1.GetFieldRequest"> & {
+  /**
+   * @generated from field: string Field = 1;
+   */
+  Field: string;
+};
+
+/**
+ * Describes the message config.v1.GetFieldRequest.
+ * Use `create(GetFieldRequestSchema)` to create a new message.
+ */
+export const GetFieldRequestSchema: GenMessage<GetFieldRequest> = /*@__PURE__*/
+  messageDesc(file_config_v1_config, 2);
+
+/**
+ * @generated from message config.v1.GetFieldResponse
+ */
+export type GetFieldResponse = Message<"config.v1.GetFieldResponse"> & {
+  /**
+   * @generated from field: string Value = 1;
+   */
+  Value: string;
+
+  /**
+   * @generated from field: string Error = 2;
+   */
+  Error: string;
+};
+
+/**
+ * Describes the message config.v1.GetFieldResponse.
+ * Use `create(GetFieldResponseSchema)` to create a new message.
+ */
+export const GetFieldResponseSchema: GenMessage<GetFieldResponse> = /*@__PURE__*/
+  messageDesc(file_config_v1_config, 3);
 
 /**
  * @generated from message config.v1.ListFilesRequest
@@ -27,7 +101,7 @@ export type ListFilesRequest = Message<"config.v1.ListFilesRequest"> & {
  * Use `create(ListFilesRequestSchema)` to create a new message.
  */
 export const ListFilesRequestSchema: GenMessage<ListFilesRequest> = /*@__PURE__*/
-  messageDesc(file_config_v1_config, 0);
+  messageDesc(file_config_v1_config, 4);
 
 /**
  * @generated from message config.v1.ListFilesResponse
@@ -44,7 +118,7 @@ export type ListFilesResponse = Message<"config.v1.ListFilesResponse"> & {
  * Use `create(ListFilesResponseSchema)` to create a new message.
  */
 export const ListFilesResponseSchema: GenMessage<ListFilesResponse> = /*@__PURE__*/
-  messageDesc(file_config_v1_config, 1);
+  messageDesc(file_config_v1_config, 5);
 
 /**
  * @generated from message config.v1.SetRequest
@@ -61,7 +135,7 @@ export type SetRequest = Message<"config.v1.SetRequest"> & {
  * Use `create(SetRequestSchema)` to create a new message.
  */
 export const SetRequestSchema: GenMessage<SetRequest> = /*@__PURE__*/
-  messageDesc(file_config_v1_config, 2);
+  messageDesc(file_config_v1_config, 6);
 
 /**
  * @generated from message config.v1.SetResponse
@@ -74,7 +148,7 @@ export type SetResponse = Message<"config.v1.SetResponse"> & {
  * Use `create(SetResponseSchema)` to create a new message.
  */
 export const SetResponseSchema: GenMessage<SetResponse> = /*@__PURE__*/
-  messageDesc(file_config_v1_config, 3);
+  messageDesc(file_config_v1_config, 7);
 
 /**
  * @generated from message config.v1.GetRequest
@@ -87,7 +161,7 @@ export type GetRequest = Message<"config.v1.GetRequest"> & {
  * Use `create(GetRequestSchema)` to create a new message.
  */
 export const GetRequestSchema: GenMessage<GetRequest> = /*@__PURE__*/
-  messageDesc(file_config_v1_config, 4);
+  messageDesc(file_config_v1_config, 8);
 
 /**
  * @generated from message config.v1.GetResponse
@@ -104,7 +178,7 @@ export type GetResponse = Message<"config.v1.GetResponse"> & {
  * Use `create(GetResponseSchema)` to create a new message.
  */
 export const GetResponseSchema: GenMessage<GetResponse> = /*@__PURE__*/
-  messageDesc(file_config_v1_config, 5);
+  messageDesc(file_config_v1_config, 9);
 
 /**
  * @generated from service config.v1.ConfigService
@@ -133,6 +207,22 @@ export const ConfigService: GenService<{
     methodKind: "unary";
     input: typeof ListFilesRequestSchema;
     output: typeof ListFilesResponseSchema;
+  },
+  /**
+   * @generated from rpc config.v1.ConfigService.GetField
+   */
+  getField: {
+    methodKind: "unary";
+    input: typeof GetFieldRequestSchema;
+    output: typeof GetFieldResponseSchema;
+  },
+  /**
+   * @generated from rpc config.v1.ConfigService.SetField
+   */
+  setField: {
+    methodKind: "unary";
+    input: typeof SetFieldRequestSchema;
+    output: typeof SetFieldResponseSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_config_v1_config, 0);

@@ -39,6 +39,10 @@ const (
 	ConfigServiceSetProcedure = "/config.v1.ConfigService/Set"
 	// ConfigServiceListFilesProcedure is the fully-qualified name of the ConfigService's ListFiles RPC.
 	ConfigServiceListFilesProcedure = "/config.v1.ConfigService/ListFiles"
+	// ConfigServiceGetFieldProcedure is the fully-qualified name of the ConfigService's GetField RPC.
+	ConfigServiceGetFieldProcedure = "/config.v1.ConfigService/GetField"
+	// ConfigServiceSetFieldProcedure is the fully-qualified name of the ConfigService's SetField RPC.
+	ConfigServiceSetFieldProcedure = "/config.v1.ConfigService/SetField"
 )
 
 // ConfigServiceClient is a client for the config.v1.ConfigService service.
@@ -46,6 +50,8 @@ type ConfigServiceClient interface {
 	Get(context.Context, *connect.Request[v1.GetRequest]) (*connect.Response[v1.GetResponse], error)
 	Set(context.Context, *connect.Request[v1.SetRequest]) (*connect.Response[v1.SetResponse], error)
 	ListFiles(context.Context, *connect.Request[v1.ListFilesRequest]) (*connect.Response[v1.ListFilesResponse], error)
+	GetField(context.Context, *connect.Request[v1.GetFieldRequest]) (*connect.Response[v1.GetFieldResponse], error)
+	SetField(context.Context, *connect.Request[v1.SetFieldRequest]) (*connect.Response[v1.SetFieldResponse], error)
 }
 
 // NewConfigServiceClient constructs a client for the config.v1.ConfigService service. By default,
@@ -77,6 +83,18 @@ func NewConfigServiceClient(httpClient connect.HTTPClient, baseURL string, opts 
 			connect.WithSchema(configServiceMethods.ByName("ListFiles")),
 			connect.WithClientOptions(opts...),
 		),
+		getField: connect.NewClient[v1.GetFieldRequest, v1.GetFieldResponse](
+			httpClient,
+			baseURL+ConfigServiceGetFieldProcedure,
+			connect.WithSchema(configServiceMethods.ByName("GetField")),
+			connect.WithClientOptions(opts...),
+		),
+		setField: connect.NewClient[v1.SetFieldRequest, v1.SetFieldResponse](
+			httpClient,
+			baseURL+ConfigServiceSetFieldProcedure,
+			connect.WithSchema(configServiceMethods.ByName("SetField")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -85,6 +103,8 @@ type configServiceClient struct {
 	get       *connect.Client[v1.GetRequest, v1.GetResponse]
 	set       *connect.Client[v1.SetRequest, v1.SetResponse]
 	listFiles *connect.Client[v1.ListFilesRequest, v1.ListFilesResponse]
+	getField  *connect.Client[v1.GetFieldRequest, v1.GetFieldResponse]
+	setField  *connect.Client[v1.SetFieldRequest, v1.SetFieldResponse]
 }
 
 // Get calls config.v1.ConfigService.Get.
@@ -102,11 +122,23 @@ func (c *configServiceClient) ListFiles(ctx context.Context, req *connect.Reques
 	return c.listFiles.CallUnary(ctx, req)
 }
 
+// GetField calls config.v1.ConfigService.GetField.
+func (c *configServiceClient) GetField(ctx context.Context, req *connect.Request[v1.GetFieldRequest]) (*connect.Response[v1.GetFieldResponse], error) {
+	return c.getField.CallUnary(ctx, req)
+}
+
+// SetField calls config.v1.ConfigService.SetField.
+func (c *configServiceClient) SetField(ctx context.Context, req *connect.Request[v1.SetFieldRequest]) (*connect.Response[v1.SetFieldResponse], error) {
+	return c.setField.CallUnary(ctx, req)
+}
+
 // ConfigServiceHandler is an implementation of the config.v1.ConfigService service.
 type ConfigServiceHandler interface {
 	Get(context.Context, *connect.Request[v1.GetRequest]) (*connect.Response[v1.GetResponse], error)
 	Set(context.Context, *connect.Request[v1.SetRequest]) (*connect.Response[v1.SetResponse], error)
 	ListFiles(context.Context, *connect.Request[v1.ListFilesRequest]) (*connect.Response[v1.ListFilesResponse], error)
+	GetField(context.Context, *connect.Request[v1.GetFieldRequest]) (*connect.Response[v1.GetFieldResponse], error)
+	SetField(context.Context, *connect.Request[v1.SetFieldRequest]) (*connect.Response[v1.SetFieldResponse], error)
 }
 
 // NewConfigServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -134,6 +166,18 @@ func NewConfigServiceHandler(svc ConfigServiceHandler, opts ...connect.HandlerOp
 		connect.WithSchema(configServiceMethods.ByName("ListFiles")),
 		connect.WithHandlerOptions(opts...),
 	)
+	configServiceGetFieldHandler := connect.NewUnaryHandler(
+		ConfigServiceGetFieldProcedure,
+		svc.GetField,
+		connect.WithSchema(configServiceMethods.ByName("GetField")),
+		connect.WithHandlerOptions(opts...),
+	)
+	configServiceSetFieldHandler := connect.NewUnaryHandler(
+		ConfigServiceSetFieldProcedure,
+		svc.SetField,
+		connect.WithSchema(configServiceMethods.ByName("SetField")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/config.v1.ConfigService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case ConfigServiceGetProcedure:
@@ -142,6 +186,10 @@ func NewConfigServiceHandler(svc ConfigServiceHandler, opts ...connect.HandlerOp
 			configServiceSetHandler.ServeHTTP(w, r)
 		case ConfigServiceListFilesProcedure:
 			configServiceListFilesHandler.ServeHTTP(w, r)
+		case ConfigServiceGetFieldProcedure:
+			configServiceGetFieldHandler.ServeHTTP(w, r)
+		case ConfigServiceSetFieldProcedure:
+			configServiceSetFieldHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -161,4 +209,12 @@ func (UnimplementedConfigServiceHandler) Set(context.Context, *connect.Request[v
 
 func (UnimplementedConfigServiceHandler) ListFiles(context.Context, *connect.Request[v1.ListFilesRequest]) (*connect.Response[v1.ListFilesResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("config.v1.ConfigService.ListFiles is not implemented"))
+}
+
+func (UnimplementedConfigServiceHandler) GetField(context.Context, *connect.Request[v1.GetFieldRequest]) (*connect.Response[v1.GetFieldResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("config.v1.ConfigService.GetField is not implemented"))
+}
+
+func (UnimplementedConfigServiceHandler) SetField(context.Context, *connect.Request[v1.SetFieldRequest]) (*connect.Response[v1.SetFieldResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("config.v1.ConfigService.SetField is not implemented"))
 }

@@ -13,8 +13,6 @@
     const thumb = getAssetPath({gameId: game?.ID, assetType: "AssetThumbnail"})
 
     const trailer = getAssetPath({gameId: game?.ID, assetType: "AssetTrailer"})
-    let videoError = $state(false);
-
 </script>
 
 <div class="space-y-6">

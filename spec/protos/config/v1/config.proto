@@ -8,9 +8,25 @@ service ConfigService {
   rpc Get(GetRequest) returns (GetResponse) {}
   rpc Set(SetRequest) returns (SetResponse) {}
   rpc ListFiles(ListFilesRequest) returns (ListFilesResponse) {}
-
+  rpc GetField(GetFieldRequest) returns (GetFieldResponse) {}
+  rpc SetField(SetFieldRequest) returns (SetFieldResponse) {}
 }
 
+message SetFieldRequest {
+  string Field = 1;
+  string Value = 2;
+}
+
+message SetFieldResponse {}
+
+message GetFieldRequest {
+  string Field = 1;
+}
+
+message GetFieldResponse {
+  string Value = 1;
+  string Error = 2;
+}
 
 message ListFilesRequest {
   string base = 1;
@@ -20,15 +36,11 @@ message ListFilesResponse {
   repeated string files = 1;
 }
 
-
 message SetRequest {
   string configSchema = 1;
 }
 
-message SetResponse {
-
-}
-
+message SetResponse {}
 
 message GetRequest {}
 

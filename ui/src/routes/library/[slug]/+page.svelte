@@ -12,6 +12,7 @@
     import TabFrontPage from "./TabFrontPage.svelte";
     import {getSnackbarCtx} from "$lib/components/snackbar/snackbar-provider.svelte";
     import {getUserCtx} from "$lib/components/user/provider.svelte";
+    import {getDialogCtx} from "$lib/components/dialog/dialog.svelte";
 
     let activeTab = $derived(page.url.searchParams.get('tab') || 'details');
 
@@ -41,7 +42,18 @@
 
     const sm = getSnackbarCtx()
 
+    const dm = getDialogCtx()
+
     async function deleteGame() {
+        const ok = await dm.confirm(
+            "Delete game",
+            "This will permanently delete the game files and metadata from Glacier.",
+            'error'
+        )
+        if (!ok) {
+            return
+        }
+
         const {err} = await callRPC(() => libSrv.delete({gameId: BigInt(gameIdStr!)}))
         if (err) {
             sm.push(`Error deleting: ${err}`, 'error')
@@ -100,30 +112,27 @@
                 </div>
             </div>
 
-            {#if user.isOmni}
-                <div class="flex gap-3">
-                    <button
-                            onclick={goToEdit}
-                            class="px-6 py-2 bg-panel border border-border rounded-xl text-sm font-bold hover:border-frost-500 transition-all flex items-center gap-2">
-                        <Pen size={16}/>
-                        Manage
-                    </button>
+            <div class="flex gap-3">
+                {#if user.isOmni}
+                    <div class="flex gap-3">
+                        <button
+                                onclick={goToEdit}
+                                class="px-6 py-2 bg-panel border border-border rounded-xl text-sm font-bold hover:border-frost-500 transition-all flex items-center gap-2">
+                            <Pen size={16}/>
+                            Manage
+                        </button>
 
-
-                    <button onclick={() => deleteGame()}
-                            class="px-6 py-2 bg-panel border border-border rounded-xl text-sm font-bold hover:border-frost-500 transition-all flex items-center gap-2">
-                        <Trash2 size={16}/>
-                        Delete
-                    </button>
-                </div>
-            {/if}
-
-            {#if isFrost}
-                <div class="flex gap-3">
+                        <button onclick={() => deleteGame()}
+                                class="px-6 py-2 bg-panel border border-border rounded-xl text-sm font-bold hover:border-frost-500 transition-all flex items-center gap-2">
+                            <Trash2 size={16}/>
+                            Delete
+                        </button>
+                    </div>
+                {/if}
+                {#if isFrost && originalGame?.DownloadState?.State === "Complete"}
                     <GameDownloadButton gameId={gameId}/>
-                </div>
-            {/if}
-
+                {/if}
+            </div>
         </div>
 
         <main>

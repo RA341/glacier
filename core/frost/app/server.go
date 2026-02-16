@@ -129,14 +129,16 @@ func (s *Server) RegisterFrostRoutes(mux *http.ServeMux) {
 }
 
 func (s *Server) registerGlacierProxy(mux *http.ServeMux) {
-	conf := s.App.Conf.Get()
-	target, err := url.Parse(conf.Server.GlacierUrl)
-	if err != nil {
-		log.Fatal().Err(err).Msg("Error parsing url")
-	}
-
 	proxy := &httputil.ReverseProxy{
 		Rewrite: func(pr *httputil.ProxyRequest) {
+			conf := s.App.Conf.Get()
+			target, err := url.Parse(conf.Server.GlacierUrl)
+			if err != nil {
+				log.Error().Err(err).Msg("Error parsing glacier URL")
+				pr.Out.Host = "invalid"
+				return
+			}
+
 			pr.SetURL(target)
 			pr.Out.Header.Set(auth.FrostHeader, "true")
 			pr.SetXForwarded()

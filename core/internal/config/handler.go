@@ -3,6 +3,7 @@ package config
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"connectrpc.com/connect"
@@ -24,6 +25,14 @@ func NewHandler(srv *config.Service[Config]) (string, http.Handler) {
 	path, handler := v1connect.NewConfigServiceHandler(h)
 	omniMiddleware := user.RequireRole(user.Omnissiah)
 	return path, omniMiddleware(handler)
+}
+
+func (h *Handler) GetField(ctx context.Context, c *connect.Request[v1.GetFieldRequest]) (*connect.Response[v1.GetFieldResponse], error) {
+	return nil, fmt.Errorf("implement me you buffoon")
+}
+
+func (h *Handler) SetField(ctx context.Context, c *connect.Request[v1.SetFieldRequest]) (*connect.Response[v1.SetFieldResponse], error) {
+	return nil, fmt.Errorf("implement me you buffoon")
 }
 
 func (h *Handler) Get(ctx context.Context, req *connect.Request[v1.GetRequest]) (*connect.Response[v1.GetResponse], error) {

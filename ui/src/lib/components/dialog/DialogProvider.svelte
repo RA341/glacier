@@ -1,7 +1,6 @@
 <script lang="ts">
-    import {setContext} from 'svelte';
     import {fade, fly} from 'svelte/transition';
-    import {dialogManager, dialogIcons, type DialogType, setDialogCtx} from './dialog.svelte';
+    import {dialogIcons, dialogManager, type DialogType, setDialogCtx} from './dialog.svelte';
 
     let {children} = $props();
 
@@ -43,7 +42,7 @@
                         <h2 class="text-xl font-black uppercase tracking-tight text-foreground">
                             {dialogManager.active.title}
                         </h2>
-                        <p class="text-sm text-muted leading-relaxed">
+                        <p class="text-sm text-muted leading-relaxed whitespace-pre-wrap">
                             {dialogManager.active.body}
                         </p>
                     </div>

@@ -21,6 +21,190 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type SetFieldRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Field         string                 `protobuf:"bytes,1,opt,name=Field,proto3" json:"Field,omitempty"`
+	Value         string                 `protobuf:"bytes,2,opt,name=Value,proto3" json:"Value,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SetFieldRequest) Reset() {
+	*x = SetFieldRequest{}
+	mi := &file_config_v1_config_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SetFieldRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SetFieldRequest) ProtoMessage() {}
+
+func (x *SetFieldRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_config_v1_config_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SetFieldRequest.ProtoReflect.Descriptor instead.
+func (*SetFieldRequest) Descriptor() ([]byte, []int) {
+	return file_config_v1_config_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *SetFieldRequest) GetField() string {
+	if x != nil {
+		return x.Field
+	}
+	return ""
+}
+
+func (x *SetFieldRequest) GetValue() string {
+	if x != nil {
+		return x.Value
+	}
+	return ""
+}
+
+type SetFieldResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SetFieldResponse) Reset() {
+	*x = SetFieldResponse{}
+	mi := &file_config_v1_config_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SetFieldResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SetFieldResponse) ProtoMessage() {}
+
+func (x *SetFieldResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_config_v1_config_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SetFieldResponse.ProtoReflect.Descriptor instead.
+func (*SetFieldResponse) Descriptor() ([]byte, []int) {
+	return file_config_v1_config_proto_rawDescGZIP(), []int{1}
+}
+
+type GetFieldRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Field         string                 `protobuf:"bytes,1,opt,name=Field,proto3" json:"Field,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetFieldRequest) Reset() {
+	*x = GetFieldRequest{}
+	mi := &file_config_v1_config_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetFieldRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetFieldRequest) ProtoMessage() {}
+
+func (x *GetFieldRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_config_v1_config_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetFieldRequest.ProtoReflect.Descriptor instead.
+func (*GetFieldRequest) Descriptor() ([]byte, []int) {
+	return file_config_v1_config_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *GetFieldRequest) GetField() string {
+	if x != nil {
+		return x.Field
+	}
+	return ""
+}
+
+type GetFieldResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Value         string                 `protobuf:"bytes,1,opt,name=Value,proto3" json:"Value,omitempty"`
+	Error         string                 `protobuf:"bytes,2,opt,name=Error,proto3" json:"Error,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetFieldResponse) Reset() {
+	*x = GetFieldResponse{}
+	mi := &file_config_v1_config_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetFieldResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetFieldResponse) ProtoMessage() {}
+
+func (x *GetFieldResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_config_v1_config_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetFieldResponse.ProtoReflect.Descriptor instead.
+func (*GetFieldResponse) Descriptor() ([]byte, []int) {
+	return file_config_v1_config_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *GetFieldResponse) GetValue() string {
+	if x != nil {
+		return x.Value
+	}
+	return ""
+}
+
+func (x *GetFieldResponse) GetError() string {
+	if x != nil {
+		return x.Error
+	}
+	return ""
+}
+
 type ListFilesRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Base          string                 `protobuf:"bytes,1,opt,name=base,proto3" json:"base,omitempty"`
@@ -30,7 +214,7 @@ type ListFilesRequest struct {
 
 func (x *ListFilesRequest) Reset() {
 	*x = ListFilesRequest{}
-	mi := &file_config_v1_config_proto_msgTypes[0]
+	mi := &file_config_v1_config_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -42,7 +226,7 @@ func (x *ListFilesRequest) String() string {
 func (*ListFilesRequest) ProtoMessage() {}
 
 func (x *ListFilesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_config_v1_config_proto_msgTypes[0]
+	mi := &file_config_v1_config_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -55,7 +239,7 @@ func (x *ListFilesRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListFilesRequest.ProtoReflect.Descriptor instead.
 func (*ListFilesRequest) Descriptor() ([]byte, []int) {
-	return file_config_v1_config_proto_rawDescGZIP(), []int{0}
+	return file_config_v1_config_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *ListFilesRequest) GetBase() string {
@@ -74,7 +258,7 @@ type ListFilesResponse struct {
 
 func (x *ListFilesResponse) Reset() {
 	*x = ListFilesResponse{}
-	mi := &file_config_v1_config_proto_msgTypes[1]
+	mi := &file_config_v1_config_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -86,7 +270,7 @@ func (x *ListFilesResponse) String() string {
 func (*ListFilesResponse) ProtoMessage() {}
 
 func (x *ListFilesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_config_v1_config_proto_msgTypes[1]
+	mi := &file_config_v1_config_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -99,7 +283,7 @@ func (x *ListFilesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListFilesResponse.ProtoReflect.Descriptor instead.
 func (*ListFilesResponse) Descriptor() ([]byte, []int) {
-	return file_config_v1_config_proto_rawDescGZIP(), []int{1}
+	return file_config_v1_config_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *ListFilesResponse) GetFiles() []string {
@@ -118,7 +302,7 @@ type SetRequest struct {
 
 func (x *SetRequest) Reset() {
 	*x = SetRequest{}
-	mi := &file_config_v1_config_proto_msgTypes[2]
+	mi := &file_config_v1_config_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -130,7 +314,7 @@ func (x *SetRequest) String() string {
 func (*SetRequest) ProtoMessage() {}
 
 func (x *SetRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_config_v1_config_proto_msgTypes[2]
+	mi := &file_config_v1_config_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -143,7 +327,7 @@ func (x *SetRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SetRequest.ProtoReflect.Descriptor instead.
 func (*SetRequest) Descriptor() ([]byte, []int) {
-	return file_config_v1_config_proto_rawDescGZIP(), []int{2}
+	return file_config_v1_config_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *SetRequest) GetConfigSchema() string {
@@ -161,7 +345,7 @@ type SetResponse struct {
 
 func (x *SetResponse) Reset() {
 	*x = SetResponse{}
-	mi := &file_config_v1_config_proto_msgTypes[3]
+	mi := &file_config_v1_config_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -173,7 +357,7 @@ func (x *SetResponse) String() string {
 func (*SetResponse) ProtoMessage() {}
 
 func (x *SetResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_config_v1_config_proto_msgTypes[3]
+	mi := &file_config_v1_config_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -186,7 +370,7 @@ func (x *SetResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SetResponse.ProtoReflect.Descriptor instead.
 func (*SetResponse) Descriptor() ([]byte, []int) {
-	return file_config_v1_config_proto_rawDescGZIP(), []int{3}
+	return file_config_v1_config_proto_rawDescGZIP(), []int{7}
 }
 
 type GetRequest struct {
@@ -197,7 +381,7 @@ type GetRequest struct {
 
 func (x *GetRequest) Reset() {
 	*x = GetRequest{}
-	mi := &file_config_v1_config_proto_msgTypes[4]
+	mi := &file_config_v1_config_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -209,7 +393,7 @@ func (x *GetRequest) String() string {
 func (*GetRequest) ProtoMessage() {}
 
 func (x *GetRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_config_v1_config_proto_msgTypes[4]
+	mi := &file_config_v1_config_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -222,7 +406,7 @@ func (x *GetRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetRequest.ProtoReflect.Descriptor instead.
 func (*GetRequest) Descriptor() ([]byte, []int) {
-	return file_config_v1_config_proto_rawDescGZIP(), []int{4}
+	return file_config_v1_config_proto_rawDescGZIP(), []int{8}
 }
 
 type GetResponse struct {
@@ -234,7 +418,7 @@ type GetResponse struct {
 
 func (x *GetResponse) Reset() {
 	*x = GetResponse{}
-	mi := &file_config_v1_config_proto_msgTypes[5]
+	mi := &file_config_v1_config_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -246,7 +430,7 @@ func (x *GetResponse) String() string {
 func (*GetResponse) ProtoMessage() {}
 
 func (x *GetResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_config_v1_config_proto_msgTypes[5]
+	mi := &file_config_v1_config_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -259,7 +443,7 @@ func (x *GetResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetResponse.ProtoReflect.Descriptor instead.
 func (*GetResponse) Descriptor() ([]byte, []int) {
-	return file_config_v1_config_proto_rawDescGZIP(), []int{5}
+	return file_config_v1_config_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *GetResponse) GetConfigSchema() string {
@@ -273,7 +457,16 @@ var File_config_v1_config_proto protoreflect.FileDescriptor
 
 const file_config_v1_config_proto_rawDesc = "" +
 	"\n" +
-	"\x16config/v1/config.proto\x12\tconfig.v1\"&\n" +
+	"\x16config/v1/config.proto\x12\tconfig.v1\"=\n" +
+	"\x0fSetFieldRequest\x12\x14\n" +
+	"\x05Field\x18\x01 \x01(\tR\x05Field\x12\x14\n" +
+	"\x05Value\x18\x02 \x01(\tR\x05Value\"\x12\n" +
+	"\x10SetFieldResponse\"'\n" +
+	"\x0fGetFieldRequest\x12\x14\n" +
+	"\x05Field\x18\x01 \x01(\tR\x05Field\">\n" +
+	"\x10GetFieldResponse\x12\x14\n" +
+	"\x05Value\x18\x01 \x01(\tR\x05Value\x12\x14\n" +
+	"\x05Error\x18\x02 \x01(\tR\x05Error\"&\n" +
 	"\x10ListFilesRequest\x12\x12\n" +
 	"\x04base\x18\x01 \x01(\tR\x04base\")\n" +
 	"\x11ListFilesResponse\x12\x14\n" +
@@ -285,11 +478,13 @@ const file_config_v1_config_proto_rawDesc = "" +
 	"\n" +
 	"GetRequest\"1\n" +
 	"\vGetResponse\x12\"\n" +
-	"\fconfigSchema\x18\x01 \x01(\tR\fconfigSchema2\xc9\x01\n" +
+	"\fconfigSchema\x18\x01 \x01(\tR\fconfigSchema2\xd7\x02\n" +
 	"\rConfigService\x126\n" +
 	"\x03Get\x12\x15.config.v1.GetRequest\x1a\x16.config.v1.GetResponse\"\x00\x126\n" +
 	"\x03Set\x12\x15.config.v1.SetRequest\x1a\x16.config.v1.SetResponse\"\x00\x12H\n" +
-	"\tListFiles\x12\x1b.config.v1.ListFilesRequest\x1a\x1c.config.v1.ListFilesResponse\"\x00B\x8f\x01\n" +
+	"\tListFiles\x12\x1b.config.v1.ListFilesRequest\x1a\x1c.config.v1.ListFilesResponse\"\x00\x12E\n" +
+	"\bGetField\x12\x1a.config.v1.GetFieldRequest\x1a\x1b.config.v1.GetFieldResponse\"\x00\x12E\n" +
+	"\bSetField\x12\x1a.config.v1.SetFieldRequest\x1a\x1b.config.v1.SetFieldResponse\"\x00B\x8f\x01\n" +
 	"\rcom.config.v1B\vConfigProtoP\x01Z,github.com/ra341/glacier/generated/config/v1\xa2\x02\x03CXX\xaa\x02\tConfig.V1\xca\x02\tConfig\\V1\xe2\x02\x15Config\\V1\\GPBMetadata\xea\x02\n" +
 	"Config::V1b\x06proto3"
 
@@ -305,24 +500,32 @@ func file_config_v1_config_proto_rawDescGZIP() []byte {
 	return file_config_v1_config_proto_rawDescData
 }
 
-var file_config_v1_config_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_config_v1_config_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_config_v1_config_proto_goTypes = []any{
-	(*ListFilesRequest)(nil),  // 0: config.v1.ListFilesRequest
-	(*ListFilesResponse)(nil), // 1: config.v1.ListFilesResponse
-	(*SetRequest)(nil),        // 2: config.v1.SetRequest
-	(*SetResponse)(nil),       // 3: config.v1.SetResponse
-	(*GetRequest)(nil),        // 4: config.v1.GetRequest
-	(*GetResponse)(nil),       // 5: config.v1.GetResponse
+	(*SetFieldRequest)(nil),   // 0: config.v1.SetFieldRequest
+	(*SetFieldResponse)(nil),  // 1: config.v1.SetFieldResponse
+	(*GetFieldRequest)(nil),   // 2: config.v1.GetFieldRequest
+	(*GetFieldResponse)(nil),  // 3: config.v1.GetFieldResponse
+	(*ListFilesRequest)(nil),  // 4: config.v1.ListFilesRequest
+	(*ListFilesResponse)(nil), // 5: config.v1.ListFilesResponse
+	(*SetRequest)(nil),        // 6: config.v1.SetRequest
+	(*SetResponse)(nil),       // 7: config.v1.SetResponse
+	(*GetRequest)(nil),        // 8: config.v1.GetRequest
+	(*GetResponse)(nil),       // 9: config.v1.GetResponse
 }
 var file_config_v1_config_proto_depIdxs = []int32{
-	4, // 0: config.v1.ConfigService.Get:input_type -> config.v1.GetRequest
-	2, // 1: config.v1.ConfigService.Set:input_type -> config.v1.SetRequest
-	0, // 2: config.v1.ConfigService.ListFiles:input_type -> config.v1.ListFilesRequest
-	5, // 3: config.v1.ConfigService.Get:output_type -> config.v1.GetResponse
-	3, // 4: config.v1.ConfigService.Set:output_type -> config.v1.SetResponse
-	1, // 5: config.v1.ConfigService.ListFiles:output_type -> config.v1.ListFilesResponse
-	3, // [3:6] is the sub-list for method output_type
-	0, // [0:3] is the sub-list for method input_type
+	8, // 0: config.v1.ConfigService.Get:input_type -> config.v1.GetRequest
+	6, // 1: config.v1.ConfigService.Set:input_type -> config.v1.SetRequest
+	4, // 2: config.v1.ConfigService.ListFiles:input_type -> config.v1.ListFilesRequest
+	2, // 3: config.v1.ConfigService.GetField:input_type -> config.v1.GetFieldRequest
+	0, // 4: config.v1.ConfigService.SetField:input_type -> config.v1.SetFieldRequest
+	9, // 5: config.v1.ConfigService.Get:output_type -> config.v1.GetResponse
+	7, // 6: config.v1.ConfigService.Set:output_type -> config.v1.SetResponse
+	5, // 7: config.v1.ConfigService.ListFiles:output_type -> config.v1.ListFilesResponse
+	3, // 8: config.v1.ConfigService.GetField:output_type -> config.v1.GetFieldResponse
+	1, // 9: config.v1.ConfigService.SetField:output_type -> config.v1.SetFieldResponse
+	5, // [5:10] is the sub-list for method output_type
+	0, // [0:5] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -339,7 +542,7 @@ func file_config_v1_config_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_config_v1_config_proto_rawDesc), len(file_config_v1_config_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

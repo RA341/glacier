@@ -107,19 +107,31 @@
 
     const dm = getDialogCtx()
 
-    async function deleteAsset(assetId: bigint, index: number) {
+    async function deleteAsset() {
+        if (!currentAsset) {
+            return
+        }
+
         const ok = await dm.confirm("Are you sure you want to delete this asset ?", 'warning');
         if (!ok) {
             return
         }
 
-        await deleteAssetApi(assetId)
+        const {err} = await callRPC(() => assetSrv.delete({ID: currentAsset.ID}))
+        if (err) {
+            sm.push(`Could not update asset: ${err}`, 'error');
+        }
+
         await refresh()
     }
 
     const assetSrv = glacierCli(AssetService)
 
     async function editAsset() {
+        if (!currentAsset) {
+            return
+        }
+
         const {err} = await callRPC(() => assetSrv.edit({asset: currentAsset}))
         if (err) {
             sm.push(`Could not update asset: ${err}`, 'error');
