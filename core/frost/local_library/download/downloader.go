@@ -27,16 +27,16 @@ type Download struct {
 	onDone     OnDone
 	cacheStore CacheStore
 
-	ctx    context.Context
-	cancel context.CancelFunc
-	done   chan struct{}
+	ctx      context.Context
+	cancel   context.CancelFunc
+	done     chan struct{}
+	isPaused *atomic.Bool
 
 	gameId         int
 	downloadFolder string
 
 	metadataUrlBase string
 	downloadUrlBase string
-	paused          chan struct{}
 }
 
 const MetadataFolder = ".frost.cache"
@@ -81,10 +81,10 @@ func NewDownload(
 		editStatus: editStatus,
 		cacheStore: db,
 
-		ctx:    ctx,
-		cancel: cancel,
-		done:   make(chan struct{}),
-		paused: make(chan struct{}),
+		ctx:      ctx,
+		cancel:   cancel,
+		done:     make(chan struct{}),
+		isPaused: &a,
 
 		gameId:          gameId,
 		downloadFolder:  downloadFolder,
@@ -181,25 +181,21 @@ func (d *Download) Cancel() {
 	d.cancel()
 }
 
-// todo pause downloads
 //func (d *Download) Pause() {
 //	if d.isPaused.CompareAndSwap(false, true) {
-//		d.pauseMu.Lock()
-//		d.pauseCond = make(chan struct{}) // Open the gate (blocks)
-//		d.pauseMu.Unlock()
+//		d.cancel()
+//		<-d.done
 //		log.Info().Msg("Download paused")
 //	}
 //}
 //
 //func (d *Download) Resume() {
 //	if d.isPaused.CompareAndSwap(true, false) {
-//		d.pauseMu.Lock()
-//		close(d.pauseCond) // Close the gate (unblocks)
-//		d.pauseMu.Unlock()
+//
 //		log.Info().Msg("Download resumed")
 //	}
 //}
-//
+
 //// waitIfPaused blocks if the download is paused.
 //// It also returns an error if the context is cancelled while waiting.
 //func (d *Download) waitIfPaused() error {

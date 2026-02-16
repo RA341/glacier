@@ -78,10 +78,11 @@ func (s *Server) RegisterRoutes(mux *http.ServeMux) {
 }
 
 func (s *Server) registerUI(mux *http.ServeMux) {
-	s.RegisterUI(mux, func(w http.ResponseWriter, r *http.Request) {
+	fallback := func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte("No UI was set when building"))
-	})
+	}
+	s.RegisterUI(mux, fallback)
 }
 
 func (s *Server) registerApiRoutes(mux *http.ServeMux) {
@@ -103,6 +104,18 @@ func (s *Server) RegisterFrostRoutes(mux *http.ServeMux) {
 		writer.Header().Set("Content-Type", "text/plain")
 		writer.WriteHeader(http.StatusOK)
 		_, _ = writer.Write([]byte("A pleasant fuck off from frost"))
+	})
+
+	mux.HandleFunc("/check", func(w http.ResponseWriter, r *http.Request) {
+		glacierUrl := s.App.Conf.Get().Server.GlacierUrl
+		if glacierUrl == "" {
+			w.WriteHeader(http.StatusInternalServerError)
+			_, _ = w.Write([]byte("No glacier URL set"))
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(glacierUrl))
 	})
 
 	mux.Handle(ll.NewHandler(s.LocalLibrarySrv))

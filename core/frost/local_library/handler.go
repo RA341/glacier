@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"connectrpc.com/connect"
 	"github.com/ncruces/zenity"
@@ -150,7 +151,7 @@ func (h *Handler) ListDownloading(ctx context.Context, c *connect.Request[v1.Lis
 		var totalLeft int64 = 0
 		var totalComplete int64 = 0
 
-		toMap := listutils.ToMap(progress, func(t download.FileProgress) *v1.FileProgress {
+		fileProgresses := listutils.ToMap(progress, func(t download.FileProgress) *v1.FileProgress {
 			totalLeft += t.Left
 			totalComplete += t.Complete
 
@@ -159,6 +160,16 @@ func (h *Handler) ListDownloading(ctx context.Context, c *connect.Request[v1.Lis
 				Complete: uint64(t.Complete),
 				Left:     uint64(t.Left),
 			}
+		})
+
+		slices.SortFunc(fileProgresses, func(a, b *v1.FileProgress) int {
+			if a.Left > b.Left {
+				return -1 // a comes first
+			}
+			if a.Left < b.Left {
+				return 1 // b comes first
+			}
+			return 0
 		})
 
 		return &v1.DownloadProgress{
@@ -170,7 +181,7 @@ func (h *Handler) ListDownloading(ctx context.Context, c *connect.Request[v1.Lis
 			Progress: &v1.FolderProgress{
 				Complete: totalComplete,
 				Left:     totalLeft,
-				Files:    toMap,
+				Files:    fileProgresses,
 			},
 		}
 	})
