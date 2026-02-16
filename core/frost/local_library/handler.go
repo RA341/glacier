@@ -11,6 +11,7 @@ import (
 	"github.com/ra341/glacier/frost/local_library/download"
 	v1 "github.com/ra341/glacier/generated/frost_library/v1"
 	"github.com/ra341/glacier/generated/frost_library/v1/v1connect"
+	"github.com/ra341/glacier/internal/metadata/assets"
 	"github.com/ra341/glacier/pkg/listutils"
 	"github.com/rs/zerolog/log"
 	"golang.org/x/time/rate"
@@ -163,7 +164,7 @@ func (h *Handler) ListDownloading(ctx context.Context, c *connect.Request[v1.Lis
 		return &v1.DownloadProgress{
 			ID: uint64(t.ID),
 			// todo replace with asset message
-			Thumbnail: t.Game.Meta.Assets[0].RemoteURL,
+			Thumbnail: fmt.Sprintf("/api/server/protected/assets/%d/t/%s", t.GameId, assets.AssetThumbnail.String()),
 			Title:     t.Game.Meta.Name,
 			Download:  t.Download.ToProto(),
 			Progress: &v1.FolderProgress{

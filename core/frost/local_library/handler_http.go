@@ -102,20 +102,14 @@ func (h *HandlerHttp) HandlerProcessRunning(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	exe := r.URL.Query().Get("exe")
-	if exe == "" {
-		http.Error(w, "missing 'exe' parameter", http.StatusBadRequest)
-		return
-	}
-
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Warn().Err(err).Str("exe", exe).Msg("Failed to upgrade connection")
+		log.Warn().Err(err).Msg("Failed to upgrade connection")
 		return
 	}
 	defer fileutil.Close(conn)
 
-	err = h.srv.Running(r.Context(), gameId, exe)
+	err = h.srv.Running(r.Context(), gameId)
 	if err != nil {
 		ws.WErr(conn, fmt.Errorf("error when process exited"))
 		return

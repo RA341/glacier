@@ -8,11 +8,11 @@ import (
 	"strings"
 )
 
-const _DownloadStateName = "UnknownQueuedDownloadingCompleteError"
+const _DownloadStateName = "UnknownQueuedDownloadingCompleteErrorManifest"
 
-var _DownloadStateIndex = [...]uint8{0, 7, 13, 24, 32, 37}
+var _DownloadStateIndex = [...]uint8{0, 7, 13, 24, 32, 37, 45}
 
-const _DownloadStateLowerName = "unknownqueueddownloadingcompleteerror"
+const _DownloadStateLowerName = "unknownqueueddownloadingcompleteerrormanifest"
 
 func (i DownloadState) String() string {
 	if i < 0 || i >= DownloadState(len(_DownloadStateIndex)-1) {
@@ -30,9 +30,10 @@ func _DownloadStateNoOp() {
 	_ = x[Downloading-(2)]
 	_ = x[Complete-(3)]
 	_ = x[Error-(4)]
+	_ = x[Manifest-(5)]
 }
 
-var _DownloadStateValues = []DownloadState{Unknown, Queued, Downloading, Complete, Error}
+var _DownloadStateValues = []DownloadState{Unknown, Queued, Downloading, Complete, Error, Manifest}
 
 var _DownloadStateNameToValueMap = map[string]DownloadState{
 	_DownloadStateName[0:7]:        Unknown,
@@ -45,6 +46,8 @@ var _DownloadStateNameToValueMap = map[string]DownloadState{
 	_DownloadStateLowerName[24:32]: Complete,
 	_DownloadStateName[32:37]:      Error,
 	_DownloadStateLowerName[32:37]: Error,
+	_DownloadStateName[37:45]:      Manifest,
+	_DownloadStateLowerName[37:45]: Manifest,
 }
 
 var _DownloadStateNames = []string{
@@ -53,6 +56,7 @@ var _DownloadStateNames = []string{
 	_DownloadStateName[13:24],
 	_DownloadStateName[24:32],
 	_DownloadStateName[32:37],
+	_DownloadStateName[37:45],
 }
 
 // DownloadStateString retrieves an enum value from the enum constants string name.

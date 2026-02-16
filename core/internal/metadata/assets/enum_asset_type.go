@@ -7,11 +7,11 @@ import (
 	"strings"
 )
 
-const _AssetTypeName = "AssetUnknownAssetThumbnailAssetBannerAssetTrailerAssetGameplayImageAssetGameplayVideo"
+const _AssetTypeName = "AssetUnknownAssetThumbnailAssetBannerAssetTrailerAssetGameplayImageAssetGameplayVideoAssetArtwork"
 
-var _AssetTypeIndex = [...]uint8{0, 12, 26, 37, 49, 67, 85}
+var _AssetTypeIndex = [...]uint8{0, 12, 26, 37, 49, 67, 85, 97}
 
-const _AssetTypeLowerName = "assetunknownassetthumbnailassetbannerassettrailerassetgameplayimageassetgameplayvideo"
+const _AssetTypeLowerName = "assetunknownassetthumbnailassetbannerassettrailerassetgameplayimageassetgameplayvideoassetartwork"
 
 func (i AssetType) String() string {
 	if i < 0 || i >= AssetType(len(_AssetTypeIndex)-1) {
@@ -30,9 +30,10 @@ func _AssetTypeNoOp() {
 	_ = x[AssetTrailer-(3)]
 	_ = x[AssetGameplayImage-(4)]
 	_ = x[AssetGameplayVideo-(5)]
+	_ = x[AssetArtwork-(6)]
 }
 
-var _AssetTypeValues = []AssetType{AssetUnknown, AssetThumbnail, AssetBanner, AssetTrailer, AssetGameplayImage, AssetGameplayVideo}
+var _AssetTypeValues = []AssetType{AssetUnknown, AssetThumbnail, AssetBanner, AssetTrailer, AssetGameplayImage, AssetGameplayVideo, AssetArtwork}
 
 var _AssetTypeNameToValueMap = map[string]AssetType{
 	_AssetTypeName[0:12]:       AssetUnknown,
@@ -47,6 +48,8 @@ var _AssetTypeNameToValueMap = map[string]AssetType{
 	_AssetTypeLowerName[49:67]: AssetGameplayImage,
 	_AssetTypeName[67:85]:      AssetGameplayVideo,
 	_AssetTypeLowerName[67:85]: AssetGameplayVideo,
+	_AssetTypeName[85:97]:      AssetArtwork,
+	_AssetTypeLowerName[85:97]: AssetArtwork,
 }
 
 var _AssetTypeNames = []string{
@@ -56,6 +59,7 @@ var _AssetTypeNames = []string{
 	_AssetTypeName[37:49],
 	_AssetTypeName[49:67],
 	_AssetTypeName[67:85],
+	_AssetTypeName[85:97],
 }
 
 // AssetTypeString retrieves an enum value from the enum constants string name.

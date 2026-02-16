@@ -1,15 +1,16 @@
 <script lang="ts">
     import {
-        FolderOpenIcon,
         ChevronDownIcon,
+        Download,
         DownloadIcon,
         FileSearchIcon,
+        FolderOpenIcon,
         Hammer,
         LoaderIcon,
         PauseIcon,
-        Download,
         PlayIcon,
         RefreshCwIcon,
+        Replace,
         Trash2Icon,
         TriangleAlert,
         XIcon
@@ -23,6 +24,7 @@
     import {trimPrefix} from "$lib/api/strings";
     import {handleProcessStatus} from "$lib/api/websockets";
     import {create} from "@bufbuild/protobuf";
+    import {getDialogCtx} from "$lib/components/dialog/dialog.svelte";
 
     let {gameId}: { gameId: bigint } = $props();
 
@@ -61,16 +63,19 @@
 
     function watchProcess() {
         const exe = localGame?.Play?.LaunchExe ?? localGame?.game?.file?.Exe;
-        if (!exe || !localGame?.ID || cleanupWs) return;
+        if (!localGame?.ID || cleanupWs) {
+            console.log("not watching process because fields are empty", localGame?.game?.file?.Exe, localGame?.Play?.LaunchExe, !localGame?.ID)
+            return;
+        }
 
-        const proc = `${Frost.base}/launcher/running/${localGame.ID}?exe=${encodeURIComponent(exe)}`;
+        const proc = `${Frost.base}/launcher/running/${localGame.ID}`;
 
         cleanupWs = handleProcessStatus({
             url: proc,
             onDone: () => {
                 isRunning = false;
                 cleanupWs = null;
-                launchFinalExePicker()
+                launchFinalExePicker({override: false})
             },
             onConnect: () => {
                 isRunning = true;
@@ -79,7 +84,7 @@
     }
 
     let launchPicker = $state(false)
-    let customExePath = $state();
+    let customExePath = $state("");
     $effect(() => {
         customExePath = localGame?.Play?.LaunchExe ?? ""
     })
@@ -87,8 +92,8 @@
     let isInstaller = $derived(localGame?.game?.Source?.GameType === "Installer")
     let hasLaunchExe = $derived(localGame?.Play?.LaunchExe)
 
-    function launchFinalExePicker() {
-        if (!isInstaller || hasLaunchExe) return;
+    function launchFinalExePicker({override = false}: { override?: boolean }) {
+        if (!override && (!isInstaller || hasLaunchExe)) return;
         launchPicker = true
     }
 
@@ -106,11 +111,12 @@
 
         await localGameRpc.runner()
         launchPicker = false
-
     }
 
     async function triggerFilePicker() {
-        const {val, err} = await callRPC(() => llService.launchFilePicker({baseDir: ""}))
+        const {val, err} = await callRPC(() => llService.launchFilePicker({
+            baseDir: localGame?.Play?.LaunchExe ?? localGame?.Download?.DownloadPath ?? ""
+        }))
 
         if (err) sm.push(`Could not launch FilePicker: ${err}`, 'error');
         if (val?.path === "") sm.push("empty file path", 'warn');
@@ -127,14 +133,19 @@
     });
 
     async function handlePrimaryAction() {
-        const exe = localGame?.game?.file?.Exe;
-        if (isInstalled && exe) {
-            if (isRunning) {
-                sm.push("Game is already running", "info");
-                return;
+        if (isRunning) {
+            sm.push("Game is already running", "info");
+            return;
+        }
+
+        if (isInstalled) {
+            const playExe = localGame?.Play?.LaunchExe
+            if (!isInstaller || playExe) {
+                sm.push("launching game", "info")
+            } else if (localGame?.game?.file?.Exe) {
+                sm.push("launching installer", "info")
             }
 
-            sm.push("Launching game...", "info");
             await launchGame();
             return;
         }
@@ -174,9 +185,15 @@
         await localGameRpc.runner();
     }
 
+    const dm = getDialogCtx()
+
     async function forceDownload() {
-        const confirm = window.confirm("This will delete local files and redownload. Continue?");
-        if (!confirm) return;
+        const ok = await dm.confirm(
+            "Delete and Redownload",
+            "This will delete existing files and download all files again, consider verifying files if you are not sure",
+            "warn"
+        )
+        if (!ok) return
 
         isMenuOpen = false;
         const {err} = await callRPC(() => llService.download({
@@ -186,7 +203,7 @@
         }));
 
         if (err) sm.push(String(err), "error");
-        else sm.push("Force redownload started", "success");
+        else sm.push("Force redownload started", "info");
 
         await localGameRpc.runner();
     }
@@ -197,15 +214,29 @@
             return
         }
 
+        if (localGame?.game?.Source?.GameType == "Installer") {
+            const ok = await dm.confirm(
+                "Easy there",
+                "This will delete the installer files, the installed game files will not be affected. Continue?",
+                "error"
+            )
+            if (!ok) return;
+        } else {
+            const ok = await dm.confirm(
+                "WHOA, YOU SURE ABOUT THAT",
+                "This will ALL game files, you will not be able to play again without redownloading, Are you sure?",
+                "error"
+            )
+            if (!ok) return;
+        }
+
         isMenuOpen = false;
-        const confirm = window.confirm("This will delete local files and redownload. Continue?");
-        if (!confirm) return;
         const {err} = await callRPC(() => llService.delete({
             id: gameID,
         }));
 
         if (err) sm.push(String(err), "error");
-        else sm.push("Game files deleted", "success");
+        else sm.push("Game files deleted", "info");
 
         await localGameRpc.runner();
     }
@@ -225,7 +256,7 @@
                 <LoaderIcon size={16} class="animate-spin"/>
                 <span>Checking files...</span>
             {:else if gameDownloadState && !isComplete}
-                <span>Status: {trimPrefix(gameDownloadState, "Status")}</span>
+                <span>{trimPrefix(gameDownloadState, "Status")}</span>
             {:else if isInstalled}
                 {#if hasLaunchExe}
                     {#if isRunning}
@@ -270,6 +301,27 @@
                     class="absolute right-0 top-full mt-2 w-48 bg-surface border border-border rounded-xl shadow-2xl overflow-hidden z-120"
                     transition:fly={{ y: 5, duration: 150 }}
             >
+                <button onclick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    launchFinalExePicker({override: true})
+                }}
+                        class="w-full flex items-center gap-2 px-4 py-3 text-xs font-bold text-indigo-500 hover:text-frost-400 hover:bg-panel transition-all">
+                    <Replace size={14}/>
+                    Set Game Exe
+                </button>
+                {#if isInstaller}
+                    <!--                    // todo-->
+                    <!--                    <button onclick={(e) => {-->
+                    <!--                        e.preventDefault()-->
+                    <!--                        e.stopPropagation()-->
+                    <!--                        launchFinalExePicker({override: true})-->
+                    <!--                    }}-->
+                    <!--                            class="w-full flex items-center gap-2 px-4 py-3 text-xs font-bold text-green-700 hover:text-frost-400 hover:bg-panel transition-all">-->
+                    <!--                        <RefreshCwIcon size={14}/>-->
+                    <!--                        Reinstall-->
+                    <!--                    </button>-->
+                {/if}
                 <button onclick={recheck}
                         class="w-full flex items-center gap-2 px-4 py-3 text-xs font-bold text-green-700 hover:text-frost-400 hover:bg-panel transition-all">
                     <RefreshCwIcon size={14}/>

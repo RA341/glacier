@@ -16,14 +16,14 @@ type Process struct {
 }
 
 type Service struct {
-	exeMap syncmap.Map[string, *Process]
+	exeMap syncmap.Map[int, *Process]
 }
 
 func New() *Service {
 	return &Service{}
 }
 
-func (s *Service) Launch(exe string) error {
+func (s *Service) Launch(gameId int, exe string) error {
 	ctx, cancel := context.WithCancel(context.Background())
 	cmd := exec.CommandContext(ctx, exe)
 	err := cmd.Start()
@@ -39,18 +39,18 @@ func (s *Service) Launch(exe string) error {
 	}
 
 	go func() {
-		s.supervisor(exe, pr)
+		s.supervisor(gameId, exe, pr)
 	}()
 
-	s.exeMap.Store(exe, pr)
+	s.exeMap.Store(gameId, pr)
 
 	return nil
 }
 
-func (s *Service) supervisor(exe string, process *Process) {
+func (s *Service) supervisor(gameId int, exe string, process *Process) {
 	defer func() {
 		process.cancel()
-		s.exeMap.Delete(exe)
+		s.exeMap.Delete(gameId)
 	}()
 
 	err := process.cmd.Wait()
@@ -67,8 +67,8 @@ func (s *Service) supervisor(exe string, process *Process) {
 	log.Info().Str("exe", exe).Msg("Process exited independently")
 }
 
-func (s *Service) Running(ctx context.Context, exe string) error {
-	val, ok := s.exeMap.Load(exe)
+func (s *Service) Running(ctx context.Context, gameId int) error {
+	val, ok := s.exeMap.Load(gameId)
 	if !ok {
 		return fmt.Errorf("exe is not running")
 	}

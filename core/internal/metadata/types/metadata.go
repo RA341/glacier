@@ -18,8 +18,8 @@ const (
 	ProviderIGDB
 )
 
-//go:generate go run github.com/dmarkham/enumer@latest -type=Platform -output=enum_platform.go
 // todo
+////go:generate go run github.com/dmarkham/enumer@latest -type=Platform -output=enum_platform.go
 //type Platform int
 //
 //const (

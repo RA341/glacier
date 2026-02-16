@@ -5,6 +5,7 @@
     import Snackbar from "$lib/components/snackbar/Snackbar.svelte";
     import Sidebar from './sidebar.svelte';
     import User from "$lib/components/user/User.svelte";
+    import DialogProvider from "$lib/components/dialog/DialogProvider.svelte";
 
     let {children} = $props();
 </script>
@@ -15,15 +16,17 @@
 </svelte:head>
 
 <Snackbar>
-    <User>
-        {#if !page.url.pathname.startsWith('/auth')}
-            <Sidebar/>
-        {/if}
-        <!-- Main Content Area -->
-        <main class="relative flex-1 overflow-y-auto">
-            {@render children()}
-        </main>
-    </User>
+    <DialogProvider>
+        <User>
+            {#if !page.url.pathname.startsWith('/auth')}
+                <Sidebar/>
+            {/if}
+            <!-- Main Content Area -->
+            <main class="relative flex-1 overflow-y-auto">
+                {@render children()}
+            </main>
+        </User>
+    </DialogProvider>
 </Snackbar>
 
 <style>

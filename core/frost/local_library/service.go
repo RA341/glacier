@@ -41,19 +41,13 @@ func New(baseurl string, store Store, downloader *download.Service, cli hc.HttpC
 	return s
 }
 
-func (s *Service) Running(ctx context.Context, gameID int, exe string) error {
-	get, err := s.store.Get(ctx, gameID)
+func (s *Service) Running(ctx context.Context, gameID int) error {
+	_, err := s.store.Get(ctx, gameID)
 	if err != nil {
 		return err
 	}
 
-	exe = get.Game.File.Exe
-	if exe == "" {
-		return fmt.Errorf("game exe not found please")
-	}
-	fullPath := filepath.Join(get.Download.DownloadPath, exe)
-
-	return s.launcher.Running(ctx, fullPath)
+	return s.launcher.Running(ctx, gameID)
 }
 
 func (s *Service) Launch(ctx context.Context, gameID int) error {
@@ -63,19 +57,19 @@ func (s *Service) Launch(ctx context.Context, gameID int) error {
 	}
 
 	launchExe := get.Play.LaunchExe
-	if get.Play.LaunchExe == "" {
+	if launchExe == "" {
 		launchExe = get.Game.File.Exe
 		if launchExe == "" {
-			return fmt.Errorf("game exe not found please")
+			return fmt.Errorf("installer exe not found, check if it is installed")
 		}
 		launchExe = filepath.Join(get.Download.DownloadPath, launchExe)
 	}
 
-	if !filepath.IsAbs(launchExe) {
-		return fmt.Errorf("exe is not absolute %s", launchExe)
-	}
+	//if !filepath.IsAbs(launchExe) {
+	//	return fmt.Errorf("exe is not absolute %s", launchExe)
+	//}
 
-	return s.launcher.Launch(launchExe)
+	return s.launcher.Launch(gameID, launchExe)
 }
 
 func (s *Service) Download(
