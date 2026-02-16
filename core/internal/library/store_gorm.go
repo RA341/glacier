@@ -58,7 +58,15 @@ func (s *StoreGorm) List(ctx context.Context, query string, limit uint, offset u
 	whereQ := s.Q(ctx)
 	if query != "" {
 		searchTerm := "%" + query + "%"
-		whereQ = whereQ.Where("title LIKE ?", searchTerm).Or("description LIKE ?", searchTerm)
+		columns := []string{
+			"name",
+			"full_desc",
+			"short_desc",
+			"genres",
+		}
+		for _, column := range columns {
+			whereQ = whereQ.Or(column+" LIKE ?", searchTerm)
+		}
 	}
 
 	err := whereQ.

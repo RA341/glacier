@@ -119,15 +119,16 @@
                     <div class="p-4 border-t border-border">
                         <h3 class="font-bold truncate text-foreground mb-1">
                             {ga.Meta?.Name}
-                            <span class="text-muted font-normal text-sm ml-1">
-                                ({new Date(ga?.Meta?.ReleaseDate || 'N/A').getFullYear() || 'N/A'})
-                            </span>
                         </h3>
                         <div class="flex items-center gap-2">
-                            <div class="w-2 h-2 rounded-full bg-frost-400 animate-pulse"></div>
-                            <span class="text-xs text-muted font-medium uppercase tracking-wider">
-                                {ga?.DownloadState?.State || "Unknown"}
+                            <span class="text-muted font-normal text-sm ml-1">
+                                {new Date(ga?.Meta?.ReleaseDate || 'N/A').getFullYear() || 'N/A'}
                             </span>
+                            {#if ga?.DownloadState?.State !== "Complete"}
+                                <span class="text-xs text-muted font-medium uppercase tracking-wider">
+                                    {ga?.DownloadState?.State || "Unknown"}
+                                </span>
+                            {/if}
                         </div>
                     </div>
                 </div>

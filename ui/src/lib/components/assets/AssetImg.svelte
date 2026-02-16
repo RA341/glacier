@@ -46,7 +46,7 @@
         <img
                 {src}
                 {alt}
-                class="h-full w-full {status === 'loading' ? 'invisible' : 'visible'}"
+                class="h-full w-full object-cover {status === 'loading' ? 'invisible' : 'visible'}"
                 onload={handleLoad}
                 onerror={handleError}
         />
