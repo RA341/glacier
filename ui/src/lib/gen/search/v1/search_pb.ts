@@ -4,13 +4,15 @@
 
 import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
 import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
+import type { Asset } from "../../assets/v1/assets_pb";
+import { file_assets_v1_assets } from "../../assets/v1/assets_pb";
 import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file search/v1/search.proto.
  */
 export const file_search_v1_search: GenFile = /*@__PURE__*/
-  fileDesc("ChZzZWFyY2gvdjEvc2VhcmNoLnByb3RvEglzZWFyY2gudjEiOAoSR2V0R2FtZU1ldGFSZXF1ZXN0EhAKCHByb3ZpZGVyGAEgASgJEhAKCGdhbWVEYklkGAIgASgJIjwKE0dldEdhbWVNZXRhUmVzcG9uc2USJQoEbWV0YRgBIAEoCzIXLnNlYXJjaC52MS5HYW1lTWV0YWRhdGEiJwoFUXVlcnkSDQoFcXVlcnkYASABKAkSDwoHaW5kZXhlchgCIAEoCSI0ChVTZWFyY2hJbmRleGVyc1JlcXVlc3QSGwoBcRgBIAEoCzIQLnNlYXJjaC52MS5RdWVyeSJAChZTZWFyY2hJbmRleGVyc1Jlc3BvbnNlEiYKB3Jlc3VsdHMYASADKAsyFS5zZWFyY2gudjEuR2FtZVNvdXJjZSKPAQoKR2FtZVNvdXJjZRITCgtJbmRleGVyVHlwZRgGIAEoCRIQCghHYW1lVHlwZRgHIAEoCRINCgVUaXRsZRgBIAEoCRITCgtEb3dubG9hZFVybBgCIAEoCRIQCghJbWFnZVVSTBgDIAEoCRIQCghGaWxlU2l6ZRgEIAEoCRISCgpDcmVhdGVkSVNPGAUgASgJIjQKFVNlYXJjaE1ldGFkYXRhUmVxdWVzdBIbCgFxGAEgASgLMhAuc2VhcmNoLnYxLlF1ZXJ5IkMKFlNlYXJjaE1ldGFkYXRhUmVzcG9uc2USKQoIbWV0YWRhdGEYASADKAsyFy5zZWFyY2gudjEuR2FtZU1ldGFkYXRhIlcKBUFzc2V0EgoKAklEGAEgASgEEg4KBkdhbWVJZBgCIAEoBBIMCgRUeXBlGAMgASgJEhEKCVJlbW90ZVVybBgEIAEoCRIRCglMb2NhbFBhdGgYBSABKAkimQIKDEdhbWVNZXRhZGF0YRIUCgxQcm92aWRlclR5cGUYDyABKAkSCgoCSUQYDiABKAkSDAoETmFtZRgBIAEoCRIPCgdTdW1tYXJ5GAIgASgJEhMKC0Rlc2NyaXB0aW9uGAMgASgJEgsKA1VSTBgEIAEoCRIgCgZhc3NldHMYBSADKAsyEC5zZWFyY2gudjEuQXNzZXQSEQoJUGxhdGZvcm1zGAcgAygJEg4KBkdlbnJlcxgIIAMoCRIOCgZSYXRpbmcYCSABKAkSEwoLUmF0aW5nQ291bnQYCiABKA0SEwoLUmVsZWFzZURhdGUYCyABKAkSFQoNUmVsZWFzZVN0YXR1cxgMIAEoCRIQCghDYXRlZ29yeRgNIAEoCTKRAgoNU2VhcmNoU2VydmljZRJOCgtHZXRHYW1lTWV0YRIdLnNlYXJjaC52MS5HZXRHYW1lTWV0YVJlcXVlc3QaHi5zZWFyY2gudjEuR2V0R2FtZU1ldGFSZXNwb25zZSIAElcKDlNlYXJjaEluZGV4ZXJzEiAuc2VhcmNoLnYxLlNlYXJjaEluZGV4ZXJzUmVxdWVzdBohLnNlYXJjaC52MS5TZWFyY2hJbmRleGVyc1Jlc3BvbnNlIgASVwoOU2VhcmNoTWV0YWRhdGESIC5zZWFyY2gudjEuU2VhcmNoTWV0YWRhdGFSZXF1ZXN0GiEuc2VhcmNoLnYxLlNlYXJjaE1ldGFkYXRhUmVzcG9uc2UiAEKPAQoNY29tLnNlYXJjaC52MUILU2VhcmNoUHJvdG9QAVosZ2l0aHViLmNvbS9yYTM0MS9nbGFjaWVyL2dlbmVyYXRlZC9zZWFyY2gvdjGiAgNTWFiqAglTZWFyY2guVjHKAglTZWFyY2hcVjHiAhVTZWFyY2hcVjFcR1BCTWV0YWRhdGHqAgpTZWFyY2g6OlYxYgZwcm90bzM");
+  fileDesc("ChZzZWFyY2gvdjEvc2VhcmNoLnByb3RvEglzZWFyY2gudjEiOAoSR2V0R2FtZU1ldGFSZXF1ZXN0EhAKCHByb3ZpZGVyGAEgASgJEhAKCGdhbWVEYklkGAIgASgJIjwKE0dldEdhbWVNZXRhUmVzcG9uc2USJQoEbWV0YRgBIAEoCzIXLnNlYXJjaC52MS5HYW1lTWV0YWRhdGEiJwoFUXVlcnkSDQoFcXVlcnkYASABKAkSDwoHaW5kZXhlchgCIAEoCSI0ChVTZWFyY2hJbmRleGVyc1JlcXVlc3QSGwoBcRgBIAEoCzIQLnNlYXJjaC52MS5RdWVyeSJAChZTZWFyY2hJbmRleGVyc1Jlc3BvbnNlEiYKB3Jlc3VsdHMYASADKAsyFS5zZWFyY2gudjEuR2FtZVNvdXJjZSKPAQoKR2FtZVNvdXJjZRITCgtJbmRleGVyVHlwZRgGIAEoCRIQCghHYW1lVHlwZRgHIAEoCRINCgVUaXRsZRgBIAEoCRITCgtEb3dubG9hZFVybBgCIAEoCRIQCghJbWFnZVVSTBgDIAEoCRIQCghGaWxlU2l6ZRgEIAEoCRISCgpDcmVhdGVkSVNPGAUgASgJIjQKFVNlYXJjaE1ldGFkYXRhUmVxdWVzdBIbCgFxGAEgASgLMhAuc2VhcmNoLnYxLlF1ZXJ5IkMKFlNlYXJjaE1ldGFkYXRhUmVzcG9uc2USKQoIbWV0YWRhdGEYASADKAsyFy5zZWFyY2gudjEuR2FtZU1ldGFkYXRhIpkCCgxHYW1lTWV0YWRhdGESFAoMUHJvdmlkZXJUeXBlGA8gASgJEgoKAklEGA4gASgJEgwKBE5hbWUYASABKAkSDwoHU3VtbWFyeRgCIAEoCRITCgtEZXNjcmlwdGlvbhgDIAEoCRILCgNVUkwYBCABKAkSIAoGYXNzZXRzGAUgAygLMhAuYXNzZXRzLnYxLkFzc2V0EhEKCVBsYXRmb3JtcxgHIAMoCRIOCgZHZW5yZXMYCCADKAkSDgoGUmF0aW5nGAkgASgJEhMKC1JhdGluZ0NvdW50GAogASgNEhMKC1JlbGVhc2VEYXRlGAsgASgJEhUKDVJlbGVhc2VTdGF0dXMYDCABKAkSEAoIQ2F0ZWdvcnkYDSABKAkykQIKDVNlYXJjaFNlcnZpY2USTgoLR2V0R2FtZU1ldGESHS5zZWFyY2gudjEuR2V0R2FtZU1ldGFSZXF1ZXN0Gh4uc2VhcmNoLnYxLkdldEdhbWVNZXRhUmVzcG9uc2UiABJXCg5TZWFyY2hJbmRleGVycxIgLnNlYXJjaC52MS5TZWFyY2hJbmRleGVyc1JlcXVlc3QaIS5zZWFyY2gudjEuU2VhcmNoSW5kZXhlcnNSZXNwb25zZSIAElcKDlNlYXJjaE1ldGFkYXRhEiAuc2VhcmNoLnYxLlNlYXJjaE1ldGFkYXRhUmVxdWVzdBohLnNlYXJjaC52MS5TZWFyY2hNZXRhZGF0YVJlc3BvbnNlIgBCjwEKDWNvbS5zZWFyY2gudjFCC1NlYXJjaFByb3RvUAFaLGdpdGh1Yi5jb20vcmEzNDEvZ2xhY2llci9nZW5lcmF0ZWQvc2VhcmNoL3YxogIDU1hYqgIJU2VhcmNoLlYxygIJU2VhcmNoXFYx4gIVU2VhcmNoXFYxXEdQQk1ldGFkYXRh6gIKU2VhcmNoOjpWMWIGcHJvdG8z", [file_assets_v1_assets]);
 
 /**
  * @generated from message search.v1.GetGameMetaRequest
@@ -189,43 +191,6 @@ export const SearchMetadataResponseSchema: GenMessage<SearchMetadataResponse> = 
   messageDesc(file_search_v1_search, 7);
 
 /**
- * @generated from message search.v1.Asset
- */
-export type Asset = Message<"search.v1.Asset"> & {
-  /**
-   * @generated from field: uint64 ID = 1;
-   */
-  ID: bigint;
-
-  /**
-   * @generated from field: uint64 GameId = 2;
-   */
-  GameId: bigint;
-
-  /**
-   * @generated from field: string Type = 3;
-   */
-  Type: string;
-
-  /**
-   * @generated from field: string RemoteUrl = 4;
-   */
-  RemoteUrl: string;
-
-  /**
-   * @generated from field: string LocalPath = 5;
-   */
-  LocalPath: string;
-};
-
-/**
- * Describes the message search.v1.Asset.
- * Use `create(AssetSchema)` to create a new message.
- */
-export const AssetSchema: GenMessage<Asset> = /*@__PURE__*/
-  messageDesc(file_search_v1_search, 8);
-
-/**
  * @generated from message search.v1.GameMetadata
  */
 export type GameMetadata = Message<"search.v1.GameMetadata"> & {
@@ -260,7 +225,7 @@ export type GameMetadata = Message<"search.v1.GameMetadata"> & {
   URL: string;
 
   /**
-   * @generated from field: repeated search.v1.Asset assets = 5;
+   * @generated from field: repeated assets.v1.Asset assets = 5;
    */
   assets: Asset[];
 
@@ -305,7 +270,7 @@ export type GameMetadata = Message<"search.v1.GameMetadata"> & {
  * Use `create(GameMetadataSchema)` to create a new message.
  */
 export const GameMetadataSchema: GenMessage<GameMetadata> = /*@__PURE__*/
-  messageDesc(file_search_v1_search, 9);
+  messageDesc(file_search_v1_search, 8);
 
 /**
  * @generated from service search.v1.SearchService

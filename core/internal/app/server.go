@@ -125,27 +125,17 @@ func (s *Server) registerProtectedRoutes(mux *http.ServeMux) {
 	api.WithSubRouter(
 		mux,
 		"/assets",
-		assets.NewHandler(s.Assets),
+		assets.NewHandlerHttp(s.Assets),
 	)
 
 	api.WithSubRouter(mux,
 		"/library/download",
 		library.NewHandlerHttp(s.Library),
 	)
-
+	mux.Handle(assets.NewHandler(s.Assets))
 	mux.Handle(config.NewHandler(s.Conf))
 	mux.Handle(user.NewHandler(s.User))
 	mux.Handle(sm.NewHandler(s.ConfigManager))
-}
-
-type NewHandler func(string, http.Handler) (string, http.Handler)
-
-type Middleware func(http.Handler) http.Handler
-
-func NewConnectMiddleware(m Middleware) NewHandler {
-	return func(path string, h http.Handler) (string, http.Handler) {
-		return path, m(h)
-	}
 }
 
 func (s *Server) registerPublicRoutes(mux *http.ServeMux) {

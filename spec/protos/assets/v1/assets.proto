@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package assets.v1;
+
+option go_package = "github.com/ra341/glacier/generated/assets/v1";
+
+service AssetService {
+  rpc Edit(EditRequest) returns (EditResponse) {}
+  rpc GetTypes(GetTypesRequest) returns (GetTypesResponse) {}
+  rpc Delete(DeleteRequest) returns (DeleteResponse) {}
+}
+
+
+message DeleteRequest {
+  uint64 ID = 1;
+}
+
+message DeleteResponse {}
+
+message GetTypesRequest {}
+
+message GetTypesResponse {
+  repeated string types = 1;
+}
+
+message EditRequest {
+  Asset asset = 1;
+}
+
+message EditResponse {}
+
+message Asset {
+  uint64 ID = 1;
+  uint64 GameId = 2;
+  string Type = 3;
+  string RemoteUrl = 4;
+  string LocalPath = 5;
+}

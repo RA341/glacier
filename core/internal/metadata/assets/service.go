@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"slices"
 
 	"github.com/google/uuid"
 	"github.com/ra341/glacier/pkg/fileutil"
@@ -23,7 +24,7 @@ type Service struct {
 
 type GetInstallPathFunc func(ctx context.Context, gameId uint) (string, error)
 
-const BaseDir = ".glacier"
+const MetadataDir = ".glacier"
 const AssetDir = "assets"
 
 func New(
@@ -38,11 +39,12 @@ func New(
 	}
 	go s.DownloadUndownloaded()
 
+	go s.orphanAssetCleaner()
+
 	return s
 }
 
 func (s *Service) GetAsset(ctx context.Context, gameId int, assetPath string) (string, error) {
-
 	return s.getAssetPath(ctx, uint(gameId), assetPath)
 }
 
@@ -93,7 +95,7 @@ func (s *Service) getAssetPath(ctx context.Context, gameId uint, filename string
 		return "", err
 	}
 
-	baseDir := filepath.Join(dstDir, BaseDir, AssetDir)
+	baseDir := filepath.Join(dstDir, MetadataDir, AssetDir)
 	err = os.MkdirAll(baseDir, 0755)
 	if err != nil {
 		return "", err
@@ -128,17 +130,70 @@ func (s *Service) DownloadAssets(ctx context.Context, id uint) error {
 		return err
 	}
 
-	go s.downloadAssets(assets)
+	go s.downloadAssets(id, assets)
 
 	return nil
 }
 
-func (s *Service) downloadAssets(assets []Asset) {
+func (s *Service) downloadAssets(gameId uint, assets []Asset) {
 	cli := &http.Client{}
 
 	// do sequentially to avoid any rate limiting shenanigans
 	for _, asset := range assets {
 		s.downloadSingleAsset(cli, &asset)
+	}
+
+	s.cleanupOrphanedAssets(gameId)
+}
+
+func (s *Service) orphanAssetCleaner() {
+	ctx := context.Background()
+	ids, err := s.store.GetGameIds(ctx)
+	if err != nil {
+		log.Warn().Err(err).Msg("Failed to get game ids")
+		return
+	}
+
+	for _, id := range ids {
+		s.cleanupOrphanedAssets(id)
+	}
+}
+
+func (s *Service) cleanupOrphanedAssets(gameId uint) {
+	ctx := context.Background()
+	dstDir, err := s.getGameInstallPath(ctx, gameId)
+	if err != nil {
+		log.Warn().Err(err).Msgf("Failed to get game install path, to clean up files")
+		return
+	}
+
+	gameAssets, err := s.store.GetByGame(ctx, gameId)
+	if err != nil {
+		log.Warn().Msg("Failed to get game assets")
+		return
+	}
+
+	base := filepath.Join(dstDir, MetadataDir, AssetDir)
+	dir, err := os.ReadDir(base)
+	if err != nil {
+		log.Warn().Err(err).Msgf("Failed to read metadata directory")
+		return
+	}
+
+	for _, file := range dir {
+		if file.IsDir() {
+			continue
+		}
+
+		if !slices.ContainsFunc(gameAssets, func(asset Asset) bool {
+			return asset.LocalPath == file.Name()
+		}) {
+			err := os.RemoveAll(filepath.Join(base, file.Name()))
+			if err != nil {
+				log.Warn().Err(err).Msgf("Failed to remove orphaned asset %s", file.Name())
+				return
+			}
+		}
 	}
 }
 
@@ -160,7 +215,14 @@ func (s *Service) DownloadUndownloaded() {
 		return
 	}
 
-	s.downloadAssets(downloaded)
+	if len(downloaded) < 1 {
+		log.Debug().Msg("No undownloaded assets found")
+		return
+	}
+
+	for gameId, games := range downloaded {
+		s.downloadAssets(gameId, games)
+	}
 }
 
 func (s *Service) downloadWithHttp(cli *http.Client, asset *Asset) {
@@ -225,4 +287,8 @@ func (s *Service) downloadWithYtDlp(cli *http.Client, asset *Asset) {
 		log.Warn().Err(err).Msg("Failed to save asset")
 		return
 	}
+}
+
+func (s *Service) Edit(ctx context.Context, a *Asset) error {
+	return s.store.Update(ctx, a)
 }

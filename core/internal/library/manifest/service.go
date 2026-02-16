@@ -10,8 +10,10 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 
 	"github.com/cespare/xxhash/v2"
+	"github.com/ra341/glacier/internal/metadata/assets"
 	"github.com/ra341/glacier/pkg/fileutil"
 	"github.com/ra341/glacier/pkg/syncmap"
 	"github.com/rs/zerolog/log"
@@ -118,6 +120,15 @@ func (s *Service) realGenerateManifest(ctx context.Context, gameId int, download
 		if downloadPath == path || d.IsDir() {
 			// process files inside dir directly with their paths
 			return nil
+		}
+
+		rel, err := filepath.Rel(downloadPath, path)
+		if err != nil {
+			return err
+		}
+
+		if strings.HasPrefix(rel, assets.MetadataDir) {
+			return filepath.SkipDir
 		}
 
 		eg.Go(func() error {

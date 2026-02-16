@@ -10,12 +10,21 @@ type StoreGorm struct {
 	db *gorm.DB
 }
 
-func NewStoreGorm(db *gorm.DB) *StoreGorm {
+func NewStoreGorm(db *gorm.DB) Store {
 	return &StoreGorm{
 		db: db,
 	}
 }
 
+func (s *StoreGorm) GetGameIds(ctx context.Context) ([]uint, error) {
+	var ids []uint
+	err := s.db.WithContext(ctx).
+		Model(&Asset{}).
+		Distinct().
+		Pluck("game_id", &ids).
+		Error
+	return ids, err
+}
 func (s *StoreGorm) List(ctx context.Context) ([]Asset, error) {
 	var assets []Asset
 	err := s.db.WithContext(ctx).Find(&assets).Error
@@ -25,15 +34,23 @@ func (s *StoreGorm) List(ctx context.Context) ([]Asset, error) {
 	return assets, nil
 }
 
-func (s *StoreGorm) ListUnDownloaded(ctx context.Context) ([]Asset, error) {
-	var assets []Asset
+func (s *StoreGorm) ListUnDownloaded(ctx context.Context) (map[uint][]Asset, error) {
+	var assetList []Asset
 	err := s.db.WithContext(ctx).
 		Where("local_path IS NULL OR local_path = ''").
 		Where("remote_url IS NOT NULL AND remote_url != ''").
-		Find(&assets).
+		Find(&assetList).
 		Error
+	if err != nil {
+		return nil, err
+	}
 
-	return assets, err
+	assets := make(map[uint][]Asset)
+	for _, asset := range assetList {
+		assets[asset.GameID] = append(assets[asset.GameID], asset)
+	}
+
+	return assets, nil
 }
 
 func (s *StoreGorm) Update(ctx context.Context, asset *Asset) error {
@@ -99,4 +116,10 @@ func (s *StoreGorm) GetById(ctx context.Context, id uint, assetType AssetType) (
 		Error
 
 	return &asset, err
+}
+
+func (s *StoreGorm) GetByGame(ctx context.Context, id uint) ([]Asset, error) {
+	var assetList []Asset
+	err := s.db.WithContext(ctx).Where("game_id = ?", id).Find(&assetList).Error
+	return assetList, err
 }

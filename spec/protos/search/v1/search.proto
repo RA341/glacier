@@ -4,6 +4,9 @@ package search.v1;
 
 option go_package = "github.com/ra341/glacier/generated/search/v1";
 
+import "assets/v1/assets.proto";
+
+
 service SearchService {
   rpc GetGameMeta(GetGameMetaRequest) returns (GetGameMetaResponse) {}
   rpc SearchIndexers(SearchIndexersRequest) returns (SearchIndexersResponse) {}
@@ -50,14 +53,6 @@ message SearchMetadataResponse {
   repeated GameMetadata metadata = 1;
 }
 
-message Asset {
-  uint64 ID = 1;
-  uint64 GameId = 2;
-  string Type = 3;
-  string RemoteUrl = 4;
-  string LocalPath = 5;
-}
-
 message GameMetadata {
   string ProviderType = 15;
   string ID = 14;
@@ -65,7 +60,7 @@ message GameMetadata {
   string Summary = 2;
   string Description = 3;
   string URL = 4;
-  repeated Asset assets = 5;
+  repeated assets.v1.Asset assets = 5;
   repeated string Platforms = 7;
   repeated string Genres = 8;
   string Rating = 9;

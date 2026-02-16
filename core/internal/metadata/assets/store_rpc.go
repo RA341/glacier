@@ -1,7 +1,7 @@
 package assets
 
 import (
-	v1 "github.com/ra341/glacier/generated/search/v1"
+	v1 "github.com/ra341/glacier/generated/assets/v1"
 )
 
 func (m *Asset) ToProto() *v1.Asset {

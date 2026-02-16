@@ -1,26 +1,28 @@
 <script lang="ts">
     import {
+        Save,
         ExternalLinkIcon,
-        Video,
+        EyeIcon,
         ImageIcon,
         LinkIcon,
         LoaderIcon,
         PlusIcon,
+        ServerIcon,
         Trash2Icon,
         UploadIcon,
+        Video,
         XIcon,
-        EyeIcon,
-        ServerIcon,
     } from "@lucide/svelte";
     import {fade, fly} from 'svelte/transition';
-    import type {Asset} from "$lib/gen/search/v1/search_pb";
     import {getAssetPath, uploadAsset} from "$lib/api/assets";
     import {getSnackbarCtx} from "$lib/components/snackbar/snackbar-provider.svelte";
-    import {Glacier} from "$lib/api/api";
+    import {callRPC, Glacier, glacierCli} from "$lib/api/api";
     import {onMount} from "svelte";
     import {splitCamelCase, trimPrefix} from "$lib/api/strings";
     import AssetImg from "$lib/components/assets/AssetImg.svelte";
     import AssetVideo from "$lib/components/assets/AssetVideo.svelte";
+    import {type Asset, AssetService} from "$lib/gen/assets/v1/assets_pb";
+    import {getDialogCtx} from "$lib/components/dialog/dialog.svelte";
 
     let {
         assets = $bindable(),
@@ -43,7 +45,7 @@
     let uploadFile = $state<File | null>(null);
     let uploadType = $state("poster");
 
-    let currentAsset = $derived(assets?.[selectedIndex] || null);
+    let currentAsset = $derived(assets?.[selectedIndex] ?? null);
 
     const base = `${Glacier.base}/assets`
 
@@ -98,29 +100,29 @@
         }
     }
 
-    async function deleteAssetApi(assetId: bigint): Promise<void> {
-        const final = `${base}/delete/${assetId}`
-        try {
-            const resp = await fetch(final)
-            if (resp.ok) {
-                sm.push("Asset deleted successfully", 'success');
-            } else {
-                sm.push(`Failed to delete asset: ${resp.statusText}`, 'error');
-            }
-        } catch (e) {
-            sm.push(`Could not delete asset: ${e}`, 'error');
-        }
-    }
-
     onMount(async () => {
         await getAssetTypes()
         uploadType = assetTypes.at(1) ?? ""
     })
 
+    const dm = getDialogCtx()
+
     async function deleteAsset(assetId: bigint, index: number) {
-        if (confirm("Remove this asset from metadata?")) {
-            await deleteAssetApi(assetId)
-            await refresh()
+        const ok = await dm.confirm("Are you sure you want to delete this asset ?", 'warning');
+        if (!ok) {
+            return
+        }
+
+        await deleteAssetApi(assetId)
+        await refresh()
+    }
+
+    const assetSrv = glacierCli(AssetService)
+
+    async function editAsset() {
+        const {err} = await callRPC(() => assetSrv.edit({asset: currentAsset}))
+        if (err) {
+            sm.push(`Could not update asset: ${err}`, 'error');
         }
     }
 
@@ -181,37 +183,33 @@
     <!-- PREVIEW & EDIT AREA (Right) -->
     <div class="flex-1 bg-background/50 flex flex-col min-w-0">
         {#if currentAsset}
-            <!-- Toolbar -->
-            <div class="p-3 border-b border-border flex justify-between items-center gap-4 bg-surface flex-wrap">
-                <!-- Asset Type Picker -->
+            <div class="p-3 border-b border-border flex items-center gap-4 bg-surface flex-nowrap">
                 <div class="flex items-center gap-2 flex-1 min-w-0">
-                    <span class="text-[9px] font-bold text-muted uppercase tracking-widest shrink-0">Type</span>
+                    <button onclick={editAsset}
+                            class="p-2 bg-panel border border-border rounded-lg text-muted hover:text-red-400 transition-all"
+                            title="Delete Asset">
+                        <Save size={16}/>
+                    </button>
+                    <button onclick={() => openEdit(currentAsset)}
+                            class="p-2 bg-panel border border-border rounded-lg text-muted hover:text-frost-400 transition-all"
+                            title="Upload Replacement">
+                        <UploadIcon size={16}/>
+                    </button>
+                    <button onclick={() => deleteAsset(currentAsset.ID, selectedIndex)}
+                            class="p-2 bg-panel border border-border rounded-lg text-muted hover:text-red-400 transition-all"
+                            title="Delete Asset">
+                        <Trash2Icon size={16}/>
+                    </button>
+
+                    <span class="text-[9px] ml-5 font-bold text-muted uppercase tracking-widest shrink-0">Type</span>
                     <select
                             bind:value={currentAsset.Type}
-                            class="bg-panel border border-border rounded-xl py-1.5 px-3 outline-none focus:border-frost-500 text-xs font-bold appearance-none truncate max-w-48"
+                            class="bg-panel border border-border rounded-xl py-1.5 px-3 outline-none focus:border-frost-500 text-xs font-bold appearance-none truncate min-w-0 flex-1 max-w-48"
                     >
                         {#each assetTypes as assetT}
                             <option value={assetT}>{splitCamelCase(trimPrefix(assetT, "Asset"))}</option>
                         {/each}
                     </select>
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="flex gap-2 shrink-0">
-                    <button
-                            onclick={() => openEdit(currentAsset)}
-                            class="p-2 bg-panel border border-border rounded-lg text-muted hover:text-frost-400 transition-all"
-                            title="Upload Replacement"
-                    >
-                        <UploadIcon size={16}/>
-                    </button>
-                    <button
-                            onclick={() => deleteAsset(currentAsset.ID, selectedIndex)}
-                            class="p-2 bg-panel border border-border rounded-lg text-muted hover:text-red-400 transition-all"
-                            title="Delete Asset"
-                    >
-                        <Trash2Icon size={16}/>
-                    </button>
                 </div>
             </div>
 
@@ -280,24 +278,28 @@
                                     {/snippet}
                                 </AssetImg>
                             {/if}
-
-                            <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
-                                <a href={localUrl} target="_blank"
-                                   class="p-3 bg-panel border border-border text-foreground rounded-full hover:text-frost-400 transition-colors">
-                                    <ExternalLinkIcon size={20}/>
-                                </a>
-                            </div>
                         </div>
 
                         <!-- Local Path (below preview) -->
                         <div class="w-full space-y-1">
+                            <!-- Label -->
                             <p class="text-[9px] font-bold text-muted uppercase tracking-widest ml-1 opacity-50 flex items-center gap-1">
                                 <ServerIcon size={10}/>
-                                Local Server Path
+                                Cached Path
                             </p>
-                            <p class="text-xs font-mono text-muted/80 truncate px-3 py-2 bg-background/50 rounded-xl border border-border/50 italic">
-                                {currentAsset.LocalPath || 'No local file uploaded'}
-                            </p>
+
+                            <!-- Inline pill -->
+                            <div class="flex items-center gap-2 px-3 py-2 bg-background/50 rounded-xl border border-border/50">
+                                <ServerIcon size={12} class="shrink-0 text-muted/60"/>
+                                <p class="flex-1 min-w-0 text-xs font-mono text-muted/80 truncate italic">
+                                    {currentAsset.LocalPath || 'No local file uploaded'}
+                                </p>
+                                <a href={localUrl} target="_blank"
+                                   class="shrink-0 text-muted hover:text-frost-400 transition-colors"
+                                   title="Open in browser">
+                                    <ExternalLinkIcon size={12}/>
+                                </a>
+                            </div>
                         </div>
                     {:else}
                         <div class="text-center space-y-2 opacity-10">

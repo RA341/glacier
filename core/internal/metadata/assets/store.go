@@ -8,14 +8,17 @@ import (
 
 type Store interface {
 	List(ctx context.Context) ([]Asset, error)
-	ListUnDownloaded(ctx context.Context) ([]Asset, error)
+	ListUnDownloaded(ctx context.Context) (map[uint][]Asset, error)
 	ListUndownloadedByGame(ctx context.Context, gameId uint) ([]Asset, error)
+
+	Get(ctx context.Context, id uint) (*Asset, error)
+	GetById(ctx context.Context, id uint, assetType AssetType) (*Asset, error)
+	GetByGame(ctx context.Context, id uint) ([]Asset, error)
+	GetGameIds(ctx context.Context) ([]uint, error)
 
 	Update(ctx context.Context, asset *Asset) error
 	Delete(ctx context.Context, asset *Asset) error
 	Save(ctx context.Context, asset *Asset, exists func(oldAsset *Asset) error) error
-	Get(ctx context.Context, id uint) (*Asset, error)
-	GetById(ctx context.Context, id uint, assetType AssetType) (*Asset, error)
 }
 
 //go:generate go run github.com/dmarkham/enumer@latest -type=AssetType -output=enum_asset_type.go

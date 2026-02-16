@@ -3,20 +3,21 @@ package types
 import (
 	"time"
 
-	v1 "github.com/ra341/glacier/generated/search/v1"
+	assetV1 "github.com/ra341/glacier/generated/assets/v1"
+	searchV1 "github.com/ra341/glacier/generated/search/v1"
 	"github.com/ra341/glacier/internal/metadata/assets"
 	"github.com/ra341/glacier/pkg/listutils"
 )
 
-func (m *Meta) ToProto() *v1.GameMetadata {
-	return &v1.GameMetadata{
+func (m *Meta) ToProto() *searchV1.GameMetadata {
+	return &searchV1.GameMetadata{
 		ProviderType: m.ProviderType.String(),
 		ID:           m.GameDBID,
 		Name:         m.Name,
 		Summary:      m.ShortDesc,
 		Description:  m.FullDesc,
 		URL:          m.URL,
-		Assets: listutils.ToMap(m.Assets, func(t assets.Asset) *v1.Asset {
+		Assets: listutils.ToMap(m.Assets, func(t assets.Asset) *assetV1.Asset {
 			return t.ToProto()
 		}),
 		Platforms:     m.Platforms,
@@ -29,7 +30,7 @@ func (m *Meta) ToProto() *v1.GameMetadata {
 	}
 }
 
-func (m *Meta) FromProto(rpcMeta *v1.GameMetadata) {
+func (m *Meta) FromProto(rpcMeta *searchV1.GameMetadata) {
 	if rpcMeta == nil {
 		return
 	}
@@ -49,7 +50,7 @@ func (m *Meta) FromProto(rpcMeta *v1.GameMetadata) {
 	m.FullDesc = rpcMeta.Description
 	m.URL = rpcMeta.URL
 
-	m.Assets = listutils.ToMap(rpcMeta.Assets, func(t *v1.Asset) assets.Asset {
+	m.Assets = listutils.ToMap(rpcMeta.Assets, func(t *assetV1.Asset) assets.Asset {
 		asset := assets.Asset{}
 		asset.FromProto(t)
 		return asset

@@ -16,7 +16,7 @@ type HandlerHttp struct {
 	srv *Service
 }
 
-func NewHandler(srv *Service) http.Handler {
+func NewHandlerHttp(srv *Service) http.Handler {
 	h := &HandlerHttp{
 		srv: srv,
 	}
@@ -31,7 +31,6 @@ func NewHandler(srv *Service) http.Handler {
 	// only admins may upload/modify
 	mux.Handle("POST /upload", admin(http.HandlerFunc(h.uploadAsset)))
 	mux.Handle("GET /types", admin(http.HandlerFunc(h.getAssetTypes)))
-	mux.Handle("GET /delete/{id}", admin(http.HandlerFunc(h.deleteAsset)))
 
 	return mux
 }
@@ -155,22 +154,6 @@ func (h *HandlerHttp) getAsset(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.ServeFile(w, r, asset)
-}
-
-func (h *HandlerHttp) deleteAsset(w http.ResponseWriter, r *http.Request) {
-	assetId, err := getStrId(r.PathValue("id"))
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	err = h.srv.delete(r.Context(), uint(assetId))
-	if err != nil {
-		http.Error(w, "Failed to delete asset: "+err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	w.WriteHeader(http.StatusOK)
 }
 
 func getStrId(strId string) (int, error) {
