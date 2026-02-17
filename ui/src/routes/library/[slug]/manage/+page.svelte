@@ -3,11 +3,17 @@
     import {type Game, LibraryService} from "$lib/gen/library/v1/library_pb";
     import {createRPCRunner} from "$lib/api/rpc.svelte";
     import {page} from "$app/state";
-    import {goto} from "$app/navigation"; // Added for URL updates
+    import {goto} from "$app/navigation";
     import {onMount} from "svelte";
     import {
-        ChevronLeftIcon, DatabaseIcon, DownloadIcon,
-        FileTextIcon, LayoutGridIcon, LoaderIcon, SaveIcon
+        ChevronLeftIcon,
+        DatabaseIcon,
+        DownloadIcon,
+        FileTextIcon,
+        LayoutGridIcon,
+        LoaderIcon,
+        SaveIcon,
+        Trash2
     } from "@lucide/svelte";
     import {getSnackbarCtx} from "$lib/components/snackbar/snackbar-provider.svelte";
 
@@ -15,6 +21,7 @@
     import TabSource from "./TabSource.svelte";
     import TabDownload from "./TabDownload.svelte";
     import TabFile from "./TabFile.svelte";
+    import {getDialogCtx} from "$lib/components/dialog/dialog.svelte";
 
     const sm = getSnackbarCtx();
     const libSrv = glacierCli(LibraryService);
@@ -54,6 +61,26 @@
         isSaving = false;
     }
 
+    const dm = getDialogCtx()
+
+    async function deleteGame() {
+        const ok = await dm.confirm(
+            "Delete game",
+            "This will permanently delete the game files and metadata from Glacier.",
+            'error'
+        )
+        if (!ok) {
+            return
+        }
+
+        const {err} = await callRPC(() => libSrv.delete({gameId: BigInt(gameIdStr!)}))
+        if (err) {
+            sm.push(`Error deleting: ${err}`, 'error')
+            return
+        }
+        await goto("/library")
+    }
+
     const tabs = [
         {id: 'metadata', label: 'Metadata', icon: LayoutGridIcon},
         {id: 'source', label: 'Source', icon: DatabaseIcon},
@@ -89,19 +116,27 @@
                 </div>
             </div>
 
-            <button
-                    onclick={handleSave}
-                    disabled={isSaving}
-                    class="flex items-center gap-2 px-8 py-2.5 bg-frost-500 text-background rounded-xl text-sm font-bold hover:bg-frost-400 transition-all shadow-lg shadow-frost-500/20 active:scale-95 disabled:opacity-50"
-            >
-                {#if isSaving}
-                    <LoaderIcon size={18} class="animate-spin"/>
-                    Saving...
-                {:else}
-                    <SaveIcon size={18}/>
-                    Save Changes
-                {/if}
-            </button>
+            <div class="flex flex-row gap-4">
+                <button
+                        onclick={handleSave}
+                        disabled={isSaving}
+                        class="flex items-center gap-2 px-8 py-2.5 bg-frost-500 text-background rounded-xl text-sm font-bold hover:bg-frost-400 transition-all shadow-lg shadow-frost-500/20 active:scale-95 disabled:opacity-50"
+                >
+                    {#if isSaving}
+                        <LoaderIcon size={18} class="animate-spin"/>
+                        Saving...
+                    {:else}
+                        <SaveIcon size={18}/>
+                        Save Changes
+                    {/if}
+                </button>
+
+                <button onclick={() => deleteGame()}
+                        class="px-6 py-2  border border-border rounded-xl bg-red-600 text-sm font-bold hover:border-frost-500 transition-all flex items-center gap-2">
+                    <Trash2 size={16}/>
+                    Delete
+                </button>
+            </div>
         </header>
 
         <div class="flex gap-1 bg-panel p-1 rounded-2xl border border-border w-fit">
@@ -117,13 +152,20 @@
             {/each}
         </div>
 
+        <!-- todo refactor game rpc runner and game binding to external state -->
         <main class="min-h-125">
             {#if activeTab === 'metadata'}
-                <TabMetadata refresh={gameRpc.runner} bind:game={editableGame}/>
+                <TabMetadata
+                        refresh={gameRpc.runner}
+                        bind:game={editableGame}
+                />
             {:else if activeTab === 'source'}
                 <TabSource bind:game={editableGame}/>
             {:else if activeTab === 'download'}
-                <TabDownload bind:game={editableGame}/>
+                <TabDownload
+                        refresh={gameRpc.runner}
+                        bind:game={editableGame}
+                />
             {:else if activeTab === 'files'}
                 <TabFile bind:game={editableGame}/>
             {/if}

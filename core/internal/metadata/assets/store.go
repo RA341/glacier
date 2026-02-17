@@ -7,7 +7,7 @@ import (
 )
 
 type Store interface {
-	List(ctx context.Context) ([]Asset, error)
+	List(ctx context.Context, gameId uint64, assetTypeStr string) ([]Asset, error)
 	ListUnDownloaded(ctx context.Context) (map[uint][]Asset, error)
 	ListUndownloadedByGame(ctx context.Context, gameId uint) ([]Asset, error)
 

@@ -55,7 +55,7 @@
     }
 </script>
 
-<div class="space-y-8" in:fade>
+<div class="space-y-8">
     <!-- Header Section -->
     <header class="flex flex-col gap-2 px-2">
         <div class="flex items-center gap-4">

@@ -1,18 +1,15 @@
 <script lang="ts">
     import GameHero from "./GameHero.svelte";
-    import {CircleAlert, LoaderIcon, Pen, ServerIcon, Trash2} from '@lucide/svelte';
+    import {CircleAlert, LoaderIcon, ServerIcon} from '@lucide/svelte';
     import {LibraryService} from "$lib/gen/library/v1/library_pb";
-    import {callRPC, glacierCli, isFrost} from "$lib/api/api";
+    import {glacierCli, isFrost} from "$lib/api/api";
     import {createRPCRunner} from "$lib/api/rpc.svelte.js";
     import {onMount} from "svelte";
     import {page} from "$app/state";
     import {goto} from "$app/navigation";
     import TabFrost from "./TabFrost.svelte";
-    import GameDownloadButton from "./ButtonDownload.svelte";
     import TabFrontPage from "./TabFrontPage.svelte";
-    import {getSnackbarCtx} from "$lib/components/snackbar/snackbar-provider.svelte";
     import {getUserCtx} from "$lib/components/user/provider.svelte";
-    import {getDialogCtx} from "$lib/components/dialog/dialog.svelte";
 
     let activeTab = $derived(page.url.searchParams.get('tab') || 'details');
 
@@ -40,28 +37,6 @@
         getGame()
     })
 
-    const sm = getSnackbarCtx()
-
-    const dm = getDialogCtx()
-
-    async function deleteGame() {
-        const ok = await dm.confirm(
-            "Delete game",
-            "This will permanently delete the game files and metadata from Glacier.",
-            'error'
-        )
-        if (!ok) {
-            return
-        }
-
-        const {err} = await callRPC(() => libSrv.delete({gameId: BigInt(gameIdStr!)}))
-        if (err) {
-            sm.push(`Error deleting: ${err}`, 'error')
-            return
-        }
-        await goto("/library")
-    }
-
     const user = getUserCtx()
 
     async function goToEdit() {
@@ -86,25 +61,22 @@
         <p class="animate-pulse text-sm font-medium">Fetching game...</p>
     </div>
 {:else}
-    <div class="max-w-7xl mx-auto p-6 space-y-8 bg-background text-foreground">
+    <div class="max-w-8xl px-5 py-3 mx-auto space-y-8 bg-background text-foreground">
         {#if originalGame}
-            <GameHero bind:game={originalGame}/>
-        {/if}
+            <GameHero bind:game={originalGame} onManage={goToEdit}/>
 
-        <div class="flex items-center justify-between border-y border-border py-4 px-2">
-            <div class="flex gap-4">
-                <div class="flex gap-1 bg-panel p-1 rounded-xl w-fit">
+            <div class="flex items-center justify-between border-t border-border py-4">
+                <div class="flex gap-1 bg-panel p-1 rounded-2xl border border-border w-fit">
                     <button
                             onclick={() => setTab('details')}
-                            class="px-6 py-1.5 rounded-lg text-sm font-bold transition-all {activeTab === 'details' ? 'bg-surface shadow-sm text-frost-400' : 'text-muted hover:text-foreground'}"
+                            class="px-8 py-2 rounded-xl text-sm font-black uppercase tracking-widest transition-all {activeTab === 'details' ? 'bg-surface shadow-md text-frost-400' : 'text-muted hover:text-foreground'}"
                     >
-                        Details
+                        Overview
                     </button>
-
                     {#if isFrost}
                         <button
                                 onclick={() => setTab('local')}
-                                class="px-6 py-1.5 rounded-lg text-sm font-bold transition-all {activeTab === 'local' ? 'bg-surface shadow-sm text-frost-400' : 'text-muted hover:text-foreground'}"
+                                class="px-8 py-2 rounded-xl text-sm font-black uppercase tracking-widest transition-all {activeTab === 'local' ? 'bg-surface shadow-md text-frost-400' : 'text-muted hover:text-foreground'}"
                         >
                             Local
                         </button>
@@ -112,35 +84,14 @@
                 </div>
             </div>
 
-            <div class="flex gap-3">
-                {#if user.isOmni}
-                    <div class="flex gap-3">
-                        <button
-                                onclick={goToEdit}
-                                class="px-6 py-2 bg-panel border border-border rounded-xl text-sm font-bold hover:border-frost-500 transition-all flex items-center gap-2">
-                            <Pen size={16}/>
-                            Manage
-                        </button>
-
-                        <button onclick={() => deleteGame()}
-                                class="px-6 py-2 bg-panel border border-border rounded-xl text-sm font-bold hover:border-frost-500 transition-all flex items-center gap-2">
-                            <Trash2 size={16}/>
-                            Delete
-                        </button>
-                    </div>
+            <main>
+                <!-- Main Tab Content -->
+                {#if activeTab === 'details'}
+                    <TabFrontPage bind:game={originalGame}/>
+                {:else if activeTab === 'local'}
+                    <TabFrost game={originalGame}/>
                 {/if}
-                {#if isFrost && originalGame?.DownloadState?.State === "Complete"}
-                    <GameDownloadButton gameId={gameId}/>
-                {/if}
-            </div>
-        </div>
-
-        <main>
-            {#if activeTab === 'details' && originalGame}
-                <TabFrontPage bind:game={originalGame}/>
-            {:else if activeTab === 'local'}
-                <TabFrost game={originalGame}/>
-            {/if}
-        </main>
+            </main>
+        {/if}
     </div>
 {/if}

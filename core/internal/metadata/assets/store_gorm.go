@@ -25,13 +25,21 @@ func (s *StoreGorm) GetGameIds(ctx context.Context) ([]uint, error) {
 		Error
 	return ids, err
 }
-func (s *StoreGorm) List(ctx context.Context) ([]Asset, error) {
+
+func (s *StoreGorm) List(ctx context.Context, gameId uint64, assetTypeStr string) ([]Asset, error) {
 	var assets []Asset
-	err := s.db.WithContext(ctx).Find(&assets).Error
-	if err != nil {
-		return nil, err
+
+	q := s.db.WithContext(ctx).Where("game_id = ?", gameId)
+	if assetTypeStr != "" {
+		assetType, err := AssetTypeString(assetTypeStr)
+		if err != nil {
+			return nil, err
+		}
+		q = q.Where("type", assetType)
 	}
-	return assets, nil
+
+	err := q.Find(&assets).Error
+	return assets, err
 }
 
 func (s *StoreGorm) ListUnDownloaded(ctx context.Context) (map[uint][]Asset, error) {

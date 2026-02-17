@@ -39,6 +39,8 @@ const (
 	AssetServiceGetTypesProcedure = "/assets.v1.AssetService/GetTypes"
 	// AssetServiceDeleteProcedure is the fully-qualified name of the AssetService's Delete RPC.
 	AssetServiceDeleteProcedure = "/assets.v1.AssetService/Delete"
+	// AssetServiceListProcedure is the fully-qualified name of the AssetService's List RPC.
+	AssetServiceListProcedure = "/assets.v1.AssetService/List"
 )
 
 // AssetServiceClient is a client for the assets.v1.AssetService service.
@@ -46,6 +48,7 @@ type AssetServiceClient interface {
 	Edit(context.Context, *connect.Request[v1.EditRequest]) (*connect.Response[v1.EditResponse], error)
 	GetTypes(context.Context, *connect.Request[v1.GetTypesRequest]) (*connect.Response[v1.GetTypesResponse], error)
 	Delete(context.Context, *connect.Request[v1.DeleteRequest]) (*connect.Response[v1.DeleteResponse], error)
+	List(context.Context, *connect.Request[v1.ListRequest]) (*connect.Response[v1.ListResponse], error)
 }
 
 // NewAssetServiceClient constructs a client for the assets.v1.AssetService service. By default, it
@@ -77,6 +80,12 @@ func NewAssetServiceClient(httpClient connect.HTTPClient, baseURL string, opts .
 			connect.WithSchema(assetServiceMethods.ByName("Delete")),
 			connect.WithClientOptions(opts...),
 		),
+		list: connect.NewClient[v1.ListRequest, v1.ListResponse](
+			httpClient,
+			baseURL+AssetServiceListProcedure,
+			connect.WithSchema(assetServiceMethods.ByName("List")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -85,6 +94,7 @@ type assetServiceClient struct {
 	edit     *connect.Client[v1.EditRequest, v1.EditResponse]
 	getTypes *connect.Client[v1.GetTypesRequest, v1.GetTypesResponse]
 	delete   *connect.Client[v1.DeleteRequest, v1.DeleteResponse]
+	list     *connect.Client[v1.ListRequest, v1.ListResponse]
 }
 
 // Edit calls assets.v1.AssetService.Edit.
@@ -102,11 +112,17 @@ func (c *assetServiceClient) Delete(ctx context.Context, req *connect.Request[v1
 	return c.delete.CallUnary(ctx, req)
 }
 
+// List calls assets.v1.AssetService.List.
+func (c *assetServiceClient) List(ctx context.Context, req *connect.Request[v1.ListRequest]) (*connect.Response[v1.ListResponse], error) {
+	return c.list.CallUnary(ctx, req)
+}
+
 // AssetServiceHandler is an implementation of the assets.v1.AssetService service.
 type AssetServiceHandler interface {
 	Edit(context.Context, *connect.Request[v1.EditRequest]) (*connect.Response[v1.EditResponse], error)
 	GetTypes(context.Context, *connect.Request[v1.GetTypesRequest]) (*connect.Response[v1.GetTypesResponse], error)
 	Delete(context.Context, *connect.Request[v1.DeleteRequest]) (*connect.Response[v1.DeleteResponse], error)
+	List(context.Context, *connect.Request[v1.ListRequest]) (*connect.Response[v1.ListResponse], error)
 }
 
 // NewAssetServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -134,6 +150,12 @@ func NewAssetServiceHandler(svc AssetServiceHandler, opts ...connect.HandlerOpti
 		connect.WithSchema(assetServiceMethods.ByName("Delete")),
 		connect.WithHandlerOptions(opts...),
 	)
+	assetServiceListHandler := connect.NewUnaryHandler(
+		AssetServiceListProcedure,
+		svc.List,
+		connect.WithSchema(assetServiceMethods.ByName("List")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/assets.v1.AssetService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case AssetServiceEditProcedure:
@@ -142,6 +164,8 @@ func NewAssetServiceHandler(svc AssetServiceHandler, opts ...connect.HandlerOpti
 			assetServiceGetTypesHandler.ServeHTTP(w, r)
 		case AssetServiceDeleteProcedure:
 			assetServiceDeleteHandler.ServeHTTP(w, r)
+		case AssetServiceListProcedure:
+			assetServiceListHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -161,4 +185,8 @@ func (UnimplementedAssetServiceHandler) GetTypes(context.Context, *connect.Reque
 
 func (UnimplementedAssetServiceHandler) Delete(context.Context, *connect.Request[v1.DeleteRequest]) (*connect.Response[v1.DeleteResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("assets.v1.AssetService.Delete is not implemented"))
+}
+
+func (UnimplementedAssetServiceHandler) List(context.Context, *connect.Request[v1.ListRequest]) (*connect.Response[v1.ListResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("assets.v1.AssetService.List is not implemented"))
 }

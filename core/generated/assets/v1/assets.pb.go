@@ -21,6 +21,102 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type ListRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ID            uint64                 `protobuf:"varint,1,opt,name=ID,proto3" json:"ID,omitempty"`
+	AssetType     string                 `protobuf:"bytes,2,opt,name=AssetType,proto3" json:"AssetType,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListRequest) Reset() {
+	*x = ListRequest{}
+	mi := &file_assets_v1_assets_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListRequest) ProtoMessage() {}
+
+func (x *ListRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_assets_v1_assets_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListRequest.ProtoReflect.Descriptor instead.
+func (*ListRequest) Descriptor() ([]byte, []int) {
+	return file_assets_v1_assets_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *ListRequest) GetID() uint64 {
+	if x != nil {
+		return x.ID
+	}
+	return 0
+}
+
+func (x *ListRequest) GetAssetType() string {
+	if x != nil {
+		return x.AssetType
+	}
+	return ""
+}
+
+type ListResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Assets        []*Asset               `protobuf:"bytes,1,rep,name=assets,proto3" json:"assets,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListResponse) Reset() {
+	*x = ListResponse{}
+	mi := &file_assets_v1_assets_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListResponse) ProtoMessage() {}
+
+func (x *ListResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_assets_v1_assets_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListResponse.ProtoReflect.Descriptor instead.
+func (*ListResponse) Descriptor() ([]byte, []int) {
+	return file_assets_v1_assets_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *ListResponse) GetAssets() []*Asset {
+	if x != nil {
+		return x.Assets
+	}
+	return nil
+}
+
 type DeleteRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	ID            uint64                 `protobuf:"varint,1,opt,name=ID,proto3" json:"ID,omitempty"`
@@ -30,7 +126,7 @@ type DeleteRequest struct {
 
 func (x *DeleteRequest) Reset() {
 	*x = DeleteRequest{}
-	mi := &file_assets_v1_assets_proto_msgTypes[0]
+	mi := &file_assets_v1_assets_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -42,7 +138,7 @@ func (x *DeleteRequest) String() string {
 func (*DeleteRequest) ProtoMessage() {}
 
 func (x *DeleteRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_assets_v1_assets_proto_msgTypes[0]
+	mi := &file_assets_v1_assets_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -55,7 +151,7 @@ func (x *DeleteRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteRequest.ProtoReflect.Descriptor instead.
 func (*DeleteRequest) Descriptor() ([]byte, []int) {
-	return file_assets_v1_assets_proto_rawDescGZIP(), []int{0}
+	return file_assets_v1_assets_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *DeleteRequest) GetID() uint64 {
@@ -73,7 +169,7 @@ type DeleteResponse struct {
 
 func (x *DeleteResponse) Reset() {
 	*x = DeleteResponse{}
-	mi := &file_assets_v1_assets_proto_msgTypes[1]
+	mi := &file_assets_v1_assets_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -85,7 +181,7 @@ func (x *DeleteResponse) String() string {
 func (*DeleteResponse) ProtoMessage() {}
 
 func (x *DeleteResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_assets_v1_assets_proto_msgTypes[1]
+	mi := &file_assets_v1_assets_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -98,7 +194,7 @@ func (x *DeleteResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteResponse.ProtoReflect.Descriptor instead.
 func (*DeleteResponse) Descriptor() ([]byte, []int) {
-	return file_assets_v1_assets_proto_rawDescGZIP(), []int{1}
+	return file_assets_v1_assets_proto_rawDescGZIP(), []int{3}
 }
 
 type GetTypesRequest struct {
@@ -109,7 +205,7 @@ type GetTypesRequest struct {
 
 func (x *GetTypesRequest) Reset() {
 	*x = GetTypesRequest{}
-	mi := &file_assets_v1_assets_proto_msgTypes[2]
+	mi := &file_assets_v1_assets_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -121,7 +217,7 @@ func (x *GetTypesRequest) String() string {
 func (*GetTypesRequest) ProtoMessage() {}
 
 func (x *GetTypesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_assets_v1_assets_proto_msgTypes[2]
+	mi := &file_assets_v1_assets_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -134,7 +230,7 @@ func (x *GetTypesRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetTypesRequest.ProtoReflect.Descriptor instead.
 func (*GetTypesRequest) Descriptor() ([]byte, []int) {
-	return file_assets_v1_assets_proto_rawDescGZIP(), []int{2}
+	return file_assets_v1_assets_proto_rawDescGZIP(), []int{4}
 }
 
 type GetTypesResponse struct {
@@ -146,7 +242,7 @@ type GetTypesResponse struct {
 
 func (x *GetTypesResponse) Reset() {
 	*x = GetTypesResponse{}
-	mi := &file_assets_v1_assets_proto_msgTypes[3]
+	mi := &file_assets_v1_assets_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -158,7 +254,7 @@ func (x *GetTypesResponse) String() string {
 func (*GetTypesResponse) ProtoMessage() {}
 
 func (x *GetTypesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_assets_v1_assets_proto_msgTypes[3]
+	mi := &file_assets_v1_assets_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -171,7 +267,7 @@ func (x *GetTypesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetTypesResponse.ProtoReflect.Descriptor instead.
 func (*GetTypesResponse) Descriptor() ([]byte, []int) {
-	return file_assets_v1_assets_proto_rawDescGZIP(), []int{3}
+	return file_assets_v1_assets_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *GetTypesResponse) GetTypes() []string {
@@ -190,7 +286,7 @@ type EditRequest struct {
 
 func (x *EditRequest) Reset() {
 	*x = EditRequest{}
-	mi := &file_assets_v1_assets_proto_msgTypes[4]
+	mi := &file_assets_v1_assets_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -202,7 +298,7 @@ func (x *EditRequest) String() string {
 func (*EditRequest) ProtoMessage() {}
 
 func (x *EditRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_assets_v1_assets_proto_msgTypes[4]
+	mi := &file_assets_v1_assets_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -215,7 +311,7 @@ func (x *EditRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EditRequest.ProtoReflect.Descriptor instead.
 func (*EditRequest) Descriptor() ([]byte, []int) {
-	return file_assets_v1_assets_proto_rawDescGZIP(), []int{4}
+	return file_assets_v1_assets_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *EditRequest) GetAsset() *Asset {
@@ -233,7 +329,7 @@ type EditResponse struct {
 
 func (x *EditResponse) Reset() {
 	*x = EditResponse{}
-	mi := &file_assets_v1_assets_proto_msgTypes[5]
+	mi := &file_assets_v1_assets_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -245,7 +341,7 @@ func (x *EditResponse) String() string {
 func (*EditResponse) ProtoMessage() {}
 
 func (x *EditResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_assets_v1_assets_proto_msgTypes[5]
+	mi := &file_assets_v1_assets_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -258,7 +354,7 @@ func (x *EditResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EditResponse.ProtoReflect.Descriptor instead.
 func (*EditResponse) Descriptor() ([]byte, []int) {
-	return file_assets_v1_assets_proto_rawDescGZIP(), []int{5}
+	return file_assets_v1_assets_proto_rawDescGZIP(), []int{7}
 }
 
 type Asset struct {
@@ -274,7 +370,7 @@ type Asset struct {
 
 func (x *Asset) Reset() {
 	*x = Asset{}
-	mi := &file_assets_v1_assets_proto_msgTypes[6]
+	mi := &file_assets_v1_assets_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -286,7 +382,7 @@ func (x *Asset) String() string {
 func (*Asset) ProtoMessage() {}
 
 func (x *Asset) ProtoReflect() protoreflect.Message {
-	mi := &file_assets_v1_assets_proto_msgTypes[6]
+	mi := &file_assets_v1_assets_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -299,7 +395,7 @@ func (x *Asset) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Asset.ProtoReflect.Descriptor instead.
 func (*Asset) Descriptor() ([]byte, []int) {
-	return file_assets_v1_assets_proto_rawDescGZIP(), []int{6}
+	return file_assets_v1_assets_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *Asset) GetID() uint64 {
@@ -341,7 +437,12 @@ var File_assets_v1_assets_proto protoreflect.FileDescriptor
 
 const file_assets_v1_assets_proto_rawDesc = "" +
 	"\n" +
-	"\x16assets/v1/assets.proto\x12\tassets.v1\"\x1f\n" +
+	"\x16assets/v1/assets.proto\x12\tassets.v1\";\n" +
+	"\vListRequest\x12\x0e\n" +
+	"\x02ID\x18\x01 \x01(\x04R\x02ID\x12\x1c\n" +
+	"\tAssetType\x18\x02 \x01(\tR\tAssetType\"8\n" +
+	"\fListResponse\x12(\n" +
+	"\x06assets\x18\x01 \x03(\v2\x10.assets.v1.AssetR\x06assets\"\x1f\n" +
 	"\rDeleteRequest\x12\x0e\n" +
 	"\x02ID\x18\x01 \x01(\x04R\x02ID\"\x10\n" +
 	"\x0eDeleteResponse\"\x11\n" +
@@ -356,11 +457,12 @@ const file_assets_v1_assets_proto_rawDesc = "" +
 	"\x06GameId\x18\x02 \x01(\x04R\x06GameId\x12\x12\n" +
 	"\x04Type\x18\x03 \x01(\tR\x04Type\x12\x1c\n" +
 	"\tRemoteUrl\x18\x04 \x01(\tR\tRemoteUrl\x12\x1c\n" +
-	"\tLocalPath\x18\x05 \x01(\tR\tLocalPath2\xd1\x01\n" +
+	"\tLocalPath\x18\x05 \x01(\tR\tLocalPath2\x8c\x02\n" +
 	"\fAssetService\x129\n" +
 	"\x04Edit\x12\x16.assets.v1.EditRequest\x1a\x17.assets.v1.EditResponse\"\x00\x12E\n" +
 	"\bGetTypes\x12\x1a.assets.v1.GetTypesRequest\x1a\x1b.assets.v1.GetTypesResponse\"\x00\x12?\n" +
-	"\x06Delete\x12\x18.assets.v1.DeleteRequest\x1a\x19.assets.v1.DeleteResponse\"\x00B\x8f\x01\n" +
+	"\x06Delete\x12\x18.assets.v1.DeleteRequest\x1a\x19.assets.v1.DeleteResponse\"\x00\x129\n" +
+	"\x04List\x12\x16.assets.v1.ListRequest\x1a\x17.assets.v1.ListResponse\"\x00B\x8f\x01\n" +
 	"\rcom.assets.v1B\vAssetsProtoP\x01Z,github.com/ra341/glacier/generated/assets/v1\xa2\x02\x03AXX\xaa\x02\tAssets.V1\xca\x02\tAssets\\V1\xe2\x02\x15Assets\\V1\\GPBMetadata\xea\x02\n" +
 	"Assets::V1b\x06proto3"
 
@@ -376,29 +478,34 @@ func file_assets_v1_assets_proto_rawDescGZIP() []byte {
 	return file_assets_v1_assets_proto_rawDescData
 }
 
-var file_assets_v1_assets_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_assets_v1_assets_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_assets_v1_assets_proto_goTypes = []any{
-	(*DeleteRequest)(nil),    // 0: assets.v1.DeleteRequest
-	(*DeleteResponse)(nil),   // 1: assets.v1.DeleteResponse
-	(*GetTypesRequest)(nil),  // 2: assets.v1.GetTypesRequest
-	(*GetTypesResponse)(nil), // 3: assets.v1.GetTypesResponse
-	(*EditRequest)(nil),      // 4: assets.v1.EditRequest
-	(*EditResponse)(nil),     // 5: assets.v1.EditResponse
-	(*Asset)(nil),            // 6: assets.v1.Asset
+	(*ListRequest)(nil),      // 0: assets.v1.ListRequest
+	(*ListResponse)(nil),     // 1: assets.v1.ListResponse
+	(*DeleteRequest)(nil),    // 2: assets.v1.DeleteRequest
+	(*DeleteResponse)(nil),   // 3: assets.v1.DeleteResponse
+	(*GetTypesRequest)(nil),  // 4: assets.v1.GetTypesRequest
+	(*GetTypesResponse)(nil), // 5: assets.v1.GetTypesResponse
+	(*EditRequest)(nil),      // 6: assets.v1.EditRequest
+	(*EditResponse)(nil),     // 7: assets.v1.EditResponse
+	(*Asset)(nil),            // 8: assets.v1.Asset
 }
 var file_assets_v1_assets_proto_depIdxs = []int32{
-	6, // 0: assets.v1.EditRequest.asset:type_name -> assets.v1.Asset
-	4, // 1: assets.v1.AssetService.Edit:input_type -> assets.v1.EditRequest
-	2, // 2: assets.v1.AssetService.GetTypes:input_type -> assets.v1.GetTypesRequest
-	0, // 3: assets.v1.AssetService.Delete:input_type -> assets.v1.DeleteRequest
-	5, // 4: assets.v1.AssetService.Edit:output_type -> assets.v1.EditResponse
-	3, // 5: assets.v1.AssetService.GetTypes:output_type -> assets.v1.GetTypesResponse
-	1, // 6: assets.v1.AssetService.Delete:output_type -> assets.v1.DeleteResponse
-	4, // [4:7] is the sub-list for method output_type
-	1, // [1:4] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	8, // 0: assets.v1.ListResponse.assets:type_name -> assets.v1.Asset
+	8, // 1: assets.v1.EditRequest.asset:type_name -> assets.v1.Asset
+	6, // 2: assets.v1.AssetService.Edit:input_type -> assets.v1.EditRequest
+	4, // 3: assets.v1.AssetService.GetTypes:input_type -> assets.v1.GetTypesRequest
+	2, // 4: assets.v1.AssetService.Delete:input_type -> assets.v1.DeleteRequest
+	0, // 5: assets.v1.AssetService.List:input_type -> assets.v1.ListRequest
+	7, // 6: assets.v1.AssetService.Edit:output_type -> assets.v1.EditResponse
+	5, // 7: assets.v1.AssetService.GetTypes:output_type -> assets.v1.GetTypesResponse
+	3, // 8: assets.v1.AssetService.Delete:output_type -> assets.v1.DeleteResponse
+	1, // 9: assets.v1.AssetService.List:output_type -> assets.v1.ListResponse
+	6, // [6:10] is the sub-list for method output_type
+	2, // [2:6] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_assets_v1_assets_proto_init() }
@@ -412,7 +519,7 @@ func file_assets_v1_assets_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_assets_v1_assets_proto_rawDesc), len(file_assets_v1_assets_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

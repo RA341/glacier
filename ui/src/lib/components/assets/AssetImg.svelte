@@ -5,6 +5,7 @@
         src,
         alt = '',
         class: className = '',
+        imgClass: imgClassName = '',
         loadingSlot,
         errorSlot,
         onLoad,
@@ -13,6 +14,7 @@
         src: string | undefined | null;
         alt?: string;
         class?: string;
+        imgClass?: string;
         loadingSlot?: Snippet;
         errorSlot?: Snippet;
         onLoad?: () => void;
@@ -46,7 +48,7 @@
         <img
                 {src}
                 {alt}
-                class="h-full w-full object-cover {status === 'loading' ? 'invisible' : 'visible'}"
+                class="{imgClassName} {status === 'loading' ? 'invisible' : 'visible'}"
                 onload={handleLoad}
                 onerror={handleError}
         />

@@ -8,8 +8,17 @@ service AssetService {
   rpc Edit(EditRequest) returns (EditResponse) {}
   rpc GetTypes(GetTypesRequest) returns (GetTypesResponse) {}
   rpc Delete(DeleteRequest) returns (DeleteResponse) {}
+  rpc List(ListRequest) returns (ListResponse) {}
 }
 
+message ListRequest {
+  uint64 ID = 1;
+  string AssetType = 2;
+}
+
+message ListResponse {
+  repeated Asset assets = 1;
+}
 
 message DeleteRequest {
   uint64 ID = 1;

@@ -6,6 +6,6 @@
 </script>
 
 <div class="bg-surface border border-border rounded-3xl overflow-hidden h-150 shadow-sm">
-    <FileManager game={game.ID}/>
+    <FileManager game={game}/>
 </div>
 

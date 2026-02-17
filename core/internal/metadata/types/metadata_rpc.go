@@ -14,8 +14,8 @@ func (m *Meta) ToProto() *searchV1.GameMetadata {
 		ProviderType: m.ProviderType.String(),
 		ID:           m.GameDBID,
 		Name:         m.Name,
-		Summary:      m.ShortDesc,
-		Description:  m.FullDesc,
+		Summary:      m.FullDesc,
+		Description:  m.ShortDesc,
 		URL:          m.URL,
 		Assets: listutils.ToMap(m.Assets, func(t assets.Asset) *assetV1.Asset {
 			return t.ToProto()

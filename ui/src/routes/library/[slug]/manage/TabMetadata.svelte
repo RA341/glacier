@@ -46,7 +46,7 @@
 
 </script>
 
-<div class="space-y-6 pb-20" in:fade>
+<div class="space-y-6 pb-20">
     {#if game && game.Meta}
         <div class="bg-surface border border-border rounded-3xl p-8 space-y-6 shadow-sm">
             <div class="flex items-center mb-2">
@@ -61,10 +61,10 @@
                         class="flex items-center gap-2 px-4 py-1.5 bg-panel border border-border rounded-xl text-[10px] font-bold uppercase tracking-widest text-muted hover:text-frost-400 hover:border-frost-500/50 transition-all active:scale-95 disabled:opacity-50"
                 >
                     {#if isRefreshing}
-                        <LoaderIcon size={12} class="animate-spin text-frost-500" />
+                        <LoaderIcon size={12} class="animate-spin text-frost-500"/>
                         Refreshing...
                     {:else}
-                        <RefreshCwIcon size={12} />
+                        <RefreshCwIcon size={12}/>
                         Refresh Metadata
                     {/if}
                 </button>
