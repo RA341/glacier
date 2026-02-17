@@ -208,11 +208,6 @@
 
                 {#if isFrost && game?.DownloadState?.State === "Complete"}
                     <GameDownloadButton gameId={game.ID}/>
-                {:else}
-                    <button class="px-10 py-3 bg-frost-500 text-background rounded-2xl text-sm font-black uppercase tracking-widest hover:bg-frost-400 transition-all flex items-center gap-2 shadow-xl shadow-frost-500/20">
-                        <PlayIcon size={18} fill="currentColor"/>
-                        Play
-                    </button>
                 {/if}
             </div>
         </div>
