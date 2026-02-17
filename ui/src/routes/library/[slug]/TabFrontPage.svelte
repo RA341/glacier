@@ -12,17 +12,21 @@
 
 <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
     <div class="lg:col-span-3 space-y-6">
-        <div class="p-8 bg-surface border border-border rounded-3xl space-y-3 shadow-sm">
-            <h3 class="text-[10px] font-black text-muted uppercase tracking-[0.3em]">
+        <!-- Summary: Shorter, tighter padding, no fixed aspect ratio -->
+        <div class="bg-linear-to-br from-surface/40 to-frost-500/10 backdrop-blur-xl border border-frost-500/20 space-y-4 rounded-2xl p-4 shadow-sm relative w-full overflow-hidden group">
+            <h3 class="text-[14px] font-black uppercase text-frost-400">
                 Summary
             </h3>
-            <p class="text-lg font-medium leading-relaxed text-foreground/90">
+            <p class="text-base font-medium leading-snug text-foreground/90">
                 {meta?.Summary || "No summary available."}
             </p>
         </div>
 
-        <div class="p-8 bg-surface border border-border rounded-3xl space-y-4 shadow-sm min-h-75">
-            <h3 class="text-[10px] font-black text-muted uppercase tracking-[0.3em]">About this game</h3>
+        <!-- Description: Kept large and spacious -->
+        <div class="bg-linear-to-br from-surface/40 to-frost-500/10 backdrop-blur-xl border border-frost-500/20 space-y-4 rounded-3xl p-6 shadow-sm relative w-full min-h-75 overflow-hidden group">
+            <h3 class="text-[14px] font-black uppercase text-frost-400">
+                About this game
+            </h3>
             <p class="text-md text-white leading-relaxed whitespace-pre-line">
                 {meta?.Description || "No detailed description found."}
             </p>
@@ -30,7 +34,7 @@
     </div>
 
     <aside class="space-y-6">
-        <div class="bg-surface border border-border rounded-3xl p-6 space-y-6 shadow-sm">
+        <div class="bg-surface/40 backdrop-blur-xl border border-white/10 border-border rounded-3xl p-6 space-y-6 shadow-sm">
             <div class="space-y-1">
                 <span class="text-[10px] font-black text-muted uppercase tracking-widest flex items-center gap-2">
                     Release Date

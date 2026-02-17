@@ -21,6 +21,7 @@
     import {createRPCRunner} from "$lib/api/rpc.svelte";
     import {onMount} from "svelte";
     import {fade} from 'svelte/transition';
+    import {trimPrefix} from "$lib/api/strings.ts";
 
     let {game = $bindable(null), onManage}: { game: Game | null, onManage: () => void } = $props();
 
@@ -71,8 +72,7 @@
 </script>
 
 <div class="space-y-4">
-    <div class="relative w-full aspect-21/9 lg:aspect-25/9 bg-panel rounded-3xl border border-border overflow-hidden group shadow-2xl">
-
+    <div class="bg-surface/40 backdrop-blur-xl border border-white/10 rounded-3xl p-6 shadow-sm relative w-full aspect-21/9 lg:aspect-30/9  overflow-hidden group ">
         {#if listRpc.loading && !listRpc.value}
             <div class="flex h-full w-full items-center justify-center bg-background/50 animate-pulse">
                 <LoaderIcon class="animate-spin text-frost-500" size={40}/>
@@ -83,6 +83,10 @@
                 <p class="text-xs font-black uppercase tracking-widest">Failed to load gallery</p>
             </div>
         {:else if assets.length > 0}
+            <!-- Asset Label Overlay -->
+            <div class="absolute top-6 right-8 px-4 py-1.5 rounded-full bg-background/40 backdrop-blur-md border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] text-white/90 z-20 pointer-events-none">
+                {trimPrefix(currentAsset.Type, "Asset")}
+            </div>
             <!-- Navigation Arrows -->
             {#if assets.length > 1}
                 <button
@@ -137,11 +141,6 @@
                     ></button>
                 {/each}
             </div>
-
-            <!-- Asset Label Overlay -->
-            <div class="absolute bottom-6 left-8 px-4 py-1.5 rounded-full bg-background/40 backdrop-blur-md border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] text-white/90 z-20 pointer-events-none">
-                {currentAsset.Type}
-            </div>
         {:else}
             <!-- Empty State -->
             <div class="flex flex-col h-full w-full items-center justify-center text-muted/20 gap-3">
@@ -152,14 +151,14 @@
     </div>
 
     <!-- MIDDLE SECTION: INFO BAR -->
-    <div class="bg-surface border border-border rounded-3xl p-6 shadow-sm">
+    <div class="bg-surface/40 backdrop-blur-xl border border-white/10 rounded-3xl p-6 shadow-sm">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             <div class="space-y-4">
                 <h1 class="text-3xl font-black tracking-tight text-foreground">{meta?.Name}</h1>
 
-                <div class="flex flex-wrap items-center gap-4 text-sm font-bold">
+                <div class="flex flex-wrap items-center gap-1 text-sm font-bold">
                     <!-- Rating -->
-                    <div class="flex items-center gap-2 px-3 py-1.5 bg-panel border border-border rounded-xl">
+                    <div class="flex items-center gap-2 px-3 py-1.5 bg-transparent  rounded-xl">
                         <StarIcon size={16} class="text-yellow-500 fill-yellow-500"/>
                         <span>{meta?.Rating} <span class="text-muted font-medium">({meta?.RatingCount})</span></span>
                     </div>
@@ -167,7 +166,7 @@
                     <div class="w-px h-4 bg-border hidden lg:block"></div>
 
                     <!-- Release Year -->
-                    <div class="flex items-center gap-2 px-3 py-1.5 bg-panel border border-border rounded-xl">
+                    <div class="flex items-center gap-2 px-3 py-1.5 bg-transparent  rounded-xl">
                         <CalendarIcon size={16} class="text-frost-400"/>
                         <span>{new Date(meta?.ReleaseDate || "").getFullYear()}</span>
                     </div>
@@ -175,20 +174,24 @@
                     <div class="w-px h-4 bg-border hidden lg:block"></div>
 
                     <!-- Platform Tags -->
-                    <div class="flex items-center gap-2 px-3 py-1.5 bg-panel border border-border rounded-xl">
+                    <div class="flex items-center gap-2 px-3 py-1.5 bg-transparent  rounded-xl">
                         <MonitorIcon size={16} class="text-frost-400"/>
-                        <span class="truncate max-w-50">{meta?.Platforms.join(", ")}</span>
+                        {#each meta?.Platforms.slice(0, 2) as Platform}
+                            <span class="px-3 py-1 bg-frost-500/5 border border-frost-500/15 text-muted rounded-lg text-[11px] font-black uppercase tracking-wider">
+                                {Platform}
+                            </span>
+                        {/each}
                     </div>
                 </div>
 
                 <!-- Genre Tags -->
                 <div class="flex flex-wrap gap-2">
                     {#each meta?.Genres.slice(0, 4) ?? [] as genre}
-                        <span class="px-3 py-1 bg-frost-500/10 border border-frost-500/20 text-frost-400 rounded-lg text-[11px] font-black uppercase tracking-wider">
+                        <span class="px-3 py-1 bg-frost-500/5 border border-frost-500/15 text-frost-400 rounded-lg text-[11px] font-black uppercase tracking-wider">
                             {genre}
                         </span>
                     {/each}
-                    {#if meta?.Genres?.length > 4}
+                    {#if meta?.Genres?.length && meta?.Genres?.length > 4}
                         <span class="px-3 py-1 bg-panel border border-border text-muted rounded-lg text-[11px] font-bold">
                             +{meta.Genres.length - 4} more
                         </span>
@@ -200,7 +203,7 @@
             <div class="flex items-center gap-3 shrink-0">
                 <button
                         onclick={onManage}
-                        class="px-8 py-3 bg-panel border border-border rounded-2xl text-sm font-black uppercase tracking-widest hover:border-frost-500 transition-all flex items-center gap-2"
+                        class="px-8 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm font-black uppercase tracking-widest hover:border-frost-500/60 hover:bg-white/10 transition-all flex items-center gap-2"
                 >
                     <Pen size={18}/>
                     Manage
