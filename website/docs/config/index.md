@@ -1,7 +1,3 @@
-Here’s a clearer, more professional version with better structure and flow:
-
----
-
 # Configuration
 
 Almost all configuration for both **Glacier** and **Frost** can be set in one of the following ways (in order of priority):
