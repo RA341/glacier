@@ -23,7 +23,7 @@ func (sc *ServiceConfig) ToProto() (*v1.ServiceConfig, error) {
 }
 
 func (sc *ServiceConfig) FromProto(pb *v1.ServiceConfig) error {
-	var conf map[string]interface{}
+	var conf map[string]any
 
 	err := json.Unmarshal(pb.Config, &conf)
 	if err != nil {

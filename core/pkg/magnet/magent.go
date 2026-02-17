@@ -30,12 +30,12 @@ func TorrentFileToMagnet(data io.Reader) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("failed to unmarshal torrent data: %w", err)
 	}
-	torrentInfo, ok := tmp.(map[string]interface{})
+	torrentInfo, ok := tmp.(map[string]any)
 	if !ok {
 		return "", fmt.Errorf("failed to convert unmarshaled data to map[string]interface{}")
 	}
 
-	info, ok := torrentInfo["info"].(map[string]interface{})
+	info, ok := torrentInfo["info"].(map[string]any)
 	if !ok {
 		return "", fmt.Errorf("'info' key not found or assertion failed to map[string]interface{}")
 	}
@@ -65,9 +65,9 @@ func TorrentFileToMagnet(data io.Reader) (string, error) {
 	if announce, ok := torrentInfo["announce"].(string); ok && announce != "" {
 		trackerUrls[announce] = struct{}{}
 	}
-	if announceList, ok := torrentInfo["announce-list"].([]interface{}); ok {
+	if announceList, ok := torrentInfo["announce-list"].([]any); ok {
 		for _, tierInterface := range announceList {
-			tier, ok := tierInterface.([]interface{})
+			tier, ok := tierInterface.([]any)
 			if !ok {
 				continue
 			}
@@ -117,8 +117,8 @@ func DecodeMagnetURL(magnetURI string) (TorrentComponents, error) {
 			// Check for BitTorrent Info Hash (BTIH)
 			// Format is urn:btih:<hex_encoded_hash> or urn:btih:<base32_encoded_hash>
 			// This code primarily targets the common hex-encoded SHA-1 hash (40 chars).
-			if strings.HasPrefix(xtValue, "urn:btih:") {
-				hash := strings.TrimPrefix(xtValue, "urn:btih:")
+			if after, ok2 := strings.CutPrefix(xtValue, "urn:btih:"); ok2 {
+				hash := after
 				if hash != "" {
 					components.InfoHash = hash
 					break // Use the first valid BTIH found

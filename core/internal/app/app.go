@@ -151,7 +151,7 @@ func (a *App) VerifyServices() error {
 		fieldName := typ.Field(i).Name
 
 		// We only care about pointers (services)
-		if field.Kind() == reflect.Ptr && field.IsNil() {
+		if field.Kind() == reflect.Pointer && field.IsNil() {
 			return fmt.Errorf("critical error: service '%s' was not initialized", fieldName)
 		}
 	}

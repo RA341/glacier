@@ -183,7 +183,7 @@ func (s *Service[T]) GetSchema() ([]byte, error) {
 
 func (s *Service[T]) parseConf(v reflect.Value) map[string]FieldVal {
 	// If it's a pointer, dereference it.
-	if v.Kind() == reflect.Ptr {
+	if v.Kind() == reflect.Pointer {
 		v = v.Elem()
 	}
 

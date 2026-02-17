@@ -46,7 +46,7 @@ func (c *CacheStoreBadger) Progress() ([]FileProgress, error) {
 
 			// iterator to scan only chunks for file
 			it := txn.NewIterator(badger.DefaultIteratorOptions)
-			prefix := []byte(fmt.Sprintf("c:%s:", name))
+			prefix := fmt.Appendf(nil, "c:%s:", name)
 
 			for it.Seek(prefix); it.ValidForPrefix(prefix); it.Next() {
 				var chunk Chunk
@@ -98,7 +98,7 @@ func (c *CacheStoreBadger) GetChunkLen(file string) (int, error) {
 	err := c.db.View(func(txn *badger.Txn) error {
 		it := txn.NewIterator(badger.DefaultIteratorOptions)
 		defer it.Close()
-		prefix := []byte(fmt.Sprintf("c:%s:", file))
+		prefix := fmt.Appendf(nil, "c:%s:", file)
 		for it.Seek(prefix); it.ValidForPrefix(prefix); it.Next() {
 			count++
 		}
@@ -111,7 +111,7 @@ func (c *CacheStoreBadger) GetChunkLen(file string) (int, error) {
 func (c *CacheStoreBadger) Add(file string, chunks []Chunk) error {
 	return c.db.Update(func(txn *badger.Txn) error {
 		// mark the file as existing
-		fileKey := []byte(fmt.Sprintf("f:%s", file))
+		fileKey := fmt.Appendf(nil, "f:%s", file)
 		if err := txn.Set(fileKey, []byte{1}); err != nil {
 			return err
 		}
@@ -119,7 +119,7 @@ func (c *CacheStoreBadger) Add(file string, chunks []Chunk) error {
 		// add all chunks
 		for i, chunk := range chunks {
 			// Using %010d ensures indexes are sorted numerically (0000000001, 0000000002)
-			key := []byte(fmt.Sprintf("c:%s:%010d", file, i))
+			key := fmt.Appendf(nil, "c:%s:%010d", file, i)
 			data, _ := json.Marshal(chunk)
 			if err := txn.Set(key, data); err != nil {
 				return err
@@ -133,7 +133,7 @@ func (c *CacheStoreBadger) Add(file string, chunks []Chunk) error {
 func (c *CacheStoreBadger) Get(file string) (chunks []Chunk, found bool, err error) {
 	err = c.db.View(func(txn *badger.Txn) error {
 		// check if file exists
-		fileKey := []byte(fmt.Sprintf("f:%s", file))
+		fileKey := fmt.Appendf(nil, "f:%s", file)
 		_, err := txn.Get(fileKey)
 		if errors.Is(err, badger.ErrKeyNotFound) {
 			found = false
@@ -144,7 +144,7 @@ func (c *CacheStoreBadger) Get(file string) (chunks []Chunk, found bool, err err
 		// Iterate through chunks
 		it := txn.NewIterator(badger.DefaultIteratorOptions)
 		defer it.Close()
-		prefix := []byte(fmt.Sprintf("c:%s:", file))
+		prefix := fmt.Appendf(nil, "c:%s:", file)
 		for it.Seek(prefix); it.ValidForPrefix(prefix); it.Next() {
 			var chunk Chunk
 			err := it.Item().Value(func(val []byte) error {
@@ -163,7 +163,7 @@ func (c *CacheStoreBadger) Get(file string) (chunks []Chunk, found bool, err err
 // Update updates a specific chunk by its index
 func (c *CacheStoreBadger) Update(file string, index int, chunk *Chunk) error {
 	return c.db.Update(func(txn *badger.Txn) error {
-		key := []byte(fmt.Sprintf("c:%s:%010d", file, index))
+		key := fmt.Appendf(nil, "c:%s:%010d", file, index)
 
 		if _, err := txn.Get(key); errors.Is(err, badger.ErrKeyNotFound) {
 			return fmt.Errorf("chunk index %d not found for file %s", index, file)

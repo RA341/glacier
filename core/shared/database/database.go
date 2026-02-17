@@ -80,10 +80,10 @@ func migrate(db *sql.DB, migrationDir fs.FS, migrationPath string) error {
 
 type GooseZerolog struct{}
 
-func (g GooseZerolog) Fatalf(format string, v ...interface{}) {
+func (g GooseZerolog) Fatalf(format string, v ...any) {
 	log.Fatal().Msgf(format, v...)
 }
 
-func (g GooseZerolog) Printf(format string, v ...interface{}) {
+func (g GooseZerolog) Printf(format string, v ...any) {
 	log.Info().Msgf(format, v...)
 }

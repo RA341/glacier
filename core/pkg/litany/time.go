@@ -84,7 +84,7 @@ func CustomRelTime(a, b time.Time, albl, blbl string, magnitudes []RelTimeMagnit
 		n = len(magnitudes) - 1
 	}
 	mag := magnitudes[n]
-	var args []interface{}
+	var args []any
 	escaped := false
 	for _, ch := range mag.Format {
 		if escaped {

@@ -21,10 +21,10 @@ import (
 // 2. Environment variables (e.g., DOCKMAN_PORT=9000)
 //
 // 3. Default values specified in struct tags.
-func Scan(s interface{}, envPrefix string) error {
+func Scan(s any, envPrefix string) error {
 	// Ensure we have a pointer to a struct
 	val := reflect.ValueOf(s)
-	if val.Kind() != reflect.Ptr || val.Elem().Kind() != reflect.Struct {
+	if val.Kind() != reflect.Pointer || val.Elem().Kind() != reflect.Struct {
 		return fmt.Errorf("expected a pointer to a struct")
 	}
 
@@ -128,8 +128,8 @@ func loadDefault(tags map[string]string) (string, error) {
 // e.g., `flag=port,env=PORT` becomes `map[string]string{"flag": "port", "env": "PORT"}`
 func parseTag(tag string) map[string]string {
 	result := make(map[string]string)
-	parts := strings.Split(tag, ",")
-	for _, part := range parts {
+	parts := strings.SplitSeq(tag, ",")
+	for part := range parts {
 		kv := strings.SplitN(part, "=", 2)
 		if len(kv) == 2 {
 			result[strings.TrimSpace(kv[0])] = strings.TrimSpace(kv[1])

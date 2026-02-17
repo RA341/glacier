@@ -13,7 +13,7 @@ func GenerateRandomToken(length int) string {
 	const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
 	var randomString []byte
 
-	for i := 0; i < length; i++ {
+	for range length {
 		randomIndex, _ := rand.Int(rand.Reader, big.NewInt(int64(len(characters))))
 		randomString = append(randomString, characters[randomIndex.Int64()])
 	}

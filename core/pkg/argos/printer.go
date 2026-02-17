@@ -33,7 +33,7 @@ type FieldPrintConfig struct {
 	maxTagLength int
 }
 
-func PrintInfo(c interface{}, footer string, opts ...FieldPrintConfig) {
+func PrintInfo(c any, footer string, opts ...FieldPrintConfig) {
 	var tags = make([]string, len(opts))
 	for i, opt := range opts {
 		tags[i] = opt.TagName
@@ -130,7 +130,7 @@ func PrintInfo(c interface{}, footer string, opts ...FieldPrintConfig) {
 	printInBox("Config", contentBuilder.String())
 }
 
-func GetStructMeta(c interface{}, tags ...string) ([]FieldVal, error) {
+func GetStructMeta(c any, tags ...string) ([]FieldVal, error) {
 	marshal, err := yaml.Marshal(c)
 	if err != nil {
 		return nil, err
@@ -175,7 +175,7 @@ type FieldVal struct {
 // flattenStruct recursively traverses a struct and returns a flat list of KeyValue pairs.
 func flattenStruct(v reflect.Value, structPrefix string, tags ...string) []FieldVal {
 	// If it's a pointer, dereference it.
-	if v.Kind() == reflect.Ptr {
+	if v.Kind() == reflect.Pointer {
 		v = v.Elem()
 	}
 

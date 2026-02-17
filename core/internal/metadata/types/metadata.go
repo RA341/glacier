@@ -94,7 +94,7 @@ func (p *StringArray) Value() (driver.Value, error) {
 }
 
 // Scan handles loading from the database (SQL -> Go)
-func (p *StringArray) Scan(src interface{}) error {
+func (p *StringArray) Scan(src any) error {
 	if src == nil {
 		*p = nil
 		return nil

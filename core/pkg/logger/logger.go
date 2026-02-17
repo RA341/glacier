@@ -129,7 +129,7 @@ func GetLogger() zerolog.Logger {
 }
 
 // GetLoggerWithFields returns a logger with additional fields
-func GetLoggerWithFields(fields map[string]interface{}) zerolog.Logger {
+func GetLoggerWithFields(fields map[string]any) zerolog.Logger {
 	logger := log.Logger
 	for key, value := range fields {
 		logger = logger.With().Interface(key, value).Logger()

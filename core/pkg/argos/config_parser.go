@@ -12,7 +12,7 @@ import (
 
 type FieldProcessor func(field reflect.Value, fieldType reflect.StructField)
 
-func LoadStruct(ptr interface{}, functor FieldProcessor) {
+func LoadStruct(ptr any, functor FieldProcessor) {
 	v := reflect.ValueOf(ptr).Elem()
 	t := v.Type()
 
@@ -24,7 +24,7 @@ func LoadStruct(ptr interface{}, functor FieldProcessor) {
 			continue
 		}
 
-		if field.Kind() == reflect.Ptr && field.IsNil() {
+		if field.Kind() == reflect.Pointer && field.IsNil() {
 			// if it's a struct pointer we want to recurse into
 			if field.Type().Elem().Kind() == reflect.Struct {
 
@@ -33,7 +33,7 @@ func LoadStruct(ptr interface{}, functor FieldProcessor) {
 		}
 
 		fVal := field
-		if fVal.Kind() == reflect.Ptr {
+		if fVal.Kind() == reflect.Pointer {
 			fVal = fVal.Elem()
 		}
 		if fVal.Kind() == reflect.Struct {

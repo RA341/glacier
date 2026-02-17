@@ -8,7 +8,7 @@ import (
 	"github.com/go-viper/mapstructure/v2"
 )
 
-func ParseMap(output interface{}, raw map[string]any) error {
+func ParseMap(output any, raw map[string]any) error {
 	mapConfig := &mapstructure.DecoderConfig{
 		// error if a field in the struct is NOT in the source map
 		ErrorUnset: true,
@@ -36,10 +36,10 @@ type FieldSchema struct {
 	ValueType string `json:"value_type,omitempty"` // e.g. "string" if it's a map or array
 }
 
-func GetSchema(input interface{}) ([]FieldSchema, error) {
+func GetSchema(input any) ([]FieldSchema, error) {
 	t := reflect.TypeOf(input)
 
-	if t.Kind() == reflect.Ptr {
+	if t.Kind() == reflect.Pointer {
 		t = t.Elem()
 	}
 
@@ -49,8 +49,7 @@ func GetSchema(input interface{}) ([]FieldSchema, error) {
 
 	var schema []FieldSchema
 
-	for i := 0; i < t.NumField(); i++ {
-		field := t.Field(i)
+	for field := range t.Fields() {
 
 		if !field.IsExported() {
 			continue

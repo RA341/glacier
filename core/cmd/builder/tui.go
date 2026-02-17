@@ -74,10 +74,7 @@ func render(jobs []*Job) {
 		return
 	}
 
-	availLines := height - numJobs
-	if availLines < 0 {
-		availLines = 0
-	}
+	availLines := max(height-numJobs, 0)
 
 	linesPerJob := availLines / numJobs
 	remainder := availLines % numJobs
@@ -92,10 +89,7 @@ func render(jobs []*Job) {
 			paneHeight += remainder
 		}
 
-		idx := j.CurrentStage - 1
-		if idx < 0 {
-			idx = 0
-		}
+		idx := max(j.CurrentStage-1, 0)
 		if idx >= len(j.Stages) {
 			idx = len(j.Stages) - 1
 		}
@@ -134,7 +128,7 @@ func render(jobs []*Job) {
 		}
 
 		padding := paneHeight - len(visibleLines)
-		for k := 0; k < padding; k++ {
+		for range padding {
 			screenLines = append(screenLines, "")
 		}
 		j.mu.RUnlock()
