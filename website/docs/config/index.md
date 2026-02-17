@@ -1,20 +1,31 @@
+Here’s a clearer, more professional version with better structure and flow:
+
+---
+
 # Configuration
 
-Almost all configuration for both frost and glacier can be set by either via (in the order of importance)
+Almost all configuration for both **Glacier** and **Frost** can be set in one of the following ways (in order of priority):
 
-* Env var
-* Web UI
+1. **Environment variables**
+2. **Web UI**
 
-If an env var is set you cannot change it on the webui,
+Environment variables take precedence over the Web UI.
 
-This is due to the fact that if a env var is set any changes you make will be overwritten by the env var when the app
-restarts.
+If a configuration value is set via an environment variable, it **cannot** be modified in the Web UI. This is because any changes made in the UI would be overwritten the next time the application restarts.
 
-To prevent this mismatch, the webui will prevent you from editing the config in the UI.
+To prevent this mismatch, the Web UI automatically disables editing for any settings controlled by environment variables.
 
-If you want to edit the config in the webui, you should unset the env var and restart the app.
+If you want to manage a setting through the Web UI instead, unset the corresponding environment variable and restart the application.
 
-# Other configs
+---
 
-Users, Indexers, Downloaders, Metadata providers cannot be set via the above the method, and can be modified only via
-the WebUI
+# Other Configuration
+
+The following cannot be configured via environment variables:
+
+* Users
+* Indexers
+* Downloaders
+* Metadata providers
+
+These can only be created and managed through the Web UI.
