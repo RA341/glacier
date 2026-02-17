@@ -7,7 +7,7 @@
 		"start": "docusaurus start",
 		"build": "docusaurus build",
 		"swizzle": "docusaurus swizzle",
-		"deploy": "npm run build && wrangler pages deploy ./build --project-name=website",
+		"deploy": "npm run build && wrangler pages deploy ./build --project-name=glacier-docs",
 		"clear": "docusaurus clear",
 		"serve": "docusaurus serve",
 		"write-translations": "docusaurus write-translations",
