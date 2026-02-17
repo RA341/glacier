@@ -1,41 +1,376 @@
 /**
- * Any CSS included here will be global. The classic template
- * bundles Infima by default. Infima is a CSS framework designed to
- * work well for content-centric websites.
+ * Custom Docusaurus theme matching your SaaS project design system
+ * Dark theme with frost blue accents and modern SaaS aesthetics
  */
 
-/* You can override the default Infima variables here. */
+/* ============================================
+   ROOT VARIABLES (LIGHT MODE)
+   ============================================ */
 :root {
-    --ifm-color-primary: #2b7fff; /* glacier blue */
-    --ifm-color-primary-dark: #246fe0;
-    --ifm-color-primary-darker: #2066cf;
-    --ifm-color-primary-darkest: #1a54a8;
-    --ifm-color-primary-light: #3c8cff;
-    --ifm-color-primary-lighter: #4a95ff;
-    --ifm-color-primary-lightest: #6aaaff;
+    /* Frost Blue Primary Palette */
+    --ifm-color-primary: #38bdf8;
+    --ifm-color-primary-dark: #1db0f5;
+    --ifm-color-primary-darker: #0ea5e9;
+    --ifm-color-primary-darkest: #0c8ac7;
+    --ifm-color-primary-light: #5cc9fb;
+    --ifm-color-primary-lighter: #7dd3fc;
+    --ifm-color-primary-lightest: #bae6fd;
 
-    --ifm-background-color: #f6f9fc;
+    /* Light Mode Backgrounds */
+    --ifm-background-color: #ffffff;
     --ifm-navbar-background-color: #ffffff;
-    --ifm-footer-background-color: #eef3f8;
+    --ifm-footer-background-color: #f8fafc;
 
+    /* Light Mode Surface Colors */
+    --ifm-background-surface-color: #f8fafc;
+    --ifm-card-background-color: #ffffff;
+
+    /* Borders */
+    --ifm-color-emphasis-300: #e2e8f0;
+    --ifm-hr-border-color: #e2e8f0;
+
+    /* Text Colors */
+    --ifm-font-color-base: #18181b;
+    --ifm-color-content: #27272a;
+    --ifm-color-content-secondary: #71717a;
+
+    /* Code Blocks */
     --ifm-code-font-size: 95%;
-    --docusaurus-highlighted-code-line-bg: rgba(43, 127, 255, 0.12);
+    --docusaurus-highlighted-code-line-bg: rgba(56, 189, 248, 0.12);
+    --ifm-code-background: #f1f5f9;
+
+    /* Shadows */
+    --ifm-global-shadow-lw: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    --ifm-global-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --ifm-global-shadow-tl: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --shadow-frost: 0 0 20px -5px rgba(56, 189, 248, 0.15);
+
+    /* Font Smoothing */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-/* For readability concerns, you should choose a lighter palette in dark mode. */
+/* ============================================
+   DARK MODE VARIABLES
+   ============================================ */
 [data-theme='dark'] {
-    --ifm-color-primary: #7fb4ff;
-    --ifm-color-primary-dark: #5fa0ff;
-    --ifm-color-primary-darker: #4c94ff;
-    --ifm-color-primary-darkest: #2f6fd6;
-    --ifm-color-primary-light: #9cc7ff;
-    --ifm-color-primary-lighter: #b1d3ff;
-    --ifm-color-primary-lightest: #d6e8ff;
+    /* Frost Blue Primary Palette (Lighter for dark mode) */
+    --ifm-color-primary: #38bdf8;
+    --ifm-color-primary-dark: #1db0f5;
+    --ifm-color-primary-darker: #0ea5e9;
+    --ifm-color-primary-darkest: #0c8ac7;
+    --ifm-color-primary-light: #5cc9fb;
+    --ifm-color-primary-lighter: #7dd3fc;
+    --ifm-color-primary-lightest: #bae6fd;
 
-    --ifm-background-color: #0b1220;
-    --ifm-navbar-background-color: #0f172a;
-    --ifm-footer-background-color: #0b1220;
+    /* Dark Mode Backgrounds (matching your project) */
+    --ifm-background-color: #09090b; /* background */
+    --ifm-navbar-background-color: #18181b; /* surface */
+    --ifm-footer-background-color: #09090b;
 
-    --docusaurus-highlighted-code-line-bg: rgba(127, 180, 255, 0.18);
+    /* Dark Mode Surface Colors */
+    --ifm-background-surface-color: #18181b; /* surface */
+    --ifm-card-background-color: #27272a; /* panel */
+
+    /* Borders */
+    --ifm-color-emphasis-300: #27272a;
+    --ifm-hr-border-color: #27272a;
+    --ifm-toc-border-color: #27272a;
+
+    /* Text Colors */
+    --ifm-font-color-base: #ffffff;
+    --ifm-color-content: #fafafa;
+    --ifm-color-content-secondary: #a1a1aa; /* muted */
+
+    /* Code Blocks */
+    --docusaurus-highlighted-code-line-bg: rgba(56, 189, 248, 0.18);
+    --ifm-code-background: #18181b;
+
+    /* Shadows with frost glow */
+    --ifm-global-shadow-lw: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+    --ifm-global-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+    --ifm-global-shadow-tl: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+    --shadow-frost: 0 0 20px -5px rgba(56, 189, 248, 0.25);
+
+    /* Hover States */
+    --ifm-menu-color-background-hover: #18181b;
+    --ifm-menu-color-background-active: #27272a;
 }
 
+/* ============================================
+   CUSTOM SCROLLBAR (DARK THEME ONLY)
+   ============================================ */
+[data-theme='dark'] ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+[data-theme='dark'] ::-webkit-scrollbar-track {
+    background: var(--ifm-background-color);
+}
+
+[data-theme='dark'] ::-webkit-scrollbar-thumb {
+    background: #27272a;
+    border-radius: 10px;
+}
+
+[data-theme='dark'] ::-webkit-scrollbar-thumb:hover {
+    background: #3f3f46;
+}
+
+/* ============================================
+   NAVBAR ENHANCEMENTS
+   ============================================ */
+.navbar {
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid var(--ifm-color-emphasis-300);
+}
+
+[data-theme='dark'] .navbar {
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+}
+
+.navbar__title {
+    font-weight: 600;
+}
+
+.navbar__link {
+    transition: color 0.2s ease;
+}
+
+.navbar__link:hover {
+    color: var(--ifm-color-primary);
+}
+
+/* ============================================
+   CARDS & CONTAINERS
+   ============================================ */
+.card {
+    background: var(--ifm-card-background-color);
+    border: 1px solid var(--ifm-color-emphasis-300);
+    border-radius: 0.75rem;
+    box-shadow: var(--ifm-global-shadow-lw);
+    transition: all 0.2s ease;
+}
+
+[data-theme='dark'] .card {
+    box-shadow: var(--shadow-frost);
+}
+
+.card:hover {
+    box-shadow: var(--ifm-global-shadow-md);
+    transform: translateY(-2px);
+}
+
+[data-theme='dark'] .card:hover {
+    box-shadow: 0 0 30px -5px rgba(56, 189, 248, 0.3);
+}
+
+/* ============================================
+   BUTTONS & INTERACTIVE ELEMENTS
+   ============================================ */
+.button--primary {
+    background-color: var(--ifm-color-primary);
+    border-color: var(--ifm-color-primary);
+    color: #09090b;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.button--primary:hover {
+    background-color: var(--ifm-color-primary-light);
+    border-color: var(--ifm-color-primary-light);
+    box-shadow: var(--shadow-frost);
+    transform: translateY(-1px);
+}
+
+.button--primary:active {
+    transform: scale(0.95);
+}
+
+/* ============================================
+   CODE BLOCKS
+   ============================================ */
+code {
+    border-radius: 0.375rem;
+    font-size: var(--ifm-code-font-size);
+}
+
+[data-theme='dark'] pre {
+    background-color: #18181b;
+    border: 1px solid #27272a;
+}
+
+[data-theme='dark'] code {
+    background-color: #18181b;
+}
+
+/* ============================================
+   SIDEBAR
+   ============================================ */
+.menu__link {
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.menu__link:hover {
+    background-color: var(--ifm-menu-color-background-hover);
+}
+
+.menu__link--active {
+    background-color: var(--ifm-menu-color-background-active);
+    color: var(--ifm-color-primary);
+    font-weight: 500;
+}
+
+[data-theme='dark'] .menu__link--active {
+}
+
+/* ============================================
+   TABLE OF CONTENTS
+   ============================================ */
+.table-of-contents__link {
+    transition: color 0.2s ease;
+}
+
+.table-of-contents__link:hover {
+    color: var(--ifm-color-primary);
+}
+
+.table-of-contents__link--active {
+    color: var(--ifm-color-primary);
+    font-weight: 500;
+}
+
+/* ============================================
+   ADMONITIONS
+   ============================================ */
+.admonition {
+    border-radius: 0.75rem;
+    border-left-width: 4px;
+}
+
+[data-theme='dark'] .admonition {
+    background-color: #18181b;
+}
+
+/* ============================================
+   HERO SECTION (HOMEPAGE)
+   ============================================ */
+.hero {
+    background: linear-gradient(135deg, var(--ifm-background-color) 0%, var(--ifm-background-surface-color) 100%);
+}
+
+[data-theme='dark'] .hero {
+    background: linear-gradient(135deg, #09090b 0%, #18181b 100%);
+}
+
+.hero__title {
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--ifm-color-primary) 0%, var(--ifm-color-primary-lighter) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+.footer {
+    border-top: 1px solid var(--ifm-color-emphasis-300);
+}
+
+.footer__title {
+    color: var(--ifm-color-primary);
+    font-weight: 600;
+}
+
+/* ============================================
+   SEARCH BAR (if using Algolia)
+   ============================================ */
+.DocSearch-Button {
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+[data-theme='dark'] .DocSearch-Button {
+    background-color: #18181b;
+    border: 1px solid #27272a;
+}
+
+.DocSearch-Button:hover {
+    box-shadow: var(--shadow-frost);
+}
+
+/* ============================================
+   TABS
+   ============================================ */
+.tabs {
+    border-bottom: 2px solid var(--ifm-color-emphasis-300);
+}
+
+.tabs__item {
+    border-radius: 0.5rem 0.5rem 0 0;
+    transition: all 0.2s ease;
+}
+
+.tabs__item--active {
+    border-bottom-color: var(--ifm-color-primary);
+    color: var(--ifm-color-primary);
+}
+
+/* ============================================
+   PAGINATION
+   ============================================ */
+.pagination-nav__link {
+    border: 1px solid var(--ifm-color-emphasis-300);
+    border-radius: 0.75rem;
+    transition: all 0.2s ease;
+}
+
+.pagination-nav__link:hover {
+    border-color: var(--ifm-color-primary);
+    box-shadow: var(--shadow-frost);
+}
+
+/* ============================================
+   CUSTOM UTILITY CLASSES
+   ============================================ */
+.frost-glow {
+    box-shadow: var(--shadow-frost);
+}
+
+.surface-panel {
+    background-color: var(--ifm-card-background-color);
+    border: 1px solid var(--ifm-color-emphasis-300);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+}
+
+[data-theme='dark'] .surface-panel {
+    background-color: #18181b;
+}
+
+.gradient-text {
+    background: linear-gradient(135deg, var(--ifm-color-primary) 0%, var(--ifm-color-primary-lighter) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ============================================
+   SMOOTH TRANSITIONS
+   ============================================ */
+* {
+    transition-property: background-color, border-color, color, box-shadow;
+    transition-duration: 0.2s;
+    transition-timing-function: ease;
+}
+
+/* Exclude transitions for certain elements */
+pre *,
+code *,
+.navbar__toggle,
+.DocSearch-Button-Keys {
+    transition: none;
+}
