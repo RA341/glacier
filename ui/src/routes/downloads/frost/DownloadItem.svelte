@@ -7,6 +7,7 @@
         HourglassIcon,
         ImageIcon,
         PauseIcon,
+        PlayIcon,
         XIcon
     } from "@lucide/svelte";
     import {slide} from 'svelte/transition';
@@ -68,8 +69,18 @@
     const frostLib = frostCli(FrostLibraryService)
     const sm = getSnackbarCtx()
 
-    async function pause(ID: bigint) {
-        const {err} = await callRPC(() => frostLib.pause({id: ID}))
+    let isPaused = $derived(detail?.download?.Status === "StatusPaused")
+
+    async function toggleDownload(ID: bigint) {
+        if (isPaused) {
+            const {err} = await callRPC(() => frostLib.pause({id: ID, pause: false}))
+            if (err) {
+                sm.push(`Could not cancel game: ${err}`, 'error')
+            }
+            return
+        }
+
+        const {err} = await callRPC(() => frostLib.pause({id: ID, pause: true}))
         if (err) {
             sm.push(`Could not cancel game: ${err}`, 'error')
         }
@@ -144,13 +155,17 @@
 
             <!-- Action Buttons: Stop propagation so they don't toggle the accordion -->
             {#if overallProgress < 100}
-                <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0 ml-2">
+                <div class="flex items-center gap-1 transition-all translate-x-2 ml-2">
                     <button
-                            onclick={(e) => { e.stopPropagation(); pause(detail.ID); }}
+                            onclick={(e) => { e.stopPropagation(); toggleDownload(detail.ID); }}
                             class="p-1.5 rounded-lg text-muted hover:text-amber-400 hover:bg-amber-400/10 transition-all"
                             title="Pause Download"
                     >
-                        <PauseIcon size={14}/>
+                        {#if isPaused}
+                            <PlayIcon size={14}/>
+                        {:else}
+                            <PauseIcon size={14}/>
+                        {/if}
                     </button>
                     <button
                             onclick={(e) => { e.stopPropagation(); cancel(detail.ID); }}

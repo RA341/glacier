@@ -449,6 +449,7 @@ func (x *GetByGameIdResponse) GetDownload() *LocalGame {
 type PauseRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            uint64                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Pause         bool                   `protobuf:"varint,2,opt,name=pause,proto3" json:"pause,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -488,6 +489,13 @@ func (x *PauseRequest) GetId() uint64 {
 		return x.Id
 	}
 	return 0
+}
+
+func (x *PauseRequest) GetPause() bool {
+	if x != nil {
+		return x.Pause
+	}
+	return false
 }
 
 type PauseResponse struct {
@@ -1462,9 +1470,10 @@ const file_frost_library_v1_frost_library_proto_rawDesc = "" +
 	"\x02id\x18\x01 \x01(\x04R\x02id\x12$\n" +
 	"\rlocalDownload\x18\x02 \x01(\bR\rlocalDownload\"N\n" +
 	"\x13GetByGameIdResponse\x127\n" +
-	"\bdownload\x18\x01 \x01(\v2\x1b.frost_library.v1.LocalGameR\bdownload\"\x1e\n" +
+	"\bdownload\x18\x01 \x01(\v2\x1b.frost_library.v1.LocalGameR\bdownload\"4\n" +
 	"\fPauseRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x04R\x02id\"\x0f\n" +
+	"\x02id\x18\x01 \x01(\x04R\x02id\x12\x14\n" +
+	"\x05pause\x18\x02 \x01(\bR\x05pause\"\x0f\n" +
 	"\rPauseResponse\"\x1f\n" +
 	"\rCancelRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x04R\x02id\"\x10\n" +
@@ -1526,9 +1535,9 @@ const file_frost_library_v1_frost_library_proto_rawDesc = "" +
 	"\x10LaunchFilePicker\x12).frost_library.v1.LaunchFilePickerRequest\x1a*.frost_library.v1.LaunchFilePickerResponse\"\x00\x12M\n" +
 	"\x06Delete\x12\x1f.frost_library.v1.DeleteRequest\x1a .frost_library.v1.DeleteResponse\"\x00\x12\\\n" +
 	"\vGetByGameId\x12$.frost_library.v1.GetByGameIdRequest\x1a%.frost_library.v1.GetByGameIdResponse\"\x00\x12M\n" +
-	"\x06Launch\x12\x1f.frost_library.v1.LaunchRequest\x1a .frost_library.v1.LaunchResponse\"\x00\x12b\n" +
-	"\rThrottleSpeed\x12&.frost_library.v1.ThrottleSpeedRequest\x1a'.frost_library.v1.ThrottleSpeedResponse\"\x00\x12S\n" +
-	"\bDownload\x12!.frost_library.v1.DownloadRequest\x1a\".frost_library.v1.DownloadResponse\"\x00\x12M\n" +
+	"\x06Launch\x12\x1f.frost_library.v1.LaunchRequest\x1a .frost_library.v1.LaunchResponse\"\x00\x12S\n" +
+	"\bDownload\x12!.frost_library.v1.DownloadRequest\x1a\".frost_library.v1.DownloadResponse\"\x00\x12b\n" +
+	"\rThrottleSpeed\x12&.frost_library.v1.ThrottleSpeedRequest\x1a'.frost_library.v1.ThrottleSpeedResponse\"\x00\x12M\n" +
 	"\x06Cancel\x12\x1f.frost_library.v1.CancelRequest\x1a .frost_library.v1.CancelResponse\"\x00\x12J\n" +
 	"\x05Pause\x12\x1e.frost_library.v1.PauseRequest\x1a\x1f.frost_library.v1.PauseResponse\"\x00B\xbb\x01\n" +
 	"\x14com.frost_library.v1B\x11FrostLibraryProtoP\x01Z3github.com/ra341/glacier/generated/frost_library/v1\xa2\x02\x03FXX\xaa\x02\x0fFrostLibrary.V1\xca\x02\x0fFrostLibrary\\V1\xe2\x02\x1bFrostLibrary\\V1\\GPBMetadata\xea\x02\x10FrostLibrary::V1b\x06proto3"
@@ -1598,8 +1607,8 @@ var file_frost_library_v1_frost_library_proto_depIdxs = []int32{
 	21, // 15: frost_library.v1.FrostLibraryService.Delete:input_type -> frost_library.v1.DeleteRequest
 	8,  // 16: frost_library.v1.FrostLibraryService.GetByGameId:input_type -> frost_library.v1.GetByGameIdRequest
 	6,  // 17: frost_library.v1.FrostLibraryService.Launch:input_type -> frost_library.v1.LaunchRequest
-	0,  // 18: frost_library.v1.FrostLibraryService.ThrottleSpeed:input_type -> frost_library.v1.ThrottleSpeedRequest
-	23, // 19: frost_library.v1.FrostLibraryService.Download:input_type -> frost_library.v1.DownloadRequest
+	23, // 18: frost_library.v1.FrostLibraryService.Download:input_type -> frost_library.v1.DownloadRequest
+	0,  // 19: frost_library.v1.FrostLibraryService.ThrottleSpeed:input_type -> frost_library.v1.ThrottleSpeedRequest
 	12, // 20: frost_library.v1.FrostLibraryService.Cancel:input_type -> frost_library.v1.CancelRequest
 	10, // 21: frost_library.v1.FrostLibraryService.Pause:input_type -> frost_library.v1.PauseRequest
 	15, // 22: frost_library.v1.FrostLibraryService.ListFiles:output_type -> frost_library.v1.ListFilesResponse
@@ -1610,8 +1619,8 @@ var file_frost_library_v1_frost_library_proto_depIdxs = []int32{
 	22, // 27: frost_library.v1.FrostLibraryService.Delete:output_type -> frost_library.v1.DeleteResponse
 	9,  // 28: frost_library.v1.FrostLibraryService.GetByGameId:output_type -> frost_library.v1.GetByGameIdResponse
 	7,  // 29: frost_library.v1.FrostLibraryService.Launch:output_type -> frost_library.v1.LaunchResponse
-	1,  // 30: frost_library.v1.FrostLibraryService.ThrottleSpeed:output_type -> frost_library.v1.ThrottleSpeedResponse
-	24, // 31: frost_library.v1.FrostLibraryService.Download:output_type -> frost_library.v1.DownloadResponse
+	24, // 30: frost_library.v1.FrostLibraryService.Download:output_type -> frost_library.v1.DownloadResponse
+	1,  // 31: frost_library.v1.FrostLibraryService.ThrottleSpeed:output_type -> frost_library.v1.ThrottleSpeedResponse
 	13, // 32: frost_library.v1.FrostLibraryService.Cancel:output_type -> frost_library.v1.CancelResponse
 	11, // 33: frost_library.v1.FrostLibraryService.Pause:output_type -> frost_library.v1.PauseResponse
 	22, // [22:34] is the sub-list for method output_type

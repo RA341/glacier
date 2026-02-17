@@ -9,13 +9,14 @@ import (
 	"path/filepath"
 	"time"
 
-	"connectrpc.com/connect"
+	"github.com/ra341/glacier/frost/download"
 	hc "github.com/ra341/glacier/frost/http_client"
 	"github.com/ra341/glacier/frost/launcher"
-	"github.com/ra341/glacier/frost/local_library/download"
 	librpc "github.com/ra341/glacier/generated/library/v1"
 	glacier "github.com/ra341/glacier/generated/library/v1/v1connect"
 	"github.com/ra341/glacier/internal/library"
+
+	"connectrpc.com/connect"
 	"github.com/rs/zerolog/log"
 )
 
@@ -144,6 +145,7 @@ func (s *Service) ListDownloading(ctx context.Context) ([]LocalGame, error) {
 		download.StatusDownloading,
 		download.StatusMetadata,
 		download.StatusQueued,
+		download.StatusPaused,
 	)
 }
 
@@ -173,6 +175,9 @@ func (s *Service) loadDownloading() {
 	}
 
 	for _, g := range state {
+		// capture init status since Download will overwrite the Paused Status
+		orgStatus := g.Download.Status
+
 		err := s.Download(
 			ctx,
 			int(g.ID),
@@ -182,6 +187,13 @@ func (s *Service) loadDownloading() {
 		)
 		if err != nil {
 			log.Warn().Err(err).Msg("could not restart game download")
+		}
+
+		if orgStatus == download.StatusPaused {
+			err := s.downloader.Pause(int(g.ID))
+			if err != nil {
+				log.Warn().Err(err).Msg("could not pause game download")
+			}
 		}
 	}
 }

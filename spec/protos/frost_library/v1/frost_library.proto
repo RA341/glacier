@@ -18,8 +18,8 @@ service FrostLibraryService {
   rpc GetByGameId(GetByGameIdRequest) returns (GetByGameIdResponse) {}
   rpc Launch(LaunchRequest) returns (LaunchResponse) {}
 
-  rpc ThrottleSpeed(ThrottleSpeedRequest) returns (ThrottleSpeedResponse) {}
   rpc Download(DownloadRequest) returns (DownloadResponse) {}
+  rpc ThrottleSpeed(ThrottleSpeedRequest) returns (ThrottleSpeedResponse) {}
   rpc Cancel(CancelRequest) returns (CancelResponse) {}
   rpc Pause(PauseRequest) returns (PauseResponse) {}
 }
@@ -66,6 +66,7 @@ message GetByGameIdResponse {
 
 message PauseRequest {
   uint64 id = 1;
+  bool pause = 2;
 }
 
 message PauseResponse {}

@@ -9,7 +9,7 @@ import (
 
 	"connectrpc.com/connect"
 	"github.com/ncruces/zenity"
-	"github.com/ra341/glacier/frost/local_library/download"
+	"github.com/ra341/glacier/frost/download"
 	v1 "github.com/ra341/glacier/generated/frost_library/v1"
 	"github.com/ra341/glacier/generated/frost_library/v1/v1connect"
 	"github.com/ra341/glacier/internal/metadata/assets"
@@ -99,8 +99,20 @@ func (h *Handler) Cancel(_ context.Context, c *connect.Request[v1.CancelRequest]
 }
 
 func (h *Handler) Pause(ctx context.Context, c *connect.Request[v1.PauseRequest]) (*connect.Response[v1.PauseResponse], error) {
-	//TODO implement me
-	return nil, fmt.Errorf("pause implement me")
+	var err error
+
+	if c.Msg.Pause {
+		err = h.srv.downloader.Pause(int(c.Msg.Id))
+	} else {
+		err = h.srv.downloader.Resume(int(c.Msg.Id))
+
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	return connect.NewResponse(&v1.PauseResponse{}), nil
 }
 
 func (h *Handler) Delete(ctx context.Context, c *connect.Request[v1.DeleteRequest]) (*connect.Response[v1.DeleteResponse], error) {
@@ -144,7 +156,7 @@ func (h *Handler) ListDownloading(ctx context.Context, c *connect.Request[v1.Lis
 		if ok {
 			progress, err = value.Progress()
 			if err != nil {
-				log.Warn().Msg("could not get download progress")
+				log.Warn().Err(err).Msg("could not get download progress")
 			}
 		}
 

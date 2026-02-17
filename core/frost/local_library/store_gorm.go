@@ -3,7 +3,7 @@ package download
 import (
 	"context"
 
-	"github.com/ra341/glacier/frost/local_library/download"
+	"github.com/ra341/glacier/frost/download"
 	"gorm.io/gorm"
 )
 

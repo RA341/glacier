@@ -7,7 +7,7 @@ import (
 	v1 "github.com/ra341/glacier/generated/frost_library/v1"
 )
 
-//go:generate go run github.com/dmarkham/enumer@latest -sql -type=Status -output=enum_local_download_state.go
+//go:generate go run github.com/dmarkham/enumer@latest -type=Status -output=enum_local_download_state.go
 type Status int
 
 const (
@@ -16,6 +16,7 @@ const (
 	StatusDownloading
 	StatusError
 	StatusComplete
+	StatusPaused
 )
 
 type ChunkState int

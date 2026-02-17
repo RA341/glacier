@@ -6,12 +6,13 @@ import (
 
 	"github.com/ra341/glacier/frost/config"
 	"github.com/ra341/glacier/frost/database"
+	"github.com/ra341/glacier/frost/download"
 	hc "github.com/ra341/glacier/frost/http_client"
 	ll "github.com/ra341/glacier/frost/local_library"
-	"github.com/ra341/glacier/frost/local_library/download"
 	"github.com/ra341/glacier/frost/secrets"
 	"github.com/ra341/glacier/pkg/logger"
 	sharedConfig "github.com/ra341/glacier/shared/config"
+
 	"github.com/rs/zerolog/log"
 )
 

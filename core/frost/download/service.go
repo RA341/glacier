@@ -103,7 +103,31 @@ func (d *Service) Download(ctx context.Context, gameId int, downloadPath string,
 }
 
 func (d *Service) Pause(gameId int) error {
-	return fmt.Errorf("not implemented")
+	val, ok := d.ActiveDownloads.Load(gameId)
+	if !ok {
+		return fmt.Errorf("game not found " + strconv.Itoa(gameId))
+	}
+
+	val.Pause()
+	return nil
+}
+
+func (d *Service) Resume(gameId int) error {
+	val, ok := d.ActiveDownloads.Load(gameId)
+	if !ok {
+		return fmt.Errorf("game not found " + strconv.Itoa(gameId))
+	}
+
+	val.Resume()
+	go func() {
+		// add it back to the error group for download limiting
+		d.workers.Go(func() error {
+			val.Start()
+			return nil
+		})
+	}()
+
+	return nil
 }
 
 func (d *Service) Cancel(gameId int) error {
@@ -113,7 +137,12 @@ func (d *Service) Cancel(gameId int) error {
 	}
 
 	val.Cancel()
-	<-val.done // wait for download to stop
+
+	if val.isPaused.Load() {
+		// release resources if paused and canceled was called
+		// otherwise it should be released by defer in val.Start()
+		val.Close()
+	}
 
 	log.Info().Msg("download stopped")
 

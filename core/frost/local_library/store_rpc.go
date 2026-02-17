@@ -1,7 +1,7 @@
 package download
 
 import (
-	"github.com/ra341/glacier/frost/local_library/download"
+	"github.com/ra341/glacier/frost/download"
 	v1 "github.com/ra341/glacier/generated/frost_library/v1"
 	"github.com/ra341/glacier/internal/library"
 )

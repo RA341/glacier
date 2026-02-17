@@ -98,10 +98,11 @@ func NewDownload(
 func (d *Download) Start() {
 	defer func() {
 		close(d.done)
-		// remove from download tracker
-		d.onDone(d.gameId)
+		if !d.isPaused.Load() {
+			// remove only if it is not paused from download tracker
+			d.Close()
+		}
 	}()
-	defer fileutil.Close(d.cacheStore)
 
 	warnIfErr(d.editStatus(d.ctx, d.gameId, &LocalDownload{
 		Status:        StatusMetadata,
@@ -177,46 +178,43 @@ func (d *Download) Start() {
 	}))
 }
 
-func (d *Download) Cancel() {
-	d.cancel()
+func (d *Download) Close() {
+	d.onDone(d.gameId)
+	fileutil.Close(d.cacheStore)
 }
 
-//func (d *Download) Pause() {
-//	if d.isPaused.CompareAndSwap(false, true) {
-//		d.cancel()
-//		<-d.done
-//		log.Info().Msg("Download paused")
-//	}
-//}
-//
-//func (d *Download) Resume() {
-//	if d.isPaused.CompareAndSwap(true, false) {
-//
-//		log.Info().Msg("Download resumed")
-//	}
-//}
+func (d *Download) Cancel() {
+	d.cancel()
+	<-d.done // wait for download to stop
+}
 
-//// waitIfPaused blocks if the download is paused.
-//// It also returns an error if the context is cancelled while waiting.
-//func (d *Download) waitIfPaused() error {
-//	d.pauseMu.Lock()
-//	gate := d.pauseCond
-//	d.pauseMu.Unlock()
-//
-//	select {
-//	case <-gate:
-//		return nil
-//	case <-d.ctx.Done():
-//		return d.ctx.Err()
-//	}
-//}
-//
-//func (d *Download) Unpause() {
-//	select {
-//	case <-d.paused:
-//	default:
-//	}
-//}
+func (d *Download) Pause() {
+	if d.isPaused.CompareAndSwap(false, true) {
+		d.Cancel()
+
+		warnIfErr(d.editStatus(context.Background(), d.gameId, &LocalDownload{
+			Status: StatusPaused,
+		}))
+
+		log.Info().Msg("Download paused")
+	}
+}
+
+func (d *Download) Resume() {
+	if d.isPaused.CompareAndSwap(true, false) {
+		ctx, cancel := context.WithCancel(context.Background())
+		doneCh := make(chan struct{})
+
+		d.ctx = ctx
+		d.cancel = cancel
+		d.done = doneCh
+
+		warnIfErr(d.editStatus(context.Background(), d.gameId, &LocalDownload{
+			Status: StatusDownloading,
+		}))
+		log.Info().Msg("Download resumed")
+	}
+}
 
 func (d *Download) Progress() (complete []FileProgress, total error) {
 	return d.cacheStore.Progress()
@@ -226,10 +224,6 @@ func warnIfErr(err error) {
 	if err != nil {
 		log.Warn().Err(err).Msg("error occurred while updating db")
 	}
-}
-
-func (d *Download) Close() {
-	fileutil.Close(d.cacheStore)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

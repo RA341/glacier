@@ -1,6 +1,6 @@
 package config
 
-import "github.com/ra341/glacier/frost/local_library/download"
+import "github.com/ra341/glacier/frost/download"
 
 type Config struct {
 	Desktop    Desktop
