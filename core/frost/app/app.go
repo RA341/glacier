@@ -48,7 +48,9 @@ func New() *App {
 	llStore := ll.NewStoreGorm(db)
 	downloader := download.New(
 		frostProtectedBase,
-		&initConf.Downloader,
+		func() *download.Config {
+			return &initConf.Downloader
+		},
 		downloaderHttpCliFac,
 		llStore.EditStatus,
 		ls,

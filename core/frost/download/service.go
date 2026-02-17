@@ -11,6 +11,7 @@ import (
 
 	hc "github.com/ra341/glacier/frost/http_client"
 	"github.com/ra341/glacier/pkg/syncmap"
+	"github.com/ra341/glacier/shared/config"
 	"github.com/rs/zerolog/log"
 	"golang.org/x/sync/errgroup"
 )
@@ -18,7 +19,7 @@ import (
 const MB = 1024 * 1024
 
 type Service struct {
-	Config             *Config
+	Config             config.Provider[Config]
 	editStatus         EditStatus
 	ActiveDownloads    syncmap.Map[int, *Download]
 	DownloadTotalBytes *uint64
@@ -30,7 +31,7 @@ type Service struct {
 // New
 //
 // basepath must be: "http://localhost:6699"
-func New(baseurl string, config *Config, httpCliFactory hc.HttpCliFactory, editStatus EditStatus, ls *hc.LimiterService, downloadSpeedCounter *uint64) *Service {
+func New(baseurl string, config config.Provider[Config], httpCliFactory hc.HttpCliFactory, editStatus EditStatus, ls *hc.LimiterService, downloadSpeedCounter *uint64) *Service {
 	transport := &http.Transport{
 		// MaxIdleConns is the total connections across all hosts
 		MaxIdleConns: 100,
@@ -45,14 +46,14 @@ func New(baseurl string, config *Config, httpCliFactory hc.HttpCliFactory, editS
 		TLSHandshakeTimeout: 10 * time.Second,
 	}
 
-	config.httpCli = httpCliFactory(transport)
-	config.base = fmt.Sprintf(
+	config().httpCli = httpCliFactory(transport)
+	config().base = fmt.Sprintf(
 		"%s/library/download",
 		strings.TrimRight(baseurl, "/"),
 	)
 
 	group := errgroup.Group{}
-	group.SetLimit(config.MaxConcurrentGames)
+	group.SetLimit(config().MaxConcurrentGames)
 
 	return &Service{
 		Config:             config,
@@ -79,7 +80,7 @@ func (d *Service) Download(ctx context.Context, gameId int, downloadPath string,
 	}
 
 	download, err := NewDownload(
-		d.Config,
+		d.Config(),
 		d.editStatus,
 		d.onDone,
 		gameId,

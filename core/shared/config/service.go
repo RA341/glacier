@@ -112,6 +112,17 @@ func (s *Service[T]) Get() *T {
 	return s.conf.Load()
 }
 
+func (s *Service[T]) Set(c *T) error {
+	cf := *s.Get()
+
+	err := mergo.Merge(new(cf), c)
+	if err != nil {
+		return err
+	}
+
+	return s.storeAndLoad(c)
+}
+
 func (s *Service[T]) ListFiles(base string) ([]string, error) {
 	abs, err := filepath.Abs(base)
 	if err != nil {
@@ -141,17 +152,6 @@ func (s *Service[T]) storeAndLoad(loadCopy *T) error {
 	}
 	s.conf.Store(loadCopy)
 	return nil
-}
-
-func (s *Service[T]) Set(c *T) error {
-	cf := *s.Get()
-
-	err := mergo.Merge(new(cf), c)
-	if err != nil {
-		return err
-	}
-
-	return s.storeAndLoad(c)
 }
 
 type FieldVal struct {

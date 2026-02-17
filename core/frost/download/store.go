@@ -11,7 +11,11 @@ import (
 type Status int
 
 const (
-	StatusQueued Status = iota
+	// StatusUnknown is intentionally the zero value (0) to prevent GORM from
+	// skipping status updates. Using StatusQueued as 0 would cause gorm.Updates()
+	// to ignore the field since GORM skips zero values by default.
+	StatusUnknown Status = iota
+	StatusQueued
 	StatusMetadata
 	StatusDownloading
 	StatusError

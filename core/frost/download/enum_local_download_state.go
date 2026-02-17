@@ -7,11 +7,11 @@ import (
 	"strings"
 )
 
-const _StatusName = "StatusQueuedStatusMetadataStatusDownloadingStatusErrorStatusCompleteStatusPaused"
+const _StatusName = "StatusUnknownStatusQueuedStatusMetadataStatusDownloadingStatusErrorStatusCompleteStatusPaused"
 
-var _StatusIndex = [...]uint8{0, 12, 26, 43, 54, 68, 80}
+var _StatusIndex = [...]uint8{0, 13, 25, 39, 56, 67, 81, 93}
 
-const _StatusLowerName = "statusqueuedstatusmetadatastatusdownloadingstatuserrorstatuscompletestatuspaused"
+const _StatusLowerName = "statusunknownstatusqueuedstatusmetadatastatusdownloadingstatuserrorstatuscompletestatuspaused"
 
 func (i Status) String() string {
 	if i < 0 || i >= Status(len(_StatusIndex)-1) {
@@ -24,38 +24,42 @@ func (i Status) String() string {
 // Re-run the stringer command to generate them again.
 func _StatusNoOp() {
 	var x [1]struct{}
-	_ = x[StatusQueued-(0)]
-	_ = x[StatusMetadata-(1)]
-	_ = x[StatusDownloading-(2)]
-	_ = x[StatusError-(3)]
-	_ = x[StatusComplete-(4)]
-	_ = x[StatusPaused-(5)]
+	_ = x[StatusUnknown-(0)]
+	_ = x[StatusQueued-(1)]
+	_ = x[StatusMetadata-(2)]
+	_ = x[StatusDownloading-(3)]
+	_ = x[StatusError-(4)]
+	_ = x[StatusComplete-(5)]
+	_ = x[StatusPaused-(6)]
 }
 
-var _StatusValues = []Status{StatusQueued, StatusMetadata, StatusDownloading, StatusError, StatusComplete, StatusPaused}
+var _StatusValues = []Status{StatusUnknown, StatusQueued, StatusMetadata, StatusDownloading, StatusError, StatusComplete, StatusPaused}
 
 var _StatusNameToValueMap = map[string]Status{
-	_StatusName[0:12]:       StatusQueued,
-	_StatusLowerName[0:12]:  StatusQueued,
-	_StatusName[12:26]:      StatusMetadata,
-	_StatusLowerName[12:26]: StatusMetadata,
-	_StatusName[26:43]:      StatusDownloading,
-	_StatusLowerName[26:43]: StatusDownloading,
-	_StatusName[43:54]:      StatusError,
-	_StatusLowerName[43:54]: StatusError,
-	_StatusName[54:68]:      StatusComplete,
-	_StatusLowerName[54:68]: StatusComplete,
-	_StatusName[68:80]:      StatusPaused,
-	_StatusLowerName[68:80]: StatusPaused,
+	_StatusName[0:13]:       StatusUnknown,
+	_StatusLowerName[0:13]:  StatusUnknown,
+	_StatusName[13:25]:      StatusQueued,
+	_StatusLowerName[13:25]: StatusQueued,
+	_StatusName[25:39]:      StatusMetadata,
+	_StatusLowerName[25:39]: StatusMetadata,
+	_StatusName[39:56]:      StatusDownloading,
+	_StatusLowerName[39:56]: StatusDownloading,
+	_StatusName[56:67]:      StatusError,
+	_StatusLowerName[56:67]: StatusError,
+	_StatusName[67:81]:      StatusComplete,
+	_StatusLowerName[67:81]: StatusComplete,
+	_StatusName[81:93]:      StatusPaused,
+	_StatusLowerName[81:93]: StatusPaused,
 }
 
 var _StatusNames = []string{
-	_StatusName[0:12],
-	_StatusName[12:26],
-	_StatusName[26:43],
-	_StatusName[43:54],
-	_StatusName[54:68],
-	_StatusName[68:80],
+	_StatusName[0:13],
+	_StatusName[13:25],
+	_StatusName[25:39],
+	_StatusName[39:56],
+	_StatusName[56:67],
+	_StatusName[67:81],
+	_StatusName[81:93],
 }
 
 // StatusString retrieves an enum value from the enum constants string name.
