@@ -4,20 +4,15 @@ sidebar_position: 1
 
 # About
 
-Glacier is Steam's COOLER cousin. 
+Glacier is Steam’s cooler cousin.
 
-Why
+Download your ISOs from your favorite sources and organize them into a clean, beautiful library.
+Use the Frost client to quickly download and play your games.
 
-download your iso's from your favorite sources
+Share your library with friends.
+Stay in control.
+Keep it cool.
 
-store them In a nice pretty library
+Glacier is the coolest way to store and manage your games.
 
-use the frost client to quickly download your games and play
-
-your way, your games
-
-share your lib with your friends 
-
-Glacier is the COOLest way to store your games
-
-install Glacier today !!
+Install Glacier today.
