@@ -44,22 +44,3 @@ type User struct {
 	//Perms Permissions `gorm:"embedded;embeddedPrefix:perms"`
 	Role Role
 }
-
-type Permissions struct {
-	// Config modify config endpoints
-	Config Permission `gorm:"embedded;embeddedPrefix:config_"`
-
-	// ServiceConfig external services endpoints indexers/download/clients etc
-	ServiceConfig Permission `gorm:"embedded;embeddedPrefix:service_config_"`
-
-	// Library access library endpoints
-	Library Permission `gorm:"embedded;embeddedPrefix:library_"`
-
-	// Download view active downloads
-	Download Permission `gorm:"embedded;embeddedPrefix:download_"`
-}
-
-type Permission struct {
-	Read  bool
-	Write bool
-}

@@ -11,9 +11,6 @@
     } from "@lucide/svelte";
     import {callRPC, glacierCli} from "$lib/api/api";
     import {UserService} from "$lib/gen/user/v1/user_pb";
-    import {createRPCRunner} from "$lib/api/rpc.svelte.js";
-    import {onMount} from "svelte";
-    import {fade} from "svelte/transition";
     import {getSnackbarCtx} from "$lib/components/snackbar/snackbar-provider.svelte";
     import {getUserCtx} from "$lib/components/user/provider.svelte";
 
@@ -88,7 +85,7 @@
     }
 </script>
 
-<div class="p-10 mx-auto space-y-8" in:fade>
+<div class="p-10 mx-auto space-y-8" >
     <!-- Header -->
     <header class="flex items-center gap-4 px-2">
         <div class="p-3 bg-panel border border-border rounded-2xl text-frost-400">

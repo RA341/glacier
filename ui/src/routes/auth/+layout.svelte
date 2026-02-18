@@ -182,14 +182,6 @@
                     {@render children()}
                 </main>
             </div>
-
-            <button
-                    onclick={() => glacierUrlCheckRpc.runner()}
-                    class="mt-6 mx-auto flex items-center gap-2 text-[10px] font-bold text-muted/40 uppercase tracking-widest hover:text-frost-500 transition-colors"
-            >
-                <RefreshCwIcon size={12}/>
-                Refresh Instance Check
-            </button>
         {/if}
     </div>
 </div>
