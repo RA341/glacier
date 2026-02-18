@@ -37,6 +37,10 @@ It is recommended to use Docker compose for a more permanent setup
 
 Using Docker Compose allows you to configure environment variables, volumes, and restart policies more cleanly.
 
+:::info Shameless Plug
+Looking for a Docker Compose manager? Check out my other project: [Dockman](https://dockman.radn.dev).
+:::
+
 ```yaml
 services:
   glacier:
@@ -55,7 +59,6 @@ services:
     restart: unless-stopped
 ```
 
-
 After the container starts, open your browser and navigate to:
 
 ```
@@ -63,7 +66,6 @@ http://localhost:6699
 ```
 
 Then proceed to the [Setup Guide](../../config/glacier) to complete configuration.
-
 
 ### Configuration Breakdown
 
