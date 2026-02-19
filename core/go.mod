@@ -27,6 +27,7 @@ require (
 	github.com/ra341/transmissionrpc/v3 v3.0.0-20260130024842-a566c28f4352
 	github.com/rs/cors v1.11.1
 	github.com/rs/zerolog v1.34.0
+	github.com/sahilm/fuzzy v0.1.1
 	github.com/stretchr/testify v1.11.1
 	github.com/wailsapp/wails v1.16.9
 	github.com/zalando/go-keyring v0.2.6

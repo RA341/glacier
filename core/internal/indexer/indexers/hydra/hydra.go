@@ -16,6 +16,7 @@ import (
 	"github.com/ra341/glacier/pkg/mapsct"
 
 	"github.com/rs/zerolog/log"
+	"github.com/sahilm/fuzzy"
 	"resty.dev/v3"
 )
 
@@ -90,61 +91,70 @@ func (h *Hydra) Close() {
 // search stuff
 
 func (h *Hydra) Search(query string) ([]types.Source, error) {
-	index, err := h.loadIndex()
-	if err != nil {
-		return nil, err
+	var avail []DownloadInfo
+	for name := range h.config.Sources {
+		res, err := h.searchJSON(query, name)
+		if err != nil {
+			return nil, err
+		}
+		avail = append(avail, res...)
 	}
 
 	var infos []types.Source
-	for _, d := range index.Downloads {
-		contains := strings.Contains(strings.ToLower(d.Title), strings.ToLower(query))
-		if contains {
-			infos = append(infos, types.Source{
-				IndexerType: types.IndexerHydra,
-				// todo allow from each source
-				GameType:    types.Installer,
-				Title:       d.Title,
-				DownloadUrl: d.Uris[0],
-				FileSize:    d.FileSize,
-				CreatedISO:  d.UploadDate.Format(time.RFC3339),
-			})
-		}
+	for _, d := range avail {
+		infos = append(infos, types.Source{
+			IndexerType: types.IndexerHydra,
+			// todo allow from each source
+			GameType:    types.Installer,
+			Title:       d.Title,
+			DownloadUrl: d.Uris[0],
+			FileSize:    d.FileSize,
+			CreatedISO:  d.UploadDate,
+		})
 	}
 
 	return infos, nil
 }
 
 type DownloadInfo struct {
-	Title      string    `json:"title"`
-	Uris       []string  `json:"uris"`
-	UploadDate time.Time `json:"uploadDate"`
-	FileSize   string    `json:"fileSize"`
+	Title      string   `json:"title"`
+	Uris       []string `json:"uris"`
+	UploadDate string   `json:"uploadDate"`
+	FileSize   string   `json:"fileSize"`
 }
 
 type JsonResult struct {
 	Downloads []DownloadInfo `json:"downloads"`
 }
 
-func (h *Hydra) loadIndex() (*JsonResult, error) {
-	// todo search all files for now it just gets the first one in the map
+func (h *Hydra) searchJSON(q string, name string) ([]DownloadInfo, error) {
+	path := h.getJsonPath(name)
 
-	for name, _ := range h.config.Sources {
-		path := h.getJsonPath(name)
-		contents, err := os.ReadFile(path)
-		if err != nil {
-			return nil, err
-		}
-
-		val := &JsonResult{}
-		err = json.Unmarshal(contents, val)
-		if err != nil {
-			return nil, err
-		}
-
-		return val, nil
+	f, err := os.Open(path)
+	if err != nil {
+		return nil, err
 	}
 
-	return &JsonResult{}, nil
+	var result JsonResult
+	dec := json.NewDecoder(f)
+	if err := dec.Decode(&result); err != nil {
+		fileutil.Close(f)
+		return nil, err
+	}
+	defer fileutil.Close(f)
+
+	names := make([]string, len(result.Downloads))
+	for i, d := range result.Downloads {
+		names[i] = strings.ToLower(d.Title)
+	}
+
+	var avail []DownloadInfo
+	matches := fuzzy.Find(strings.ToLower(q), names)
+	for _, m := range matches {
+		avail = append(avail, result.Downloads[m.Index])
+	}
+
+	return avail, nil
 }
 
 func (h *Hydra) withPath(name string) string {
