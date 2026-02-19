@@ -59,14 +59,14 @@ func (s *Service) GetDownloadManifest(ctx context.Context, gid int, w http.Respo
 	return s.manifest.GetGameManifest(ctx, gid, game.Download.DownloadPath, w)
 }
 
-func (s *Service) FileDownload(ctx context.Context, id int, file string) (*os.File, error) {
+func (s *Service) GetDownloadPath(ctx context.Context, id int, file string) (string, error) {
 	game, err := s.store.GetById(ctx, uint(id))
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	filePath := filepath.Join(game.Download.DownloadPath, file)
-	return os.Open(filePath)
+	return filePath, nil
 }
 
 func (s *Service) Get(ctx context.Context, id uint) (Game, error) {

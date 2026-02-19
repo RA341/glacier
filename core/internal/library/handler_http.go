@@ -3,8 +3,6 @@ package library
 import (
 	"net/http"
 	"strconv"
-
-	"github.com/ra341/glacier/pkg/fileutil"
 )
 
 type HandlerHttp struct {
@@ -60,18 +58,11 @@ func (h *HandlerHttp) downloadFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	download, err := h.srv.FileDownload(r.Context(), gameId, file)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	defer fileutil.Close(download)
-
-	stat, err := download.Stat()
+	fullFilePath, err := h.srv.GetDownloadPath(r.Context(), gameId, file)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	http.ServeContent(w, r, download.Name(), stat.ModTime(), download)
+	http.ServeFile(w, r, fullFilePath)
 }
