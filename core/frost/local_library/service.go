@@ -4,13 +4,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"net/http"
 	"os"
 	"path/filepath"
 	"time"
 
 	"github.com/ra341/glacier/frost/download"
-	hc "github.com/ra341/glacier/frost/http_client"
 	"github.com/ra341/glacier/frost/launcher"
 	librpc "github.com/ra341/glacier/generated/library/v1"
 	glacier "github.com/ra341/glacier/generated/library/v1/v1connect"
@@ -21,19 +19,21 @@ import (
 )
 
 type Service struct {
-	baseurl string
-	store   Store
-	lib     glacier.LibraryServiceClient
+	store Store
+	lib   func() glacier.LibraryServiceClient
 
 	downloader *download.Service
 	launcher   *launcher.Service
 }
 
-func New(baseurl string, store Store, downloader *download.Service, cli hc.HttpCliFactory) *Service {
+func New(
+	store Store,
+	downloader *download.Service,
+	sd func() glacier.LibraryServiceClient,
+) *Service {
 	s := &Service{
-		lib:        glacier.NewLibraryServiceClient(cli(&http.Transport{}), baseurl),
+		lib:        sd,
 		store:      store,
-		baseurl:    baseurl,
 		downloader: downloader,
 		launcher:   launcher.New(),
 	}
@@ -96,7 +96,7 @@ func (s *Service) Download(
 
 	var ll LocalGame
 	request := connect.NewRequest(&librpc.GetGameRequest{GameId: uint64(gameId)})
-	game, err := s.lib.GetGame(ctx, request)
+	game, err := s.lib().GetGame(ctx, request)
 	if err != nil {
 		return fmt.Errorf("could not get game info from server: %w", err)
 	}

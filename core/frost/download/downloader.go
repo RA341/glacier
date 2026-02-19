@@ -88,8 +88,8 @@ func NewDownload(
 
 		gameId:          gameId,
 		downloadFolder:  downloadFolder,
-		downloadUrlBase: fmt.Sprintf("%s/load/%d", config.base, gameId),
-		metadataUrlBase: fmt.Sprintf("%s/meta/%d", config.base, gameId),
+		downloadUrlBase: fmt.Sprintf("%s/load/%d", config.UrlBase(), gameId),
+		metadataUrlBase: fmt.Sprintf("%s/meta/%d", config.UrlBase(), gameId),
 	}
 
 	return d, nil

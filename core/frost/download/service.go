@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"os"
 	"strconv"
-	"strings"
 	"time"
 
 	hc "github.com/ra341/glacier/frost/http_client"
@@ -31,7 +30,7 @@ type Service struct {
 // New
 //
 // basepath must be: "http://localhost:6699"
-func New(baseurl string, config config.Provider[Config], httpCliFactory hc.HttpCliFactory, editStatus EditStatus, ls *hc.LimiterService, downloadSpeedCounter *uint64) *Service {
+func New(baseurl func() string, config config.Provider[Config], httpCliFactory hc.HttpCliFactory, editStatus EditStatus, ls *hc.LimiterService, downloadSpeedCounter *uint64) *Service {
 	transport := &http.Transport{
 		// MaxIdleConns is the total connections across all hosts
 		MaxIdleConns: 100,
@@ -47,10 +46,7 @@ func New(baseurl string, config config.Provider[Config], httpCliFactory hc.HttpC
 	}
 
 	config().httpCli = httpCliFactory(transport)
-	config().base = fmt.Sprintf(
-		"%s/library/download",
-		strings.TrimRight(baseurl, "/"),
-	)
+	config().getBase = baseurl
 
 	group := errgroup.Group{}
 	group.SetLimit(config().MaxConcurrentGames)

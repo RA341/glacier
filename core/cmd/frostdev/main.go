@@ -1,15 +1,12 @@
 package main
 
 import (
-	"log"
-	"os"
-
 	frost "github.com/ra341/glacier/frost/app"
-	"github.com/ra341/glacier/frost/config"
+	frostConf "github.com/ra341/glacier/frost/config"
 	"github.com/ra341/glacier/internal/app"
 	"github.com/ra341/glacier/internal/info"
-	"github.com/ra341/glacier/pkg/argos"
 	"github.com/ra341/glacier/shared/api"
+	"github.com/ra341/glacier/shared/config"
 )
 
 func init() {
@@ -17,7 +14,6 @@ func init() {
 }
 
 func main() {
-	prefixer := argos.WithPrefixer(config.EnvPrefix)
 	envs := map[string]string{
 		"LOGGER_VERBOSE": "true",
 		"LOGGER_LEVEL":   "debug",
@@ -29,12 +25,7 @@ func main() {
 		"START_SILENT":    "true",
 	}
 
-	for key, value := range envs {
-		err := os.Setenv(prefixer(key), value)
-		if err != nil {
-			log.Fatalf("could not set %s:%s\nerr:%v", key, value, err)
-		}
-	}
+	config.SetEnvWithMap(frostConf.EnvPrefix, envs)
 
 	frost.NewDesktop(api.WithUIProxy("http://localhost:5122"))
 }

@@ -34,7 +34,9 @@ func New() *App {
 	secretStore := secrets.NewKeyringStore(appName)
 	ss := secrets.NewService(secretStore)
 
-	frostProtectedBase := initConf.Server.GlacierUrl + "/api/server/protected"
+	frostProtectedBase := func() string {
+		return conf.Get().Server.GlacierUrl + "/api/server/protected"
+	}
 
 	ls := hc.NewLimiterService(initConf.Downloader.GetSpeedThrottle())
 
@@ -59,12 +61,8 @@ func New() *App {
 
 	// don't need to track speed for library api usage
 	libraryHttpCliFac := hc.NewFrostHttpClientFactory(ss, nil, nil)
-	llibSrv := ll.New(
-		frostProtectedBase,
-		llStore,
-		downloader,
-		libraryHttpCliFac,
-	)
+	lc := hc.NewLibCli(frostProtectedBase, libraryHttpCliFac)
+	llibSrv := ll.New(llStore, downloader, lc.Get)
 
 	a := &App{
 		Conf:            conf,

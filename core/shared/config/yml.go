@@ -89,7 +89,7 @@ func (cy *Yml[T]) writeYml(conf *T) error {
 	return os.WriteFile(cy.path, contents, os.ModePerm)
 }
 func (cy *Yml[T]) backupCurrent() error {
-	src, err := os.OpenFile(cy.path, os.O_RDONLY|os.O_CREATE, os.ModePerm)
+	src, err := os.OpenFile(cy.path, os.O_RDWR|os.O_CREATE, 0660)
 	if err != nil {
 		return err
 	}
@@ -98,6 +98,9 @@ func (cy *Yml[T]) backupCurrent() error {
 	backFilename := fmt.Sprintf("%s.%s", cy.ymlFileName, "bak")
 	backupFilePath := filepath.Join(filepath.Dir(cy.path), backFilename)
 	dst, err := os.OpenFile(backupFilePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, os.ModePerm)
+	if err != nil {
+		return err
+	}
 	defer fileutil.Close(dst)
 
 	_, err = io.Copy(dst, src)
