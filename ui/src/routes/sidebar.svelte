@@ -5,6 +5,7 @@
     import {AuthService} from "$lib/gen/auth/v1/auth_pb";
     import {goto} from "$app/navigation";
     import {getUserCtx} from "$lib/components/user/provider.svelte";
+    import {getDialogCtx} from "$lib/components/dialog/dialog.svelte";
 
     const isActive = (href: string) => page.url.pathname.startsWith(href);
 
@@ -30,7 +31,12 @@
 
     const auth = glacierPubCli(AuthService)
 
+    const dm = getDialogCtx()
+
     async function logout() {
+        const ok = await dm.confirm("Logout", "Did you grab everything? Phone. Keys. Wallet.", 'info')
+        if (!ok) return
+
         await auth.logout({})
         await goto("/auth/login", {replaceState: true})
     }

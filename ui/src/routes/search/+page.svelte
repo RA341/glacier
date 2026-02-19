@@ -2,7 +2,7 @@
     import {createRPCRunner} from "$lib/api/rpc.svelte.js";
     import {type GameMetadata, SearchService} from "$lib/gen/search/v1/search_pb";
     import {glacierCli} from "$lib/api/api";
-    import {CircleAlert, ImageIcon, LoaderIcon, PlusIcon, SearchIcon, SearchXIcon} from '@lucide/svelte';
+    import {CircleAlert, Search, LoaderIcon, SearchIcon, SearchXIcon} from '@lucide/svelte';
     import {page} from '$app/state';
     import {goto} from "$app/navigation";
     import {onMount} from "svelte";
@@ -69,10 +69,17 @@
     }
 </script>
 
-<div class="flex flex-col h-full w-full bg-background text-foreground">
-    <header class="p-6 border-b border-border bg-surface/50 backdrop-blur-sm">
-        <div class="max-w-7xl mx-auto flex items-center gap-6">
-            <h1 class="text-2xl font-bold tracking-tight">Search</h1>
+<div class="max-w-7xl mx-auto p-6 space-y-8 bg-background text-foreground min-h-screen">
+    <header class="flex items-center justify-between border-b border-border pb-6">
+
+        <div class="flex items-center gap-4">
+            <div class="p-3 bg-frost-500/10 text-frost-400 rounded-2xl border border-frost-500/20">
+                <Search size={28}/>
+            </div>
+            <div>
+                <h1 class="text-3xl font-bold tracking-tight">Search</h1>
+                <p class="text-muted text-sm">Search and add New games</p>
+            </div>
 
             <div class="flex flex-1 items-center gap-3">
                 <div class="relative min-w-40">
