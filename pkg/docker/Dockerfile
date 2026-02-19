@@ -56,6 +56,9 @@ COPY --from=web_ui /web/build/ web
 ENV GLACIER_CONFIG_DIR="/config"
 ENV GLACIER_GAME_DIR="/gamestop"
 
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
+    CMD wget -q --spider http://localhost:${GLACIER_SERVER_PORT:-6699}/api/server/public/ping || exit 1
+
 ENTRYPOINT ["entrypoint.sh"]
 
 CMD ["./glacier"]
