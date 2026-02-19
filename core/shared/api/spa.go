@@ -28,9 +28,21 @@ func (h *SpaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	reqPath := path.Clean(r.URL.Path)
 	fsPath := strings.TrimPrefix(reqPath, "/")
 
-	// Check if the file exists in the filesystem.
-	if _, err := fs.Stat(h.staticFS, fsPath); err != nil {
-		// The file does not exist, so serve index.html.
+	if fsPath == "" {
+		http.ServeFileFS(w, r, h.staticFS, "index.html")
+		return
+	}
+
+	info, err := fs.Stat(h.staticFS, fsPath)
+	if err != nil {
+		// File not found let SvelteKit handle routing
+		http.ServeFileFS(w, r, h.staticFS, "index.html")
+		return
+	}
+
+	// If it's a directory, serve index.html instead of letting
+	// the file server redirect or show a listing
+	if info.IsDir() {
 		http.ServeFileFS(w, r, h.staticFS, "index.html")
 		return
 	}
