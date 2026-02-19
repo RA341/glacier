@@ -13,7 +13,7 @@ service AssetService {
 
 message ListRequest {
   uint64 ID = 1;
-  string AssetType = 2;
+  repeated string AssetType = 2;
 }
 
 message ListResponse {

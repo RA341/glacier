@@ -32,11 +32,12 @@ func NewHandler(srv *Service) (string, http.Handler) {
 }
 
 func (h *Handler) List(ctx context.Context, c *connect.Request[v1.ListRequest]) (*connect.Response[v1.ListResponse], error) {
-	list, err := h.srv.store.List(
-		ctx,
-		c.Msg.ID,
-		c.Msg.AssetType,
-	)
+	list, err := h.srv.store.
+		List(
+			ctx,
+			c.Msg.ID,
+			c.Msg.AssetType...,
+		)
 	if err != nil {
 		return nil, err
 	}

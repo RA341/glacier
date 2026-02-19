@@ -10,6 +10,7 @@
     import TabFrost from "./TabFrost.svelte";
     import TabFrontPage from "./TabFrontPage.svelte";
     import {getUserCtx} from "$lib/components/user/provider.svelte";
+    import {getAssetPath} from "$lib/api/assets";
 
     let activeTab = $derived(page.url.searchParams.get('tab') || 'details');
 
@@ -37,61 +38,61 @@
         getGame()
     })
 
-    const user = getUserCtx()
-
     async function goToEdit() {
         await goto("manage")
     }
 </script>
 
-{#if !gameIdStr}
-    <div class="flex flex-col items-center justify-center h-96 border-2 border-dashed border-border rounded-3xl text-muted/30">
-        <ServerIcon size={48} strokeWidth={1} class="mb-4"/>
-        <h2 class="text-xl font-bold text-foreground/50">No game Id found</h2>
-    </div>
-{:else if gameRpc.error}
-    <div class="flex flex-col items-center justify-center h-96 text-red-400 gap-3">
-        <CircleAlert size={48} strokeWidth={1}/>
-        <h3 class="font-bold">The game you are looking for does not exist</h3>
-        <p class="text-xs opacity-80">{gameRpc.error}</p>
-    </div>
-{:else if gameRpc.loading}
-    <div class="flex flex-col items-center justify-center h-96 text-muted gap-4">
-        <LoaderIcon class="animate-spin text-frost-500" size={40}/>
-        <p class="animate-pulse text-sm font-medium">Fetching game...</p>
-    </div>
-{:else}
-    <div class="max-w-8xl px-5 py-3 mx-auto space-y-8 bg-background text-foreground">
-        {#if originalGame}
-            <GameHero bind:game={originalGame} onManage={goToEdit}/>
+<main class="min-h-screen p-6 md:p-10 max-w-7xl mx-auto">
+    {#if !gameIdStr}
+        <div class="flex flex-col items-center justify-center h-96 border-2 border-dashed border-border rounded-3xl text-muted/30">
+            <ServerIcon size={48} strokeWidth={1} class="mb-4"/>
+            <h2 class="text-xl font-bold text-foreground/50">No game Id found</h2>
+        </div>
+    {:else if gameRpc.error}
+        <div class="flex flex-col items-center justify-center h-96 text-red-400 gap-3">
+            <CircleAlert size={48} strokeWidth={1}/>
+            <h3 class="font-bold">The game you are looking for does not exist</h3>
+            <p class="text-xs opacity-80">{gameRpc.error}</p>
+        </div>
+    {:else if gameRpc.loading}
+        <div class="flex flex-col items-center justify-center h-96 text-muted gap-4">
+            <LoaderIcon class="animate-spin text-frost-500" size={40}/>
+            <p class="animate-pulse text-sm font-medium">Fetching game...</p>
+        </div>
+    {:else}
+        <div class="max-w-8xl px-5 py-3 mx-auto space-y-8 bg-background text-foreground">
+            {#if originalGame}
+                <GameHero bind:game={originalGame} onManage={goToEdit}/>
 
-            <div class="flex items-center justify-between border-t border-border py-4">
-                <div class="flex gap-1 bg-panel p-1 rounded-2xl border border-border w-fit">
-                    <button
-                            onclick={() => setTab('details')}
-                            class="px-8 py-2 rounded-xl text-sm font-black uppercase tracking-widest transition-all {activeTab === 'details' ? 'bg-surface shadow-md text-frost-400' : 'text-muted hover:text-foreground'}"
-                    >
-                        Overview
-                    </button>
-                    {#if isFrost}
+                <div class="flex items-center justify-between border-t border-border py-4">
+                    <div class="flex gap-1 bg-panel p-1 rounded-2xl border border-border w-fit">
                         <button
-                                onclick={() => setTab('local')}
-                                class="px-8 py-2 rounded-xl text-sm font-black uppercase tracking-widest transition-all {activeTab === 'local' ? 'bg-surface shadow-md text-frost-400' : 'text-muted hover:text-foreground'}"
+                                onclick={() => setTab('details')}
+                                class="px-8 py-2 rounded-xl text-sm font-black uppercase tracking-widest transition-all {activeTab === 'details' ? 'bg-surface shadow-md text-frost-400' : 'text-muted hover:text-foreground'}"
                         >
-                            Local
+                            Overview
                         </button>
-                    {/if}
+                        {#if isFrost}
+                            <button
+                                    onclick={() => setTab('local')}
+                                    class="px-8 py-2 rounded-xl text-sm font-black uppercase tracking-widest transition-all {activeTab === 'local' ? 'bg-surface shadow-md text-frost-400' : 'text-muted hover:text-foreground'}"
+                            >
+                                Local
+                            </button>
+                        {/if}
+                    </div>
                 </div>
-            </div>
 
-            <main>
-                <!-- Main Tab Content -->
-                {#if activeTab === 'details'}
-                    <TabFrontPage bind:game={originalGame}/>
-                {:else if activeTab === 'local'}
-                    <TabFrost game={originalGame}/>
-                {/if}
-            </main>
-        {/if}
-    </div>
-{/if}
+                <main>
+                    <!-- Main Tab Content -->
+                    {#if activeTab === 'details'}
+                        <TabFrontPage bind:game={originalGame}/>
+                    {:else if activeTab === 'local'}
+                        <TabFrost game={originalGame}/>
+                    {/if}
+                </main>
+            {/if}
+        </div>
+    {/if}
+</main>

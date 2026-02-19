@@ -24,7 +24,7 @@ const (
 type ListRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	ID            uint64                 `protobuf:"varint,1,opt,name=ID,proto3" json:"ID,omitempty"`
-	AssetType     string                 `protobuf:"bytes,2,opt,name=AssetType,proto3" json:"AssetType,omitempty"`
+	AssetType     []string               `protobuf:"bytes,2,rep,name=AssetType,proto3" json:"AssetType,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -66,11 +66,11 @@ func (x *ListRequest) GetID() uint64 {
 	return 0
 }
 
-func (x *ListRequest) GetAssetType() string {
+func (x *ListRequest) GetAssetType() []string {
 	if x != nil {
 		return x.AssetType
 	}
-	return ""
+	return nil
 }
 
 type ListResponse struct {
@@ -440,7 +440,7 @@ const file_assets_v1_assets_proto_rawDesc = "" +
 	"\x16assets/v1/assets.proto\x12\tassets.v1\";\n" +
 	"\vListRequest\x12\x0e\n" +
 	"\x02ID\x18\x01 \x01(\x04R\x02ID\x12\x1c\n" +
-	"\tAssetType\x18\x02 \x01(\tR\tAssetType\"8\n" +
+	"\tAssetType\x18\x02 \x03(\tR\tAssetType\"8\n" +
 	"\fListResponse\x12(\n" +
 	"\x06assets\x18\x01 \x03(\v2\x10.assets.v1.AssetR\x06assets\"\x1f\n" +
 	"\rDeleteRequest\x12\x0e\n" +

@@ -72,20 +72,6 @@ tasks:
       - cd {{.CORE_DIR}} && go install -ldflags "-s -w" ./cmd/builder
       - "builder{{.EXE_EXT}}"
 
-  #  go:*:
-  #    dir: "{{.BUILD_DIR}}"
-  #    desc: "Builds and runs a Go target. Usage: task go:<target>"
-  #    vars:
-  #      CMD_NAME: "{{index .MATCH 0}}"
-  #      EXE_EXT: '{{if eq OS "windows"}}.exe{{end}}'
-  #      ARGS: '{{if eq .CMD_NAME "updater"}}
-  #              -cr={{.CMD_NAME}}/compose {{else}}
-  #              -conf={{.CMD_NAME}}/config
-  #              -cr={{.CMD_NAME}}/compose{{end}}'
-  #    cmds:
-  #      - task go:b:{{.CMD_NAME}}
-  #      - ../{{.BUILD_DIR}}/{{.CMD_NAME}}/{{.CMD_NAME}}{{.EXE_EXT}}{{.ARGS}}
-
   go:b:*:
     dir: "{{.CORE_DIR}}"
     desc: "Builds a Go target. Usage: task go:<target>"
@@ -150,9 +136,9 @@ tasks:
       ICO_OUT: '{{.ICON_OUT}}/icon.ico'
       SIZE: 48
     cmds:
-      - inkscape static/favicon.svg 
-          --export-type=png --export-filename={{.PNG_OUT}} 
-          --export-width={{.SIZE}} --export-height={{.SIZE}}
+      - inkscape static/favicon.svg
+        --export-type=png --export-filename={{.PNG_OUT}}
+        --export-width={{.SIZE}} --export-height={{.SIZE}}
       - magick {{.PNG_OUT}} {{.ICO_OUT}}
 
   ui:
@@ -182,6 +168,11 @@ tasks:
       - '{{.CU}} mkdir -p {{.OUT_DIR}}/{{.BUILD_OUT}}'
       - '{{.CU}} cp -rf {{.BUILD_OUT}} {{.OUT_DIR}}/'
 
+  site:
+    dir: "website"
+    cmds:
+      - npm run start
+
   dk:
     desc: "Builds and runs the main dockman image. Usage: task dk"
     cmds:
@@ -191,12 +182,7 @@ tasks:
     desc: "Builds and runs the main dockman image for a specific target. Usage: task dk:r:<target>"
     cmds:
       - task dk:b
-      - docker run --rm
-        -e TZ=America/New_York
-        -e DOCKMAN_COMPOSE_ROOT=/.build/docker/compose
-        -v /var/run/docker.sock:/var/run/docker.sock
-        -v ./.build/docker/compose:/.build/docker/compose
-        -v ./.build/docker/config:/config
+      - docker run --rm -e TZ=America/New_York
         -p 6691:6699
         {{.DOCKER_IMG}}
 

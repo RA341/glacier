@@ -3,6 +3,7 @@ package assets
 import (
 	"context"
 
+	"github.com/rs/zerolog/log"
 	"gorm.io/gorm"
 )
 
@@ -26,16 +27,23 @@ func (s *StoreGorm) GetGameIds(ctx context.Context) ([]uint, error) {
 	return ids, err
 }
 
-func (s *StoreGorm) List(ctx context.Context, gameId uint64, assetTypeStr string) ([]Asset, error) {
+func (s *StoreGorm) List(ctx context.Context, gameId uint64, assetTypeStr ...string) ([]Asset, error) {
 	var assets []Asset
 
-	q := s.db.WithContext(ctx).Where("game_id = ?", gameId)
-	if assetTypeStr != "" {
-		assetType, err := AssetTypeString(assetTypeStr)
-		if err != nil {
-			return nil, err
+	q := s.db.WithContext(ctx).Order("type DESC").Where("game_id = ?", gameId)
+	if len(assetTypeStr) > 0 {
+		var types []AssetType
+		for _, str := range assetTypeStr {
+			assetType, err := AssetTypeString(str)
+			if err != nil {
+				log.Warn().Err(err).Str("type", str).Msg("Failed to get asset type")
+				continue
+			}
+			types = append(types, assetType)
 		}
-		q = q.Where("type", assetType)
+		if len(types) > 0 {
+			q = q.Where("type IN ?", types)
+		}
 	}
 
 	err := q.Find(&assets).Error

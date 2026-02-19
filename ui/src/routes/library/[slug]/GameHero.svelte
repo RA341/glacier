@@ -8,7 +8,6 @@
         LoaderIcon,
         MonitorIcon,
         Pen,
-        PlayIcon,
         StarIcon
     } from '@lucide/svelte';
     import type {Game} from "$lib/gen/library/v1/library_pb";
@@ -33,7 +32,7 @@
 
     const listRpc = createRPCRunner(() => assetSrv.list({
         ID: game?.ID,
-        AssetType: assetType
+        AssetType: ["AssetTrailer", "AssetGameplayImage", "AssetGameplayVideo", "AssetArtwork", "AssetBanner"],
     }))
 
     const assetType = $state("")
@@ -72,7 +71,7 @@
 </script>
 
 <div class="space-y-4">
-    <div class="bg-surface/40 backdrop-blur-xl border border-white/10 rounded-3xl p-6 shadow-sm relative w-full aspect-21/9 lg:aspect-30/9  overflow-hidden group ">
+    <div class="bg-surface/40 backdrop-blur-xl border border-white/10 rounded-3xl p-6 shadow-sm relative w-full aspect-video lg:aspect-20/9 overflow-hidden group ">
         {#if listRpc.loading && !listRpc.value}
             <div class="flex h-full w-full items-center justify-center bg-background/50 animate-pulse">
                 <LoaderIcon class="animate-spin text-frost-500" size={40}/>
@@ -121,6 +120,12 @@
                             {/snippet}
                         </AssetVideo>
                     {:else}
+                        <img
+                                src={getImg(currentAsset.LocalPath) || currentAsset.RemoteUrl}
+                                class="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-50"
+                                alt=""
+                        />
+
                         <AssetImg
                                 src={getImg(currentAsset.LocalPath) || currentAsset.RemoteUrl}
                                 class="w-full h-full "

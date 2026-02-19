@@ -171,7 +171,7 @@ func (t *Tray) onReady() {
 
 	mUI := systray.AddMenuItem("Open", "Start the UI")
 	mLaunchWebUI := systray.AddMenuItem("Open in browser", "Launched the Web UI")
-
+	mLaunchBrow := systray.AddMenuItem("Open in app mode", "open in browser app mode")
 	systray.AddSeparator()
 
 	logsDir := systray.AddMenuItem("Logs", "Open Logs directory")
@@ -186,12 +186,11 @@ func (t *Tray) onReady() {
 			select {
 			case <-logsDir.ClickedCh:
 				openFolder(t.conf.Get().Files.LogsDir)
+			case <-mLaunchBrow.ClickedCh:
+				//openAppMode(t.getAppUrl())
 			case <-mLaunchWebUI.ClickedCh:
 				//t.trayLog.Info().Msg("launching web browser")
-				openURL(fmt.Sprintf(
-					"http://localhost:%d",
-					t.conf.Get().Server.Port,
-				))
+				openURL(t.getAppUrl())
 			case <-mServer.ClickedCh:
 				t.trayLog.Info().Msg("restarting frost")
 				t.cancel()
@@ -206,6 +205,13 @@ func (t *Tray) onReady() {
 			}
 		}
 	}()
+}
+
+func (t *Tray) getAppUrl() string {
+	return fmt.Sprintf(
+		"http://localhost:%d",
+		t.conf.Get().Server.Port,
+	)
 }
 
 func (t *Tray) onExit() {
