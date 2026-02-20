@@ -1,8 +1,7 @@
 <script lang="ts">
     import {
-        ActivityIcon,
+        CheckCircle2Icon,
         ChevronDownIcon,
-        CircleCheck,
         ClockIcon,
         HourglassIcon,
         ImageIcon,
@@ -187,43 +186,80 @@
     </div>
 
     {#if isExpanded}
-        <div transition:slide={{ duration: 300 }} class="border-t border-border bg-black/10">
-            <div class="p-2 space-y-1 max-h-80 overflow-y-auto custom-scrollbar">
-                {#each detail.progress?.files ?? [] as file}
-                    {@const filePct = getFileProgress(file.Complete, file.Left)}
-                    {@const isDone = Number(file.Left) === 0}
+        <!-- ACCORDION CONTENT (File List) -->
+        {#if isExpanded}
+            <div transition:slide={{ duration: 300 }} class="border-t border-border bg-black/10">
+                <div class="p-2 space-y-1 max-h-80 overflow-y-auto custom-scrollbar">
+                    {#each detail.progress?.files ?? [] as file}
+                        {@const filePct = getFileProgress(file.BytesComplete, file.BytesLeft)}
+                        {@const isDone = Number(file.BytesLeft) === 0}
 
-                    <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-panel/40 transition-colors group">
-                        <div class="text-muted/40 group-hover:text-frost-400/50 transition-colors shrink-0">
-                            {#if isDone}
-                                <CircleCheck size={14} class="text-green-500/60"/>
-                            {:else}
-                                <ClockIcon size={14}/>
-                            {/if}
-                        </div>
+                        <!-- Chunk Logic -->
+                        {@const chunksComplete = Number(file.ChunksComplete ?? 0)}
+                        {@const chunksLeft = Number(file.ChunksLeft ?? 0)}
+                        {@const chunksTotal = chunksComplete + chunksLeft}
 
-                        <div class="flex-1 min-w-0">
-                            <div class="flex justify-between items-center mb-1.5">
-                                <p class="text-[11px] font-medium text-muted group-hover:text-foreground transition-colors truncate pr-4">
-                                    {file.Name}
-                                </p>
-                                <span class="text-[9px] font-mono text-muted/30 whitespace-nowrap">
-                                    {formatBytes(Number(file.Complete))}
-                                    / {formatBytes(Number(file.Complete) + Number(file.Left))}
-                                </span>
+                        <!--
+                            Performance Guard:
+                            If a file has 10,000 chunks, we don't want 10,000 divs.
+                            We cap the visual blocks at 60 for a consistent "bitfield" look.
+                        -->
+                        {@const visualBlockCount = chunksTotal > 60 ? 60 : chunksTotal}
+                        {@const filledBlocks = Math.floor((chunksComplete / chunksTotal) * visualBlockCount)}
+
+                        <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-panel/40 transition-colors group">
+                            <div class="text-muted/40 group-hover:text-frost-400/50 transition-colors shrink-0">
+                                {#if isDone}
+                                    <CheckCircle2Icon size={14} class="text-green-500/60"/>
+                                {:else}
+                                    <ClockIcon size={14}/>
+                                {/if}
                             </div>
 
-                            <div class="h-1 w-full bg-panel/50 rounded-full overflow-hidden">
-                                <div
-                                        class="h-full {isDone ? 'bg-green-500/40' : 'bg-frost-500/40'} transition-all duration-700"
-                                        style="width: {filePct}%"
-                                ></div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-3 mb-1.5">
+                                    <p class="text-[12px] font-medium text-white group-hover:text-foreground transition-colors truncate min-w-0 flex-1">
+                                        {file.Name}
+                                    </p>
+
+                                    <span class="text-[10px] font-mono text-white whitespace-nowrap shrink-0">
+                                        {formatBytes(Number(file.BytesComplete))} / {formatBytes(Number(file.BytesComplete) + Number(file.BytesLeft))}
+                                                                        <span class="text-white/60 ml-1">
+                                            ({Math.round((Number(file.BytesComplete) / (Number(file.BytesComplete) + Number(file.BytesLeft))) * 100)}%)
+                                        </span>
+                                    </span>
+
+                                    <span class="text-[10px] font-black uppercase tracking-tighter text-white whitespace-nowrap shrink-0">
+                                        Blocks: {chunksComplete}/{chunksTotal}
+                                        <span class="text-white/60 ml-1">
+                                            ({chunksTotal > 0 ? Math.round((chunksComplete / chunksTotal) * 100) : 0}%)
+                                        </span>
+                                    </span>
+                                </div>
+
+
+                                <div class="space-y-1">
+
+                                    <!-- 2. Segmented Chunk-level Bitfield Bar -->
+                                    {#if chunksTotal > 0}
+                                        <div class="flex gap-px h-1 w-full" aria-hidden="true">
+                                            {#each Array(visualBlockCount) as _, i}
+                                                <div
+                                                        class="flex-1 h-full rounded-[1px] transition-colors duration-500
+                                            {i < filledBlocks
+                                                ? (isDone ? 'bg-green-500/20' : 'bg-frost-500/60 shadow-[0_0_3px_rgba(130,170,255,0.2)]')
+                                                : 'bg-white/3'}"
+                                                ></div>
+                                            {/each}
+                                        </div>
+                                    {/if}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                {/each}
+                    {/each}
+                </div>
             </div>
-        </div>
+        {/if}
     {/if}
 </div>
 

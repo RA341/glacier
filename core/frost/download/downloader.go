@@ -334,8 +334,8 @@ func (d *Download) setupFile(fm *manifest.FileManifest) error {
 
 func (d *Download) downloadFile(fm *manifest.FileManifest) error {
 	//log.Info().
-	//	Str("file", met.RelPath).
-	//	Str("size", humanize.Bytes(uint64(met.Size))).
+	//	Str("file", fm.RelPath).
+	//	Str("size", humanize.Bytes(uint64(fm.Size))).
 	//	Msg("starting download")
 
 	started := time.Now()
@@ -389,6 +389,11 @@ func (d *Download) downloadFile(fm *manifest.FileManifest) error {
 				} else {
 					chunk.State = ChunkComplete
 				}
+
+				//log.Debug().Str("file", filepath.Base(fullPath)).
+				//	Str("chunksize", humanize.Bytes(uint64(chunk.End-chunk.Start))).
+				//	Int("index", i).
+				//	Msg("downloaded chunk")
 
 				err := d.cacheStore.Update(fullPath, i, &chunk)
 				if err != nil {

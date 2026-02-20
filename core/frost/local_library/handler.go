@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"path/filepath"
 	"slices"
 
 	"connectrpc.com/connect"
@@ -150,9 +151,9 @@ func (h *Handler) ListDownloading(ctx context.Context, c *connect.Request[v1.Lis
 		return nil, err
 	}
 
-	res := listutils.ToMap(games, func(t LocalGame) *v1.DownloadProgress {
+	res := listutils.ToMap(games, func(game LocalGame) *v1.DownloadProgress {
 		var progress []download.FileProgress
-		value, ok := h.srv.downloader.ActiveDownloads.Load(t.GameId)
+		value, ok := h.srv.downloader.ActiveDownloads.Load(game.GameId)
 		if ok {
 			progress, err = value.Progress()
 			if err != nil {
@@ -164,32 +165,42 @@ func (h *Handler) ListDownloading(ctx context.Context, c *connect.Request[v1.Lis
 		var totalComplete int64 = 0
 
 		fileProgresses := listutils.ToMap(progress, func(t download.FileProgress) *v1.FileProgress {
-			totalLeft += t.Left
-			totalComplete += t.Complete
+			totalLeft += int64(t.BytesLeft)
+			totalComplete += int64(t.BytesComplete)
+
+			displayName := t.Name
+			rel, err := filepath.Rel(game.Download.DownloadPath, t.Name)
+			if err == nil {
+				displayName = rel
+			}
 
 			return &v1.FileProgress{
-				Name:     t.Name,
-				Complete: uint64(t.Complete),
-				Left:     uint64(t.Left),
+				Name: displayName,
+
+				BytesComplete: t.BytesComplete,
+				BytesLeft:     t.BytesLeft,
+
+				ChunksComplete: t.ChunkComplete,
+				ChunksLeft:     t.ChunkLeft,
 			}
 		})
 
 		slices.SortFunc(fileProgresses, func(a, b *v1.FileProgress) int {
-			if a.Left > b.Left {
+			if a.BytesLeft > b.BytesLeft {
 				return -1 // a comes first
 			}
-			if a.Left < b.Left {
+			if a.BytesLeft < b.BytesLeft {
 				return 1 // b comes first
 			}
 			return 0
 		})
 
 		return &v1.DownloadProgress{
-			ID: uint64(t.ID),
+			ID: uint64(game.ID),
 			// todo replace with asset message
-			Thumbnail: fmt.Sprintf("/api/server/protected/assets/%d/t/%s", t.GameId, assets.AssetThumbnail.String()),
-			Title:     t.Game.Meta.Name,
-			Download:  t.Download.ToProto(),
+			Thumbnail: fmt.Sprintf("/api/server/protected/assets/%d/t/%s", game.GameId, assets.AssetThumbnail.String()),
+			Title:     game.Game.Meta.Name,
+			Download:  game.Download.ToProto(),
 			Progress: &v1.FolderProgress{
 				Complete: totalComplete,
 				Left:     totalLeft,

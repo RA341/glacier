@@ -27,9 +27,12 @@ func (c *CacheStoreBadger) Close() error {
 }
 
 type FileProgress struct {
-	Name     string
-	Complete int64
-	Left     int64
+	Name          string
+	BytesComplete uint64
+	BytesLeft     uint64
+
+	ChunkComplete uint64
+	ChunkLeft     uint64
 }
 
 func (c *CacheStoreBadger) Progress() ([]FileProgress, error) {
@@ -62,9 +65,11 @@ func (c *CacheStoreBadger) Progress() ([]FileProgress, error) {
 				chunkSize := chunk.End - chunk.Start + 1
 
 				if chunk.State == ChunkComplete {
-					prog.Complete += chunkSize
+					prog.BytesComplete += uint64(chunkSize)
+					prog.ChunkComplete += 1
 				} else {
-					prog.Left += chunkSize
+					prog.BytesLeft += uint64(chunkSize)
+					prog.ChunkLeft += 1
 				}
 			}
 			it.Close()

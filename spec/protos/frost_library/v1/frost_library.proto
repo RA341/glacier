@@ -137,8 +137,11 @@ message ListDownloadingRequest {}
 
 message FileProgress {
   string Name = 1;
-  uint64 Complete = 2;
-  uint64 Left = 3;
+  uint64 BytesComplete = 2;
+  uint64 BytesLeft = 3;
+
+  uint64 ChunksComplete = 4;
+  uint64 ChunksLeft = 5;
 }
 
 message FolderProgress {

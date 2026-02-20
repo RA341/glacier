@@ -14,7 +14,7 @@ type Config struct {
 	getBase func() string
 
 	SpeedThrottleInMB  int `yaml:"speedThrottleInMB" env:"SPEED_THROTTLE_IN_MB" default:"0" help:"Set global speed limit for download, Restart is required, 0 is unlimited."`
-	MaxConcurrentGames int `yaml:"maxConcurrentGames" env:"MAX_GAMES" default:"-1" help:"how many games to download at a time, -1 to set unlimited"`
+	MaxConcurrentGames int `yaml:"maxConcurrentGames" env:"MAX_GAMES" default:"1" help:"how many games to download at a time, -1 to set unlimited"`
 
 	// download chunking
 	MaxConcurrentFiles      int `yaml:"maxConcurrentFiles" env:"MAX_FILES" default:"50" help:"Maximum number of concurrent files"`

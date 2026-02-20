@@ -1209,12 +1209,14 @@ func (*ListDownloadingRequest) Descriptor() ([]byte, []int) {
 }
 
 type FileProgress struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          string                 `protobuf:"bytes,1,opt,name=Name,proto3" json:"Name,omitempty"`
-	Complete      uint64                 `protobuf:"varint,2,opt,name=Complete,proto3" json:"Complete,omitempty"`
-	Left          uint64                 `protobuf:"varint,3,opt,name=Left,proto3" json:"Left,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	Name           string                 `protobuf:"bytes,1,opt,name=Name,proto3" json:"Name,omitempty"`
+	BytesComplete  uint64                 `protobuf:"varint,2,opt,name=BytesComplete,proto3" json:"BytesComplete,omitempty"`
+	BytesLeft      uint64                 `protobuf:"varint,3,opt,name=BytesLeft,proto3" json:"BytesLeft,omitempty"`
+	ChunksComplete uint64                 `protobuf:"varint,4,opt,name=ChunksComplete,proto3" json:"ChunksComplete,omitempty"`
+	ChunksLeft     uint64                 `protobuf:"varint,5,opt,name=ChunksLeft,proto3" json:"ChunksLeft,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *FileProgress) Reset() {
@@ -1254,16 +1256,30 @@ func (x *FileProgress) GetName() string {
 	return ""
 }
 
-func (x *FileProgress) GetComplete() uint64 {
+func (x *FileProgress) GetBytesComplete() uint64 {
 	if x != nil {
-		return x.Complete
+		return x.BytesComplete
 	}
 	return 0
 }
 
-func (x *FileProgress) GetLeft() uint64 {
+func (x *FileProgress) GetBytesLeft() uint64 {
 	if x != nil {
-		return x.Left
+		return x.BytesLeft
+	}
+	return 0
+}
+
+func (x *FileProgress) GetChunksComplete() uint64 {
+	if x != nil {
+		return x.ChunksComplete
+	}
+	return 0
+}
+
+func (x *FileProgress) GetChunksLeft() uint64 {
+	if x != nil {
+		return x.ChunksLeft
 	}
 	return 0
 }
@@ -1510,11 +1526,15 @@ const file_frost_library_v1_frost_library_proto_rawDesc = "" +
 	"\x05force\x18\x03 \x01(\bR\x05force\x12\x18\n" +
 	"\arecheck\x18\x04 \x01(\bR\arecheck\"\x12\n" +
 	"\x10DownloadResponse\"\x18\n" +
-	"\x16ListDownloadingRequest\"R\n" +
+	"\x16ListDownloadingRequest\"\xae\x01\n" +
 	"\fFileProgress\x12\x12\n" +
-	"\x04Name\x18\x01 \x01(\tR\x04Name\x12\x1a\n" +
-	"\bComplete\x18\x02 \x01(\x04R\bComplete\x12\x12\n" +
-	"\x04Left\x18\x03 \x01(\x04R\x04Left\"v\n" +
+	"\x04Name\x18\x01 \x01(\tR\x04Name\x12$\n" +
+	"\rBytesComplete\x18\x02 \x01(\x04R\rBytesComplete\x12\x1c\n" +
+	"\tBytesLeft\x18\x03 \x01(\x04R\tBytesLeft\x12&\n" +
+	"\x0eChunksComplete\x18\x04 \x01(\x04R\x0eChunksComplete\x12\x1e\n" +
+	"\n" +
+	"ChunksLeft\x18\x05 \x01(\x04R\n" +
+	"ChunksLeft\"v\n" +
 	"\x0eFolderProgress\x12\x1a\n" +
 	"\bComplete\x18\x01 \x01(\x03R\bComplete\x12\x12\n" +
 	"\x04Left\x18\x02 \x01(\x03R\x04Left\x124\n" +

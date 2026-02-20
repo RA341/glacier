@@ -18,6 +18,26 @@ const CookieSessionToken = "session_token"
 const FrostHeader = "is-frost"
 const FrostReqHeader = "req-frost"
 
+func NewAuthDisabled(next *http.ServeMux) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		adminSess := &Session{
+			UserId: 0,
+			User: user.User{
+				Username: "auth-disabled",
+				Email:    "auth-disabled@disabled.com",
+				Role:     user.Omnissiah,
+			},
+		}
+
+		r = r.WithContext(injectSession(
+			context.Background(),
+			adminSess,
+		))
+
+		next.ServeHTTP(w, r)
+	})
+}
+
 func NewMiddleware(srv *Service, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var ctx context.Context

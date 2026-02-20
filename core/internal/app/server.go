@@ -158,8 +158,8 @@ func (s *Server) registerPublicRoutes(mux *http.ServeMux) {
 
 func (s *Server) withAuth(mux *http.ServeMux) http.Handler {
 	if s.Conf.Get().Auth.Disable {
-		log.Warn().Msg("CAUTION: AUTHENTICATION IS DISABLED")
-		return mux
+		log.Warn().Msg("CAUTION: AUTHENTICATION IS DISABLED, ALL REQUESTS ARE CONSIDERED ADMIN")
+		return auth.NewAuthDisabled(mux)
 	}
 
 	return auth.NewMiddleware(

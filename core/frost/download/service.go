@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"strconv"
 	"time"
 
 	hc "github.com/ra341/glacier/frost/http_client"
@@ -102,7 +101,7 @@ func (d *Service) Download(ctx context.Context, gameId int, downloadPath string,
 func (d *Service) Pause(gameId int) error {
 	val, ok := d.ActiveDownloads.Load(gameId)
 	if !ok {
-		return fmt.Errorf("game not found " + strconv.Itoa(gameId))
+		return fmt.Errorf("game not found %d", gameId)
 	}
 
 	val.Pause()
@@ -112,7 +111,7 @@ func (d *Service) Pause(gameId int) error {
 func (d *Service) Resume(gameId int) error {
 	val, ok := d.ActiveDownloads.Load(gameId)
 	if !ok {
-		return fmt.Errorf("game not found " + strconv.Itoa(gameId))
+		return fmt.Errorf("game not found %d", gameId)
 	}
 
 	val.Resume()
@@ -130,7 +129,7 @@ func (d *Service) Resume(gameId int) error {
 func (d *Service) Cancel(gameId int) error {
 	val, ok := d.ActiveDownloads.LoadAndDelete(gameId)
 	if !ok {
-		return fmt.Errorf("game not found " + strconv.Itoa(gameId))
+		return fmt.Errorf("game not found %d", gameId)
 	}
 
 	val.Cancel()
