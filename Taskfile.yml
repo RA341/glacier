@@ -167,6 +167,13 @@ tasks:
       - '{{.CU}} rm -rf {{.OUT_DIR}}/{{.BUILD_OUT}}'
       - '{{.CU}} mkdir -p {{.OUT_DIR}}/{{.BUILD_OUT}}'
       - '{{.CU}} cp -rf {{.BUILD_OUT}} {{.OUT_DIR}}/'
+      
+      
+  sidk:
+    dir: "website"
+    cmds:
+      - docker build . -t glacier-docs:dev
+      - docker run --rm -p 8082:80 glacier-docs:dev
 
   site:
     dir: "website"

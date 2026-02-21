@@ -2,9 +2,10 @@
 title: Install
 ---
 
-The project has 2 components 
+import InstallTabs from '@site/src/components/InstallTabs';
 
-Glacier: the core server
+The project has 2 components:
+- **Glacier** — the core server
+- **Frost** — the client component (similar to Steam)
 
-Frost: the client component (similar to steam)
-
+<InstallTabs />
