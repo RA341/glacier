@@ -27,7 +27,7 @@ type Game struct {
 }
 
 type GameFile struct {
-	Exe string `gorm:"type:uniqueIndex"`
+	Exe string `gorm:"column:exe;uniqueIndex"`
 }
 
 func (g *Game) SetErr(err error) {

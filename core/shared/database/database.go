@@ -4,41 +4,14 @@ import (
 	"database/sql"
 	"fmt"
 	"io/fs"
-	"path/filepath"
 
 	"github.com/pressly/goose/v3"
 	"github.com/rs/zerolog/log"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
 
-func New(basepath string, devMode bool, migrationDir fs.FS, migrationPath string) *gorm.DB {
-	gormDB, err := connect(basepath, devMode, migrationDir, migrationPath)
-	if err != nil {
-		// Using zerolog for consistency
-		log.Fatal().Err(err).Msg("Unable to connect to database")
-	}
-	return gormDB
-}
-
-func connect(dbPath string, devMode bool, migrationDir fs.FS, migrationPath string) (*gorm.DB, error) {
-	dbpath, err := filepath.Abs(dbPath)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get abs path of %s: %w", dbPath, err)
-	}
-
-	connectionStr := dbpath + "?_journal_mode=WAL&_busy_timeout=5000"
-
-	sqlDB, err := sql.Open("sqlite3", connectionStr)
-	if err != nil {
-		return nil, fmt.Errorf("failed to open raw sqlite connection: %w", err)
-	}
-
-	if err := migrate(sqlDB, migrationDir, migrationPath); err != nil {
-		return nil, fmt.Errorf("migration failed: %w", err)
-	}
-
+func InitGorm(dialector gorm.Dialector, devMode bool) (*gorm.DB, error) {
 	gormLogLevel := logger.Silent
 	if devMode {
 		gormLogLevel = logger.Info
@@ -50,22 +23,45 @@ func connect(dbPath string, devMode bool, migrationDir fs.FS, migrationPath stri
 		TranslateError: true,
 	}
 
-	db, err := gorm.Open(sqlite.Dialector{Conn: sqlDB}, conf)
+	db, err := gorm.Open(dialector, conf)
 	if err != nil {
-		return nil, fmt.Errorf("failed to open gorm connection: %w", err)
+		return nil, fmt.Errorf("failed to open DB connection: %w", err)
 	}
 
-	log.Info().Str("path", dbpath).Msg("Connected to database")
+	log.Info().Msg("Connected to database")
 	return db, nil
 }
 
-func migrate(db *sql.DB, migrationDir fs.FS, migrationPath string) error {
+func InitConn(
+	dialect string,
+	connectionStr string,
+	migrationDir fs.FS,
+	migrationPath string,
+) (*sql.DB, error) {
+	sqlDB, err := sql.Open(dialect, connectionStr)
+	if err != nil {
+		return nil, fmt.Errorf("failed to open raw sqlite connection: %w", err)
+	}
+
+	if err := migrate(sqlDB, migrationDir, migrationPath, dialect); err != nil {
+		return nil, fmt.Errorf("migration failed: %w", err)
+	}
+
+	return sqlDB, err
+}
+
+func migrate(
+	db *sql.DB,
+	migrationDir fs.FS,
+	migrationPath string,
+	dialect string,
+) error {
 	goose.SetBaseFS(migrationDir)
 
 	gzlog := GooseZerolog{}
 	goose.SetLogger(gzlog)
 
-	if err := goose.SetDialect("sqlite3"); err != nil {
+	if err := goose.SetDialect(dialect); err != nil {
 		return err
 	}
 

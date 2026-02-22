@@ -23,7 +23,7 @@ type Info struct {
 
 type FolderManifest struct {
 	gorm.Model
-	GameID    int `gorm:"uniqueIndex"`
+	GameID    int `gorm:"column:game_id;uniqueIndex"`
 	TotalSize int64
 	FileInfo  []FileManifest `gorm:"serializer:json"`
 }

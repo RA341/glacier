@@ -13,6 +13,16 @@ services:
       - pocket-id-net
     restart: unless-stopped
 
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: glacier
+    ports:
+      - "5432:5432"
+    volumes:
+      - .build/postgres_data:/var/lib/postgresql/data
 
   pocket:
     image: ghcr.io/pocket-id/pocket-id:latest

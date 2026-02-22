@@ -1,7 +1,7 @@
 <script lang="ts">
     import {
-        CheckCircle2Icon,
         ChevronDownIcon,
+        CircleCheck,
         ClockIcon,
         HourglassIcon,
         ImageIcon,
@@ -210,7 +210,7 @@
                         <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-panel/40 transition-colors group">
                             <div class="text-muted/40 group-hover:text-frost-400/50 transition-colors shrink-0">
                                 {#if isDone}
-                                    <CheckCircle2Icon size={14} class="text-green-500/60"/>
+                                    <CircleCheck size={14} class="text-green-500/60"/>
                                 {:else}
                                     <ClockIcon size={14}/>
                                 {/if}

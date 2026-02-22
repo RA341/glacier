@@ -5,18 +5,24 @@ import (
 	"io"
 	"os"
 
-	"ariga.io/atlas-provider-gorm/gormschema"
 	"github.com/ra341/glacier/internal/auth"
 	"github.com/ra341/glacier/internal/library"
 	"github.com/ra341/glacier/internal/library/manifest"
 	"github.com/ra341/glacier/internal/metadata/assets"
 	"github.com/ra341/glacier/internal/services_manager"
 	"github.com/ra341/glacier/internal/user"
+
+	"ariga.io/atlas-provider-gorm/gormschema"
 )
 
 func main() {
+	dialect := "sqlite"
+	if len(os.Args) > 1 {
+		dialect = os.Args[1]
+	}
+
 	stmts, err := gormschema.
-		New("sqlite").
+		New(dialect).
 		Load(
 			&library.Game{},
 			&manifest.FolderManifest{},

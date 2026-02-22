@@ -12,9 +12,6 @@ RUN npm run build
 
 FROM golang:1.26-alpine AS go_builder
 
-# for sqlite
-ENV CGO_ENABLED=1
-
 RUN apk update && apk add --no-cache \
     gcc \
     musl-dev \
@@ -37,7 +34,7 @@ COPY .git .git
 COPY core core
 COPY Taskfile.yml .
 
-RUN task go:b:docker OUT_EXE=../glacier PROD=1
+RUN task go:b:docker TAG=postgres OUT_EXE=../glacier PROD=1
 
 FROM alpine:latest
 

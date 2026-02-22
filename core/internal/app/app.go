@@ -53,7 +53,10 @@ func NewApp() *App {
 	}
 	logger.InitConsole(c.Logger.Level, c.Logger.Verbose)
 
-	db := database.New(c.Glacier.ConfigDir, c.Logger.DBLogger)
+	db := database.New(
+		&c.Database,
+		c.Logger.DBLogger,
+	)
 
 	libDb := library.NewStoreGorm(db)
 

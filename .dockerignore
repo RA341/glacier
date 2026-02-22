@@ -13,7 +13,6 @@ bob
 ui/**/.svelte-kit
 ui/**/build
 ui/**/release
-/**/node_modules
 /**/dist
 /**/dist-ssr
 *.local

@@ -1,24 +1,22 @@
 package database
 
 import (
-	"embed"
-	"path/filepath"
-
-	_ "github.com/mattn/go-sqlite3"
 	"github.com/ra341/glacier/shared/database"
+
+	"github.com/rs/zerolog/log"
 	"gorm.io/gorm"
 )
 
-////go:generate go run gorm.io/cli/gorm@latest gen -i .. -o ./generated/queries
+func New(config *Config, devMode bool) *gorm.DB {
+	sqlDB, err := NewSqlConn(config)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Failed to connect to database")
+	}
 
-//go:embed generated/migrations/*.sql
-var migrationDir embed.FS
+	gormDB, err := database.InitGorm(sqlDB, devMode)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Failed to connect to GORM")
+	}
 
-const migrationPath = "generated/migrations"
-
-const dbName = "glacier.db"
-
-func New(basepath string, devMode bool) *gorm.DB {
-	fullPath := filepath.Join(basepath, dbName)
-	return database.New(fullPath, devMode, migrationDir, migrationPath)
+	return gormDB
 }

@@ -2,12 +2,14 @@ package config
 
 import (
 	"github.com/ra341/glacier/internal/auth"
+	"github.com/ra341/glacier/internal/database"
 	"github.com/ra341/glacier/internal/downloader"
 	"github.com/ra341/glacier/internal/library"
 	"github.com/ra341/glacier/internal/metadata/assets"
 )
 
 type Config struct {
+	Database database.Config   `yaml:"database"`
 	Glacier  Glacier           `yaml:"glacier"`
 	Server   Server            `yaml:"server"`
 	Logger   Logger            `yaml:"logger"`
