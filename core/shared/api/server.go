@@ -14,8 +14,10 @@ import (
 
 // ServerBase defines a common server struct to support common server opts
 type ServerBase struct {
-	Ctx       context.Context
-	UIHandler http.Handler
+	Ctx             context.Context
+	UIHandler       http.Handler
+	RestartHandler  func()
+	ShutdownHandler func()
 }
 
 func (s *ServerBase) RegisterUI(mux *http.ServeMux, defaultUIHandler http.HandlerFunc) {
@@ -108,5 +110,17 @@ func WithFromPath(path string) ServerOpt {
 func WithUIHandler(ui http.Handler) ServerOpt {
 	return func(o *ServerBase) {
 		o.UIHandler = ui
+	}
+}
+
+func WithRestartHandler(restart func()) ServerOpt {
+	return func(o *ServerBase) {
+		o.RestartHandler = restart
+	}
+}
+
+func WithShutDownHandler(shutdown func()) ServerOpt {
+	return func(o *ServerBase) {
+		o.ShutdownHandler = shutdown
 	}
 }

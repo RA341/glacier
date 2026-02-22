@@ -106,6 +106,20 @@ func (s *Server) RegisterFrostRoutes(mux *http.ServeMux) {
 		_, _ = writer.Write([]byte("A pleasant fuck off from frost"))
 	})
 
+	if s.ShutdownHandler != nil {
+		mux.HandleFunc("/shutdown", func(writer http.ResponseWriter, request *http.Request) {
+			writer.WriteHeader(http.StatusOK)
+			s.ShutdownHandler()
+		})
+	}
+
+	if s.RestartHandler != nil {
+		mux.HandleFunc("/restart", func(writer http.ResponseWriter, request *http.Request) {
+			writer.WriteHeader(http.StatusOK)
+			s.RestartHandler()
+		})
+	}
+
 	mux.HandleFunc("/check", func(w http.ResponseWriter, r *http.Request) {
 		glacierUrl := s.App.Conf.Get().Server.GlacierUrl
 		if glacierUrl == "" {

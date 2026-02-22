@@ -20,3 +20,11 @@ export function formatBytes(bytes: number | bigint, decimals = 2) {
 
 	return `${val.toFixed(dm)} ${sizes[index]}`;
 }
+
+export function getRandomIntInclusive(min: number, max: number): number {
+	const minCeiled: number = Math.ceil(min);
+	const maxFloored: number = Math.floor(max);
+	// The maximum is inclusive and the minimum is inclusive
+	return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
+}
+

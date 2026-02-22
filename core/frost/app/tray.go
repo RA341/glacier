@@ -59,6 +59,60 @@ func NewDesktop(opts ...api.ServerOpt) {
 	t.Start()
 }
 
+func (t *Tray) onReady() {
+	systray.SetTemplateIcon(icon.Data, icon.Data)
+	systray.SetTitle("Frost")
+	systray.SetTooltip("Frost")
+	systray.SetOnTapped(func() {
+		t.StartUI()
+	})
+
+	mUI := systray.AddMenuItem("Open", "Start the UI")
+	mLaunchWebUI := systray.AddMenuItem("Open in browser", "Launched the Web UI")
+	mLaunchBrow := systray.AddMenuItem("Open in app mode", "open in browser app mode")
+	systray.AddSeparator()
+
+	logsDir := systray.AddMenuItem("Logs", "Open Logs directory")
+
+	systray.AddSeparator()
+
+	mServer := systray.AddMenuItem("Restart", "Restart the app")
+	mQuit := systray.AddMenuItem("Quit", "Quit the whole app")
+
+	go func() {
+		for {
+			select {
+			case <-logsDir.ClickedCh:
+				openFolder(t.conf.Get().Files.LogsDir)
+			case <-mLaunchBrow.ClickedCh:
+				//openAppMode(t.getAppUrl())
+			case <-mLaunchWebUI.ClickedCh:
+				//t.trayLog.Info().Msg("launching web browser")
+				openURL(t.getAppUrl())
+			case <-mServer.ClickedCh:
+				t.restart()
+			case <-mUI.ClickedCh:
+				//t.trayLog.Info().Msg("starting UI")
+				go t.startUI()
+			case <-mQuit.ClickedCh:
+				t.shutdown()
+			}
+		}
+	}()
+}
+
+func (t *Tray) shutdown() {
+	t.trayLog.Info().Msg("exiting frost")
+	t.cancel()
+	systray.Quit()
+}
+
+func (t *Tray) restart() {
+	t.trayLog.Info().Msg("restarting frost")
+	t.cancel()
+	t.startServices()
+}
+
 func (t *Tray) Start() {
 	t.startServices()
 	systray.Run(t.onReady, t.onExit)
@@ -99,7 +153,12 @@ func (t *Tray) startServer() {
 	app := New()
 	t.conf = app.Conf
 
-	finalOpts := append(t.serverOpts, api.WithCtx(t.ctx))
+	finalOpts := append(
+		t.serverOpts,
+		api.WithCtx(t.ctx),
+		api.WithRestartHandler(t.restart),
+		api.WithShutDownHandler(t.shutdown),
+	)
 	StartServerRaw(app, finalOpts...)
 }
 
@@ -159,52 +218,6 @@ func NewFileLogger(filename string) io.Writer {
 		Compress:   true,
 	}
 	return logFile
-}
-
-func (t *Tray) onReady() {
-	systray.SetTemplateIcon(icon.Data, icon.Data)
-	systray.SetTitle("Frost")
-	systray.SetTooltip("Frost")
-	systray.SetOnTapped(func() {
-		t.StartUI()
-	})
-
-	mUI := systray.AddMenuItem("Open", "Start the UI")
-	mLaunchWebUI := systray.AddMenuItem("Open in browser", "Launched the Web UI")
-	mLaunchBrow := systray.AddMenuItem("Open in app mode", "open in browser app mode")
-	systray.AddSeparator()
-
-	logsDir := systray.AddMenuItem("Logs", "Open Logs directory")
-
-	systray.AddSeparator()
-
-	mServer := systray.AddMenuItem("Restart", "Restart the app")
-	mQuit := systray.AddMenuItem("Quit", "Quit the whole app")
-
-	go func() {
-		for {
-			select {
-			case <-logsDir.ClickedCh:
-				openFolder(t.conf.Get().Files.LogsDir)
-			case <-mLaunchBrow.ClickedCh:
-				//openAppMode(t.getAppUrl())
-			case <-mLaunchWebUI.ClickedCh:
-				//t.trayLog.Info().Msg("launching web browser")
-				openURL(t.getAppUrl())
-			case <-mServer.ClickedCh:
-				t.trayLog.Info().Msg("restarting frost")
-				t.cancel()
-				t.startServices()
-			case <-mUI.ClickedCh:
-				//t.trayLog.Info().Msg("starting UI")
-				go t.startUI()
-			case <-mQuit.ClickedCh:
-				t.trayLog.Info().Msg("exiting frost")
-				t.cancel()
-				systray.Quit()
-			}
-		}
-	}()
 }
 
 func (t *Tray) getAppUrl() string {
