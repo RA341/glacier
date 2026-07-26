@@ -1,14 +1,16 @@
 FROM node:25-alpine AS web_ui
 
+RUN npm install -g pnpm
+
 WORKDIR /web/
 
-COPY ui/package* .
+COPY ui/package.json ui/pnpm-*.yaml ./
 
-RUN npm ci
+RUN pnpm ci
 
 COPY ui/ .
 
-RUN npm run build
+RUN pnpm run build
 
 FROM golang:1.26-alpine AS go_builder
 
