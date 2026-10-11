@@ -60,7 +60,7 @@ func (q *Qbit) Download(ctx context.Context, url string, downloadPath string) (d
 		}
 	}
 
-	err = q.cli.AddTorrentFromUrlCtx(ctx, url, map[string]string{
+	_, err = q.cli.AddTorrentFromUrlCtx(ctx, url, map[string]string{
 		"savepath": downloadPath,
 	})
 	if err != nil {

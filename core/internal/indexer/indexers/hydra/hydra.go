@@ -219,7 +219,7 @@ func (h *Hydra) downloadIndex(name string, url string) error {
 		return err
 	}
 
-	if get.IsError() {
+	if get.IsStatusFailure() {
 		return fmt.Errorf(
 			"could not get indexer %s\n code:%d \n%s",
 			name,
