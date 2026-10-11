@@ -2,19 +2,21 @@
 // @generated from file downloader/v1/downloader.proto (package downloader.v1, syntax proto3)
 /* eslint-disable */
 
-import type { GenFile, GenService } from "@bufbuild/protobuf/codegenv2";
-import { fileDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
+import type { GenFile, GenService } from '@bufbuild/protobuf/codegenv2';
+import { fileDesc, serviceDesc } from '@bufbuild/protobuf/codegenv2';
 
 /**
  * Describes the file downloader/v1/downloader.proto.
  */
-export const file_downloader_v1_downloader: GenFile = /*@__PURE__*/
-  fileDesc("Ch5kb3dubG9hZGVyL3YxL2Rvd25sb2FkZXIucHJvdG8SDWRvd25sb2FkZXIudjEyEwoRRG93bmxvYWRlclNlcnZpY2VCqwEKEWNvbS5kb3dubG9hZGVyLnYxQg9Eb3dubG9hZGVyUHJvdG9QAVowZ2l0aHViLmNvbS9yYTM0MS9nbGFjaWVyL2dlbmVyYXRlZC9kb3dubG9hZGVyL3YxogIDRFhYqgINRG93bmxvYWRlci5WMcoCDURvd25sb2FkZXJcVjHiAhlEb3dubG9hZGVyXFYxXEdQQk1ldGFkYXRh6gIORG93bmxvYWRlcjo6VjFiBnByb3RvMw");
+export const file_downloader_v1_downloader: GenFile =
+	/*@__PURE__*/
+	fileDesc(
+		'Ch5kb3dubG9hZGVyL3YxL2Rvd25sb2FkZXIucHJvdG8SDWRvd25sb2FkZXIudjEyEwoRRG93bmxvYWRlclNlcnZpY2VCqwEKEWNvbS5kb3dubG9hZGVyLnYxQg9Eb3dubG9hZGVyUHJvdG9QAVowZ2l0aHViLmNvbS9yYTM0MS9nbGFjaWVyL2dlbmVyYXRlZC9kb3dubG9hZGVyL3YxogIDRFhYqgINRG93bmxvYWRlci5WMcoCDURvd25sb2FkZXJcVjHiAhlEb3dubG9hZGVyXFYxXEdQQk1ldGFkYXRh6gIORG93bmxvYWRlcjo6VjFiBnByb3RvMw'
+	);
 
 /**
  * @generated from service downloader.v1.DownloaderService
  */
-export const DownloaderService: GenService<{
-}> = /*@__PURE__*/
-  serviceDesc(file_downloader_v1_downloader, 0);
-
+export const DownloaderService: GenService<{}> =
+	/*@__PURE__*/
+	serviceDesc(file_downloader_v1_downloader, 0);

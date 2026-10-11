@@ -1,4 +1,4 @@
-import { Glacier } from '$lib/api/api';
+import { Glacier } from '#lib/api/api.js';
 import * as sea from 'node:sea';
 
 interface UploadAssetParams {

@@ -1,5 +1,4 @@
-import { Glacier } from '$lib/api/api';
-
+import { Glacier } from '#lib/api/api.js';
 
 export function checkAuth() {
 	let loading = $state(false);

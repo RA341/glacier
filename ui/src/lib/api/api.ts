@@ -1,7 +1,7 @@
 import { type Client, ConnectError, createClient } from '@connectrpc/connect';
 import { createConnectTransport } from '@connectrpc/connect-web';
 import type { DescService } from '@bufbuild/protobuf';
-import { browser } from '$app/environment';
+import { browser } from '$app/env';
 
 const SERVICES = {
 	GLACIER: '/api/server/protected',
@@ -20,7 +20,7 @@ const getBaseHost = () => {
 	if (browser) {
 		return window.location.origin;
 	}
-	return "/"
+	return '/';
 };
 
 const buildBaseUrl = (servicePrefix: string) => {
@@ -31,11 +31,7 @@ const buildBaseUrl = (servicePrefix: string) => {
 
 function createServiceContext(prefix: string) {
 	const baseUrl = buildBaseUrl(prefix);
-	const transport = createConnectTransport({
-		baseUrl: baseUrl,
-		useBinaryFormat: true,
-		interceptors: []
-	});
+	const transport = createConnectTransport({ baseUrl, useBinaryFormat: true, interceptors: [] });
 
 	return {
 		transport,

@@ -1,223 +1,245 @@
 <script lang="ts">
-    import {
-        CalendarIcon,
-        ChevronLeft,
-        ChevronRight,
-        CircleAlert,
-        ImageIcon,
-        LoaderIcon,
-        MonitorIcon,
-        Pen,
-        StarIcon
-    } from '@lucide/svelte';
-    import type {Game} from "$lib/gen/library/v1/library_pb";
-    import {getAssetPath} from "$lib/api/assets";
-    import AssetImg from "$lib/components/assets/AssetImg.svelte";
-    import AssetVideo from "$lib/components/assets/AssetVideo.svelte";
-    import GameDownloadButton from "$lib/components/ButtonDownload.svelte";
-    import {glacierCli, isFrost} from "$lib/api/api";
-    import {AssetService} from "$lib/gen/assets/v1/assets_pb";
-    import {createRPCRunner} from "$lib/api/rpc.svelte";
-    import {onMount} from "svelte";
-    import {fade} from 'svelte/transition';
-    import {trimPrefix} from "$lib/api/strings.ts";
+	import {
+		CalendarIcon,
+		ChevronLeft,
+		ChevronRight,
+		CircleAlert,
+		ImageIcon,
+		LoaderIcon,
+		MonitorIcon,
+		Pen,
+		StarIcon
+	} from '@lucide/svelte';
+	import type { Game } from '#lib/gen/library/v1/library_pb.js';
+	import { getAssetPath } from '#lib/api/assets.js';
+	import AssetImg from '#lib/components/assets/AssetImg.svelte';
+	import AssetVideo from '#lib/components/assets/AssetVideo.svelte';
+	import GameDownloadButton from '#lib/components/ButtonDownload.svelte';
+	import { glacierCli, isFrost } from '#lib/api/api.js';
+	import { AssetService } from '#lib/gen/assets/v1/assets_pb.js';
+	import { createRPCRunner } from '#lib/api/rpc.svelte.js';
+	import { onMount } from 'svelte';
+	import { fade } from 'svelte/transition';
+	import { trimPrefix } from '#lib/api/strings.js';
 
-    let {game = $bindable(null), onManage}: { game: Game | null, onManage: () => void } = $props();
+	let { game = $bindable(null), onManage }: { game: Game | null; onManage: () => void } = $props();
 
-    let meta = $derived(game?.Meta);
-    const thumb = getAssetPath({gameId: game?.ID, assetType: "AssetThumbnail"});
-    const trailer = getAssetPath({gameId: game?.ID, assetType: "AssetTrailer"});
+	let meta = $derived(game?.Meta);
+	const thumb = getAssetPath({ gameId: game?.ID, assetType: 'AssetThumbnail' });
+	const trailer = getAssetPath({ gameId: game?.ID, assetType: 'AssetTrailer' });
 
-    const assetSrv = glacierCli(AssetService)
+	const assetSrv = glacierCli(AssetService);
 
-    const listRpc = createRPCRunner(() => assetSrv.list({
-        ID: game?.ID,
-        AssetType: ["AssetTrailer", "AssetGameplayImage", "AssetGameplayVideo", "AssetArtwork", "AssetBanner"],
-    }))
+	const listRpc = createRPCRunner(() =>
+		assetSrv.list({
+			ID: game?.ID,
+			AssetType: [
+				'AssetTrailer',
+				'AssetGameplayImage',
+				'AssetGameplayVideo',
+				'AssetArtwork',
+				'AssetBanner'
+			]
+		})
+	);
 
-    const assetType = $state("")
-    let activeIndex = $state(0);
-    let assets = $derived(listRpc.value?.assets ?? []);
-    let currentAsset = $derived(assets[activeIndex]);
+	const assetType = $state('');
+	let activeIndex = $state(0);
+	let assets = $derived(listRpc.value?.assets ?? []);
+	let currentAsset = $derived(assets[activeIndex]);
 
-    function next() {
-        activeIndex = (activeIndex + 1) % assets.length;
-    }
+	function next() {
+		activeIndex = (activeIndex + 1) % assets.length;
+	}
 
-    let getImg = (inputLink: string): string => {
-        if (!inputLink) return "";
+	let getImg = (inputLink: string): string => {
+		if (!inputLink) return '';
 
-        return getAssetPath({
-            gameId: game?.ID,
-            assetPath: inputLink
-        });
-    }
+		return getAssetPath({
+			gameId: game?.ID,
+			assetPath: inputLink
+		});
+	};
 
-    function prev() {
-        activeIndex = (activeIndex - 1 + assets.length) % assets.length;
-    }
+	function prev() {
+		activeIndex = (activeIndex - 1 + assets.length) % assets.length;
+	}
 
-    function isVideo(type: string) {
-        return type.toLowerCase().includes('video') ||
-            type.toLowerCase().includes('trailer');
-    }
+	function isVideo(type: string) {
+		return type.toLowerCase().includes('video') || type.toLowerCase().includes('trailer');
+	}
 
-    onMount(async () => {
-        if (!game?.ID) {
-            return
-        }
-        await listRpc.runner()
-    })
+	onMount(async () => {
+		if (!game?.ID) {
+			return;
+		}
+		await listRpc.runner();
+	});
 </script>
 
 <div class="space-y-4">
-    <div class="bg-surface/40 backdrop-blur-xl border border-white/10 rounded-3xl p-6 shadow-sm relative w-full aspect-video lg:aspect-20/9 overflow-hidden group ">
-        {#if listRpc.loading && !listRpc.value}
-            <div class="flex h-full w-full items-center justify-center bg-background/50 animate-pulse">
-                <LoaderIcon class="animate-spin text-frost-500" size={40}/>
-            </div>
-        {:else if listRpc.error}
-            <div class="flex flex-col h-full w-full items-center justify-center text-red-400 gap-2">
-                <CircleAlert size={32}/>
-                <p class="text-xs font-black uppercase tracking-widest">Failed to load gallery</p>
-            </div>
-        {:else if assets.length > 0}
-            <!-- Asset Label Overlay -->
-            <div class="absolute top-6 right-8 px-4 py-1.5 rounded-full bg-background/40 backdrop-blur-md border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] text-white/90 z-20 pointer-events-none">
-                {trimPrefix(currentAsset.Type, "Asset")}
-            </div>
-            <!-- Navigation Arrows -->
-            {#if assets.length > 1}
-                <button
-                        onclick={prev}
-                        class="absolute left-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-background/20 backdrop-blur-md border border-white/10 opacity-0 group-hover:opacity-100 transition-all text-white hover:bg-frost-500 hover:text-background active:scale-95 shadow-xl"
-                >
-                    <ChevronLeft size={24} strokeWidth={3}/>
-                </button>
-                <button
-                        onclick={next}
-                        class="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-background/20 backdrop-blur-md border border-white/10 opacity-0 group-hover:opacity-100 transition-all text-white hover:bg-frost-500 hover:text-background active:scale-95 shadow-xl"
-                >
-                    <ChevronRight size={24} strokeWidth={3}/>
-                </button>
-            {/if}
+	<div
+		class="group relative aspect-video w-full overflow-hidden rounded-3xl border border-white/10 bg-surface/40 p-6 shadow-sm backdrop-blur-xl lg:aspect-20/9"
+	>
+		{#if listRpc.loading && !listRpc.value}
+			<div class="flex h-full w-full animate-pulse items-center justify-center bg-background/50">
+				<LoaderIcon class="animate-spin text-frost-500" size={40} />
+			</div>
+		{:else if listRpc.error}
+			<div class="flex h-full w-full flex-col items-center justify-center gap-2 text-red-400">
+				<CircleAlert size={32} />
+				<p class="text-xs font-black tracking-widest uppercase">Failed to load gallery</p>
+			</div>
+		{:else if assets.length > 0}
+			<!-- Asset Label Overlay -->
+			<div
+				class="pointer-events-none absolute top-6 right-8 z-20 rounded-full border border-white/10 bg-background/40 px-4 py-1.5 text-[10px] font-black tracking-[0.2em] text-white/90 uppercase backdrop-blur-md"
+			>
+				{trimPrefix(currentAsset.Type, 'Asset')}
+			</div>
+			<!-- Navigation Arrows -->
+			{#if assets.length > 1}
+				<button
+					onclick={prev}
+					class="absolute top-1/2 left-4 z-20 -translate-y-1/2 rounded-full border border-white/10 bg-background/20 p-3 text-white opacity-0 shadow-xl backdrop-blur-md transition-all group-hover:opacity-100 hover:bg-frost-500 hover:text-background active:scale-95"
+				>
+					<ChevronLeft size={24} strokeWidth={3} />
+				</button>
+				<button
+					onclick={next}
+					class="absolute top-1/2 right-4 z-20 -translate-y-1/2 rounded-full border border-white/10 bg-background/20 p-3 text-white opacity-0 shadow-xl backdrop-blur-md transition-all group-hover:opacity-100 hover:bg-frost-500 hover:text-background active:scale-95"
+				>
+					<ChevronRight size={24} strokeWidth={3} />
+				</button>
+			{/if}
 
-            <!-- Active Asset Display -->
-            {#key activeIndex}
-                <div in:fade={{ duration: 400 }} class="w-full h-full">
-                    {#if isVideo(currentAsset.Type)}
-                        <AssetVideo
-                                src={getImg(currentAsset.LocalPath) || currentAsset.RemoteUrl}
-                                autoplay={true}
-                                muted={true}
-                                controls={true}
-                                class="w-full h-full object-cover"
-                        >
-                            {#snippet loadingSlot()}
-                                <div class="flex h-full w-full items-center justify-center bg-black">
-                                    <LoaderIcon class="animate-spin text-frost-500"/>
-                                </div>
-                            {/snippet}
-                        </AssetVideo>
-                    {:else}
-                        <img
-                                src={getImg(currentAsset.LocalPath) || currentAsset.RemoteUrl}
-                                class="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-50"
-                                alt=""
-                        />
+			<!-- Active Asset Display -->
+			{#key activeIndex}
+				<div in:fade={{ duration: 400 }} class="h-full w-full">
+					{#if isVideo(currentAsset.Type)}
+						<AssetVideo
+							src={getImg(currentAsset.LocalPath) || currentAsset.RemoteUrl}
+							autoplay={true}
+							muted={true}
+							controls={true}
+							class="h-full w-full object-cover"
+						>
+							{#snippet loadingSlot()}
+								<div class="flex h-full w-full items-center justify-center bg-black">
+									<LoaderIcon class="animate-spin text-frost-500" />
+								</div>
+							{/snippet}
+						</AssetVideo>
+					{:else}
+						<img
+							src={getImg(currentAsset.LocalPath) || currentAsset.RemoteUrl}
+							class="absolute inset-0 h-full w-full scale-110 object-cover opacity-50 blur-2xl"
+							alt=""
+						/>
 
-                        <AssetImg
-                                src={getImg(currentAsset.LocalPath) || currentAsset.RemoteUrl}
-                                class="w-full h-full "
-                                imgClass="w-full h-full object-contain"
-                        />
-                    {/if}
-                </div>
-            {/key}
+						<AssetImg
+							src={getImg(currentAsset.LocalPath) || currentAsset.RemoteUrl}
+							class="h-full w-full "
+							imgClass="w-full h-full object-contain"
+						/>
+					{/if}
+				</div>
+			{/key}
 
-            <!-- Indicators (Dots) -->
-            <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-20">
-                {#each assets as _, i}
-                    <button
-                            title="Indicator"
-                            onclick={() => activeIndex = i}
-                            class="h-1.5 transition-all rounded-full
-                        {activeIndex === i ? 'w-8 bg-frost-500 shadow-[0_0_10px_rgba(130,170,255,0.5)]' : 'w-2 bg-white/20 hover:bg-white/40'}"
-                    ></button>
-                {/each}
-            </div>
-        {:else}
-            <!-- Empty State -->
-            <div class="flex flex-col h-full w-full items-center justify-center text-muted/20 gap-3">
-                <ImageIcon size={64} strokeWidth={1}/>
-                <p class="text-xs font-black uppercase tracking-[0.3em]">No Media Assets</p>
-            </div>
-        {/if}
-    </div>
+			<!-- Indicators (Dots) -->
+			<div class="absolute bottom-6 left-1/2 z-20 flex -translate-x-1/2 gap-2">
+				{#each assets as _, i}
+					<button
+						title="Indicator"
+						onclick={() => (activeIndex = i)}
+						class="h-1.5 rounded-full transition-all
+                        {activeIndex === i
+							? 'w-8 bg-frost-500 shadow-[0_0_10px_rgba(130,170,255,0.5)]'
+							: 'w-2 bg-white/20 hover:bg-white/40'}"
+					></button>
+				{/each}
+			</div>
+		{:else}
+			<!-- Empty State -->
+			<div class="flex h-full w-full flex-col items-center justify-center gap-3 text-muted/20">
+				<ImageIcon size={64} strokeWidth={1} />
+				<p class="text-xs font-black tracking-[0.3em] uppercase">No Media Assets</p>
+			</div>
+		{/if}
+	</div>
 
-    <!-- MIDDLE SECTION: INFO BAR -->
-    <div class="bg-surface/40 backdrop-blur-xl border border-white/10 rounded-3xl p-6 shadow-sm">
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-            <div class="space-y-4">
-                <h1 class="text-3xl font-black tracking-tight text-foreground">{meta?.Name}</h1>
+	<!-- MIDDLE SECTION: INFO BAR -->
+	<div class="rounded-3xl border border-white/10 bg-surface/40 p-6 shadow-sm backdrop-blur-xl">
+		<div class="flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
+			<div class="space-y-4">
+				<h1 class="text-3xl font-black tracking-tight text-foreground">{meta?.Name}</h1>
 
-                <div class="flex flex-wrap items-center gap-1 text-sm font-bold">
-                    <!-- Rating -->
-                    <div class="flex items-center gap-2 px-3 py-1.5 bg-transparent  rounded-xl">
-                        <StarIcon size={16} class="text-yellow-500 fill-yellow-500"/>
-                        <span>{meta?.Rating} <span class="text-muted font-medium">({meta?.RatingCount})</span></span>
-                    </div>
+				<div class="flex flex-wrap items-center gap-1 text-sm font-bold">
+					<!-- Rating -->
+					<div class="flex items-center gap-2 rounded-xl bg-transparent px-3 py-1.5">
+						<StarIcon size={16} class="fill-yellow-500 text-yellow-500" />
+						<span
+							>{meta?.Rating}
+							<span class="font-medium text-muted">({meta?.RatingCount})</span></span
+						>
+					</div>
 
-                    <div class="w-px h-4 bg-border hidden lg:block"></div>
+					<div class="hidden h-4 w-px bg-border lg:block"></div>
 
-                    <!-- Release Year -->
-                    <div class="flex items-center gap-2 px-3 py-1.5 bg-transparent  rounded-xl">
-                        <CalendarIcon size={16} class="text-frost-400"/>
-                        <span>{new Date(meta?.ReleaseDate || "").getFullYear()}</span>
-                    </div>
+					<!-- Release Year -->
+					<div class="flex items-center gap-2 rounded-xl bg-transparent px-3 py-1.5">
+						<CalendarIcon size={16} class="text-frost-400" />
+						<span>{new Date(meta?.ReleaseDate || '').getFullYear()}</span>
+					</div>
 
-                    <div class="w-px h-4 bg-border hidden lg:block"></div>
+					<div class="hidden h-4 w-px bg-border lg:block"></div>
 
-                    <!-- Platform Tags -->
-                    <div class="flex items-center gap-2 px-3 py-1.5 bg-transparent  rounded-xl">
-                        <MonitorIcon size={16} class="text-frost-400"/>
-                        {#each meta?.Platforms.slice(0, 2) as Platform}
-                            <span class="px-3 py-1 bg-frost-500/5 border border-frost-500/15 text-muted rounded-lg text-[11px] font-black uppercase tracking-wider">
-                                {Platform}
-                            </span>
-                        {/each}
-                    </div>
-                </div>
+					<!-- Platform Tags -->
+					<div class="flex items-center gap-2 rounded-xl bg-transparent px-3 py-1.5">
+						<MonitorIcon size={16} class="text-frost-400" />
+						{#each meta?.Platforms.slice(0, 2) as Platform}
+							<span
+								class="rounded-lg border border-frost-500/15 bg-frost-500/5 px-3 py-1 text-[11px] font-black tracking-wider text-muted uppercase"
+							>
+								{Platform}
+							</span>
+						{/each}
+					</div>
+				</div>
 
-                <!-- Genre Tags -->
-                <div class="flex flex-wrap gap-2">
-                    {#each meta?.Genres.slice(0, 4) ?? [] as genre}
-                        <span class="px-3 py-1 bg-frost-500/5 border border-frost-500/15 text-frost-400 rounded-lg text-[11px] font-black uppercase tracking-wider">
-                            {genre}
-                        </span>
-                    {/each}
-                    {#if meta?.Genres?.length && meta?.Genres?.length > 4}
-                        <span class="px-3 py-1 bg-panel border border-border text-muted rounded-lg text-[11px] font-bold">
-                            +{meta.Genres.length - 4} more
-                        </span>
-                    {/if}
-                </div>
-            </div>
+				<!-- Genre Tags -->
+				<div class="flex flex-wrap gap-2">
+					{#each meta?.Genres.slice(0, 4) ?? [] as genre}
+						<span
+							class="rounded-lg border border-frost-500/15 bg-frost-500/5 px-3 py-1 text-[11px] font-black tracking-wider text-frost-400 uppercase"
+						>
+							{genre}
+						</span>
+					{/each}
+					{#if meta?.Genres?.length && meta?.Genres?.length > 4}
+						<span
+							class="rounded-lg border border-border bg-panel px-3 py-1 text-[11px] font-bold text-muted"
+						>
+							+{meta.Genres.length - 4} more
+						</span>
+					{/if}
+				</div>
+			</div>
 
-            <!-- Actions -->
-            <div class="flex items-center gap-3 shrink-0">
-                <button
-                        onclick={onManage}
-                        class="px-8 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm font-black uppercase tracking-widest hover:border-frost-500/60 hover:bg-white/10 transition-all flex items-center gap-2"
-                >
-                    <Pen size={18}/>
-                    Manage
-                </button>
+			<!-- Actions -->
+			<div class="flex shrink-0 items-center gap-3">
+				<button
+					onclick={onManage}
+					class="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-8 py-3 text-sm font-black tracking-widest uppercase transition-all hover:border-frost-500/60 hover:bg-white/10"
+				>
+					<Pen size={18} />
+					Manage
+				</button>
 
-                {#if isFrost && game?.DownloadState?.State === "Complete"}
-                    <GameDownloadButton gameId={game.ID}/>
-                {/if}
-            </div>
-        </div>
-    </div>
+				{#if isFrost && game?.DownloadState?.State === 'Complete'}
+					<GameDownloadButton gameId={game.ID} />
+				{/if}
+			</div>
+		</div>
+	</div>
 </div>

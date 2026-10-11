@@ -1,51 +1,53 @@
 <script lang="ts">
-    import {ImageIcon, PlusIcon} from '@lucide/svelte';
-    import {goto} from "$app/navigation";
-    import {transferStore} from "./selectedGame.svelte.ts";
-    import {type GameMetadata, SearchService} from "$lib/gen/search/v1/search_pb";
+	import { ImageIcon, PlusIcon } from '@lucide/svelte';
+	import { goto } from '$app/navigation';
+	import { transferStore } from './selectedGame.svelte.ts';
+	import { type GameMetadata, SearchService } from '#lib/gen/search/v1/search_pb.js';
 
+	let { game }: { game: GameMetadata } = $props();
 
-    let {game}: { game: GameMetadata } = $props()
+	function handleAdd(meta: GameMetadata) {
+		transferStore.data = meta;
 
-    function handleAdd(meta: GameMetadata) {
-        transferStore.data = meta
-
-        goto("/search/details", {keepFocus: true})
-    }
-
+		goto('/search/details', { reset: false });
+	}
 </script>
 
 <button
-        onclick={() => handleAdd(game)}
-        class="group relative flex flex-col bg-surface border border-border rounded-2xl overflow-hidden hover:border-frost-500/50 transition-all hover:-translate-y-1 shadow-sm active:scale-[0.98]"
+	onclick={() => handleAdd(game)}
+	class="group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-sm transition-all hover:-translate-y-1 hover:border-frost-500/50 active:scale-[0.98]"
 >
-    <div class="aspect-3/4 w-full bg-panel relative overflow-hidden">
-        {#if game.assets.at(0)?.RemoteUrl}
-            <img
-                    src={game.assets.at(0)?.RemoteUrl}
-                    alt={game.Name}
-                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            />
-        {:else}
-            <div class="w-full h-full flex flex-col items-center justify-center text-muted/20 gap-2">
-                <ImageIcon size={48} strokeWidth={1}/>
-                <span class="text-[10px] font-bold uppercase tracking-widest">No Preview</span>
-            </div>
-        {/if}
+	<div class="relative aspect-3/4 w-full overflow-hidden bg-panel">
+		{#if game.assets.at(0)?.RemoteUrl}
+			<img
+				src={game.assets.at(0)?.RemoteUrl}
+				alt={game.Name}
+				class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+			/>
+		{:else}
+			<div class="flex h-full w-full flex-col items-center justify-center gap-2 text-muted/20">
+				<ImageIcon size={48} strokeWidth={1} />
+				<span class="text-[10px] font-bold tracking-widest uppercase">No Preview</span>
+			</div>
+		{/if}
 
-        <div class="absolute inset-0 bg-frost-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-            <div class="bg-frost-500 text-background p-3 rounded-full shadow-xl translate-y-4 group-hover:translate-y-0 transition-transform">
-                <PlusIcon size={24}/>
-            </div>
-        </div>
-    </div>
+		<div
+			class="bg-frost-900/40 absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100"
+		>
+			<div
+				class="translate-y-4 rounded-full bg-frost-500 p-3 text-background shadow-xl transition-transform group-hover:translate-y-0"
+			>
+				<PlusIcon size={24} />
+			</div>
+		</div>
+	</div>
 
-    <div class="p-4 border-t border-border flex flex-col gap-1 bg-surface">
-        <h3 class="font-bold text-sm text-foreground truncate">{game.Name}</h3>
-        <div class="flex items-center justify-between text-[11px] text-muted font-medium">
-            <span class="flex items-center gap-1">
-                {new Date(game.ReleaseDate).getFullYear()}
-            </span>
-        </div>
-    </div>
+	<div class="flex flex-col gap-1 border-t border-border bg-surface p-4">
+		<h3 class="truncate text-sm font-bold text-foreground">{game.Name}</h3>
+		<div class="flex items-center justify-between text-[11px] font-medium text-muted">
+			<span class="flex items-center gap-1">
+				{new Date(game.ReleaseDate).getFullYear()}
+			</span>
+		</div>
+	</div>
 </button>

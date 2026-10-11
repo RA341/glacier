@@ -1,6 +1,6 @@
 import { CheckCircle2Icon, InfoIcon, AlertTriangleIcon, XCircleIcon } from '@lucide/svelte';
 import { getContext, setContext } from 'svelte';
-import { setSnackbarCtx } from '$lib/components/snackbar/snackbar-provider.svelte';
+import { setSnackbarCtx } from '#lib/components/snackbar/snackbar-provider.svelte.js';
 
 export type DialogType = 'success' | 'info' | 'error' | 'warn';
 

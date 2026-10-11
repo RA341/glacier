@@ -1,224 +1,245 @@
 <script lang="ts">
-    import {frostCli, glacierCli, isFrost} from "$lib/api/api";
-    import {ConfigService} from "$lib/gen/config/v1/config_pb";
-    import type {Client} from "@connectrpc/connect";
-    import {createRPCRunner} from "$lib/api/rpc.svelte";
-    import {
-        FolderIcon,
-        ChevronRightIcon,
-        ArrowLeftIcon,
-        XIcon,
-        CheckIcon,
-        SearchXIcon,
-        LoaderIcon,
-        FolderOpenIcon
-    } from "@lucide/svelte";
-    import {fade, fly} from "svelte/transition";
+	import { frostCli, glacierCli, isFrost } from '#lib/api/api.js';
+	import { ConfigService } from '#lib/gen/config/v1/config_pb.js';
+	import type { Client } from '@connectrpc/connect';
+	import { createRPCRunner } from '#lib/api/rpc.svelte.js';
+	import {
+		FolderIcon,
+		ChevronRightIcon,
+		ArrowLeftIcon,
+		XIcon,
+		CheckIcon,
+		SearchXIcon,
+		LoaderIcon,
+		FolderOpenIcon
+	} from '@lucide/svelte';
+	import { fade, fly } from 'svelte/transition';
 
-    interface FolderPickerProps {
-        value?: string;
-        placeholder?: string;
-        label?: string;
-        disabled?: boolean;
-    }
+	interface FolderPickerProps {
+		value?: string;
+		placeholder?: string;
+		label?: string;
+		disabled?: boolean;
+	}
 
-    let {
-        value = $bindable(""),
-        placeholder = "Select a folder...",
-        label = "",
-        disabled = false
-    }: FolderPickerProps = $props();
+	let {
+		value = $bindable(''),
+		placeholder = 'Select a folder...',
+		label = '',
+		disabled = false
+	}: FolderPickerProps = $props();
 
-    const configSrv = isFrost ? frostCli(ConfigService) : glacierCli(ConfigService);
+	const configSrv = isFrost ? frostCli(ConfigService) : glacierCli(ConfigService);
 
-    let isOpen = $state(false);
-    let base = $state("");
-    const fileListRpc = createRPCRunner(() => configSrv.listFiles({base: base}));
+	let isOpen = $state(false);
+	let base = $state('');
+	const fileListRpc = createRPCRunner(() => configSrv.listFiles({ base: base }));
 
-    $effect(() => {
-        if (isOpen) {
-            fileListRpc.runner();
-        }
-    });
+	$effect(() => {
+		if (isOpen) {
+			fileListRpc.runner();
+		}
+	});
 
-    function openPicker() {
-        if (disabled) return;
-        base = value || "";
-        isOpen = true;
-    }
+	function openPicker() {
+		if (disabled) return;
+		base = value || '';
+		isOpen = true;
+	}
 
-    const breadcrumbs = $derived(
-        base === "/" || base === ""
-            ? []
-            : base.split('/').filter(Boolean)
-    );
+	const breadcrumbs = $derived(base === '/' || base === '' ? [] : base.split('/').filter(Boolean));
 
-    function navigateTo(absolutePath: string) {
-        base = absolutePath;
-    }
+	function navigateTo(absolutePath: string) {
+		base = absolutePath;
+	}
 
-    function navigateUp() {
-        if (base === "/" || base === "") return;
-        const parts = base.split('/').filter(Boolean);
-        parts.pop();
-        base = "/" + parts.join("/");
-    }
+	function navigateUp() {
+		if (base === '/' || base === '') return;
+		const parts = base.split('/').filter(Boolean);
+		parts.pop();
+		base = '/' + parts.join('/');
+	}
 
-    function jumpToBreadcrumb(index: number) {
-        const parts = base.split('/').filter(Boolean);
-        base = "/" + parts.slice(0, index + 1).join("/");
-    }
+	function jumpToBreadcrumb(index: number) {
+		const parts = base.split('/').filter(Boolean);
+		base = '/' + parts.slice(0, index + 1).join('/');
+	}
 
-    function selectFolder() {
-        value = base || "/";
-        isOpen = false;
-    }
+	function selectFolder() {
+		value = base || '/';
+		isOpen = false;
+	}
 
-    let scrollContainer = $state<HTMLDivElement>();
-    $effect(() => {
-        if (breadcrumbs && scrollContainer) {
-            setTimeout(() => {
-                scrollContainer!.scrollTo({
-                    left: scrollContainer!.scrollWidth,
-                    behavior: 'smooth'
-                });
-            }, 0);
-        }
-    });
+	let scrollContainer = $state<HTMLDivElement>();
+	$effect(() => {
+		if (breadcrumbs && scrollContainer) {
+			setTimeout(() => {
+				scrollContainer!.scrollTo({
+					left: scrollContainer!.scrollWidth,
+					behavior: 'smooth'
+				});
+			}, 0);
+		}
+	});
 </script>
 
-<div class="flex flex-col gap-1.5 w-full">
-    {#if label}
-        <label class="text-[10px] font-bold text-muted uppercase tracking-widest ml-1">
-            {label}
-        </label>
-    {/if}
+<div class="flex w-full flex-col gap-1.5">
+	{#if label}
+		<label class="ml-1 text-[10px] font-bold tracking-widest text-muted uppercase">
+			{label}
+		</label>
+	{/if}
 
-    <div class="flex items-center group relative">
-        <input
-                type="text"
-                bind:value={value}
-                {placeholder}
-                class="flex-1 min-w-0 bg-panel border border-border text-foreground text-sm rounded-l-xl px-4 py-2.5 outline-none focus:border-frost-500 transition-all"
-        />
+	<div class="group relative flex items-center">
+		<input
+			type="text"
+			bind:value
+			{placeholder}
+			class="min-w-0 flex-1 rounded-l-xl border border-border bg-panel px-4 py-2.5 text-sm text-foreground transition-all outline-none focus:border-frost-500"
+		/>
 
-        <button
-                {disabled}
-                type="button"
-                onclick={openPicker}
-                class="bg-panel border border-l-0 border-border px-4 py-2.5 rounded-r-xl hover:bg-surface text-muted hover:text-frost-400 transition-all flex items-center justify-center active:scale-95 disabled:opacity-50"
-                title="Browse folder"
-        >
-            <FolderOpenIcon size={18}/>
-        </button>
-    </div>
+		<button
+			{disabled}
+			type="button"
+			onclick={openPicker}
+			class="flex items-center justify-center rounded-r-xl border border-l-0 border-border bg-panel px-4 py-2.5 text-muted transition-all hover:bg-surface hover:text-frost-400 active:scale-95 disabled:opacity-50"
+			title="Browse folder"
+		>
+			<FolderOpenIcon size={18} />
+		</button>
+	</div>
 </div>
 
 <!-- FOLDER PICKER DIALOG -->
 {#if isOpen}
-    <div class="fixed inset-0 z-200 flex items-center justify-center p-6" transition:fade={{ duration: 150 }}>
-        <div class="absolute inset-0 bg-background/80 backdrop-blur-md" onclick={() => isOpen = false}></div>
+	<div
+		class="fixed inset-0 z-200 flex items-center justify-center p-6"
+		transition:fade={{ duration: 150 }}
+	>
+		<div
+			class="absolute inset-0 bg-background/80 backdrop-blur-md"
+			onclick={() => (isOpen = false)}
+		></div>
 
-        <div class="relative w-full max-w-lg bg-surface border border-border rounded-4xl shadow-2xl flex flex-col overflow-hidden h-125"
-             transition:fly={{ y: 20, duration: 300 }}
-        >
-            <div bind:this={scrollContainer}
-                 class="flex items-center gap-1 p-2 bg-background border border-border rounded-xl overflow-x-auto no-scrollbar whitespace-nowrap text-xs scroll-smooth"
-            >
-                <button onclick={() => base = "/"}
-                        class="px-2 py-1 shrink-0 hover:bg-panel rounded text-muted hover:text-frost-400 font-medium transition-colors"
-                >
-                    /
-                </button>
+		<div
+			class="relative flex h-125 w-full max-w-lg flex-col overflow-hidden rounded-4xl border border-border bg-surface shadow-2xl"
+			transition:fly={{ y: 20, duration: 300 }}
+		>
+			<div
+				bind:this={scrollContainer}
+				class="no-scrollbar flex items-center gap-1 overflow-x-auto scroll-smooth rounded-xl border border-border bg-background p-2 text-xs whitespace-nowrap"
+			>
+				<button
+					onclick={() => (base = '/')}
+					class="shrink-0 rounded px-2 py-1 font-medium text-muted transition-colors hover:bg-panel hover:text-frost-400"
+				>
+					/
+				</button>
 
-                {#each breadcrumbs as part, i}
-                    <span class="text-muted/30 shrink-0">/</span>
-                    <button onclick={() => jumpToBreadcrumb(i)}
-                            class="px-2 py-1 shrink-0 hover:bg-panel rounded text-muted hover:text-foreground font-bold transition-colors"
-                    >
-                        {part}
-                    </button>
-                {/each}
-            </div>
+				{#each breadcrumbs as part, i}
+					<span class="shrink-0 text-muted/30">/</span>
+					<button
+						onclick={() => jumpToBreadcrumb(i)}
+						class="shrink-0 rounded px-2 py-1 font-bold text-muted transition-colors hover:bg-panel hover:text-foreground"
+					>
+						{part}
+					</button>
+				{/each}
+			</div>
 
-            <!-- Folder List Area -->
-            <div class="flex-1 overflow-y-auto p-2 bg-panel/10">
-                {#if fileListRpc.loading}
-                    <div class="flex flex-col items-center justify-center h-full gap-3 text-muted">
-                        <LoaderIcon class="animate-spin text-frost-500" size={24}/>
-                        <span class="text-[10px] font-bold uppercase tracking-widest opacity-50">Scanning Storage...</span>
-                    </div>
-                {:else if fileListRpc.error}
-                    <div class="flex flex-col items-center justify-center h-full p-8 text-center text-red-400 gap-2">
-                        <SearchXIcon size={32}/>
-                        <p class="text-xs font-bold uppercase truncate w-full">{fileListRpc.error}</p>
-                    </div>
-                {:else}
-                    <div class="flex flex-col gap-1">
-                        {#if base !== "/" && base !== ""}
-                            <button
-                                    onclick={navigateUp}
-                                    class="flex items-center gap-3 p-3 rounded-xl hover:bg-frost-500/5 text-frost-400 transition-colors text-left font-bold text-sm"
-                            >
-                                <ArrowLeftIcon size={18}/>
-                                <span>.. (Parent Directory)</span>
-                            </button>
-                        {/if}
+			<!-- Folder List Area -->
+			<div class="flex-1 overflow-y-auto bg-panel/10 p-2">
+				{#if fileListRpc.loading}
+					<div class="flex h-full flex-col items-center justify-center gap-3 text-muted">
+						<LoaderIcon class="animate-spin text-frost-500" size={24} />
+						<span class="text-[10px] font-bold tracking-widest uppercase opacity-50"
+							>Scanning Storage...</span
+						>
+					</div>
+				{:else if fileListRpc.error}
+					<div
+						class="flex h-full flex-col items-center justify-center gap-2 p-8 text-center text-red-400"
+					>
+						<SearchXIcon size={32} />
+						<p class="w-full truncate text-xs font-bold uppercase">{fileListRpc.error}</p>
+					</div>
+				{:else}
+					<div class="flex flex-col gap-1">
+						{#if base !== '/' && base !== ''}
+							<button
+								onclick={navigateUp}
+								class="flex items-center gap-3 rounded-xl p-3 text-left text-sm font-bold text-frost-400 transition-colors hover:bg-frost-500/5"
+							>
+								<ArrowLeftIcon size={18} />
+								<span>.. (Parent Directory)</span>
+							</button>
+						{/if}
 
-                        {#if fileListRpc.value?.files && fileListRpc.value.files.length > 0}
-                            {#each fileListRpc.value.files as folder}
-                                <button
-                                        onclick={() => navigateTo(folder)}
-                                        class="flex items-center justify-between p-3 rounded-xl hover:bg-panel transition-all group text-left"
-                                >
-                                    <div class="flex items-center gap-3 min-w-0">
-                                        <FolderIcon size={18} class="text-muted group-hover:text-frost-400 shrink-0"
-                                                    fill="currentColor" fill-opacity="0.1"/>
-                                        <span class="text-sm font-medium truncate text-foreground/80 group-hover:text-foreground">
-                                            {folder.split('/').pop() || folder}
-                                        </span>
-                                    </div>
-                                    <ChevronRightIcon size={16} class="text-muted/20 group-hover:text-frost-400"/>
-                                </button>
-                            {/each}
-                        {:else}
-                            <div class="flex flex-col items-center justify-center py-20 text-muted/20 gap-2">
-                                <FolderIcon size={48} strokeWidth={1}/>
-                                <span class="text-[10px] font-bold uppercase tracking-widest">No accessible subfolders</span>
-                            </div>
-                        {/if}
-                    </div>
-                {/if}
-            </div>
+						{#if fileListRpc.value?.files && fileListRpc.value.files.length > 0}
+							{#each fileListRpc.value.files as folder}
+								<button
+									onclick={() => navigateTo(folder)}
+									class="group flex items-center justify-between rounded-xl p-3 text-left transition-all hover:bg-panel"
+								>
+									<div class="flex min-w-0 items-center gap-3">
+										<FolderIcon
+											size={18}
+											class="shrink-0 text-muted group-hover:text-frost-400"
+											fill="currentColor"
+											fill-opacity="0.1"
+										/>
+										<span
+											class="truncate text-sm font-medium text-foreground/80 group-hover:text-foreground"
+										>
+											{folder.split('/').pop() || folder}
+										</span>
+									</div>
+									<ChevronRightIcon size={16} class="text-muted/20 group-hover:text-frost-400" />
+								</button>
+							{/each}
+						{:else}
+							<div class="flex flex-col items-center justify-center gap-2 py-20 text-muted/20">
+								<FolderIcon size={48} strokeWidth={1} />
+								<span class="text-[10px] font-bold tracking-widest uppercase"
+									>No accessible subfolders</span
+								>
+							</div>
+						{/if}
+					</div>
+				{/if}
+			</div>
 
-            <!-- Footer -->
-            <div class="p-4 border-t border-border bg-panel/30 flex justify-between items-center gap-4">
-                <div class="flex-1 min-w-0">
-                    <p class="text-[9px] font-bold text-muted uppercase tracking-widest mb-1 ml-1 opacity-50">Target
-                        Directory</p>
-                    <p class="text-xs font-mono text-frost-400 truncate bg-background p-2 rounded-lg border border-border">
-                        {base || '/'}
-                    </p>
-                </div>
-                <button
-                        onclick={selectFolder}
-                        class="px-6 py-3 bg-frost-500 text-background rounded-xl text-sm font-bold hover:bg-frost-400 transition-all shadow-lg shadow-frost-500/20 flex items-center gap-2 shrink-0 active:scale-95"
-                >
-                    <CheckIcon size={18}/>
-                    Select
-                </button>
-            </div>
-        </div>
-    </div>
+			<!-- Footer -->
+			<div class="flex items-center justify-between gap-4 border-t border-border bg-panel/30 p-4">
+				<div class="min-w-0 flex-1">
+					<p class="mb-1 ml-1 text-[9px] font-bold tracking-widest text-muted uppercase opacity-50">
+						Target Directory
+					</p>
+					<p
+						class="truncate rounded-lg border border-border bg-background p-2 font-mono text-xs text-frost-400"
+					>
+						{base || '/'}
+					</p>
+				</div>
+				<button
+					onclick={selectFolder}
+					class="flex shrink-0 items-center gap-2 rounded-xl bg-frost-500 px-6 py-3 text-sm font-bold text-background shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-400 active:scale-95"
+				>
+					<CheckIcon size={18} />
+					Select
+				</button>
+			</div>
+		</div>
+	</div>
 {/if}
 
 <style>
-    .no-scrollbar::-webkit-scrollbar {
-        display: none;
-    }
+	.no-scrollbar::-webkit-scrollbar {
+		display: none;
+	}
 
-    .no-scrollbar {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-    }
+	.no-scrollbar {
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+	}
 </style>

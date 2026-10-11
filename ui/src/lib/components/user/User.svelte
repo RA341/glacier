@@ -1,38 +1,37 @@
 <script lang="ts">
-    import {onMount} from 'svelte';
-    import {setUserCtx} from "$lib/components/user/provider.svelte";
+	import { onMount } from 'svelte';
+	import { setUserCtx } from '#lib/components/user/provider.svelte.js';
 
-    let {children} = $props();
+	let { children } = $props();
 
-    const userCtx = setUserCtx();
-    onMount(() => {
-        userCtx.check();
-    });
+	const userCtx = setUserCtx();
+	onMount(() => {
+		userCtx.check();
+	});
 </script>
 
 <div class="flex h-screen w-full overflow-hidden bg-background text-foreground">
-    {#if userCtx.isLoading}
-        <!-- Loading Spinner -->
-        <div class="flex items-center justify-center w-full h-full">
-            <div class="flex flex-col items-center gap-4">
-                <div class="spinner"></div>
-                <p class="text-muted text-sm">Checking authentication...</p>
-            </div>
-        </div>
-    {:else}
-        {@render children()}
-    {/if}
+	{#if userCtx.isLoading}
+		<!-- Loading Spinner -->
+		<div class="flex h-full w-full items-center justify-center">
+			<div class="flex flex-col items-center gap-4">
+				<div class="spinner"></div>
+				<p class="text-sm text-muted">Checking authentication...</p>
+			</div>
+		</div>
+	{:else}
+		{@render children()}
+	{/if}
 </div>
 
 <style>
-
-    /* Loading Spinner */
-    .spinner {
-        width: 48px;
-        height: 48px;
-        border: 4px solid var(--color-border);
-        border-top-color: var(--color-frost-400, #60a5fa);
-        border-radius: 50%;
-        animation: spin 0.8s linear infinite;
-    }
+	/* Loading Spinner */
+	.spinner {
+		width: 48px;
+		height: 48px;
+		border: 4px solid var(--color-border);
+		border-top-color: var(--color-frost-400, #60a5fa);
+		border-radius: 50%;
+		animation: spin 0.8s linear infinite;
+	}
 </style>

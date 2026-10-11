@@ -2,75 +2,78 @@
 // @generated from file indexer/v1/indexer.proto (package indexer.v1, syntax proto3)
 /* eslint-disable */
 
-import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
-import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
-import type { Message } from "@bufbuild/protobuf";
+import type { GenFile, GenMessage, GenService } from '@bufbuild/protobuf/codegenv2';
+import { fileDesc, messageDesc, serviceDesc } from '@bufbuild/protobuf/codegenv2';
+import type { Message } from '@bufbuild/protobuf';
 
 /**
  * Describes the file indexer/v1/indexer.proto.
  */
-export const file_indexer_v1_indexer: GenFile = /*@__PURE__*/
-  fileDesc("ChhpbmRleGVyL3YxL2luZGV4ZXIucHJvdG8SCmluZGV4ZXIudjEiFAoSR2V0R2FtZVR5cGVSZXF1ZXN0Ij4KE0dldEdhbWVUeXBlUmVzcG9uc2USJwoJZ2FtZVR5cGVzGAEgAygLMhQuaW5kZXhlci52MS5HYW1lVHlwZSIYCghHYW1lVHlwZRIMCgROYW1lGAEgASgJMmIKDkluZGV4ZXJTZXJ2aWNlElAKC0dldEdhbWVUeXBlEh4uaW5kZXhlci52MS5HZXRHYW1lVHlwZVJlcXVlc3QaHy5pbmRleGVyLnYxLkdldEdhbWVUeXBlUmVzcG9uc2UiAEKWAQoOY29tLmluZGV4ZXIudjFCDEluZGV4ZXJQcm90b1ABWi1naXRodWIuY29tL3JhMzQxL2dsYWNpZXIvZ2VuZXJhdGVkL2luZGV4ZXIvdjGiAgNJWFiqAgpJbmRleGVyLlYxygIKSW5kZXhlclxWMeICFkluZGV4ZXJcVjFcR1BCTWV0YWRhdGHqAgtJbmRleGVyOjpWMWIGcHJvdG8z");
+export const file_indexer_v1_indexer: GenFile =
+	/*@__PURE__*/
+	fileDesc(
+		'ChhpbmRleGVyL3YxL2luZGV4ZXIucHJvdG8SCmluZGV4ZXIudjEiFAoSR2V0R2FtZVR5cGVSZXF1ZXN0Ij4KE0dldEdhbWVUeXBlUmVzcG9uc2USJwoJZ2FtZVR5cGVzGAEgAygLMhQuaW5kZXhlci52MS5HYW1lVHlwZSIYCghHYW1lVHlwZRIMCgROYW1lGAEgASgJMmIKDkluZGV4ZXJTZXJ2aWNlElAKC0dldEdhbWVUeXBlEh4uaW5kZXhlci52MS5HZXRHYW1lVHlwZVJlcXVlc3QaHy5pbmRleGVyLnYxLkdldEdhbWVUeXBlUmVzcG9uc2UiAEKWAQoOY29tLmluZGV4ZXIudjFCDEluZGV4ZXJQcm90b1ABWi1naXRodWIuY29tL3JhMzQxL2dsYWNpZXIvZ2VuZXJhdGVkL2luZGV4ZXIvdjGiAgNJWFiqAgpJbmRleGVyLlYxygIKSW5kZXhlclxWMeICFkluZGV4ZXJcVjFcR1BCTWV0YWRhdGHqAgtJbmRleGVyOjpWMWIGcHJvdG8z'
+	);
 
 /**
  * @generated from message indexer.v1.GetGameTypeRequest
  */
-export type GetGameTypeRequest = Message<"indexer.v1.GetGameTypeRequest"> & {
-};
+export type GetGameTypeRequest = Message<'indexer.v1.GetGameTypeRequest'> & {};
 
 /**
  * Describes the message indexer.v1.GetGameTypeRequest.
  * Use `create(GetGameTypeRequestSchema)` to create a new message.
  */
-export const GetGameTypeRequestSchema: GenMessage<GetGameTypeRequest> = /*@__PURE__*/
-  messageDesc(file_indexer_v1_indexer, 0);
+export const GetGameTypeRequestSchema: GenMessage<GetGameTypeRequest> =
+	/*@__PURE__*/
+	messageDesc(file_indexer_v1_indexer, 0);
 
 /**
  * @generated from message indexer.v1.GetGameTypeResponse
  */
-export type GetGameTypeResponse = Message<"indexer.v1.GetGameTypeResponse"> & {
-  /**
-   * @generated from field: repeated indexer.v1.GameType gameTypes = 1;
-   */
-  gameTypes: GameType[];
+export type GetGameTypeResponse = Message<'indexer.v1.GetGameTypeResponse'> & {
+	/**
+	 * @generated from field: repeated indexer.v1.GameType gameTypes = 1;
+	 */
+	gameTypes: GameType[];
 };
 
 /**
  * Describes the message indexer.v1.GetGameTypeResponse.
  * Use `create(GetGameTypeResponseSchema)` to create a new message.
  */
-export const GetGameTypeResponseSchema: GenMessage<GetGameTypeResponse> = /*@__PURE__*/
-  messageDesc(file_indexer_v1_indexer, 1);
+export const GetGameTypeResponseSchema: GenMessage<GetGameTypeResponse> =
+	/*@__PURE__*/
+	messageDesc(file_indexer_v1_indexer, 1);
 
 /**
  * @generated from message indexer.v1.GameType
  */
-export type GameType = Message<"indexer.v1.GameType"> & {
-  /**
-   * @generated from field: string Name = 1;
-   */
-  Name: string;
+export type GameType = Message<'indexer.v1.GameType'> & {
+	/**
+	 * @generated from field: string Name = 1;
+	 */
+	Name: string;
 };
 
 /**
  * Describes the message indexer.v1.GameType.
  * Use `create(GameTypeSchema)` to create a new message.
  */
-export const GameTypeSchema: GenMessage<GameType> = /*@__PURE__*/
-  messageDesc(file_indexer_v1_indexer, 2);
+export const GameTypeSchema: GenMessage<GameType> =
+	/*@__PURE__*/
+	messageDesc(file_indexer_v1_indexer, 2);
 
 /**
  * @generated from service indexer.v1.IndexerService
  */
 export const IndexerService: GenService<{
-  /**
-   * @generated from rpc indexer.v1.IndexerService.GetGameType
-   */
-  getGameType: {
-    methodKind: "unary";
-    input: typeof GetGameTypeRequestSchema;
-    output: typeof GetGameTypeResponseSchema;
-  },
-}> = /*@__PURE__*/
-  serviceDesc(file_indexer_v1_indexer, 0);
-
+	/**
+	 * @generated from rpc indexer.v1.IndexerService.GetGameType
+	 */
+	getGameType: {
+		methodKind: 'unary';
+		input: typeof GetGameTypeRequestSchema;
+		output: typeof GetGameTypeResponseSchema;
+	};
+}> = /*@__PURE__*/ serviceDesc(file_indexer_v1_indexer, 0);

@@ -1,11 +1,11 @@
 import { getContext, setContext } from 'svelte';
 import { goto } from '$app/navigation';
 import { page } from '$app/state';
-import { glacierCli } from '$lib/api/api';
-import { UserService } from '$lib/gen/user/v1/user_pb';
-import { createRPCRunner } from '$lib/api/rpc.svelte';
-import { AuthService } from '$lib/gen/auth/v1/auth_pb';
-import { getSnackbarCtx } from '$lib/components/snackbar/snackbar-provider.svelte';
+import { glacierCli } from '#lib/api/api.js';
+import { UserService } from '#lib/gen/user/v1/user_pb.js';
+import { createRPCRunner } from '#lib/api/rpc.svelte.js';
+import { AuthService } from '#lib/gen/auth/v1/auth_pb.js';
+import { getSnackbarCtx } from '#lib/components/snackbar/snackbar-provider.svelte.js';
 
 class UserInfoManager {
 	private llSrv = glacierCli(UserService);

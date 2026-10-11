@@ -2,218 +2,223 @@
 // @generated from file assets/v1/assets.proto (package assets.v1, syntax proto3)
 /* eslint-disable */
 
-import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
-import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
-import type { Message } from "@bufbuild/protobuf";
+import type { GenFile, GenMessage, GenService } from '@bufbuild/protobuf/codegenv2';
+import { fileDesc, messageDesc, serviceDesc } from '@bufbuild/protobuf/codegenv2';
+import type { Message } from '@bufbuild/protobuf';
 
 /**
  * Describes the file assets/v1/assets.proto.
  */
-export const file_assets_v1_assets: GenFile = /*@__PURE__*/
-  fileDesc("ChZhc3NldHMvdjEvYXNzZXRzLnByb3RvEglhc3NldHMudjEiLAoLTGlzdFJlcXVlc3QSCgoCSUQYASABKAQSEQoJQXNzZXRUeXBlGAIgAygJIjAKDExpc3RSZXNwb25zZRIgCgZhc3NldHMYASADKAsyEC5hc3NldHMudjEuQXNzZXQiGwoNRGVsZXRlUmVxdWVzdBIKCgJJRBgBIAEoBCIQCg5EZWxldGVSZXNwb25zZSIRCg9HZXRUeXBlc1JlcXVlc3QiIQoQR2V0VHlwZXNSZXNwb25zZRINCgV0eXBlcxgBIAMoCSIuCgtFZGl0UmVxdWVzdBIfCgVhc3NldBgBIAEoCzIQLmFzc2V0cy52MS5Bc3NldCIOCgxFZGl0UmVzcG9uc2UiVwoFQXNzZXQSCgoCSUQYASABKAQSDgoGR2FtZUlkGAIgASgEEgwKBFR5cGUYAyABKAkSEQoJUmVtb3RlVXJsGAQgASgJEhEKCUxvY2FsUGF0aBgFIAEoCTKMAgoMQXNzZXRTZXJ2aWNlEjkKBEVkaXQSFi5hc3NldHMudjEuRWRpdFJlcXVlc3QaFy5hc3NldHMudjEuRWRpdFJlc3BvbnNlIgASRQoIR2V0VHlwZXMSGi5hc3NldHMudjEuR2V0VHlwZXNSZXF1ZXN0GhsuYXNzZXRzLnYxLkdldFR5cGVzUmVzcG9uc2UiABI/CgZEZWxldGUSGC5hc3NldHMudjEuRGVsZXRlUmVxdWVzdBoZLmFzc2V0cy52MS5EZWxldGVSZXNwb25zZSIAEjkKBExpc3QSFi5hc3NldHMudjEuTGlzdFJlcXVlc3QaFy5hc3NldHMudjEuTGlzdFJlc3BvbnNlIgBCjwEKDWNvbS5hc3NldHMudjFCC0Fzc2V0c1Byb3RvUAFaLGdpdGh1Yi5jb20vcmEzNDEvZ2xhY2llci9nZW5lcmF0ZWQvYXNzZXRzL3YxogIDQVhYqgIJQXNzZXRzLlYxygIJQXNzZXRzXFYx4gIVQXNzZXRzXFYxXEdQQk1ldGFkYXRh6gIKQXNzZXRzOjpWMWIGcHJvdG8z");
+export const file_assets_v1_assets: GenFile =
+	/*@__PURE__*/
+	fileDesc(
+		'ChZhc3NldHMvdjEvYXNzZXRzLnByb3RvEglhc3NldHMudjEiLAoLTGlzdFJlcXVlc3QSCgoCSUQYASABKAQSEQoJQXNzZXRUeXBlGAIgAygJIjAKDExpc3RSZXNwb25zZRIgCgZhc3NldHMYASADKAsyEC5hc3NldHMudjEuQXNzZXQiGwoNRGVsZXRlUmVxdWVzdBIKCgJJRBgBIAEoBCIQCg5EZWxldGVSZXNwb25zZSIRCg9HZXRUeXBlc1JlcXVlc3QiIQoQR2V0VHlwZXNSZXNwb25zZRINCgV0eXBlcxgBIAMoCSIuCgtFZGl0UmVxdWVzdBIfCgVhc3NldBgBIAEoCzIQLmFzc2V0cy52MS5Bc3NldCIOCgxFZGl0UmVzcG9uc2UiVwoFQXNzZXQSCgoCSUQYASABKAQSDgoGR2FtZUlkGAIgASgEEgwKBFR5cGUYAyABKAkSEQoJUmVtb3RlVXJsGAQgASgJEhEKCUxvY2FsUGF0aBgFIAEoCTKMAgoMQXNzZXRTZXJ2aWNlEjkKBEVkaXQSFi5hc3NldHMudjEuRWRpdFJlcXVlc3QaFy5hc3NldHMudjEuRWRpdFJlc3BvbnNlIgASRQoIR2V0VHlwZXMSGi5hc3NldHMudjEuR2V0VHlwZXNSZXF1ZXN0GhsuYXNzZXRzLnYxLkdldFR5cGVzUmVzcG9uc2UiABI/CgZEZWxldGUSGC5hc3NldHMudjEuRGVsZXRlUmVxdWVzdBoZLmFzc2V0cy52MS5EZWxldGVSZXNwb25zZSIAEjkKBExpc3QSFi5hc3NldHMudjEuTGlzdFJlcXVlc3QaFy5hc3NldHMudjEuTGlzdFJlc3BvbnNlIgBCjwEKDWNvbS5hc3NldHMudjFCC0Fzc2V0c1Byb3RvUAFaLGdpdGh1Yi5jb20vcmEzNDEvZ2xhY2llci9nZW5lcmF0ZWQvYXNzZXRzL3YxogIDQVhYqgIJQXNzZXRzLlYxygIJQXNzZXRzXFYx4gIVQXNzZXRzXFYxXEdQQk1ldGFkYXRh6gIKQXNzZXRzOjpWMWIGcHJvdG8z'
+	);
 
 /**
  * @generated from message assets.v1.ListRequest
  */
-export type ListRequest = Message<"assets.v1.ListRequest"> & {
-  /**
-   * @generated from field: uint64 ID = 1;
-   */
-  ID: bigint;
+export type ListRequest = Message<'assets.v1.ListRequest'> & {
+	/**
+	 * @generated from field: uint64 ID = 1;
+	 */
+	ID: bigint;
 
-  /**
-   * @generated from field: repeated string AssetType = 2;
-   */
-  AssetType: string[];
+	/**
+	 * @generated from field: repeated string AssetType = 2;
+	 */
+	AssetType: string[];
 };
 
 /**
  * Describes the message assets.v1.ListRequest.
  * Use `create(ListRequestSchema)` to create a new message.
  */
-export const ListRequestSchema: GenMessage<ListRequest> = /*@__PURE__*/
-  messageDesc(file_assets_v1_assets, 0);
+export const ListRequestSchema: GenMessage<ListRequest> =
+	/*@__PURE__*/
+	messageDesc(file_assets_v1_assets, 0);
 
 /**
  * @generated from message assets.v1.ListResponse
  */
-export type ListResponse = Message<"assets.v1.ListResponse"> & {
-  /**
-   * @generated from field: repeated assets.v1.Asset assets = 1;
-   */
-  assets: Asset[];
+export type ListResponse = Message<'assets.v1.ListResponse'> & {
+	/**
+	 * @generated from field: repeated assets.v1.Asset assets = 1;
+	 */
+	assets: Asset[];
 };
 
 /**
  * Describes the message assets.v1.ListResponse.
  * Use `create(ListResponseSchema)` to create a new message.
  */
-export const ListResponseSchema: GenMessage<ListResponse> = /*@__PURE__*/
-  messageDesc(file_assets_v1_assets, 1);
+export const ListResponseSchema: GenMessage<ListResponse> =
+	/*@__PURE__*/
+	messageDesc(file_assets_v1_assets, 1);
 
 /**
  * @generated from message assets.v1.DeleteRequest
  */
-export type DeleteRequest = Message<"assets.v1.DeleteRequest"> & {
-  /**
-   * @generated from field: uint64 ID = 1;
-   */
-  ID: bigint;
+export type DeleteRequest = Message<'assets.v1.DeleteRequest'> & {
+	/**
+	 * @generated from field: uint64 ID = 1;
+	 */
+	ID: bigint;
 };
 
 /**
  * Describes the message assets.v1.DeleteRequest.
  * Use `create(DeleteRequestSchema)` to create a new message.
  */
-export const DeleteRequestSchema: GenMessage<DeleteRequest> = /*@__PURE__*/
-  messageDesc(file_assets_v1_assets, 2);
+export const DeleteRequestSchema: GenMessage<DeleteRequest> =
+	/*@__PURE__*/
+	messageDesc(file_assets_v1_assets, 2);
 
 /**
  * @generated from message assets.v1.DeleteResponse
  */
-export type DeleteResponse = Message<"assets.v1.DeleteResponse"> & {
-};
+export type DeleteResponse = Message<'assets.v1.DeleteResponse'> & {};
 
 /**
  * Describes the message assets.v1.DeleteResponse.
  * Use `create(DeleteResponseSchema)` to create a new message.
  */
-export const DeleteResponseSchema: GenMessage<DeleteResponse> = /*@__PURE__*/
-  messageDesc(file_assets_v1_assets, 3);
+export const DeleteResponseSchema: GenMessage<DeleteResponse> =
+	/*@__PURE__*/
+	messageDesc(file_assets_v1_assets, 3);
 
 /**
  * @generated from message assets.v1.GetTypesRequest
  */
-export type GetTypesRequest = Message<"assets.v1.GetTypesRequest"> & {
-};
+export type GetTypesRequest = Message<'assets.v1.GetTypesRequest'> & {};
 
 /**
  * Describes the message assets.v1.GetTypesRequest.
  * Use `create(GetTypesRequestSchema)` to create a new message.
  */
-export const GetTypesRequestSchema: GenMessage<GetTypesRequest> = /*@__PURE__*/
-  messageDesc(file_assets_v1_assets, 4);
+export const GetTypesRequestSchema: GenMessage<GetTypesRequest> =
+	/*@__PURE__*/
+	messageDesc(file_assets_v1_assets, 4);
 
 /**
  * @generated from message assets.v1.GetTypesResponse
  */
-export type GetTypesResponse = Message<"assets.v1.GetTypesResponse"> & {
-  /**
-   * @generated from field: repeated string types = 1;
-   */
-  types: string[];
+export type GetTypesResponse = Message<'assets.v1.GetTypesResponse'> & {
+	/**
+	 * @generated from field: repeated string types = 1;
+	 */
+	types: string[];
 };
 
 /**
  * Describes the message assets.v1.GetTypesResponse.
  * Use `create(GetTypesResponseSchema)` to create a new message.
  */
-export const GetTypesResponseSchema: GenMessage<GetTypesResponse> = /*@__PURE__*/
-  messageDesc(file_assets_v1_assets, 5);
+export const GetTypesResponseSchema: GenMessage<GetTypesResponse> =
+	/*@__PURE__*/
+	messageDesc(file_assets_v1_assets, 5);
 
 /**
  * @generated from message assets.v1.EditRequest
  */
-export type EditRequest = Message<"assets.v1.EditRequest"> & {
-  /**
-   * @generated from field: assets.v1.Asset asset = 1;
-   */
-  asset?: Asset;
+export type EditRequest = Message<'assets.v1.EditRequest'> & {
+	/**
+	 * @generated from field: assets.v1.Asset asset = 1;
+	 */
+	asset?: Asset;
 };
 
 /**
  * Describes the message assets.v1.EditRequest.
  * Use `create(EditRequestSchema)` to create a new message.
  */
-export const EditRequestSchema: GenMessage<EditRequest> = /*@__PURE__*/
-  messageDesc(file_assets_v1_assets, 6);
+export const EditRequestSchema: GenMessage<EditRequest> =
+	/*@__PURE__*/
+	messageDesc(file_assets_v1_assets, 6);
 
 /**
  * @generated from message assets.v1.EditResponse
  */
-export type EditResponse = Message<"assets.v1.EditResponse"> & {
-};
+export type EditResponse = Message<'assets.v1.EditResponse'> & {};
 
 /**
  * Describes the message assets.v1.EditResponse.
  * Use `create(EditResponseSchema)` to create a new message.
  */
-export const EditResponseSchema: GenMessage<EditResponse> = /*@__PURE__*/
-  messageDesc(file_assets_v1_assets, 7);
+export const EditResponseSchema: GenMessage<EditResponse> =
+	/*@__PURE__*/
+	messageDesc(file_assets_v1_assets, 7);
 
 /**
  * @generated from message assets.v1.Asset
  */
-export type Asset = Message<"assets.v1.Asset"> & {
-  /**
-   * @generated from field: uint64 ID = 1;
-   */
-  ID: bigint;
+export type Asset = Message<'assets.v1.Asset'> & {
+	/**
+	 * @generated from field: uint64 ID = 1;
+	 */
+	ID: bigint;
 
-  /**
-   * @generated from field: uint64 GameId = 2;
-   */
-  GameId: bigint;
+	/**
+	 * @generated from field: uint64 GameId = 2;
+	 */
+	GameId: bigint;
 
-  /**
-   * @generated from field: string Type = 3;
-   */
-  Type: string;
+	/**
+	 * @generated from field: string Type = 3;
+	 */
+	Type: string;
 
-  /**
-   * @generated from field: string RemoteUrl = 4;
-   */
-  RemoteUrl: string;
+	/**
+	 * @generated from field: string RemoteUrl = 4;
+	 */
+	RemoteUrl: string;
 
-  /**
-   * @generated from field: string LocalPath = 5;
-   */
-  LocalPath: string;
+	/**
+	 * @generated from field: string LocalPath = 5;
+	 */
+	LocalPath: string;
 };
 
 /**
  * Describes the message assets.v1.Asset.
  * Use `create(AssetSchema)` to create a new message.
  */
-export const AssetSchema: GenMessage<Asset> = /*@__PURE__*/
-  messageDesc(file_assets_v1_assets, 8);
+export const AssetSchema: GenMessage<Asset> = /*@__PURE__*/ messageDesc(file_assets_v1_assets, 8);
 
 /**
  * @generated from service assets.v1.AssetService
  */
 export const AssetService: GenService<{
-  /**
-   * @generated from rpc assets.v1.AssetService.Edit
-   */
-  edit: {
-    methodKind: "unary";
-    input: typeof EditRequestSchema;
-    output: typeof EditResponseSchema;
-  },
-  /**
-   * @generated from rpc assets.v1.AssetService.GetTypes
-   */
-  getTypes: {
-    methodKind: "unary";
-    input: typeof GetTypesRequestSchema;
-    output: typeof GetTypesResponseSchema;
-  },
-  /**
-   * @generated from rpc assets.v1.AssetService.Delete
-   */
-  delete: {
-    methodKind: "unary";
-    input: typeof DeleteRequestSchema;
-    output: typeof DeleteResponseSchema;
-  },
-  /**
-   * @generated from rpc assets.v1.AssetService.List
-   */
-  list: {
-    methodKind: "unary";
-    input: typeof ListRequestSchema;
-    output: typeof ListResponseSchema;
-  },
-}> = /*@__PURE__*/
-  serviceDesc(file_assets_v1_assets, 0);
-
+	/**
+	 * @generated from rpc assets.v1.AssetService.Edit
+	 */
+	edit: {
+		methodKind: 'unary';
+		input: typeof EditRequestSchema;
+		output: typeof EditResponseSchema;
+	};
+	/**
+	 * @generated from rpc assets.v1.AssetService.GetTypes
+	 */
+	getTypes: {
+		methodKind: 'unary';
+		input: typeof GetTypesRequestSchema;
+		output: typeof GetTypesResponseSchema;
+	};
+	/**
+	 * @generated from rpc assets.v1.AssetService.Delete
+	 */
+	delete: {
+		methodKind: 'unary';
+		input: typeof DeleteRequestSchema;
+		output: typeof DeleteResponseSchema;
+	};
+	/**
+	 * @generated from rpc assets.v1.AssetService.List
+	 */
+	list: {
+		methodKind: 'unary';
+		input: typeof ListRequestSchema;
+		output: typeof ListResponseSchema;
+	};
+}> = /*@__PURE__*/ serviceDesc(file_assets_v1_assets, 0);

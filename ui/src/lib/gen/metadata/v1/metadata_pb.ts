@@ -2,19 +2,21 @@
 // @generated from file metadata/v1/metadata.proto (package metadata.v1, syntax proto3)
 /* eslint-disable */
 
-import type { GenFile, GenService } from "@bufbuild/protobuf/codegenv2";
-import { fileDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
+import type { GenFile, GenService } from '@bufbuild/protobuf/codegenv2';
+import { fileDesc, serviceDesc } from '@bufbuild/protobuf/codegenv2';
 
 /**
  * Describes the file metadata/v1/metadata.proto.
  */
-export const file_metadata_v1_metadata: GenFile = /*@__PURE__*/
-  fileDesc("ChptZXRhZGF0YS92MS9tZXRhZGF0YS5wcm90bxILbWV0YWRhdGEudjEyEQoPTWV0YWRhdGFTZXJ2aWNlQp0BCg9jb20ubWV0YWRhdGEudjFCDU1ldGFkYXRhUHJvdG9QAVouZ2l0aHViLmNvbS9yYTM0MS9nbGFjaWVyL2dlbmVyYXRlZC9tZXRhZGF0YS92MaICA01YWKoCC01ldGFkYXRhLlYxygILTWV0YWRhdGFcVjHiAhdNZXRhZGF0YVxWMVxHUEJNZXRhZGF0YeoCDE1ldGFkYXRhOjpWMWIGcHJvdG8z");
+export const file_metadata_v1_metadata: GenFile =
+	/*@__PURE__*/
+	fileDesc(
+		'ChptZXRhZGF0YS92MS9tZXRhZGF0YS5wcm90bxILbWV0YWRhdGEudjEyEQoPTWV0YWRhdGFTZXJ2aWNlQp0BCg9jb20ubWV0YWRhdGEudjFCDU1ldGFkYXRhUHJvdG9QAVouZ2l0aHViLmNvbS9yYTM0MS9nbGFjaWVyL2dlbmVyYXRlZC9tZXRhZGF0YS92MaICA01YWKoCC01ldGFkYXRhLlYxygILTWV0YWRhdGFcVjHiAhdNZXRhZGF0YVxWMVxHUEJNZXRhZGF0YeoCDE1ldGFkYXRhOjpWMWIGcHJvdG8z'
+	);
 
 /**
  * @generated from service metadata.v1.MetadataService
  */
-export const MetadataService: GenService<{
-}> = /*@__PURE__*/
-  serviceDesc(file_metadata_v1_metadata, 0);
-
+export const MetadataService: GenService<{}> =
+	/*@__PURE__*/
+	serviceDesc(file_metadata_v1_metadata, 0);

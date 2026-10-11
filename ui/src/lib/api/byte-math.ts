@@ -27,4 +27,3 @@ export function getRandomIntInclusive(min: number, max: number): number {
 	// The maximum is inclusive and the minimum is inclusive
 	return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
 }
-

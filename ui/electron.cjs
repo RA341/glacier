@@ -1,31 +1,31 @@
-const {app, BrowserWindow} = require('electron');
+const { app, BrowserWindow } = require('electron');
 
 async function createWindow() {
-    const customPort = app.commandLine.getSwitchValue('port') || 9966;
-    console.log(`Electron is using port: ${customPort}`);
+	const customPort = app.commandLine.getSwitchValue('port') || 9966;
+	console.log(`Electron is using port: ${customPort}`);
 
-    const isDev = process.env.NODE_ENV === 'development';
-    let url = 'http://localhost:5173'; // dev url
-    if (!isDev) {
-        url = `http://localhost:${customPort}`;
-    }
+	const isDev = process.env.NODE_ENV === 'development';
+	let url = 'http://localhost:5173'; // dev url
+	if (!isDev) {
+		url = `http://localhost:${customPort}`;
+	}
 
-    const win = new BrowserWindow({
-        width: 1200,
-        height: 800,
-        icon: `${url}/favicon.svg`,
-        autoHideMenuBar: true,
-        webPreferences: {
-            nodeIntegration: false,
-            contextIsolation: true
-        }
-    });
+	const win = new BrowserWindow({
+		width: 1200,
+		height: 800,
+		icon: `${url}/favicon.svg`,
+		autoHideMenuBar: true,
+		webPreferences: {
+			nodeIntegration: false,
+			contextIsolation: true
+		}
+	});
 
-    await win.loadURL(url);
+	await win.loadURL(url);
 }
 
 app.whenReady().then(createWindow);
 
 app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') app.quit();
+	if (process.platform !== 'darwin') app.quit();
 });

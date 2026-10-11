@@ -1,4 +1,3 @@
-
 export function createRPCRunner<T>(exec: () => Promise<T>) {
 	let loading = $state(false);
 	let error = $state('');
@@ -21,7 +20,7 @@ export function createRPCRunner<T>(exec: () => Promise<T>) {
 
 	const clear = () => {
 		error = '';
-	}
+	};
 
 	return {
 		get loading() {

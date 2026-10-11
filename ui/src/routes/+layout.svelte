@@ -1,55 +1,55 @@
 <script lang="ts">
-    import './layout.css';
-    import {page} from '$app/state';
-    import {appName} from "$lib/api/api";
-    import Snackbar from "$lib/components/snackbar/Snackbar.svelte";
-    import Sidebar from './sidebar.svelte';
-    import User from "$lib/components/user/User.svelte";
-    import DialogProvider from "$lib/components/dialog/DialogProvider.svelte";
+	import './layout.css';
+	import { page } from '$app/state';
+	import { appName } from '#lib/api/api.js';
+	import Snackbar from '#lib/components/snackbar/Snackbar.svelte';
+	import Sidebar from './sidebar.svelte';
+	import User from '#lib/components/user/User.svelte';
+	import DialogProvider from '#lib/components/dialog/DialogProvider.svelte';
 
-    let {children} = $props();
+	let { children } = $props();
 </script>
 
 <svelte:head>
-    <title>{appName}</title>
-    <link rel="icon" href={"/favicon.svg"}/>
+	<title>{appName}</title>
+	<link rel="icon" href={'/favicon.svg'} />
 </svelte:head>
 
 <Snackbar>
-    <DialogProvider>
-        <User>
-            {#if !page.url.pathname.startsWith('/auth')}
-                <Sidebar/>
-            {/if}
-            <!-- Main Content Area -->
-            <main class="relative flex-1 overflow-y-auto">
-                {@render children()}
-            </main>
-        </User>
-    </DialogProvider>
+	<DialogProvider>
+		<User>
+			{#if !page.url.pathname.startsWith('/auth')}
+				<Sidebar />
+			{/if}
+			<!-- Main Content Area -->
+			<main class="relative flex-1 overflow-y-auto">
+				{@render children()}
+			</main>
+		</User>
+	</DialogProvider>
 </Snackbar>
 
 <style>
-    ::-webkit-scrollbar {
-        width: 6px;
-    }
+	::-webkit-scrollbar {
+		width: 6px;
+	}
 
-    ::-webkit-scrollbar-track {
-        background: transparent;
-    }
+	::-webkit-scrollbar-track {
+		background: transparent;
+	}
 
-    ::-webkit-scrollbar-thumb {
-        background: var(--border);
-        border-radius: 10px;
-    }
+	::-webkit-scrollbar-thumb {
+		background: var(--border);
+		border-radius: 10px;
+	}
 
-    ::-webkit-scrollbar-thumb:hover {
-        background: #444;
-    }
+	::-webkit-scrollbar-thumb:hover {
+		background: #444;
+	}
 
-    @keyframes spin {
-        to {
-            transform: rotate(360deg);
-        }
-    }
+	@keyframes spin {
+		to {
+			transform: rotate(360deg);
+		}
+	}
 </style>
