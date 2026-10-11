@@ -12,7 +12,7 @@ COPY ui/ .
 
 RUN pnpm run build
 
-FROM golang:1.26-alpine AS go_builder
+FROM golang:1-alpine AS go_builder
 
 RUN apk update && apk add --no-cache \
     gcc \
