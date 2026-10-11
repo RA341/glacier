@@ -37,9 +37,6 @@ jobs:
         with:
           fetch-depth: 0 # GitVersion needs full history
 
-      - name: Install git-cliff
-        uses: taiki-e/install-action@git-cliff
-
       - name: Install GitVersion
         uses: gittools/actions/gitversion/setup@v4.5.0
         with:
@@ -87,15 +84,6 @@ jobs:
           echo "version=${RELEASE_TAG}" >> "$GITHUB_OUTPUT"
           echo "nuget_version=${NUGET_VERSION}" >> "$GITHUB_OUTPUT"
       
-      #      - name: Generate release notes
-      #        id: git-cliff
-      #        run: |
-      #          {
-      #            echo "content<<NOTES_EOF"
-      #            git cliff --config cliff.toml --unreleased --strip header
-      #            echo "NOTES_EOF"
-      #          } >> "$GITHUB_OUTPUT"
-
       - name: Push tags
         run: |
           git config user.name "github-actions[bot]"
@@ -106,15 +94,16 @@ jobs:
           echo "Tagging and pushing: $TAG"
           git tag -fa "$TAG" -m "Release: $TAG"
           git push origin "$TAG" --force
-  
-  #      - name: Create GitHub release
-  #        env:
-  #          GH_TOKEN: ${{ github.token }}
-  #        run: |
-  #          gh release create "${{ steps.set-tags.outputs.version }}" \
-  #            --title "${{ steps.set-tags.outputs.version }}" \
-  #            --notes "${{ steps.git-cliff.outputs.content }}" \
-  #            $([ "${{ github.ref_name }}" != "main" ] && echo "--prerelease")
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ steps.set-tags.outputs.version }}" \
+            --title "${{ steps.set-tags.outputs.version }}" \
+            --generate-notes \
+            $([ "${{ github.ref_name }}" != "main" ] && echo "--prerelease")
+
 
   publish-glacier:
     needs: prepare
