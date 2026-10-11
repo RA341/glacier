@@ -1,0 +1,140 @@
+name: Build Core Images
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'core/**'
+      - 'ui/**'
+      - 'pkg/docker/Dockerfile'
+      - 'GitVersion.yml'
+      - '.github/**'
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tags:
+        description: 'Comma separated list of tags (e.g. v1, latest)'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+  packages: write
+  id-token: write
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      tags: ${{ steps.set-tags.outputs.tags }}
+      version: ${{ steps.gitversion.outputs.semVer }}
+      nuget_version: ${{ steps.set-tags.outputs.nuget_version }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0 # GitVersion needs full history
+
+      - name: Install git-cliff
+        uses: taiki-e/install-action@git-cliff
+
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v4.5.0
+        with:
+          versionSpec: '6.x'
+
+      - name: Determine Version
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@v4.5.0
+
+      - id: set-tags
+        shell: bash
+        run: |
+          MAJOR=${{ steps.gitversion.outputs.major }}
+          MINOR=${{ steps.gitversion.outputs.minor }}
+          PATCH=${{ steps.gitversion.outputs.patch }}
+          MMP=${{ steps.gitversion.outputs.majorMinorPatch }}
+          SHORT_SHA=${{ steps.gitversion.outputs.shortSha }}
+          COMMITS=${{ steps.gitversion.outputs.commitsSinceVersionSource }}
+
+          echo "FullSemVer: ${{ steps.gitversion.outputs.semVer }}"
+          echo "MajorMinorPatch: ${MMP}"
+          echo "ShortSha: ${SHORT_SHA}"
+
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ github.event.inputs.tags }}" ]; then
+            TAGS="${{ github.event.inputs.tags }}"
+            RELEASE_TAG="v${MMP}"
+            NUGET_VERSION="${MMP}+${COMMITS:-0}"
+          elif [ "${{ github.ref_name }}" = "main" ]; then
+            # Tags: v1, v1.2, v1.2.3, v1.2.3-a1b2c3d, latest
+            TAGS="v${MAJOR},v${MAJOR}.${MINOR},v${MMP},v${MMP}-${SHORT_SHA},latest"
+            RELEASE_TAG="v${MMP}"
+            NUGET_VERSION="${MMP}+${COMMITS:-0}"
+          elif [ "${{ github.ref_name }}" = "develop" ]; then
+            # Tags: v1-dev, v1.2-dev, v1.2.3-dev, v1.2.3-dev.${COMMITS}-${SHORT_SHA}, dev
+            TAGS="v${MAJOR}-dev,v${MAJOR}.${MINOR}-dev,v${MMP}-dev,v${MMP}-dev.${COMMITS}-${SHORT_SHA},dev"
+            RELEASE_TAG="v${MMP}-dev.${COMMITS}"
+            NUGET_VERSION="${MMP}-dev.${COMMITS:-0}"
+          else
+            TAGS="v${MMP}-${SHORT_SHA}"
+            RELEASE_TAG="v${MMP}-${SHORT_SHA}"
+            NUGET_VERSION="${MMP}-${SHORT_SHA}"
+          fi
+          
+          echo "tags=${TAGS}" >> "$GITHUB_OUTPUT"
+          echo "version=${RELEASE_TAG}" >> "$GITHUB_OUTPUT"
+          echo "nuget_version=${NUGET_VERSION}" >> "$GITHUB_OUTPUT"
+      
+      #      - name: Generate release notes
+      #        id: git-cliff
+      #        run: |
+      #          {
+      #            echo "content<<NOTES_EOF"
+      #            git cliff --config cliff.toml --unreleased --strip header
+      #            echo "NOTES_EOF"
+      #          } >> "$GITHUB_OUTPUT"
+
+      - name: Push tags
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          TAG=${{ steps.set-tags.outputs.version }}
+
+          echo "Tagging and pushing: $TAG"
+          git tag -fa "$TAG" -m "Release: $TAG"
+          git push origin "$TAG" --force
+  
+  #      - name: Create GitHub release
+  #        env:
+  #          GH_TOKEN: ${{ github.token }}
+  #        run: |
+  #          gh release create "${{ steps.set-tags.outputs.version }}" \
+  #            --title "${{ steps.set-tags.outputs.version }}" \
+  #            --notes "${{ steps.git-cliff.outputs.content }}" \
+  #            $([ "${{ github.ref_name }}" != "main" ] && echo "--prerelease")
+
+  publish-glacier:
+    needs: prepare
+    uses: ./.github/workflows/build-docker.yml
+    with:
+      image_name: glacier
+      dockerfile: pkg/docker/Dockerfile
+      context: .
+      tags: ${{ needs.prepare.outputs.tags }}
+      version: ${{ needs.prepare.outputs.version }}
+      paths: |
+        core/**
+        pkg/docker/Dockerfile
+        .github/workflows/main.yml
+        .github/workflows/build-docker.yml
+    secrets: inherit
+
+  build-frost:
+    needs: prepare
+    name: Build Frost Client
+    uses: ./.github/workflows/action-frost.yml
+    with:
+      version_tag: ${{ needs.prepare.outputs.version }}

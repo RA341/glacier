@@ -1,0 +1,164 @@
+name: Publish Docker
+
+on:
+  workflow_call:
+    inputs:
+      image_name:
+        required: true
+        type: string
+      dockerfile:
+        required: true
+        type: string
+      context:
+        required: false
+        type: string
+        default: .
+      tags:
+        required: true
+        type: string
+      version:
+        required: false
+        type: string
+        default: ''
+      paths:
+        required: false
+        type: string
+        default: ''
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Prepare paths filter
+        if: inputs.paths != ''
+        id: format-paths
+        run: |
+          {
+            echo "filters<<EOF"
+            echo "changed:"
+            while IFS= read -r line || [ -n "$line" ]; do
+              cleaned=$(echo "$line" | sed -e 's/^[[:space:]]*-[[:space:]]*//' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+              if [ -n "$cleaned" ]; then
+                echo "  - '$cleaned'"
+              fi
+            done <<< "${{ inputs.paths }}"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Check for file changes
+        if: inputs.paths != ''
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          base: ${{ (github.event_name == 'push' && github.event.before != '0000000000000000000000000000000000000000') && github.event.before || '' }}
+          filters: ${{ steps.format-paths.outputs.filters }}
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Lowercase image name and format tags
+        id: prep
+        run: |
+          REPO_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          IMAGE_NAME=$(echo "${{ inputs.image_name }}" | tr '[:upper:]' '[:lower:]')
+          IMAGE_PATH="ghcr.io/${REPO_OWNER}/${IMAGE_NAME}"
+          
+          IFS=',' read -ra ADDR <<< "${{ inputs.tags }}"
+          TAG_LIST=""
+          for i in "${ADDR[@]}"; do
+            tag=$(echo $i | xargs)
+            if [ -z "$TAG_LIST" ]; then
+              TAG_LIST="${IMAGE_PATH}:${tag}"
+            else
+              TAG_LIST="${TAG_LIST},${IMAGE_PATH}:${tag}"
+            fi
+          done
+          
+          echo "repo_owner=${REPO_OWNER}" >> $GITHUB_OUTPUT
+          echo "image_name=${IMAGE_NAME}" >> $GITHUB_OUTPUT
+          echo "image_path=${IMAGE_PATH}" >> $GITHUB_OUTPUT
+          echo "tags=${TAG_LIST}" >> $GITHUB_OUTPUT
+
+      - name: Get current date
+        id: date
+        run: echo "date=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
+
+      - name: Build and push
+        if: inputs.paths == '' || steps.filter.outputs.changed == 'true'
+        uses: docker/build-push-action@v7
+        with:
+          context: ${{ inputs.context }}
+          file: ${{ inputs.dockerfile }}
+          push: true
+          tags: ${{ steps.prep.outputs.tags }}
+          build-args: |
+            VERSION=${{ inputs.version }}
+            COMMIT_HASH=${{ github.sha }}
+            BUILD_DATE=${{ steps.date.outputs.date }}
+
+      - name: Retag last version in registry without pulling
+        if: inputs.paths != '' && steps.filter.outputs.changed == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN || github.token }}
+        run: |
+          IMAGE_PATH="${{ steps.prep.outputs.image_path }}"
+          IMAGE_NAME="${{ steps.prep.outputs.image_name }}"
+          REPO_OWNER="${{ steps.prep.outputs.repo_owner }}"
+          
+          # Find the last pushed version tag without pulling layers
+          SOURCE_TAG=""
+          for candidate in stable dev latest; do
+            if docker buildx imagetools inspect "${IMAGE_PATH}:${candidate}" >/dev/null 2>&1; then
+              SOURCE_TAG="${candidate}"
+              break
+            fi
+          done
+
+          # If candidate tags were not found, query GitHub API for the latest published tag
+          if [ -z "$SOURCE_TAG" ]; then
+            ENCODED_PKG=$(echo "$IMAGE_NAME" | sed 's/\//%2F/g')
+            TAGS_JSON=$(gh api "/orgs/${REPO_OWNER}/packages/container/${ENCODED_PKG}/versions" 2>/dev/null || gh api "/users/${REPO_OWNER}/packages/container/${ENCODED_PKG}/versions" 2>/dev/null || echo "[]")
+            API_TAG=$(echo "$TAGS_JSON" | jq -r '.[0].metadata.container.tags[0] // empty')
+            if [ -n "$API_TAG" ] && docker buildx imagetools inspect "${IMAGE_PATH}:${API_TAG}" >/dev/null 2>&1; then
+              SOURCE_TAG="${API_TAG}"
+            fi
+          fi
+
+          if [ -n "$SOURCE_TAG" ]; then
+            echo "Found last pushed version: ${IMAGE_PATH}:${SOURCE_TAG}"
+            echo "Retagging directly in registry without pulling layers..."
+            
+            TAG_ARGS=()
+            IFS=',' read -ra ADDR <<< "${{ steps.prep.outputs.tags }}"
+            for full_tag in "${ADDR[@]}"; do
+              trimmed_tag=$(echo "$full_tag" | xargs)
+              if [ -n "$trimmed_tag" ]; then
+                TAG_ARGS+=("--tag" "${trimmed_tag}")
+              fi
+            done
+            
+            docker buildx imagetools create "${TAG_ARGS[@]}" "${IMAGE_PATH}:${SOURCE_TAG}"
+          else
+            echo "No existing image found in registry to retag. Building and pushing from ${{ inputs.dockerfile }}..."
+            docker buildx build \
+              --file ${{ inputs.dockerfile }} \
+              --push \
+              $(echo "${{ steps.prep.outputs.tags }}" | sed 's/,/ --tag /g' | sed 's/^/--tag /') \
+              --build-arg VERSION=${{ inputs.version }} \
+              --build-arg COMMIT_HASH=${{ github.sha }} \
+              --build-arg BUILD_DATE=${{ steps.date.outputs.date }} \
+              ${{ inputs.context }}
+          fi

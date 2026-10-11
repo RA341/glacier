@@ -1,0 +1,24 @@
+mode: ContinuousDelivery
+major-version-bump-message: '(?i)^breaking:|breaking:'
+minor-version-bump-message: '^feat(\(.+\))?:'
+patch-version-bump-message: '^fix(\(.+\))?:'
+no-bump-message: '\+semver:\s?(none|skip)'
+
+branches:
+  main:
+    regex: ^master$|^main$
+    mode: ContinuousDelivery
+    label: ''
+    increment: None
+    is-main-branch: true
+    source-branches: []
+
+  develop:
+    regex: ^dev(elop)?(ment)?$
+    mode: ContinuousDelivery
+    label: dev
+    increment: Inherit
+    is-main-branch: false
+    source-branches: ['main']
+    track-merge-target: true
+    tracks-release-branches: false
