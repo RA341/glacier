@@ -27,12 +27,12 @@ class UserInfoManager {
 		// If fetch failed or user is null
 		if (!this.user) {
 			if (!isAuthPage) {
-				await goto('/auth/login', { replaceState: true });
+				await goto('/auth/login', { replace: true });
 			}
 		} else {
 			// If logged in and on /auth or / redirect to library
 			if (isAuthPage || isRoot) {
-				await goto('/library', { replaceState: true });
+				await goto('/library', { replace: true });
 			}
 		}
 	}
