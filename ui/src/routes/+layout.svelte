@@ -8,7 +8,10 @@
 	import MobileBottomNav from '#lib/navigation/MobileBottomNav.svelte';
 	import User from '#lib/components/user/User.svelte';
 	import DialogProvider from '#lib/components/dialog/DialogProvider.svelte';
-	import { derived } from 'svelte/store';
+	import { onMount } from 'svelte';
+	import { initializeTheme } from '#lib/navigation/theme.svelte.js';
+
+	onMount(initializeTheme);
 
 	let { children } = $props();
 

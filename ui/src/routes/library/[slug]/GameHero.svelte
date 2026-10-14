@@ -79,7 +79,7 @@
 
 <div class="space-y-4">
 	<div
-		class="group relative aspect-video w-full overflow-hidden rounded-3xl border border-white/10 bg-surface/80 p-6 shadow-sm backdrop-blur-md lg:aspect-20/9"
+		class="media-surface group relative aspect-video w-full overflow-hidden rounded-3xl border border-white/10 bg-surface/80 p-6 shadow-sm backdrop-blur-md lg:aspect-20/9"
 	>
 		{#if listRpc.loading && !listRpc.value}
 			<div class="flex h-full w-full animate-pulse items-center justify-center bg-background/50">

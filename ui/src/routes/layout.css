@@ -94,6 +94,49 @@
 	--shadow-poster: 0 12px 30px -8px rgb(0 0 0 / 80%);
 }
 
+/* Light mode reuses component tokens so every feature follows the same palette. */
+:root[data-theme='light'] {
+	color-scheme: light;
+	--color-background-base: #f4f6fa;
+	--color-background: #f4f6fa;
+	--color-canvas-dim: #edf1f6;
+	--color-surface: #ffffff;
+	--color-surface-dim: #edf1f6;
+	--color-surface-bright: #ffffff;
+	--color-surface-container-lowest: #ffffff;
+	--color-surface-container-low: #f8fafc;
+	--color-surface-container: #e8edf4;
+	--color-surface-container-high: #e1e7ef;
+	--color-surface-container-highest: #d8e0ea;
+	--color-surface-variant: #d8e0ea;
+	--color-panel: #e8edf4;
+	--color-on-surface: #182435;
+	--color-on-surface-variant: #475569;
+	--color-on-background: #182435;
+	--color-text-foreground: #182435;
+	--color-foreground: #182435;
+	--color-text-muted: #58677b;
+	--color-muted: #58677b;
+	--color-outline: #64748b;
+	--color-outline-variant: #cbd5e1;
+	--color-border-subtle: #cbd5e1;
+	--color-border: #cbd5e1;
+	--color-primary: #006591;
+	--color-secondary: #006b93;
+	--color-tertiary: #00688c;
+	--color-error: #b42318;
+	--color-on-error: #ffffff;
+	--color-error-container: #fee4e2;
+	--color-on-error-container: #7a271a;
+	--color-frost-300: #0369a1;
+	--color-frost-400: #0277b5;
+	--color-white: #182435;
+	--color-red-400: #b42318;
+	--color-green-400: #15803d;
+	--color-amber-400: #a16207;
+	--shadow-poster: 0 12px 30px -8px rgb(15 23 42 / 18%);
+}
+
 @layer base {
 	html {
 		background: var(--color-background);
@@ -350,4 +393,18 @@
 	.poster-card:focus-visible {
 		transform: none;
 	}
+}
+
+:root[data-theme='light'] .poster-card,
+:root[data-theme='light'] .media-surface {
+	--color-background: #09090b;
+	--color-foreground: #ffffff;
+	--color-white: #ffffff;
+	--color-muted: #a1a1aa;
+	--color-frost-300: #7dd3fc;
+	--color-frost-400: #38bdf8;
+}
+.btn-frost:hover:not(:disabled),
+.btn-frost:focus-visible {
+	color: #09090b;
 }

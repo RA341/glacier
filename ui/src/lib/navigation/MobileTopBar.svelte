@@ -3,6 +3,7 @@
 	import { getUserCtx } from '#lib/components/user/provider.svelte.js';
 	import { createNavigationStore } from './store.svelte.js';
 	import LogoutButton from './LogoutButton.svelte';
+	import ThemeToggle from './ThemeToggle.svelte';
 
 	const navigation = createNavigationStore(getUserCtx());
 </script>
@@ -29,6 +30,7 @@
 				<link.icon size={21} />
 			</a>
 		{/each}
+		<ThemeToggle />
 		<LogoutButton />
 	</nav>
 </header>
