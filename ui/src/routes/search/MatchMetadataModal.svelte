@@ -165,7 +165,7 @@
 								onclick={search}
 								onkeydown={handleKeyDown}
 								disabled={rpc.loading}
-								class="btn-frost absolute top-1.5 right-1.5 bottom-1.5 flex w-10 items-center justify-center rounded-full border border-border text-muted shadow-sm transition-all hover:border-frost-500/50 hover:text-frost-500 active:scale-95 disabled:opacity-50"
+								class="btn-frost absolute top-1.5 right-1.5 bottom-1.5 flex w-10 items-center justify-center rounded-full border border-border text-muted transition-all hover:border-frost-500/50 hover:text-frost-500 active:scale-95 disabled:opacity-50"
 								title="Search"
 							>
 								{#if rpc.loading}
@@ -441,8 +441,7 @@
 				<button
 					onclick={handleAdd}
 					class={`rounded-full px-10 py-2.5 ${downloadUrl ? 'bg-frost-500' : 'bg-frost-600'} text-sm
-                            font-bold text-background
-                            shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-400 active:scale-95`}
+ font-bold text-background transition-all hover:bg-frost-400 active:scale-95`}
 				>
 					Add Game
 				</button>

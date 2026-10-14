@@ -36,7 +36,7 @@
 				<button
 					onclick={() => handleTabChange('frost')}
 					class="rounded-full px-6 py-2 text-sm font-bold transition-all {activeTab === 'frost'
-						? 'bg-surface text-frost-400 shadow-sm'
+						? 'bg-surface text-frost-400 '
 						: 'text-muted hover:text-foreground'}"
 				>
 					Frost
@@ -46,7 +46,7 @@
 			<button
 				onclick={() => handleTabChange('server')}
 				class="rounded-full px-6 py-2 text-sm font-bold transition-all {activeTab === 'server'
-					? 'bg-surface text-frost-400 shadow-sm'
+					? 'bg-surface text-frost-400 '
 					: 'text-muted hover:text-foreground'}"
 			>
 				Glacier

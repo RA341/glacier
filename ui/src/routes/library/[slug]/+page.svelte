@@ -73,7 +73,7 @@
 							onclick={() => setTab('details')}
 							class="rounded-full px-8 py-2 text-sm font-black tracking-widest uppercase transition-all {activeTab ===
 							'details'
-								? 'bg-surface text-frost-400 shadow-md'
+								? 'bg-surface text-frost-400 '
 								: 'text-muted hover:text-foreground'}"
 						>
 							Overview
@@ -83,7 +83,7 @@
 								onclick={() => setTab('local')}
 								class="rounded-full px-8 py-2 text-sm font-black tracking-widest uppercase transition-all {activeTab ===
 								'local'
-									? 'bg-surface text-frost-400 shadow-md'
+									? 'bg-surface text-frost-400 '
 									: 'text-muted hover:text-foreground'}"
 							>
 								Local

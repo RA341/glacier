@@ -65,7 +65,7 @@
 
 					<button
 						onclick={() => dialogManager.active?.resolve(true)}
-						class="btn-frost flex-2 rounded-full py-3 text-sm font-black tracking-widest text-foreground uppercase shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-500 hover:text-background active:scale-95"
+						class="btn-frost flex-2 rounded-full py-3 text-sm font-black tracking-widest text-foreground uppercase transition-all hover:bg-frost-500 hover:text-background active:scale-95"
 					>
 						Confirm
 					</button>

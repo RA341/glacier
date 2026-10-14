@@ -174,7 +174,7 @@
 				<button
 					onclick={() => (selectedIndex = i)}
 					class="group flex w-full items-center gap-3 rounded-full p-3 text-left transition-all
-                        {selectedIndex === i
+ {selectedIndex === i
 						? 'border-frost-500/20 bg-frost-500/10 text-frost-400'
 						: 'text-muted hover:bg-panel'}"
 				>
@@ -244,7 +244,7 @@
 				<button
 					onclick={() => (activeTab = 'preview')}
 					class="flex items-center gap-2 border-b-2 px-5 py-2.5 text-[10px] font-black tracking-widest uppercase transition-all
-                        {activeTab === 'preview'
+ {activeTab === 'preview'
 						? 'border-frost-500 text-frost-400'
 						: 'border-transparent text-muted hover:text-foreground'}"
 				>
@@ -254,7 +254,7 @@
 				<button
 					onclick={() => (activeTab = 'remote')}
 					class="flex items-center gap-2 border-b-2 px-5 py-2.5 text-[10px] font-black tracking-widest uppercase transition-all
-                        {activeTab === 'remote'
+ {activeTab === 'remote'
 						? 'border-frost-500 text-frost-400'
 						: 'border-transparent text-muted hover:text-foreground'}"
 				>

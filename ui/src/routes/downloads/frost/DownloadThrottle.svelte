@@ -59,8 +59,8 @@
 				onclick={() => setLimit(p)}
 				disabled={isUpdating}
 				class="rounded-full px-4 py-1.5 text-[11px] font-bold transition-all
-                {activeLimit === p
-					? 'btn-frost text-foreground shadow-lg shadow-frost-500/20'
+ {activeLimit === p
+					? 'btn-frost text-foreground '
 					: 'text-muted hover:bg-panel hover:text-foreground'}"
 			>
 				{p}M
@@ -71,8 +71,8 @@
 			onclick={() => setLimit(0)}
 			disabled={isUpdating}
 			class="rounded-full px-4 py-1.5 text-[11px] font-bold transition-all
-            {activeLimit === 0
-				? 'btn-frost text-foreground shadow-lg shadow-frost-500/20'
+ {activeLimit === 0
+				? 'btn-frost text-foreground '
 				: 'text-muted hover:bg-panel hover:text-amber-400'}"
 			title="Remove Limit"
 		>

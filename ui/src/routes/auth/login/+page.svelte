@@ -78,7 +78,7 @@
 		<button
 			type="submit"
 			disabled={loginRpc.loading}
-			class="btn-frost flex w-full items-center justify-center gap-2 rounded-full py-4 font-bold text-foreground shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-500 hover:text-background active:scale-[0.98] disabled:opacity-50"
+			class="btn-frost flex w-full items-center justify-center gap-2 rounded-full py-4 font-bold text-foreground transition-all hover:bg-frost-500 hover:text-background active:scale-[0.98] disabled:opacity-50"
 		>
 			{#if loginRpc.loading}
 				<LoaderIcon size={20} class="animate-spin" />
@@ -92,7 +92,7 @@
 	<button
 		type="submit"
 		onclick={() => (window.location.href = '/api/server/public/auth/oidc')}
-		class="btn-frost flex w-full items-center justify-center gap-2 rounded-2xl py-4 font-bold text-foreground shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-500 hover:text-background active:scale-[0.98] disabled:opacity-50"
+		class="btn-frost flex w-full items-center justify-center gap-2 rounded-2xl py-4 font-bold text-foreground transition-all hover:bg-frost-500 hover:text-background active:scale-[0.98] disabled:opacity-50"
 	>
 		{#if loginRpc.loading}
 			<LoaderIcon size={20} class="animate-spin" />

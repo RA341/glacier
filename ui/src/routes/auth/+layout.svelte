@@ -139,7 +139,7 @@
 						<button
 							onclick={handleSetUrl}
 							disabled={isSettingUrl || !glacierUrlInput}
-							class="btn-frost flex w-full items-center justify-center gap-2 rounded-full py-4 font-bold text-foreground shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-500 hover:text-background active:scale-[0.98] disabled:opacity-50"
+							class="btn-frost flex w-full items-center justify-center gap-2 rounded-full py-4 font-bold text-foreground transition-all hover:bg-frost-500 hover:text-background active:scale-[0.98] disabled:opacity-50"
 						>
 							{#if isSettingUrl}
 								<LoaderIcon size={20} class="animate-spin" />
@@ -185,8 +185,8 @@
 					<button
 						onclick={() => navigate('login')}
 						class="flex flex-1 items-center justify-center gap-2 rounded-2xl py-3 text-sm font-bold transition-all
-                        {activeTab === 'login'
-							? 'border border-border bg-surface text-frost-400 shadow-sm'
+ {activeTab === 'login'
+							? 'border border-border bg-surface text-frost-400 '
 							: 'text-muted hover:bg-panel hover:text-foreground'}"
 					>
 						<LockIcon size={16} />
@@ -195,8 +195,8 @@
 					<button
 						onclick={() => navigate('register')}
 						class="flex flex-1 items-center justify-center gap-2 rounded-2xl py-3 text-sm font-bold transition-all
-                        {activeTab === 'register'
-							? 'border border-border bg-surface text-frost-400 shadow-sm'
+ {activeTab === 'register'
+							? 'border border-border bg-surface text-frost-400 '
 							: 'text-muted hover:bg-panel hover:text-foreground'}"
 					>
 						<UserPlusIcon size={16} />

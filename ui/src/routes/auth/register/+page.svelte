@@ -83,7 +83,7 @@
 		<button
 			type="submit"
 			disabled={regRpc.loading}
-			class="btn-frost flex w-full items-center justify-center gap-2 rounded-full py-4 font-bold text-foreground shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-500 hover:text-background active:scale-[0.98]"
+			class="btn-frost flex w-full items-center justify-center gap-2 rounded-full py-4 font-bold text-foreground transition-all hover:bg-frost-500 hover:text-background active:scale-[0.98]"
 		>
 			{#if regRpc.loading}
 				<LoaderIcon size={20} class="animate-spin" />

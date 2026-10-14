@@ -193,7 +193,7 @@
 				<button
 					onclick={handleSave}
 					disabled={isSaving || isRestarting}
-					class="btn-frost flex items-center gap-2 rounded-full px-8 py-2.5 text-sm font-bold text-foreground shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-500 hover:text-background active:scale-95 disabled:opacity-50"
+					class="btn-frost flex items-center gap-2 rounded-full px-8 py-2.5 text-sm font-bold text-foreground transition-all hover:bg-frost-500 hover:text-background active:scale-95 disabled:opacity-50"
 				>
 					{#if isSaving}
 						<LoaderIcon size={18} class="animate-spin" />

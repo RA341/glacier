@@ -32,7 +32,7 @@
 			class="absolute inset-0 flex items-center justify-center bg-frost-900/40 opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100"
 		>
 			<div
-				class="translate-y-4 rounded-full bg-frost-500 p-3 text-background shadow-xl transition-transform group-hover:translate-y-0 group-focus-visible:translate-y-0"
+				class="translate-y-4 rounded-full bg-frost-500 p-3 text-background transition-transform group-hover:translate-y-0 group-focus-visible:translate-y-0"
 			>
 				<PlusIcon size={24} />
 			</div>

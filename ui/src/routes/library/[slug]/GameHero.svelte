@@ -102,14 +102,14 @@
 				<button
 					aria-label="Previous media"
 					onclick={prev}
-					class="absolute top-1/2 left-4 z-20 -translate-y-1/2 rounded-full border border-white/10 bg-background/20 p-3 text-white opacity-0 shadow-xl backdrop-blur-md transition-all group-focus-within:opacity-100 group-hover:opacity-100 hover:bg-frost-500 hover:text-background active:scale-95"
+					class="absolute top-1/2 left-4 z-20 -translate-y-1/2 rounded-full border border-white/10 bg-background/20 p-3 text-white opacity-0 backdrop-blur-md transition-all group-focus-within:opacity-100 group-hover:opacity-100 hover:bg-frost-500 hover:text-background active:scale-95"
 				>
 					<ChevronLeft size={24} strokeWidth={3} />
 				</button>
 				<button
 					aria-label="Next media"
 					onclick={next}
-					class="absolute top-1/2 right-4 z-20 -translate-y-1/2 rounded-full border border-white/10 bg-background/20 p-3 text-white opacity-0 shadow-xl backdrop-blur-md transition-all group-focus-within:opacity-100 group-hover:opacity-100 hover:bg-frost-500 hover:text-background active:scale-95"
+					class="absolute top-1/2 right-4 z-20 -translate-y-1/2 rounded-full border border-white/10 bg-background/20 p-3 text-white opacity-0 backdrop-blur-md transition-all group-focus-within:opacity-100 group-hover:opacity-100 hover:bg-frost-500 hover:text-background active:scale-95"
 				>
 					<ChevronRight size={24} strokeWidth={3} />
 				</button>
@@ -155,9 +155,7 @@
 						title="Indicator"
 						onclick={() => (activeIndex = i)}
 						class="h-1.5 rounded-full transition-all
-                        {activeIndex === i
-							? 'btn-frost w-8 shadow-[0_0_10px_rgba(130,170,255,0.5)]'
-							: 'w-2 bg-white/20 hover:bg-white/40'}"
+ {activeIndex === i ? 'btn-frost w-8 ' : 'w-2 bg-white/20 hover:bg-white/40'}"
 					></button>
 				{/each}
 			</div>

@@ -152,6 +152,7 @@ spacing:
 This design system establishes a high-performance "Clean HUD / Neo-Console" aesthetic tailored for a self-hosted game launcher and streaming client. The visual direction merges cutting-edge console firmware ergonomics with telemetry-grade heads-up displays (HUD), evoking the immersion, speed, and precision of high-end gaming hardware like Steam Deck, Moonlight, and next-gen console shells.
 
 Key stylistic pillars:
+
 - **Neo-Console Ergonomics**: Deep Zinc bases with soft ambient backdrops, pill capsule tags, and smooth squircles crafted for dual 10-foot gamepad navigation and desktop mouse-keyboard fidelity.
 - **Luminescent Frost Accents**: Vibrant electric frost cyan highlights that slice through deep charcoal layers, serving as focused interactive affordances and low-latency feedback indicators.
 - **Frosted HUD Translucency**: Subtle glassmorphism (`backdrop-blur-md`) with soft inner ring glows, providing depth without sluggish visual overhead.
@@ -214,31 +215,37 @@ The interface embraces a neo-console geometry emphasizing capsules and smooth sq
 ## Components
 
 ### Buttons
-- **Primary Action (Capsule Frost)**: Pill shape (`rounded-full`), deep dark base (`rgba(14, 165, 233, 0.15)`), frosted border `ring-1 ring-frost-500/40`, text `#ffffff` in `Sora` semi-bold. On hover or controller focus: switches to solid `#0ea5e9` with dark text `#09090b` and triggers `0 0 20px -5px rgba(56, 189, 248, 0.25)`.
-- **Secondary Squircle Button**: `rounded-2xl`, background `#18181b/80` with `backdrop-blur-md`, border `1px solid #27272a`. Hover: border brightens to `#38bdf8/40` with subtle scale transition (`scale-[1.02]`).
-- **Icon Utility Controls**: Pill or circular capsules (`w-10 h-10 rounded-full`) with Zinc 800 surfaces, housing controller glyphs or quick toggles.
+
+- **Primary Action (Capsule Frost)**: Pill shape (`rounded-full`), deep dark base (`rgba(14, 165, 233, 0.15)`), frosted border `ring-1 ring-frost-500/40`, and `#ffffff` text in `Sora` semi-bold. On hover or controller focus, it switches to solid `#0ea5e9` with dark text `#09090b`. Buttons remain flat and must not use drop shadows or glow effects in any interaction state; borders, color, and the focus outline communicate state.
+- **Secondary Squircle Button**: `rounded-2xl`, background `#18181b/80` with `backdrop-blur-md`, border `1px solid #27272a`. Hover: border brightens to `#38bdf8/40` with subtle scale transition (`scale-[1.02]`). It remains shadow-free in every state.
+- **Icon Utility Controls**: Pill or circular capsules (`w-10 h-10 rounded-full`) with Zinc 800 surfaces, housing controller glyphs or quick toggles. They use border and color changes rather than shadows.
 
 ### Game Poster Cards
+
 - Built with `rounded-2xl` overflow-hidden clipping and high-aspect game box ratios (typically 2:3 or 16:9 for banners).
 - Base card: ambient drop shadow and `1px solid #27272a` boundary.
 - Interaction: Smooth spring scale transition on hover/focus (`transition-transform duration-300 ease-out transform hover:scale-[1.03]`), accompanied by an outer cyan rim glow (`ring-1 ring-frost-400/50`).
 - Frosted Bottom Metadata Plate: Translucent gradient overlay (`bg-gradient-to-t from-zinc-950 via-zinc-950/80 to-transparent backdrop-blur-sm`) displaying game title in `Sora` and stream/platform compatibility in `Space Grotesk`.
 
 ### Badges & HUD Chips
+
 - **Status Indicators**: Pill-shaped (`rounded-full px-3 py-1 bg-surface/80 border border-frost-500/30 text-frost-300`).
 - **Telemetry Readouts**: Formatted in `Space Grotesk` (`telemetry-label`), combining an animated 6px pulse dot with real-time stats (e.g., `60 FPS`, `3.2 ms`, `120 Mbps`, `Moonlight Active`).
 - **Controller/Hardware Tags**: Compact pills with micro icon and uppercase label in `#a1a1aa`.
 
 ### Navigation (Top Horizontal HUD Bar)
+
 - Persistent horizontal shell (`backdrop-blur-md bg-zinc-950/80 border-b border-zinc-800/80 h-16 px-6`).
-- Navigation Tabs: Expansive pill-shaped indicators (`rounded-full px-5 py-2 text-sm font-medium transition-all`). Active tab features a sliding frosted cyan background (`bg-frost-500/15 text-frost-300 border border-frost-500/40 shadow-[0_0_15px_-3px_rgba(56,189,248,0.25)]`).
+- Navigation Tabs: Expansive pill-shaped indicators (`rounded-full px-5 py-2 text-sm font-medium transition-all`). Active tabs use a flat frosted cyan background (`bg-frost-500/15 text-frost-300 border border-frost-500/40`) without a shadow.
 - Right HUD Cluster: Quick-glance system telemetry pills, active host server status (Sunshine/Moonlight), connection ping indicator, and gamepad battery icons.
 
 ### Input Fields & Search
+
 - Rounded squircle text bars (`rounded-full` for search inputs, `rounded-xl` for config forms).
 - Background `#09090b` with border `#27272a`. Focused state blooms with `border-frost-500` and frost halo ring.
 - Integrated controller shortcut glyphs (e.g., `(Y) Search` or `[/] Filter`) rendered in muted `Space Grotesk`.
 
 ### Stream Telemetry Overlay (OSD)
+
 - Detachable floating HUD card: `rounded-2xl bg-zinc-900/90 backdrop-blur-md border border-frost-500/20 p-4 shadow-2xl`.
 - Grid arrangement displaying real-time stream bitrate graphs, frame times, packet loss, and host GPU thermals powered by `Space Grotesk` tabular figures.

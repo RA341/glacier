@@ -98,7 +98,7 @@
 			<button
 				onclick={() => (downloaded = false)}
 				class="rounded-full px-3 py-1 text-[10px] font-bold transition-all {!downloaded
-					? 'bg-panel text-frost-400 shadow-sm'
+					? 'bg-panel text-frost-400 '
 					: 'text-muted hover:text-foreground'}"
 			>
 				Complete
@@ -106,7 +106,7 @@
 			<button
 				onclick={() => (downloaded = true)}
 				class="rounded-full px-3 py-1 text-[10px] font-bold transition-all {downloaded
-					? 'bg-panel text-frost-400 shadow-sm'
+					? 'bg-panel text-frost-400 '
 					: 'text-muted hover:text-foreground'}"
 			>
 				Incomplete
@@ -276,7 +276,7 @@
 					</button>
 					<button
 						onclick={confirmDelete}
-						class="rounded-full bg-red-500 px-4 py-1.5 text-[11px] font-bold text-white shadow-lg shadow-red-500/20 transition-colors hover:bg-red-400"
+						class="rounded-full bg-red-500 px-4 py-1.5 text-[11px] font-bold text-white transition-colors hover:bg-red-400"
 					>
 						Delete
 					</button>

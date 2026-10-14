@@ -267,8 +267,8 @@
 		<button
 			onclick={handlePrimaryAction}
 			disabled={isSending || localGameRpc.loading}
-			class="btn-frost flex items-center gap-2 px-8 py-2 text-sm font-bold text-foreground shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-500 hover:text-background active:scale-[0.98] disabled:opacity-50
-        {isInstalled ? 'rounded-l-full rounded-r-none' : 'rounded-full'}"
+			class="btn-frost flex items-center gap-2 px-8 py-2 text-sm font-bold text-foreground transition-all hover:bg-frost-500 hover:text-background active:scale-[0.98] disabled:opacity-50
+ {isInstalled ? 'rounded-l-full rounded-r-none' : 'rounded-full'}"
 		>
 			{#if (localGameRpc.loading && !localGameRpc.value?.download) || isSending}
 				<LoaderIcon size={16} class="animate-spin" />
@@ -303,7 +303,7 @@
 		{#if isInstalled}
 			<button
 				onclick={() => (isMenuOpen = !isMenuOpen)}
-				class="btn-frost rounded-l-none rounded-r-full border-l border-background/10 px-3 text-foreground shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-500 hover:text-background active:scale-[0.98]"
+				class="btn-frost rounded-l-none rounded-r-full border-l border-background/10 px-3 text-foreground transition-all hover:bg-frost-500 hover:text-background active:scale-[0.98]"
 			>
 				<ChevronDownIcon size={16} class="transition-transform {isMenuOpen ? 'rotate-180' : ''}" />
 			</button>
@@ -431,7 +431,7 @@
 				</button>
 				<button
 					onclick={pickFinalExe}
-					class="btn-frost rounded-full px-6 py-2 text-xs font-bold text-foreground shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-500 hover:text-background"
+					class="btn-frost rounded-full px-6 py-2 text-xs font-bold text-foreground transition-all hover:bg-frost-500 hover:text-background"
 				>
 					Save Changes
 				</button>

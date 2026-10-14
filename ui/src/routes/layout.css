@@ -177,6 +177,13 @@
 	button:disabled {
 		cursor: not-allowed;
 	}
+	button,
+	button:hover,
+	button:active,
+	button:focus,
+	button:focus-visible {
+		box-shadow: none !important;
+	}
 	input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']),
 	select,
 	textarea {
@@ -219,7 +226,7 @@
 	}
 	.btn-frost:hover:not(:disabled),
 	.btn-frost:focus-visible {
-		@apply bg-frost-500 text-background shadow-frost;
+		@apply bg-frost-500 text-background;
 	}
 	.btn-secondary {
 		@apply rounded-2xl border border-border bg-surface/80 px-5 py-2.5 font-medium backdrop-blur-md transition-all hover:scale-[1.02] hover:border-frost-400/40;

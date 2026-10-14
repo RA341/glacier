@@ -72,7 +72,7 @@
 
 			<button
 				onclick={() => (isOpen = true)}
-				class="btn-frost flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-bold text-foreground shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-500 hover:text-background active:scale-95"
+				class="btn-frost flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-bold text-foreground transition-all hover:bg-frost-500 hover:text-background active:scale-95"
 			>
 				<PlusIcon size={18} />
 				Add {ServiceType}
