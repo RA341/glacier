@@ -13,7 +13,7 @@
 >
 	<div class="flex min-w-0 items-center gap-2">
 		<img src="/favicon.svg" alt="" class="h-7 w-7 rounded-lg" />
-		<span class="truncate text-sm font-bold text-foreground">{appName}</span>
+		<span class="truncate text-lg font-bold tracking-tight text-foreground">{appName}</span>
 	</div>
 	<nav aria-label="Account and settings" class="flex shrink-0 items-center gap-1">
 		{#each navigation.footer as link}

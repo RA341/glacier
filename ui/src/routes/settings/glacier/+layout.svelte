@@ -22,44 +22,81 @@
 	let activeTab = $derived(tabs.find((tab) => currentPath.startsWith(withPrefix(tab.href))));
 </script>
 
-<div class="flex h-full flex-col bg-background">
-	<header class="px-8 pt-8 pb-0">
-		<div class="mb-6 flex items-baseline gap-4">
-			<h1 class="headline-xl text-foreground">Glacier</h1>
+<div class="flex h-full min-h-0 flex-col bg-background">
+	<header class="shrink-0 pt-4 sm:pt-6">
+		<div class="mb-4 h-14 px-4 sm:mb-6 sm:px-8">
+			<nav aria-label="Breadcrumb" class="breadcrumb-scroll overflow-x-auto">
+				<ol
+					class="flex min-w-max items-center gap-2 text-base font-semibold whitespace-nowrap sm:text-lg"
+				>
+					<li>
+						<a href="/settings" class="text-muted transition-colors hover:text-frost-400">
+							Settings
+						</a>
+					</li>
+					<li aria-hidden="true" class="text-muted/40">/</li>
+					<li>
+						<a href={prefix} class="text-muted transition-colors hover:text-frost-400"> Glacier </a>
+					</li>
+					{#if activeTab}
+						<li aria-hidden="true" class="text-muted/40">/</li>
+						<li>
+							<a
+								href={withPrefix(activeTab.href)}
+								aria-current="page"
+								class="text-foreground transition-colors hover:text-frost-400"
+							>
+								{activeTab.label}
+							</a>
+						</li>
+					{/if}
+				</ol>
+			</nav>
 
-			{#if activeTab}
-				<span class="text-2xl font-light text-muted/30">/</span>
-				<p class="text-lg font-medium text-muted transition-all duration-300">
-					{activeTab.label}
-				</p>
-				<span class="text-2xl font-light text-muted/30">/</span>
-				<p class="text-lg font-medium text-muted transition-all duration-300">
-					{activeTab.desc}
-				</p>
-			{/if}
+			<p class="mt-1 h-5 truncate text-xs text-muted sm:text-sm">
+				{activeTab?.desc ?? 'Configure Glacier'}
+			</p>
 		</div>
 
-		<nav class="relative flex gap-2 border-b border-border pb-2">
-			{#each tabs as tab}
-				{@const active = currentPath.startsWith(withPrefix(tab.href))}
-				<a
-					href={withPrefix(tab.href)}
-					class="group relative rounded-lg px-4 py-2 text-sm font-medium transition-all duration-300
-                    {active
-						? 'bg-frost-500/10 text-frost-400'
-						: 'text-muted hover:bg-panel hover:text-foreground'}"
-				>
-					{tab.label}
+		<div class="tab-scroll overflow-x-auto border-b border-border px-4 sm:px-8">
+			<nav aria-label="Glacier settings" class="flex min-w-max gap-2 pb-2">
+				{#each tabs as tab}
+					{@const active = currentPath.startsWith(withPrefix(tab.href))}
+					<a
+						href={withPrefix(tab.href)}
+						aria-current={active ? 'page' : undefined}
+						class="group relative shrink-0 rounded-full px-4 py-2 text-xs font-medium transition-colors sm:text-sm
+                        {active
+							? 'border border-frost-500/40 bg-frost-500/10 text-frost-400'
+							: 'border border-transparent text-muted hover:bg-panel hover:text-foreground'}"
+					>
+						{tab.label}
 
-					{#if active}
-						<div class="absolute right-0 -bottom-2.25 left-0 h-0.5 rounded-full bg-frost-500"></div>
-					{/if}
-				</a>
-			{/each}
-		</nav>
+						{#if active}
+							<span
+								aria-hidden="true"
+								class="absolute right-2 -bottom-2.25 left-2 h-0.5 rounded-full bg-frost-500"
+							></span>
+						{/if}
+					</a>
+				{/each}
+			</nav>
+		</div>
 	</header>
 
-	<main class="flex-1 overflow-y-auto p-8">
+	<main class="min-h-0 flex-1 overflow-y-auto p-4 sm:p-8">
 		{@render children()}
 	</main>
 </div>
+
+<style>
+	.breadcrumb-scroll,
+	.tab-scroll {
+		scrollbar-width: none;
+	}
+
+	.breadcrumb-scroll::-webkit-scrollbar,
+	.tab-scroll::-webkit-scrollbar {
+		display: none;
+	}
+</style>
