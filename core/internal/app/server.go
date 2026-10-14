@@ -18,8 +18,6 @@ import (
 	"github.com/ra341/glacier/shared/api"
 
 	"github.com/rs/zerolog/log"
-	"golang.org/x/net/http2"
-	"golang.org/x/net/http2/h2c"
 )
 
 type Server struct {
@@ -42,12 +40,15 @@ func NewServer(opts ...api.ServerOpt) {
 	port := fmt.Sprintf(":%d", configG.Port)
 	log.Info().Str("port", port).Msg("Starting server...")
 
+	protocols := &http.Protocols{}
+	protocols.SetHTTP1(true)
+	protocols.SetHTTP2(true)
+	protocols.SetUnencryptedHTTP2(true)
+
 	srv := &http.Server{
-		Addr: port,
-		Handler: h2c.NewHandler(
-			finalMux,
-			&http2.Server{},
-		),
+		Addr:      port,
+		Handler:   finalMux,
+		Protocols: protocols,
 	}
 
 	go func() {

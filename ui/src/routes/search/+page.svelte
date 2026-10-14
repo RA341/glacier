@@ -9,6 +9,7 @@
 	import { transferStore } from './selectedGame.svelte';
 	import { ServiceConfigService } from '#lib/gen/service_config/v1/service_config_pb.js';
 	import GameGridItem from './GameGridItem.svelte';
+	import NoMetadataProviders from './NoMetadataProviders.svelte';
 
 	const searchQueryParam = 'q';
 	let query = $state(page.url.searchParams.get(searchQueryParam) || '');
@@ -16,8 +17,17 @@
 	let srvConfig = glacierCli(ServiceConfigService);
 	let metadataRpc = createRPCRunner(() => srvConfig.getActiveService({ serviceType: 'Metadata' }));
 
+	let providersLoaded = $state(false);
+	let noMetadataProviders = $derived(
+		providersLoaded &&
+			!metadataRpc.loading &&
+			!metadataRpc.error &&
+			!metadataRpc.value?.names?.length
+	);
+
 	async function loadProviders() {
 		await metadataRpc.runner();
+		providersLoaded = true;
 	}
 
 	onMount(() => {
@@ -43,8 +53,8 @@
 	}
 
 	$effect(() => {
-		if (metadataRpc.value?.names && !selectedMetadataProvider) {
-			selectedMetadataProvider = metadataRpc.value.names[0].Name;
+		if (metadataRpc.value && metadataRpc.value?.names.length !== 0 && !selectedMetadataProvider) {
+			selectedMetadataProvider = metadataRpc.value!.names[0].Name;
 			if (query) handleSearch();
 		}
 	});
@@ -83,52 +93,56 @@
 				<p class="text-sm text-muted">Search and add New games</p>
 			</div>
 
-			<div class="flex flex-1 items-center gap-3">
-				<div class="relative min-w-40">
-					<select
-						bind:value={selectedMetadataProvider}
-						onchange={handleSearch}
-						class="w-full cursor-pointer appearance-none rounded-xl border border-border bg-panel px-4 py-2.5 pr-10 text-sm font-bold transition-all outline-none focus:border-frost-500"
-					>
-						{#if metadataRpc.loading}
-							<option disabled>Loading indexers...</option>
-						{:else if metadataRpc.value?.names}
-							{#each metadataRpc.value.names as indexer}
-								<option value={indexer.Name}>{indexer.Name}</option>
-							{/each}
-						{/if}
-					</select>
-				</div>
+			{#if !noMetadataProviders}
+				<div class="flex flex-1 items-center gap-3">
+					<div class="relative min-w-40">
+						<select
+							bind:value={selectedMetadataProvider}
+							onchange={handleSearch}
+							class="w-full cursor-pointer appearance-none rounded-xl border border-border bg-panel px-4 py-2.5 pr-10 text-sm font-bold transition-all outline-none focus:border-frost-500"
+						>
+							{#if metadataRpc.loading}
+								<option disabled>Loading indexers...</option>
+							{:else if metadataRpc.value?.names}
+								{#each metadataRpc.value.names as indexer}
+									<option value={indexer.Name}>{indexer.Name}</option>
+								{/each}
+							{/if}
+						</select>
+					</div>
 
-				<!-- Query Input + Search Button -->
-				<div class="group relative flex-1">
-					<input
-						type="text"
-						bind:value={query}
-						onkeydown={handleKeyDown}
-						placeholder="Search for games..."
-						class="w-full rounded-xl border border-border bg-panel px-4 py-2.5 pr-12 text-sm transition-all outline-none focus:border-frost-500"
-					/>
-					<button
-						onclick={handleSearch}
-						disabled={searchRpc.loading || !query.trim()}
-						class="absolute top-1.5 right-1.5 bottom-1.5 flex w-10 items-center justify-center rounded-lg border border-border bg-surface text-muted transition-all hover:border-frost-500/50 hover:text-frost-500 disabled:opacity-50"
-					>
-						{#if searchRpc.loading}
-							<LoaderIcon size={18} class="animate-spin text-frost-500" />
-						{:else}
-							<SearchIcon size={18} />
-						{/if}
-					</button>
+					<!-- Query Input + Search Button -->
+					<div class="group relative flex-1">
+						<input
+							type="text"
+							bind:value={query}
+							onkeydown={handleKeyDown}
+							placeholder="Search for games..."
+							class="w-full rounded-xl border border-border bg-panel px-4 py-2.5 pr-12 text-sm transition-all outline-none focus:border-frost-500"
+						/>
+						<button
+							onclick={handleSearch}
+							disabled={searchRpc.loading || !query.trim()}
+							class="absolute top-1.5 right-1.5 bottom-1.5 flex w-10 items-center justify-center rounded-lg border border-border bg-surface text-muted transition-all hover:border-frost-500/50 hover:text-frost-500 disabled:opacity-50"
+						>
+							{#if searchRpc.loading}
+								<LoaderIcon size={18} class="animate-spin text-frost-500" />
+							{:else}
+								<SearchIcon size={18} />
+							{/if}
+						</button>
+					</div>
 				</div>
-			</div>
+			{/if}
 		</div>
 	</header>
 
 	<!-- Results Area -->
 	<main class="flex-1 overflow-y-auto p-6">
 		<div class="mx-auto max-w-7xl">
-			{#if searchRpc.error}
+			{#if noMetadataProviders}
+				<NoMetadataProviders />
+			{:else if searchRpc.error}
 				<aside
 					class="flex items-start gap-4 rounded-xl border border-red-500/20 bg-red-500/5 p-4 text-red-400"
 				>

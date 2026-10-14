@@ -1,4 +1,7 @@
 allowBuilds:
   electron: false
   electron-winstaller: false
-  esbuild: false
+  esbuild: true
+minimumReleaseAgeExclude:
+  - electron@43.7.11 || 44.7.2
+  - '@lucide/svelte@1.57.0'
