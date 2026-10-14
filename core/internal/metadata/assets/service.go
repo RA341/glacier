@@ -216,7 +216,7 @@ func (s *Service) DownloadUndownloaded() {
 	}
 
 	if len(downloaded) < 1 {
-		log.Debug().Msg("No undownloaded assets found")
+		log.Debug().Msg("No pending asset downloads found")
 		return
 	}
 

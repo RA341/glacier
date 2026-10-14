@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -91,6 +92,12 @@ func (cy *Yml[T]) writeYml(conf *T) error {
 func (cy *Yml[T]) backupCurrent() error {
 	src, err := os.OpenFile(cy.path, os.O_RDWR|os.O_CREATE, 0660)
 	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			if err = createConfigFile(cy.path); err != nil {
+				return err
+			}
+			return nil
+		}
 		return err
 	}
 	defer fileutil.Close(src)
@@ -109,6 +116,20 @@ func (cy *Yml[T]) backupCurrent() error {
 	}
 
 	log.Info().Str("path", backupFilePath).Msg("completed config backup")
+	return nil
+}
+
+func createConfigFile(configPath string) error {
+	err := os.MkdirAll(filepath.Dir(configPath), os.ModePerm)
+	if err != nil {
+		return err
+	}
+
+	file, err := os.OpenFile(configPath, os.O_CREATE, 0660)
+	if err != nil {
+		return err
+	}
+	defer fileutil.Close(file)
 	return nil
 }
 
