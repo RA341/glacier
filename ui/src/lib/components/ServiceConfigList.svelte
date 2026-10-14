@@ -1,14 +1,14 @@
 <script lang="ts">
 	import ServiceConfigDialog from '#lib/components/ServiceConfigDialog.svelte';
 	import {
-		AlertCircleIcon,
-		Edit3Icon,
+		CircleAlertIcon,
+		PenLineIcon,
 		InboxIcon,
 		LoaderIcon,
 		PlusIcon,
 		RefreshCcw,
 		Settings2Icon,
-		Trash2Icon
+		TrashIcon
 	} from '@lucide/svelte';
 	import { callRPC, glacierCli } from '#lib/api/api.js';
 	import {
@@ -86,7 +86,7 @@
 			<div
 				class="flex h-64 flex-col items-center justify-center gap-3 rounded-3xl border border-red-500/10 bg-red-500/5 text-red-400"
 			>
-				<AlertCircleIcon size={32} />
+				<CircleAlertIcon size={32} />
 				<p class="text-sm font-medium">{listRpc.error}</p>
 			</div>
 		{:else if listRpc.loading && !listRpc.value}
@@ -128,13 +128,13 @@
 										onclick={() => openEdit(client)}
 										class="rounded-full p-2 text-muted transition-all hover:bg-frost-500/10 hover:text-frost-400"
 									>
-										<Edit3Icon size={16} />
+										<PenLineIcon size={16} />
 									</button>
 									<button
 										onclick={() => deleteClient(client)}
 										class="rounded-full p-2 text-muted transition-all hover:bg-red-500/10 hover:text-red-400"
 									>
-										<Trash2Icon size={16} />
+										<TrashIcon size={16} />
 									</button>
 								</div>
 							</div>

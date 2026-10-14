@@ -13,7 +13,7 @@
 		LayoutGridIcon,
 		LoaderIcon,
 		SaveIcon,
-		Trash2
+		Trash
 	} from '@lucide/svelte';
 	import { getSnackbarCtx } from '#lib/components/snackbar/snackbar-provider.svelte.js';
 
@@ -141,7 +141,7 @@
 					onclick={() => deleteGame()}
 					class="flex items-center gap-2 rounded-full border border-border bg-red-600 px-6 py-2 text-sm font-bold transition-all hover:border-frost-500"
 				>
-					<Trash2 size={16} />
+					<Trash size={16} />
 					Delete
 				</button>
 			</div>

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import {
 		RefreshCwIcon,
-		Trash2Icon,
-		AlertTriangleIcon,
+		TrashIcon,
+		TriangleAlertIcon,
 		ChevronLeftIcon,
 		ShieldCheckIcon,
 		LoaderIcon
@@ -116,7 +116,7 @@
 		>
 			<div class="space-y-2">
 				<h3 class="flex items-center gap-2 font-bold text-red-400">
-					<Trash2Icon size={18} />
+					<TrashIcon size={18} />
 					Danger Zone
 				</h3>
 				<p class="text-xs leading-relaxed text-muted">
@@ -130,7 +130,7 @@
 				disabled={isProcessing}
 				class="flex w-full items-center justify-center gap-2 rounded-full border border-red-500/20 bg-red-500/10 py-3 text-sm font-bold text-red-400 transition-all hover:bg-red-500 hover:text-white disabled:opacity-50"
 			>
-				<Trash2Icon size={16} />
+				<TrashIcon size={16} />
 				Delete and Redownload
 			</button>
 		</div>
@@ -154,7 +154,7 @@
 		>
 			<div class="flex flex-col items-center gap-4 text-center">
 				<div class="rounded-full border border-red-500/20 bg-red-500/10 p-4 text-red-400">
-					<AlertTriangleIcon size={40} strokeWidth={1.5} />
+					<TriangleAlertIcon size={40} strokeWidth={1.5} />
 				</div>
 				<div class="space-y-2">
 					<h2 class="text-xl font-bold text-foreground">Are you sure?</h2>

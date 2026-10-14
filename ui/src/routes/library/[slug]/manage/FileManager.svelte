@@ -1,6 +1,6 @@
 <script lang="ts">
 	import {
-		AlertTriangleIcon,
+		TriangleAlertIcon,
 		CornerLeftUpIcon,
 		FileIcon,
 		FolderIcon,
@@ -8,7 +8,7 @@
 		LoaderIcon,
 		RefreshCwIcon,
 		SearchXIcon,
-		Trash2Icon
+		TrashIcon
 	} from '@lucide/svelte';
 	import { fade, fly } from 'svelte/transition';
 	import { callRPC, glacierCli } from '#lib/api/api.js';
@@ -222,7 +222,7 @@
 								class="rounded-full p-1.5 text-muted opacity-0 transition-all group-hover:opacity-100 hover:bg-red-400/10 hover:text-red-400"
 								title="Delete File"
 							>
-								<Trash2Icon size={14} />
+								<TrashIcon size={14} />
 							</button>
 						</div>
 					{/each}
@@ -256,7 +256,7 @@
 			>
 				<div class="flex items-center gap-3 text-red-400">
 					<div class="rounded-lg bg-red-500/10 p-2">
-						<AlertTriangleIcon size={18} />
+						<TriangleAlertIcon size={18} />
 					</div>
 					<span class="text-sm font-bold">Confirm Deletion</span>
 				</div>

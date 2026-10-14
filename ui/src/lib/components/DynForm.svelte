@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { PlusIcon, Trash2Icon } from '@lucide/svelte';
+	import { PlusIcon, TrashIcon } from '@lucide/svelte';
 	import { fly } from 'svelte/transition';
 	import type { FieldSchema } from '#lib/gen/service_config/v1/service_config_pb.js';
 
@@ -67,7 +67,7 @@
 								onclick={() => removeMapEntry(field.InsertKey, k)}
 								class="p-2 text-muted hover:text-red-400"
 							>
-								<Trash2Icon size={16} />
+								<TrashIcon size={16} />
 							</button>
 						</div>
 					{/each}
@@ -102,7 +102,7 @@
 								onclick={() => removeArrayItem(field.InsertKey, i)}
 								class="p-2 text-muted hover:text-red-400"
 							>
-								<Trash2Icon size={16} />
+								<TrashIcon size={16} />
 							</button>
 						</div>
 					{/each}

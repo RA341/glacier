@@ -3,7 +3,7 @@
 	import { goto } from '$app/navigation';
 	import { fade, fly } from 'svelte/transition';
 	import {
-		CheckCircle2Icon,
+		CircleCheckIcon,
 		CircleAlert,
 		Globe,
 		GlobeIcon,
@@ -158,7 +158,7 @@
 					<div
 						class="flex items-center gap-3 rounded-full border border-frost-500/10 bg-frost-500/5 px-4 py-2 shadow-sm"
 					>
-						<CheckCircle2Icon size={14} class="text-green-500" />
+						<CircleCheckIcon size={14} class="text-green-500" />
 						<span class="max-w-50 truncate font-mono text-[10px] text-frost-400/80">
 							{glacierUrlCheckRpc.value.Value}
 						</span>

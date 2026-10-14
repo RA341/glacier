@@ -1,6 +1,6 @@
 <script lang="ts">
 	import {
-		AlertTriangleIcon,
+		TriangleAlertIcon,
 		ArrowLeftIcon,
 		ChevronRightIcon,
 		SaveIcon,
@@ -231,7 +231,7 @@
 				>
 					<div class="flex items-center gap-3 text-red-400">
 						<div class="rounded-lg bg-red-500/10 p-2">
-							<AlertTriangleIcon size={20} />
+							<TriangleAlertIcon size={20} />
 						</div>
 						<h3 class="font-bold">Action Failed</h3>
 					</div>

@@ -8,7 +8,7 @@
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import {
-		AlertCircleIcon,
+		CircleAlertIcon,
 		ArrowRightIcon,
 		LibraryIcon,
 		LoaderIcon,
@@ -94,7 +94,7 @@
 			transition:fade
 			class="flex items-center gap-3 rounded-2xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-400"
 		>
-			<AlertCircleIcon size={18} />
+			<CircleAlertIcon size={18} />
 			<span class="flex-1 truncate">Status Check Failed: {existsRpc.error}</span>
 			<button onclick={() => existsRpc.runner()} class="text-[10px] font-bold uppercase underline"
 				>Retry</button

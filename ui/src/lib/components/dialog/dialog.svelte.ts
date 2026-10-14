@@ -1,4 +1,4 @@
-import { CheckCircle2Icon, InfoIcon, AlertTriangleIcon, XCircleIcon } from '@lucide/svelte';
+import { CircleCheckIcon, InfoIcon, TriangleAlertIcon, CircleXIcon } from '@lucide/svelte';
 import { getContext, setContext } from 'svelte';
 import { setSnackbarCtx } from '#lib/components/snackbar/snackbar-provider.svelte.js';
 
@@ -13,10 +13,10 @@ interface DialogOptions {
 }
 
 export const dialogIcons: Record<DialogType, any> = {
-	success: CheckCircle2Icon,
+	success: CircleCheckIcon,
 	info: InfoIcon,
-	warn: AlertTriangleIcon,
-	error: XCircleIcon
+	warn: TriangleAlertIcon,
+	error: CircleXIcon
 };
 
 class DialogManager {

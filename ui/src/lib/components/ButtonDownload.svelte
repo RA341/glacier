@@ -11,7 +11,7 @@
 		PlayIcon,
 		RefreshCwIcon,
 		Replace,
-		Trash2Icon,
+		TrashIcon,
 		TriangleAlert,
 		XIcon
 	} from '@lucide/svelte';
@@ -360,7 +360,7 @@
 					onclick={deleteLocalGame}
 					class="flex w-full items-center gap-2 px-4 py-3 text-xs font-bold text-red-400 transition-all hover:bg-red-500/10"
 				>
-					<Trash2Icon size={14} />
+					<TrashIcon size={14} />
 					Delete
 				</button>
 			</div>

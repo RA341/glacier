@@ -7,7 +7,7 @@
 		RefreshCcw,
 		SearchIcon,
 		ShieldCheckIcon,
-		Trash2Icon,
+		TrashIcon,
 		UserCogIcon,
 		UserIcon,
 		UserMinusIcon
@@ -188,7 +188,7 @@
 									class="rounded-full p-2 text-muted transition-all hover:bg-red-500/10 hover:text-red-400"
 									title="Remove User"
 								>
-									<Trash2Icon size={18} />
+									<TrashIcon size={18} />
 								</button>
 							</div>
 

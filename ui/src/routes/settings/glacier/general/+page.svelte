@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { AlertCircleIcon, LoaderIcon, SaveIcon } from '@lucide/svelte';
+	import { CircleAlertIcon, LoaderIcon, SaveIcon } from '@lucide/svelte';
 	import { callRPC, glacierCli } from '#lib/api/api.js';
 	import { ConfigService } from '#lib/gen/config/v1/config_pb.js';
 	import { createRPCRunner } from '#lib/api/rpc.svelte.js';
@@ -60,7 +60,7 @@
 	<div
 		class="mx-auto mt-20 flex max-w-md flex-col items-center gap-4 rounded-3xl border border-red-500/20 bg-red-500/5 p-6 text-center"
 	>
-		<AlertCircleIcon size={48} class="text-red-400" />
+		<CircleAlertIcon size={48} class="text-red-400" />
 		<div>
 			<h3 class="font-bold text-foreground">Failed to load config</h3>
 			<p class="mt-1 text-sm text-muted">{configRpc.error}</p>

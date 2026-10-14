@@ -8,7 +8,7 @@
 		LoaderIcon,
 		PlusIcon,
 		ServerIcon,
-		Trash2Icon,
+		TrashIcon,
 		UploadIcon,
 		Video,
 		XIcon
@@ -222,7 +222,7 @@
 						class="btn-secondary rounded-2xl p-2 text-muted transition-all hover:text-red-400"
 						title="Delete Asset"
 					>
-						<Trash2Icon size={16} />
+						<TrashIcon size={16} />
 					</button>
 
 					<span class="ml-5 shrink-0 text-[9px] font-bold tracking-widest text-muted uppercase"

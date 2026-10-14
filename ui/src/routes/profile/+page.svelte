@@ -1,6 +1,6 @@
 <script lang="ts">
 	import {
-		Edit3Icon,
+		PenLineIcon,
 		FingerprintPattern,
 		KeyIcon,
 		LoaderIcon,
@@ -139,7 +139,7 @@
 				<div class="space-y-6 rounded-4xl border border-border bg-surface p-8 shadow-xl">
 					<div class="flex items-center gap-3">
 						<div class="rounded-xl bg-panel p-2 text-muted">
-							<Edit3Icon size={20} />
+							<PenLineIcon size={20} />
 						</div>
 						<h3 class="text-lg font-bold">General Settings</h3>
 					</div>
