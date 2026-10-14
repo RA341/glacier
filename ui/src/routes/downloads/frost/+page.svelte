@@ -89,7 +89,7 @@
 			<button
 				onclick={refresh}
 				disabled={downloadingRpc.loading}
-				class="group flex items-center gap-2 rounded-xl border border-border bg-panel p-2 px-4 text-xs font-bold text-muted transition-all hover:border-frost-500/50 hover:text-frost-400 active:scale-95 disabled:opacity-50"
+				class="group btn-secondary flex items-center gap-2 rounded-2xl p-2 px-4 text-xs font-bold text-muted transition-all hover:border-frost-500/50 hover:text-frost-400 active:scale-95 disabled:opacity-50"
 			>
 				<RefreshCcwDot
 					size={14}
@@ -134,7 +134,7 @@
 				</div>
 				<button
 					onclick={refresh}
-					class="mt-2 rounded-lg border border-border bg-panel px-4 py-2 text-[10px] font-black uppercase transition-colors hover:bg-surface"
+					class="btn-secondary mt-2 rounded-2xl px-4 py-2 text-[10px] font-black uppercase transition-colors hover:bg-surface"
 				>
 					Retry Connection
 				</button>

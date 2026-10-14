@@ -1,63 +1,353 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 @import 'tailwindcss';
 
 @theme {
-	/* Primary Dark Palette (SaaS Backgrounds/Surfaces) */
-	--color-background: #09090b; /* Zinc 950 */
-	--color-surface: #18181b; /* Zinc 900 */
-	--color-panel: #27272a; /* Zinc 800 */
-
-	/* Secondary Frost Palette (Brand/Actions) */
+	--color-surface: #18181b;
+	--color-surface-dim: #131316;
+	--color-surface-bright: #39393c;
+	--color-surface-container-lowest: #0e0e11;
+	--color-surface-container-low: #1b1b1e;
+	--color-surface-container: #27272a;
+	--color-surface-container-high: #2a2a2d;
+	--color-surface-container-highest: #353438;
+	--color-on-surface: #e4e1e6;
+	--color-on-surface-variant: #bec8d2;
+	--color-inverse-surface: #e4e1e6;
+	--color-inverse-on-surface: #303033;
+	--color-outline: #88929b;
+	--color-outline-variant: #3e4850;
+	--color-surface-tint: #89ceff;
+	--color-primary: #89ceff;
+	--color-on-primary: #00344d;
+	--color-primary-container: #0ea5e9;
+	--color-on-primary-container: #003751;
+	--color-inverse-primary: #006591;
+	--color-secondary: #7bd0ff;
+	--color-on-secondary: #00354a;
+	--color-secondary-container: #00a6e0;
+	--color-on-secondary-container: #00374d;
+	--color-tertiary: #7bd1fa;
+	--color-on-tertiary: #003547;
+	--color-tertiary-container: #4ba5cc;
+	--color-on-tertiary-container: #00384b;
+	--color-error: #ffb4ab;
+	--color-on-error: #690005;
+	--color-error-container: #93000a;
+	--color-on-error-container: #ffdad6;
+	--color-primary-fixed: #c9e6ff;
+	--color-primary-fixed-dim: #89ceff;
+	--color-on-primary-fixed: #001e2f;
+	--color-on-primary-fixed-variant: #004c6e;
+	--color-secondary-fixed: #c4e7ff;
+	--color-secondary-fixed-dim: #7bd0ff;
+	--color-on-secondary-fixed: #001e2c;
+	--color-on-secondary-fixed-variant: #004c69;
+	--color-tertiary-fixed: #c0e8ff;
+	--color-tertiary-fixed-dim: #7bd1fa;
+	--color-on-tertiary-fixed: #001e2b;
+	--color-on-tertiary-fixed-variant: #004d66;
+	--color-canvas-dim: #131316;
+	--color-on-background: #e4e1e6;
+	--color-surface-variant: #353438;
+	--color-background-base: #09090b;
+	--color-border-subtle: #27272a;
+	--color-border-frost: rgba(56, 189, 248, 0.4);
+	--color-text-muted: #a1a1aa;
+	--color-text-foreground: #ffffff;
+	--color-frost-dark: #0284c7;
+	--color-frost-glow: rgba(56, 189, 248, 0.25);
+	/* Existing aliases retain compatibility with feature screens. */
+	--color-background: var(--color-background-base);
+	--color-panel: var(--color-surface-container);
+	--color-border: var(--color-border-subtle);
+	--color-muted: var(--color-text-muted);
+	--color-foreground: var(--color-text-foreground);
 	--color-frost-50: #f0f9ff;
 	--color-frost-100: #e0f2fe;
 	--color-frost-200: #bae6fd;
 	--color-frost-300: #7dd3fc;
 	--color-frost-400: #38bdf8;
 	--color-frost-500: #0ea5e9;
-
-	/* UI Borders & Text */
-	--color-border: #27272a;
-	--color-muted: #a1a1aa;
-	--color-foreground: #ffffff;
-
-	/* Custom Shadow for SaaS depth */
-	--shadow-frost: 0 0 20px -5px rgba(56, 189, 248, 0.15);
+	--color-frost-600: #0284c7;
+	--color-frost-900: #0c4a6e;
+	--font-sans: 'Sora', system-ui, sans-serif;
+	--font-hud: 'Space Grotesk', system-ui, sans-serif;
+	--radius-sm: 0.25rem;
+	--radius-default: 0.5rem;
+	--radius-md: 0.75rem;
+	--radius-lg: 1rem;
+	--radius-xl: 1.5rem;
+	--radius-full: 9999px;
+	--spacing-gutter: 1.5rem;
+	--spacing-gutter-mobile: 1rem;
+	--spacing-margin: 2rem;
+	--spacing-margin-mobile: 1rem;
+	--spacing-space-xs: 0.25rem;
+	--spacing-space-sm: 0.5rem;
+	--spacing-space-md: 1rem;
+	--spacing-space-lg: 1.5rem;
+	--spacing-space-xl: 2.5rem;
+	--shadow-frost-glow-sm: 0 0 15px -3px rgb(56 189 248 / 20%);
+	--shadow-frost-glow-md: 0 0 20px -5px rgb(56 189 248 / 25%);
+	--shadow-frost-glow-lg: 0 0 35px -5px rgb(14 165 233 / 40%);
+	--shadow-frost: var(--shadow-frost-glow-md);
+	--shadow-poster: 0 12px 30px -8px rgb(0 0 0 / 80%);
 }
 
-/* Global Base Styles */
 @layer base {
 	html {
-		background-color: var(--color-background);
+		background: var(--color-background);
 		color: var(--color-foreground);
-		/* Modern SaaS fonts usually look better with antialiasing */
+		font-family: var(--font-sans);
+		color-scheme: dark;
 		-webkit-font-smoothing: antialiased;
 		-moz-osx-font-smoothing: grayscale;
 	}
-
 	body {
-		@apply bg-background text-foreground;
+		margin: 0;
+		font-size: 0.875rem;
+		line-height: 1.375rem;
 	}
-
-	/* Custom scrollbar to match dark theme */
+	h1,
+	h2,
+	h3 {
+		font-weight: 600;
+		letter-spacing: -0.02em;
+	}
+	button,
+	a,
+	input,
+	select,
+	textarea,
+	[tabindex] {
+		-webkit-tap-highlight-color: transparent;
+	}
+	:focus-visible {
+		outline: 2px solid var(--color-frost-400);
+		outline-offset: 4px;
+		box-shadow: var(--shadow-frost-glow-md);
+	}
+	button:not(:disabled),
+	select {
+		cursor: pointer;
+	}
+	button:disabled {
+		cursor: not-allowed;
+	}
+	input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']),
+	select,
+	textarea {
+		border-radius: 0.75rem;
+		background-color: var(--color-background);
+	}
+	input[type='search'] {
+		border-radius: 9999px;
+	}
+	input:focus,
+	select:focus,
+	textarea:focus {
+		border-color: var(--color-frost-500);
+		box-shadow: var(--shadow-frost-glow-md);
+	}
+	::selection {
+		background: var(--color-frost-500);
+		color: var(--color-background);
+	}
+	* {
+		scrollbar-width: thin;
+		scrollbar-color: var(--color-panel) var(--color-background);
+	}
 	::-webkit-scrollbar {
 		width: 8px;
+		height: 8px;
 	}
 	::-webkit-scrollbar-track {
 		background: var(--color-background);
 	}
 	::-webkit-scrollbar-thumb {
 		background: var(--color-panel);
-		border-radius: 10px;
-	}
-	::-webkit-scrollbar-thumb:hover {
-		background: var(--color-muted);
+		border-radius: 9999px;
 	}
 }
 
 @layer components {
 	.btn-frost {
-		@apply rounded-lg bg-frost-500 px-4 py-2 font-medium text-background shadow-frost transition-all duration-200 hover:bg-frost-400 active:scale-95;
+		@apply rounded-full border border-frost-500/40 bg-frost-500/15 px-5 py-2.5 font-semibold text-foreground transition-all duration-200;
+	}
+	.btn-frost:hover:not(:disabled),
+	.btn-frost:focus-visible {
+		@apply bg-frost-500 text-background shadow-frost;
+	}
+	.btn-secondary {
+		@apply rounded-2xl border border-border bg-surface/80 px-5 py-2.5 font-medium backdrop-blur-md transition-all hover:scale-[1.02] hover:border-frost-400/40;
+	}
+	.btn-icon {
+		@apply flex min-h-10 min-w-10 items-center justify-center rounded-full bg-panel;
+	}
+	.hud-panel {
+		@apply rounded-2xl border border-white/8 bg-surface/80 backdrop-blur-md;
 	}
 	.card-saas {
-		@apply rounded-xl border border-border bg-surface p-6 shadow-sm;
+		@apply rounded-2xl border border-border bg-surface p-6 shadow-poster;
+	}
+	.hud-chip {
+		@apply inline-flex items-center gap-2 rounded-full border border-frost-500/30 bg-surface/80 px-3 py-1 font-hud text-xs text-frost-300;
+		font-variant-numeric: tabular-nums;
+	}
+	.poster-card {
+		@apply relative overflow-hidden rounded-2xl border border-border bg-surface shadow-poster transition-all duration-300 ease-out;
+	}
+	.poster-card:hover,
+	.poster-card:focus-visible {
+		transform: scale(1.03);
+		border-color: rgb(56 189 248 / 50%);
+		box-shadow:
+			0 20px 40px -10px rgb(0 0 0 / 90%),
+			var(--shadow-frost-glow-md);
+		z-index: 1;
+	}
+	.poster-metadata {
+		@apply absolute inset-x-0 bottom-0 bg-gradient-to-t from-background via-background/80 to-transparent p-4 pt-10 text-left backdrop-blur-sm;
+	}
+	.console-page {
+		width: 100%;
+		padding: 1rem;
+	}
+	.poster-grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1rem;
+	}
+	.display-hero {
+		font-family: var(--font-sans);
+		font-size: 3.5rem;
+		font-weight: 700;
+		line-height: 4rem;
+		letter-spacing: -0.03em;
+	}
+	.display-hero-mobile {
+		font-family: var(--font-sans);
+		font-size: 2.25rem;
+		font-weight: 700;
+		line-height: 2.75rem;
+		letter-spacing: -0.02em;
+	}
+	.headline-xl {
+		font-family: var(--font-sans);
+		font-size: 2rem;
+		font-weight: 600;
+		line-height: 2.5rem;
+		letter-spacing: -0.02em;
+	}
+	.headline-xl-mobile {
+		font-family: var(--font-sans);
+		font-size: 1.5rem;
+		font-weight: 600;
+		line-height: 2rem;
+		letter-spacing: -0.015em;
+	}
+	.headline-lg {
+		font-family: var(--font-sans);
+		font-size: 1.5rem;
+		font-weight: 600;
+		line-height: 2rem;
+		letter-spacing: -0.02em;
+	}
+	.headline-md {
+		font-family: var(--font-sans);
+		font-size: 1.25rem;
+		font-weight: 500;
+		line-height: 1.75rem;
+		letter-spacing: -0.01em;
+	}
+	.body-lg {
+		font-family: var(--font-sans);
+		font-size: 1rem;
+		font-weight: 400;
+		line-height: 1.5rem;
+		letter-spacing: 0em;
+	}
+	.body-md {
+		font-family: var(--font-sans);
+		font-size: 0.875rem;
+		font-weight: 400;
+		line-height: 1.375rem;
+		letter-spacing: 0em;
+	}
+	.body-sm {
+		font-family: var(--font-sans);
+		font-size: 0.75rem;
+		font-weight: 400;
+		line-height: 1.125rem;
+		letter-spacing: 0.01em;
+	}
+	.telemetry-metric {
+		font-family: var(--font-hud);
+		font-size: 1.125rem;
+		font-weight: 600;
+		line-height: 1.5rem;
+		letter-spacing: -0.01em;
+		font-variant-numeric: tabular-nums;
+	}
+	.telemetry-label {
+		font-family: var(--font-hud);
+		font-size: 0.75rem;
+		font-weight: 500;
+		line-height: 1rem;
+		letter-spacing: 0.05em;
+		font-variant-numeric: tabular-nums;
+	}
+	.label-hud {
+		font-family: var(--font-hud);
+		font-size: 0.6875rem;
+		font-weight: 700;
+		line-height: 0.875rem;
+		letter-spacing: 0.08em;
+		font-variant-numeric: tabular-nums;
+	}
+}
+
+@media (min-width: 768px) {
+	.console-page {
+		padding: 1.5rem;
+	}
+	.poster-grid {
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 1.25rem;
+	}
+}
+@media (min-width: 1280px) {
+	.console-page {
+		padding: 2rem;
+	}
+	.poster-grid {
+		grid-template-columns: repeat(6, minmax(0, 1fr));
+		gap: 1.5rem;
+	}
+}
+@media (max-width: 767px) {
+	.display-hero {
+		font-size: 2.25rem;
+		line-height: 2.75rem;
+		letter-spacing: -0.02em;
+	}
+	.headline-xl {
+		font-size: 1.5rem;
+		line-height: 2rem;
+		letter-spacing: -0.015em;
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+	.poster-card:hover,
+	.poster-card:focus-visible {
+		transform: none;
 	}
 }

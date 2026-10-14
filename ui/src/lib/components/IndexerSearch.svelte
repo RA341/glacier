@@ -25,9 +25,7 @@
 				class="flex items-center justify-between rounded-xl border border-border bg-panel/50 p-3 text-xs"
 			>
 				<span>Other.Release.v1.0-Group</span>
-				<button
-					class="rounded-md border border-border bg-panel px-3 py-1 font-bold hover:border-frost-500"
-				>
+				<button class="btn-secondary rounded-2xl px-3 py-1 font-bold hover:border-frost-500">
 					Update
 				</button>
 			</div>

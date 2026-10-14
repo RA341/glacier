@@ -71,7 +71,7 @@
 					<div class="flex w-fit gap-1 rounded-2xl border border-border bg-panel p-1">
 						<button
 							onclick={() => setTab('details')}
-							class="rounded-xl px-8 py-2 text-sm font-black tracking-widest uppercase transition-all {activeTab ===
+							class="rounded-full px-8 py-2 text-sm font-black tracking-widest uppercase transition-all {activeTab ===
 							'details'
 								? 'bg-surface text-frost-400 shadow-md'
 								: 'text-muted hover:text-foreground'}"
@@ -81,7 +81,7 @@
 						{#if isFrost}
 							<button
 								onclick={() => setTab('local')}
-								class="rounded-xl px-8 py-2 text-sm font-black tracking-widest uppercase transition-all {activeTab ===
+								class="rounded-full px-8 py-2 text-sm font-black tracking-widest uppercase transition-all {activeTab ===
 								'local'
 									? 'bg-surface text-frost-400 shadow-md'
 									: 'text-muted hover:text-foreground'}"

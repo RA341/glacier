@@ -108,7 +108,7 @@
 		<button
 			onclick={searchIndexer}
 			disabled={searchIndexerRpc.loading || !searchQuery.trim()}
-			class=" top-1.5 right-1.5 bottom-1.5 flex w-10 items-center justify-center rounded-lg border border-border bg-surface text-muted transition-all hover:border-frost-500/50 hover:text-frost-500 disabled:opacity-50"
+			class=" top-1.5 right-1.5 bottom-1.5 flex w-10 items-center justify-center rounded-full border border-border bg-surface text-muted transition-all hover:border-frost-500/50 hover:text-frost-500 disabled:opacity-50"
 		>
 			{#if searchIndexerRpc.loading}
 				<LoaderIcon size={18} class="animate-spin text-frost-500" />
@@ -159,7 +159,7 @@
 					</div>
 					<button
 						onclick={() => handleMatch(item)}
-						class="rounded-lg border border-border bg-panel px-4 py-1.5 text-xs font-bold transition-colors hover:border-frost-500"
+						class="btn-secondary rounded-2xl px-4 py-1.5 text-xs font-bold transition-colors hover:border-frost-500"
 					>
 						{selectedGameSource?.Title === item.Title ? 'Selected' : 'Select'}
 					</button>

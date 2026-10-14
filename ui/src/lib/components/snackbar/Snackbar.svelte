@@ -51,7 +51,7 @@
 				<!-- Copy Button -->
 				<button
 					onclick={() => copyToClipboard(toast.id, toast.message)}
-					class="rounded-lg p-1.5 text-current opacity-60 transition-colors hover:bg-black/10 hover:opacity-100"
+					class="rounded-full p-1.5 text-current opacity-60 transition-colors hover:bg-black/10 hover:opacity-100"
 					title="Copy message"
 				>
 					{#if copiedId === toast.id}
@@ -64,7 +64,7 @@
 				<!-- Close Button -->
 				<button
 					onclick={() => snackbarManager.remove(toast.id)}
-					class="rounded-lg p-1.5 text-current opacity-60 transition-colors hover:bg-black/10 hover:opacity-100"
+					class="rounded-full p-1.5 text-current opacity-60 transition-colors hover:bg-black/10 hover:opacity-100"
 				>
 					<XIcon size={16} />
 				</button>

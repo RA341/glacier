@@ -25,7 +25,7 @@
 <div class="flex h-full flex-col bg-background">
 	<header class="px-8 pt-8 pb-0">
 		<div class="mb-6 flex items-baseline gap-4">
-			<h1 class="text-3xl font-bold tracking-tight text-foreground">Glacier</h1>
+			<h1 class="headline-xl text-foreground">Glacier</h1>
 
 			{#if activeTab}
 				<span class="text-2xl font-light text-muted/30">/</span>

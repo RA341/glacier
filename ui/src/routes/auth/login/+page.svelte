@@ -46,7 +46,7 @@
 					bind:value={username}
 					placeholder="Username"
 					required
-					class="w-full rounded-2xl border border-border bg-panel py-3.5 pr-4 pl-12 text-sm transition-all outline-none focus:border-frost-500"
+					class="w-full rounded-[0.75rem] border border-border bg-panel py-3.5 pr-4 pl-12 text-sm transition-all outline-none focus:border-frost-500"
 				/>
 			</div>
 		</div>
@@ -70,7 +70,7 @@
 					bind:value={password}
 					placeholder="••••••••"
 					required
-					class="w-full rounded-2xl border border-border bg-panel py-3.5 pr-4 pl-12 text-sm transition-all outline-none focus:border-frost-500"
+					class="w-full rounded-[0.75rem] border border-border bg-panel py-3.5 pr-4 pl-12 text-sm transition-all outline-none focus:border-frost-500"
 				/>
 			</div>
 		</div>
@@ -78,7 +78,7 @@
 		<button
 			type="submit"
 			disabled={loginRpc.loading}
-			class="flex w-full items-center justify-center gap-2 rounded-2xl bg-frost-500 py-4 font-bold text-background shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-400 active:scale-[0.98] disabled:opacity-50"
+			class="btn-frost flex w-full items-center justify-center gap-2 rounded-full py-4 font-bold text-foreground shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-500 hover:text-background active:scale-[0.98] disabled:opacity-50"
 		>
 			{#if loginRpc.loading}
 				<LoaderIcon size={20} class="animate-spin" />
@@ -92,7 +92,7 @@
 	<button
 		type="submit"
 		onclick={() => (window.location.href = '/api/server/public/auth/oidc')}
-		class="flex w-full items-center justify-center gap-2 rounded-2xl bg-frost-500 py-4 font-bold text-background shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-400 active:scale-[0.98] disabled:opacity-50"
+		class="btn-frost flex w-full items-center justify-center gap-2 rounded-2xl py-4 font-bold text-foreground shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-500 hover:text-background active:scale-[0.98] disabled:opacity-50"
 	>
 		{#if loginRpc.loading}
 			<LoaderIcon size={20} class="animate-spin" />
@@ -131,7 +131,7 @@
 			<div class="flex justify-end pt-2">
 				<button
 					onclick={loginRpc.clear}
-					class="rounded-xl border border-border bg-panel px-5 py-2 text-sm font-bold transition-all hover:text-foreground"
+					class="btn-secondary rounded-2xl px-5 py-2 text-sm font-bold transition-all hover:text-foreground"
 				>
 					Dismiss
 				</button>

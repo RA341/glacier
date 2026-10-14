@@ -118,7 +118,7 @@
 		<div class="absolute inset-0 bg-background/80 backdrop-blur-md" onclick={handleClose}></div>
 
 		<div
-			class="relative flex max-h-[90vh] min-h-125 w-full max-w-xl flex-col overflow-hidden rounded-3xl border border-border bg-surface shadow-2xl"
+			class="relative flex max-h-[90vh] min-h-125 w-full max-w-xl flex-col overflow-hidden rounded-[2rem] border border-border bg-surface shadow-2xl"
 			transition:fly={{ y: 20, duration: 300 }}
 		>
 			<!-- HEADER -->
@@ -127,7 +127,7 @@
 					{#if selectedFlavour}
 						<button
 							onclick={() => (selectedFlavour = null)}
-							class="rounded-lg p-2 text-muted transition-colors hover:bg-panel"
+							class="rounded-full p-2 text-muted transition-colors hover:bg-panel"
 						>
 							<ArrowLeftIcon size={18} />
 						</button>
@@ -156,7 +156,7 @@
 							{#each supportedClientsRpc.value?.values ?? [] as client}
 								<button
 									onclick={() => (selectedFlavour = client)}
-									class="group flex items-center justify-between rounded-2xl border border-border bg-panel p-4 transition-all hover:border-frost-500/50"
+									class="group btn-secondary flex items-center justify-between rounded-2xl p-4 transition-all hover:border-frost-500/50"
 								>
 									<span class="text-sm font-bold tracking-wider text-foreground uppercase"
 										>{client}</span
@@ -197,13 +197,13 @@
 			<div class="flex justify-end gap-3 border-t border-border bg-panel/30 p-6">
 				<button
 					onclick={handleClose}
-					class="rounded-xl border border-border px-6 py-2.5 text-sm font-bold text-muted"
+					class="rounded-full border border-border px-6 py-2.5 text-sm font-bold text-muted"
 					>Cancel
 				</button>
 				{#if selectedFlavour}
 					<button
 						onclick={handleSave}
-						class="flex items-center gap-2 rounded-xl bg-frost-500 px-8 py-2.5 text-sm font-bold text-background hover:bg-frost-400"
+						class="btn-frost flex items-center gap-2 rounded-full px-8 py-2.5 text-sm font-bold text-foreground hover:bg-frost-500 hover:text-background"
 					>
 						<SaveIcon size={16} />
 						Save Client
@@ -226,7 +226,7 @@
 				></div>
 
 				<div
-					class="relative flex w-full max-w-sm flex-col gap-4 rounded-2xl border border-red-500/30 bg-surface p-6 shadow-2xl"
+					class="relative flex w-full max-w-sm flex-col gap-4 rounded-[2rem] border border-red-500/30 bg-surface p-6 shadow-2xl"
 					transition:fly={{ y: 10, duration: 200 }}
 				>
 					<div class="flex items-center gap-3 text-red-400">
@@ -243,7 +243,7 @@
 					<div class="flex justify-end pt-2">
 						<button
 							onclick={() => (errorMessage = null)}
-							class="rounded-xl border border-border bg-panel px-5 py-2 text-sm font-bold transition-all hover:text-foreground"
+							class="btn-secondary rounded-2xl px-5 py-2 text-sm font-bold transition-all hover:text-foreground"
 						>
 							Dismiss
 						</button>

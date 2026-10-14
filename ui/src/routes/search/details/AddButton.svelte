@@ -117,7 +117,7 @@
 				<button
 					transition:scale={{ start: 0.95, duration: 200 }}
 					onclick={goToGame}
-					class="flex w-full items-center justify-center gap-2 rounded-2xl border border-frost-500/30 bg-surface py-4 font-bold text-frost-400 shadow-lg transition-all hover:bg-frost-500/10 active:scale-[0.98]"
+					class="flex w-full items-center justify-center gap-2 rounded-full border border-frost-500/30 bg-surface py-4 font-bold text-frost-400 shadow-lg transition-all hover:bg-frost-500/10 active:scale-[0.98]"
 				>
 					<LibraryIcon size={18} />
 					<span>View in Library</span>
@@ -132,7 +132,7 @@
 					transition:scale={{ start: 0.95, duration: 200 }}
 					onclick={onAddGame}
 					disabled={!gameSrc || !downloadClient || isAdding}
-					class="flex w-full items-center justify-center gap-2 rounded-2xl bg-frost-500 py-4 font-bold text-background shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-400 active:scale-[0.98] disabled:opacity-50 disabled:grayscale"
+					class="btn-frost flex w-full items-center justify-center gap-2 rounded-full py-4 font-bold text-foreground shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-500 hover:text-background active:scale-[0.98] disabled:opacity-50 disabled:grayscale"
 				>
 					{#if isAdding}
 						<LoaderIcon size={18} class="animate-spin" />

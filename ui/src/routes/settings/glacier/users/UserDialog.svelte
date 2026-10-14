@@ -127,7 +127,7 @@
 							type="text"
 							bind:value={username}
 							placeholder="johndoe"
-							class="w-full rounded-2xl border border-border bg-panel py-3.5 pr-4 pl-12 text-sm transition-all outline-none focus:border-frost-500"
+							class="w-full rounded-[0.75rem] border border-border bg-panel py-3.5 pr-4 pl-12 text-sm transition-all outline-none focus:border-frost-500"
 						/>
 					</div>
 				</div>
@@ -143,7 +143,7 @@
 							type="password"
 							bind:value={password}
 							placeholder="••••••••"
-							class="w-full rounded-2xl border border-border bg-panel py-3.5 pr-4 pl-12 text-sm transition-all outline-none focus:border-frost-500"
+							class="w-full rounded-[0.75rem] border border-border bg-panel py-3.5 pr-4 pl-12 text-sm transition-all outline-none focus:border-frost-500"
 						/>
 					</div>
 					{#if editUser}
@@ -162,7 +162,7 @@
 						<ShieldIcon size={18} class="absolute top-1/2 left-4 -translate-y-1/2 text-muted/50" />
 						<select
 							bind:value={role}
-							class="w-full cursor-pointer appearance-none rounded-2xl border border-border bg-panel py-3.5 pr-10 pl-12 text-sm font-bold transition-all outline-none focus:border-frost-500"
+							class="w-full cursor-pointer appearance-none rounded-[0.75rem] border border-border bg-panel py-3.5 pr-10 pl-12 text-sm font-bold transition-all outline-none focus:border-frost-500"
 						>
 							{#each rolesRpc.value?.roles as r}
 								<option value={r.Name}>{r.Name}</option>
@@ -181,13 +181,13 @@
 			<div class="flex justify-end gap-3 border-t border-border bg-panel/30 p-6">
 				<button
 					onclick={handleClose}
-					class="rounded-xl border border-border px-6 py-2.5 text-sm font-bold text-muted transition-all hover:bg-panel hover:text-foreground"
+					class="rounded-full border border-border px-6 py-2.5 text-sm font-bold text-muted transition-all hover:bg-panel hover:text-foreground"
 				>
 					Cancel
 				</button>
 				<button
 					onclick={handleSave}
-					class="flex items-center gap-2 rounded-xl bg-frost-500 px-8 py-2.5 text-sm font-bold text-background shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-400 active:scale-95"
+					class="btn-frost flex items-center gap-2 rounded-full px-8 py-2.5 text-sm font-bold text-foreground shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-500 hover:text-background active:scale-95"
 				>
 					<SaveIcon size={16} />
 					{editUser ? 'Save Changes' : 'Create User'}

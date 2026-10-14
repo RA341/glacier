@@ -26,7 +26,7 @@
 				<DownloadIcon size={28} />
 			</div>
 			<div>
-				<h1 class="text-3xl font-bold tracking-tight">Downloads</h1>
+				<h1 class="headline-xl">Downloads</h1>
 				<p class="text-sm text-muted">Monitor and manage active downloads.</p>
 			</div>
 		</div>
@@ -35,7 +35,7 @@
 			{#if isFrost}
 				<button
 					onclick={() => handleTabChange('frost')}
-					class="rounded-lg px-6 py-2 text-sm font-bold transition-all {activeTab === 'frost'
+					class="rounded-full px-6 py-2 text-sm font-bold transition-all {activeTab === 'frost'
 						? 'bg-surface text-frost-400 shadow-sm'
 						: 'text-muted hover:text-foreground'}"
 				>
@@ -45,7 +45,7 @@
 
 			<button
 				onclick={() => handleTabChange('server')}
-				class="rounded-lg px-6 py-2 text-sm font-bold transition-all {activeTab === 'server'
+				class="rounded-full px-6 py-2 text-sm font-bold transition-all {activeTab === 'server'
 					? 'bg-surface text-frost-400 shadow-sm'
 					: 'text-muted hover:text-foreground'}"
 			>

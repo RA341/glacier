@@ -131,7 +131,7 @@
 					{detail.Title || 'Unknown Package'}
 				</span>
 				<span
-					class="rounded-md border border-border bg-panel/50 px-2 py-0.5 font-mono text-[10px] font-bold text-frost-400"
+					class="rounded-md border border-border bg-panel/50 px-2 py-0.5 font-hud text-[10px] font-bold text-frost-400 tabular-nums"
 				>
 					{overallProgress.toFixed(1)}%
 				</span>
@@ -147,7 +147,9 @@
 					{trimPrefix(detail.download?.Status ?? '', 'Status') || 'Waiting'}
 				</span>
 				{#if elapsedTime}
-					<span class="ml-auto flex items-center gap-1 font-mono whitespace-nowrap text-white">
+					<span
+						class="ml-auto flex items-center gap-1 font-hud whitespace-nowrap text-white tabular-nums"
+					>
 						<HourglassIcon size={10} class="text-frost-500/50" />
 						{elapsedTime}
 					</span>
@@ -157,7 +159,7 @@
 			<!-- Overall Progress Bar -->
 			<div class="mt-1 h-1.5 w-full overflow-hidden rounded-full border border-white/5 bg-panel">
 				<div
-					class="h-full bg-frost-500 shadow-[0_0_8px_rgba(130,170,255,0.3)] transition-all duration-700 ease-out"
+					class="h-full bg-frost-500 shadow-[0_0_8px_rgba(56,189,248,0.3)] transition-all duration-700 ease-out"
 					style="width: {overallProgress}%"
 				></div>
 			</div>
@@ -180,7 +182,7 @@
 							e.stopPropagation();
 							toggleDownload(detail.ID);
 						}}
-						class="rounded-lg p-1.5 text-muted transition-all hover:bg-amber-400/10 hover:text-amber-400"
+						class="rounded-full p-1.5 text-muted transition-all hover:bg-amber-400/10 hover:text-amber-400"
 						title="Pause Download"
 					>
 						{#if isPaused}
@@ -194,7 +196,7 @@
 							e.stopPropagation();
 							cancel(detail.ID);
 						}}
-						class="rounded-lg p-1.5 text-muted transition-all hover:bg-red-400/10 hover:text-red-400"
+						class="rounded-full p-1.5 text-muted transition-all hover:bg-red-400/10 hover:text-red-400"
 						title="Cancel Download"
 					>
 						<XIcon size={14} />
@@ -252,7 +254,9 @@
 										{file.Name}
 									</p>
 
-									<span class="shrink-0 font-mono text-[10px] whitespace-nowrap text-white">
+									<span
+										class="shrink-0 font-hud text-[10px] whitespace-nowrap text-white tabular-nums"
+									>
 										{formatBytes(Number(file.BytesComplete))} / {formatBytes(
 											Number(file.BytesComplete) + Number(file.BytesLeft)
 										)}
@@ -285,7 +289,7 @@
                                             {i < filledBlocks
 														? isDone
 															? 'bg-green-500/20'
-															: 'bg-frost-500/60 shadow-[0_0_3px_rgba(130,170,255,0.2)]'
+															: 'bg-frost-500/60 shadow-[0_0_3px_rgba(56,189,248,0.2)]'
 														: 'bg-white/3'}"
 												></div>
 											{/each}

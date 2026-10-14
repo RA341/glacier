@@ -67,7 +67,7 @@
 		</div>
 		<button
 			onclick={() => configRpc.runner()}
-			class="rounded-xl border border-border bg-panel px-6 py-2 text-xs font-bold transition-all hover:bg-surface"
+			class="btn-secondary rounded-2xl px-6 py-2 text-xs font-bold transition-all hover:bg-surface"
 		>
 			Retry Connection
 		</button>
@@ -81,7 +81,7 @@
 			<button
 				onclick={handleSave}
 				disabled={isSaving}
-				class="flex items-center gap-2 rounded-2xl bg-frost-500 px-8 py-3 text-sm font-bold text-background shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-400 active:scale-95 disabled:opacity-50"
+				class="btn-frost flex items-center gap-2 rounded-full px-8 py-3 text-sm font-bold text-foreground shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-500 hover:text-background active:scale-95 disabled:opacity-50"
 			>
 				{#if isSaving}
 					<LoaderIcon size={18} class="animate-spin" />

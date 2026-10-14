@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { glacierCli } from '#lib/api/api.js';
-	import { type Game, LibraryService } from '#lib/gen/library/v1/library_pb.js';
+	import { LibraryService } from '#lib/gen/library/v1/library_pb.js';
 	import { createRPCRunner } from '#lib/api/rpc.svelte.js';
 	import { onMount } from 'svelte';
-	import { goto } from '$app/navigation';
 	import { getAssetPath } from '#lib/api/assets.js';
 	import { ImageIcon, LoaderIcon } from '@lucide/svelte';
 	import AssetImg from '#lib/components/assets/AssetImg.svelte';
@@ -26,10 +25,6 @@
 		libRpc.runner();
 	}
 
-	function select(game: Game) {
-		goto(`/library/${game.ID}`);
-	}
-
 	$effect(() => {
 		const interval = setInterval(() => {
 			search();
@@ -42,18 +37,19 @@
 	});
 </script>
 
-<main class="mx-auto min-h-screen max-w-7xl p-6 md:p-10">
+<main class="console-page">
 	<!-- Header Area -->
-	<header class="mb-12 flex flex-col justify-between gap-6 md:flex-row md:items-center">
-		<h1 class="text-3xl font-bold tracking-tight">Library</h1>
+	<header class="mb-8 flex flex-col justify-between gap-6 md:flex-row md:items-center">
+		<h1 class="headline-xl">Library</h1>
 
 		<div class="group relative flex w-full max-w-2xl items-center">
 			<input
-				type="text"
+				type="search"
+				aria-label="Search library"
 				bind:value={query}
 				onkeydown={(e) => e.key === 'Enter' && search()}
 				placeholder="Search games..."
-				class="w-full rounded-xl border border-border bg-surface px-4 py-3 text-foreground transition-all placeholder:text-muted focus:ring-2 focus:ring-frost-500/50 focus:outline-none"
+				class="w-full rounded-full border border-border bg-surface px-4 py-3 pr-14 text-foreground transition-all placeholder:text-muted focus:ring-2 focus:ring-frost-500/50 focus:outline-none"
 			/>
 			<button
 				onclick={search}
@@ -86,7 +82,7 @@
 			<p>Error: {libRpc.error}</p>
 		</div>
 	{:else if libRpc.loading && !libRpc.value && !libRpc.error}
-		<div class="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+		<div class="poster-grid">
 			{#each Array(10) as _}
 				<div class="h-80 animate-pulse overflow-hidden rounded-2xl border border-border bg-surface">
 					<div class="h-3/4 bg-panel"></div>
@@ -98,17 +94,15 @@
 			{/each}
 		</div>
 	{:else}
-		<div class="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+		<div class="poster-grid">
 			{#each libRpc.value?.gameList ?? [] as ga}
-				<div
-					onclick={() => select(ga)}
-					onkeydown={(e) => e.key === 'Enter' && select(ga)}
-					role="button"
-					tabindex="0"
-					class="group cursor-pointer overflow-hidden rounded-2xl border border-border bg-surface transition-all duration-300 hover:border-frost-500/50 hover:shadow-frost focus:ring-2 focus:ring-frost-500 focus:outline-none"
+				<a
+					href={`/library/${ga.ID}`}
+					class="poster-card group"
+					aria-label={ga.Meta?.Name ?? 'Untitled game'}
 				>
 					<div
-						class="relative flex aspect-3/4 items-center justify-center overflow-hidden bg-panel"
+						class="relative flex aspect-2/3 items-center justify-center overflow-hidden bg-panel"
 					>
 						<AssetImg
 							src={getAssetPath({ gameId: ga.ID, assetType: 'AssetThumbnail' })}
@@ -133,30 +127,25 @@
 					</div>
 
 					<!-- Info Area -->
-					<div class="border-t border-border p-4">
+					<div class="poster-metadata">
 						<h3 class="mb-1 truncate font-bold text-foreground">
 							{ga.Meta?.Name}
 						</h3>
 						<div class="flex items-center gap-2">
-							<span class="ml-1 text-sm font-normal text-muted">
+							<span class="telemetry-label text-muted">
 								{new Date(ga?.Meta?.ReleaseDate || 'N/A').getFullYear() || 'N/A'}
 							</span>
 							{#if ga?.DownloadState?.State !== 'Complete'}
-								<span class="text-xs font-medium tracking-wider text-muted uppercase">
+								<span
+									class="label-hud rounded-full border border-frost-500/30 bg-surface/80 px-2 py-1 text-frost-300 uppercase"
+								>
 									{ga?.DownloadState?.State || 'Unknown'}
 								</span>
 							{/if}
 						</div>
 					</div>
-				</div>
+				</a>
 			{/each}
 		</div>
 	{/if}
 </main>
-
-<style>
-	/* Add smooth scaling effect for the cards */
-	.group:hover {
-		transform: translateY(-4px);
-	}
-</style>

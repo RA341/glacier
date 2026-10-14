@@ -97,7 +97,7 @@
 		<div class="flex gap-1 rounded-lg border border-border bg-surface p-0.5">
 			<button
 				onclick={() => (downloaded = false)}
-				class="rounded-md px-3 py-1 text-[10px] font-bold transition-all {!downloaded
+				class="rounded-full px-3 py-1 text-[10px] font-bold transition-all {!downloaded
 					? 'bg-panel text-frost-400 shadow-sm'
 					: 'text-muted hover:text-foreground'}"
 			>
@@ -105,7 +105,7 @@
 			</button>
 			<button
 				onclick={() => (downloaded = true)}
-				class="rounded-md px-3 py-1 text-[10px] font-bold transition-all {downloaded
+				class="rounded-full px-3 py-1 text-[10px] font-bold transition-all {downloaded
 					? 'bg-panel text-frost-400 shadow-sm'
 					: 'text-muted hover:text-foreground'}"
 			>
@@ -205,7 +205,7 @@
 							{#if !isSelected}
 								<button
 									onclick={() => markAsExe(file.RelPath)}
-									class="rounded-lg p-1.5 text-muted opacity-0 transition-all group-hover:opacity-100 hover:text-frost-500"
+									class="rounded-full p-1.5 text-muted opacity-0 transition-all group-hover:opacity-100 hover:text-frost-500"
 									title="Mark Exe"
 								>
 									Mark as Exe
@@ -219,7 +219,7 @@
 							<!-- Trash Icon Button -->
 							<button
 								onclick={() => (pendingDeletePath = file.RelPath)}
-								class="rounded-lg p-1.5 text-muted opacity-0 transition-all group-hover:opacity-100 hover:bg-red-400/10 hover:text-red-400"
+								class="rounded-full p-1.5 text-muted opacity-0 transition-all group-hover:opacity-100 hover:bg-red-400/10 hover:text-red-400"
 								title="Delete File"
 							>
 								<Trash2Icon size={14} />
@@ -270,13 +270,13 @@
 				<div class="flex justify-end gap-2">
 					<button
 						onclick={() => (pendingDeletePath = null)}
-						class="rounded-lg border border-border bg-panel px-3 py-1.5 text-[11px] font-bold text-muted transition-colors hover:text-foreground"
+						class="btn-secondary rounded-2xl px-3 py-1.5 text-[11px] font-bold text-muted transition-colors hover:text-foreground"
 					>
 						Cancel
 					</button>
 					<button
 						onclick={confirmDelete}
-						class="rounded-lg bg-red-500 px-4 py-1.5 text-[11px] font-bold text-white shadow-lg shadow-red-500/20 transition-colors hover:bg-red-400"
+						class="rounded-full bg-red-500 px-4 py-1.5 text-[11px] font-bold text-white shadow-lg shadow-red-500/20 transition-colors hover:bg-red-400"
 					>
 						Delete
 					</button>

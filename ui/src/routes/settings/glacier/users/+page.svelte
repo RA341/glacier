@@ -71,7 +71,7 @@
 					isOpen = true;
 					user = undefined;
 				}}
-				class="flex items-center gap-2 rounded-xl bg-frost-500 px-6 py-2.5 text-sm font-bold text-background shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-400 active:scale-95"
+				class="btn-frost flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-bold text-foreground shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-500 hover:text-background active:scale-95"
 			>
 				<PlusIcon size={18} />
 				Add
@@ -92,7 +92,7 @@
 			</div>
 			<button
 				onclick={refreshList}
-				class="rounded-xl border border-border bg-panel p-2 text-muted transition-all hover:text-frost-400"
+				class="btn-secondary rounded-2xl p-2 text-muted transition-all hover:text-frost-400"
 			>
 				<RefreshCcw size={18} class={listRpc.loading ? 'animate-spin' : ''} />
 			</button>
@@ -174,7 +174,7 @@
 										e.stopPropagation();
 										editUser(user);
 									}}
-									class="rounded-lg p-2 text-muted transition-all hover:bg-frost-500/10 hover:text-frost-400"
+									class="rounded-full p-2 text-muted transition-all hover:bg-frost-500/10 hover:text-frost-400"
 									title="Edit Permissions"
 								>
 									<UserCogIcon size={18} />
@@ -185,7 +185,7 @@
 										e.stopPropagation();
 										deleteUser(user);
 									}}
-									class="rounded-lg p-2 text-muted transition-all hover:bg-red-500/10 hover:text-red-400"
+									class="rounded-full p-2 text-muted transition-all hover:bg-red-500/10 hover:text-red-400"
 									title="Remove User"
 								>
 									<Trash2Icon size={18} />

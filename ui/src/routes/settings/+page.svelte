@@ -29,7 +29,7 @@
 			<SettingsIcon size={28} />
 		</div>
 		<div>
-			<h1 class="text-3xl font-bold tracking-tight text-foreground">Config</h1>
+			<h1 class="headline-xl text-foreground">Config</h1>
 			<p class="mt-1 text-sm text-muted">Choose what you want to configure.</p>
 		</div>
 	</header>

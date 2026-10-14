@@ -99,7 +99,7 @@
 			<button
 				onclick={handleRecheck}
 				disabled={isProcessing}
-				class="flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-panel py-3 text-sm font-bold text-foreground transition-all hover:border-frost-500/50 hover:bg-frost-500/5 disabled:opacity-50"
+				class="btn-secondary flex w-full items-center justify-center gap-2 rounded-2xl py-3 text-sm font-bold text-foreground transition-all hover:border-frost-500/50 hover:bg-frost-500/5 disabled:opacity-50"
 			>
 				{#if isProcessing}
 					<LoaderIcon size={16} class="animate-spin" />
@@ -128,7 +128,7 @@
 			<button
 				onclick={() => (showDeleteConfirm = true)}
 				disabled={isProcessing}
-				class="flex w-full items-center justify-center gap-2 rounded-xl border border-red-500/20 bg-red-500/10 py-3 text-sm font-bold text-red-400 transition-all hover:bg-red-500 hover:text-white disabled:opacity-50"
+				class="flex w-full items-center justify-center gap-2 rounded-full border border-red-500/20 bg-red-500/10 py-3 text-sm font-bold text-red-400 transition-all hover:bg-red-500 hover:text-white disabled:opacity-50"
 			>
 				<Trash2Icon size={16} />
 				Delete and Redownload
@@ -170,7 +170,7 @@
 				<button
 					onclick={handleDeleteRedownload}
 					disabled={isProcessing}
-					class="flex w-full items-center justify-center gap-2 rounded-xl bg-red-500 py-3 text-sm font-bold text-white transition-all hover:bg-red-400"
+					class="flex w-full items-center justify-center gap-2 rounded-full bg-red-500 py-3 text-sm font-bold text-white transition-all hover:bg-red-400"
 				>
 					{#if isProcessing}
 						<LoaderIcon size={16} class="animate-spin" />
@@ -181,7 +181,7 @@
 				<button
 					onclick={() => (showDeleteConfirm = false)}
 					disabled={isProcessing}
-					class="w-full rounded-xl border border-border bg-panel py-3 text-sm font-bold text-muted transition-all hover:text-foreground"
+					class="btn-secondary w-full rounded-2xl py-3 text-sm font-bold text-muted transition-all hover:text-foreground"
 				>
 					Cancel
 				</button>

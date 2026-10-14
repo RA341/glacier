@@ -82,21 +82,22 @@
 	}
 </script>
 
-<div class="mx-auto min-h-screen max-w-7xl space-y-8 bg-background p-6 text-foreground">
-	<header class="flex items-center justify-between border-b border-border pb-6">
-		<div class="flex items-center gap-4">
+<div class="console-page space-y-8">
+	<header class="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-6">
+		<div class="flex w-full flex-wrap items-center gap-4">
 			<div class="rounded-2xl border border-frost-500/20 bg-frost-500/10 p-3 text-frost-400">
 				<Search size={28} />
 			</div>
 			<div>
-				<h1 class="text-3xl font-bold tracking-tight">Search</h1>
+				<h1 class="headline-xl">Search</h1>
 				<p class="text-sm text-muted">Search and add New games</p>
 			</div>
 
 			{#if !noMetadataProviders}
-				<div class="flex flex-1 items-center gap-3">
+				<div class="flex min-w-0 flex-1 flex-wrap items-center gap-3">
 					<div class="relative min-w-40">
 						<select
+							aria-label="Metadata provider"
 							bind:value={selectedMetadataProvider}
 							onchange={handleSearch}
 							class="w-full cursor-pointer appearance-none rounded-xl border border-border bg-panel px-4 py-2.5 pr-10 text-sm font-bold transition-all outline-none focus:border-frost-500"
@@ -114,16 +115,18 @@
 					<!-- Query Input + Search Button -->
 					<div class="group relative flex-1">
 						<input
-							type="text"
+							type="search"
+							aria-label="Search games"
 							bind:value={query}
 							onkeydown={handleKeyDown}
 							placeholder="Search for games..."
-							class="w-full rounded-xl border border-border bg-panel px-4 py-2.5 pr-12 text-sm transition-all outline-none focus:border-frost-500"
+							class="w-full rounded-full border border-border bg-panel px-4 py-2.5 pr-12 text-sm transition-all outline-none focus:border-frost-500"
 						/>
 						<button
 							onclick={handleSearch}
+							aria-label="Search"
 							disabled={searchRpc.loading || !query.trim()}
-							class="absolute top-1.5 right-1.5 bottom-1.5 flex w-10 items-center justify-center rounded-lg border border-border bg-surface text-muted transition-all hover:border-frost-500/50 hover:text-frost-500 disabled:opacity-50"
+							class="absolute top-1.5 right-1.5 bottom-1.5 flex w-10 items-center justify-center rounded-full border border-border bg-surface text-muted transition-all hover:border-frost-500/50 hover:text-frost-500 disabled:opacity-50"
 						>
 							{#if searchRpc.loading}
 								<LoaderIcon size={18} class="animate-spin text-frost-500" />
@@ -138,8 +141,8 @@
 	</header>
 
 	<!-- Results Area -->
-	<main class="flex-1 overflow-y-auto p-6">
-		<div class="mx-auto max-w-7xl">
+	<main class="min-w-0 flex-1">
+		<div class="w-full">
 			{#if noMetadataProviders}
 				<NoMetadataProviders />
 			{:else if searchRpc.error}
@@ -158,7 +161,7 @@
 					<p class="animate-pulse font-medium">Indexing results...</p>
 				</div>
 			{:else if searchRpc.value && searchRpc.value.metadata && searchRpc.value.metadata.length > 0}
-				<div class="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+				<div class="poster-grid">
 					{#each searchRpc.value.metadata as item (item.ID)}
 						<GameGridItem game={item} />
 					{/each}
@@ -191,7 +194,7 @@
 	}
 
 	main::-webkit-scrollbar-thumb {
-		background: var(--border);
+		background: var(--color-border);
 		border-radius: 10px;
 	}
 </style>

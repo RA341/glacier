@@ -168,7 +168,7 @@
 						{#if base !== '/' && base !== ''}
 							<button
 								onclick={navigateUp}
-								class="flex items-center gap-3 rounded-xl p-3 text-left text-sm font-bold text-frost-400 transition-colors hover:bg-frost-500/5"
+								class="flex items-center gap-3 rounded-full p-3 text-left text-sm font-bold text-frost-400 transition-colors hover:bg-frost-500/5"
 							>
 								<ArrowLeftIcon size={18} />
 								<span>.. (Parent Directory)</span>
@@ -179,7 +179,7 @@
 							{#each fileListRpc.value.files as folder}
 								<button
 									onclick={() => navigateTo(folder)}
-									class="group flex items-center justify-between rounded-xl p-3 text-left transition-all hover:bg-panel"
+									class="group flex items-center justify-between rounded-full p-3 text-left transition-all hover:bg-panel"
 								>
 									<div class="flex min-w-0 items-center gap-3">
 										<FolderIcon
@@ -223,7 +223,7 @@
 				</div>
 				<button
 					onclick={selectFolder}
-					class="flex shrink-0 items-center gap-2 rounded-xl bg-frost-500 px-6 py-3 text-sm font-bold text-background shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-400 active:scale-95"
+					class="btn-frost flex shrink-0 items-center gap-2 rounded-full px-6 py-3 text-sm font-bold text-foreground shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-500 hover:text-background active:scale-95"
 				>
 					<CheckIcon size={18} />
 					Select

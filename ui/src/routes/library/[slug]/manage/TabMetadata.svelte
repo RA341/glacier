@@ -64,7 +64,7 @@
 				<button
 					onclick={refreshMeta}
 					disabled={isRefreshing}
-					class="flex items-center gap-2 rounded-xl border border-border bg-panel px-4 py-1.5 text-[10px] font-bold tracking-widest text-muted uppercase transition-all hover:border-frost-500/50 hover:text-frost-400 active:scale-95 disabled:opacity-50"
+					class="btn-secondary flex items-center gap-2 rounded-2xl px-4 py-1.5 text-[10px] font-bold tracking-widest text-muted uppercase transition-all hover:border-frost-500/50 hover:text-frost-400 active:scale-95 disabled:opacity-50"
 				>
 					{#if isRefreshing}
 						<LoaderIcon size={12} class="animate-spin text-frost-500" />
@@ -85,7 +85,7 @@
 					<input
 						type="text"
 						bind:value={game.Meta.Name}
-						class="w-full rounded-2xl border border-border bg-panel py-3.5 pr-4 pl-12 text-sm font-bold transition-all outline-none focus:border-frost-500"
+						class="w-full rounded-[0.75rem] border border-border bg-panel py-3.5 pr-4 pl-12 text-sm font-bold transition-all outline-none focus:border-frost-500"
 					/>
 				</div>
 			</div>
@@ -99,7 +99,7 @@
 					<textarea
 						bind:value={game.Meta.Summary}
 						rows="2"
-						class="w-full rounded-2xl border border-border bg-panel py-4 pr-4 pl-12 text-sm transition-all outline-none focus:border-frost-500"
+						class="w-full rounded-[0.75rem] border border-border bg-panel py-4 pr-4 pl-12 text-sm transition-all outline-none focus:border-frost-500"
 					></textarea>
 				</div>
 			</div>
@@ -113,7 +113,7 @@
 					<textarea
 						bind:value={game.Meta.Description}
 						rows="6"
-						class="w-full rounded-2xl border border-border bg-panel py-4 pr-4 pl-12 text-sm leading-relaxed transition-all outline-none focus:border-frost-500"
+						class="w-full rounded-[0.75rem] border border-border bg-panel py-4 pr-4 pl-12 text-sm leading-relaxed transition-all outline-none focus:border-frost-500"
 					></textarea>
 				</div>
 			</div>

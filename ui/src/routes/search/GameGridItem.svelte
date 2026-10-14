@@ -13,11 +13,8 @@
 	}
 </script>
 
-<button
-	onclick={() => handleAdd(game)}
-	class="group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-sm transition-all hover:-translate-y-1 hover:border-frost-500/50 active:scale-[0.98]"
->
-	<div class="relative aspect-3/4 w-full overflow-hidden bg-panel">
+<button onclick={() => handleAdd(game)} class="poster-card group flex flex-col">
+	<div class="relative aspect-2/3 w-full overflow-hidden bg-panel">
 		{#if game.assets.at(0)?.RemoteUrl}
 			<img
 				src={game.assets.at(0)?.RemoteUrl}
@@ -32,19 +29,19 @@
 		{/if}
 
 		<div
-			class="bg-frost-900/40 absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100"
+			class="absolute inset-0 flex items-center justify-center bg-frost-900/40 opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100"
 		>
 			<div
-				class="translate-y-4 rounded-full bg-frost-500 p-3 text-background shadow-xl transition-transform group-hover:translate-y-0"
+				class="translate-y-4 rounded-full bg-frost-500 p-3 text-background shadow-xl transition-transform group-hover:translate-y-0 group-focus-visible:translate-y-0"
 			>
 				<PlusIcon size={24} />
 			</div>
 		</div>
 	</div>
 
-	<div class="flex flex-col gap-1 border-t border-border bg-surface p-4">
+	<div class="poster-metadata flex flex-col gap-1">
 		<h3 class="truncate text-sm font-bold text-foreground">{game.Name}</h3>
-		<div class="flex items-center justify-between text-[11px] font-medium text-muted">
+		<div class="telemetry-label flex items-center justify-between text-muted">
 			<span class="flex items-center gap-1">
 				{new Date(game.ReleaseDate).getFullYear()}
 			</span>

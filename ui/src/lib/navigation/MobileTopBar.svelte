@@ -8,7 +8,7 @@
 </script>
 
 <header
-	class="mobile-top-bar flex shrink-0 items-center justify-between gap-2 border-b border-border bg-surface px-3 py-2 md:hidden"
+	class="mobile-top-bar flex shrink-0 items-center justify-between gap-2 border-b border-border bg-background/80 px-3 py-2 backdrop-blur-md md:hidden"
 >
 	<div class="flex min-w-0 items-center gap-2">
 		<img src="/favicon.svg" alt="" class="h-7 w-7 rounded-lg" />
@@ -22,8 +22,8 @@
 				title={link.label}
 				aria-label={link.label}
 				aria-current={active ? 'page' : undefined}
-				class="flex h-11 w-11 items-center justify-center rounded-xl transition-colors {active
-					? 'bg-frost-500/10 text-frost-400'
+				class="flex h-11 w-11 items-center justify-center rounded-full transition-colors {active
+					? 'border border-frost-500/40 bg-frost-500/15 text-frost-300 shadow-frost-glow-sm'
 					: 'text-muted hover:bg-panel hover:text-foreground'}"
 			>
 				<link.icon size={21} />

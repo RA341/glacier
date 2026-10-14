@@ -267,8 +267,8 @@
 		<button
 			onclick={handlePrimaryAction}
 			disabled={isSending || localGameRpc.loading}
-			class="flex items-center gap-2 bg-frost-500 px-8 py-2 text-sm font-bold text-background shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-400 active:scale-[0.98] disabled:opacity-50
-        {isInstalled ? 'rounded-l-xl' : 'rounded-xl'}"
+			class="btn-frost flex items-center gap-2 px-8 py-2 text-sm font-bold text-foreground shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-500 hover:text-background active:scale-[0.98] disabled:opacity-50
+        {isInstalled ? 'rounded-l-full rounded-r-none' : 'rounded-full'}"
 		>
 			{#if (localGameRpc.loading && !localGameRpc.value?.download) || isSending}
 				<LoaderIcon size={16} class="animate-spin" />
@@ -303,7 +303,7 @@
 		{#if isInstalled}
 			<button
 				onclick={() => (isMenuOpen = !isMenuOpen)}
-				class="rounded-r-xl border-l border-background/10 bg-frost-500 px-3 text-background shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-400 active:scale-[0.98]"
+				class="btn-frost rounded-l-none rounded-r-full border-l border-background/10 px-3 text-foreground shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-500 hover:text-background active:scale-[0.98]"
 			>
 				<ChevronDownIcon size={16} class="transition-transform {isMenuOpen ? 'rotate-180' : ''}" />
 			</button>
@@ -379,7 +379,7 @@
 			onclick={() => (launchPicker = false)}
 		></div>
 		<div
-			class="relative flex w-full max-w-md flex-col gap-4 rounded-2xl border border-border bg-surface p-6 shadow-2xl"
+			class="relative flex w-full max-w-md flex-col gap-4 rounded-[2rem] border border-border bg-surface p-6 shadow-2xl"
 			transition:fly={{ y: 20, duration: 300 }}
 		>
 			<div class="flex items-center justify-between">
@@ -415,7 +415,7 @@
 					<button
 						onclick={triggerFilePicker}
 						title="Browse files"
-						class="absolute top-1/2 right-2 -translate-y-1/2 rounded-lg p-1.5 text-muted transition-colors hover:bg-white/5 hover:text-frost-400"
+						class="absolute top-1/2 right-2 -translate-y-1/2 rounded-full p-1.5 text-muted transition-colors hover:bg-white/5 hover:text-frost-400"
 					>
 						<FolderOpenIcon size={18} />
 					</button>
@@ -431,7 +431,7 @@
 				</button>
 				<button
 					onclick={pickFinalExe}
-					class="rounded-xl bg-frost-500 px-6 py-2 text-xs font-bold text-background shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-400"
+					class="btn-frost rounded-full px-6 py-2 text-xs font-bold text-foreground shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-500 hover:text-background"
 				>
 					Save Changes
 				</button>
@@ -451,7 +451,7 @@
 			onclick={() => (errorMessage = null)}
 		></div>
 		<div
-			class="relative flex w-full max-w-sm flex-col gap-4 rounded-2xl border border-red-500/30 bg-surface p-6 shadow-2xl"
+			class="relative flex w-full max-w-sm flex-col gap-4 rounded-[2rem] border border-red-500/30 bg-surface p-6 shadow-2xl"
 			transition:fly={{ y: 20, duration: 300 }}
 		>
 			<div class="flex items-center justify-between">
@@ -469,7 +469,7 @@
 			<div class="mt-2 flex justify-end">
 				<button
 					onclick={() => (errorMessage = null)}
-					class="rounded-xl border border-border bg-panel px-6 py-2 text-sm font-bold transition-all hover:text-foreground"
+					class="btn-secondary rounded-2xl px-6 py-2 text-sm font-bold transition-all hover:text-foreground"
 				>
 					Dismiss
 				</button>

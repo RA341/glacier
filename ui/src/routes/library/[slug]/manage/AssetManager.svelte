@@ -160,7 +160,7 @@
 		<div class="border-t border-border bg-surface p-2">
 			<button
 				onclick={openAdd}
-				class="flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-panel py-2 text-[10px] font-bold tracking-widest text-muted uppercase transition-all hover:border-frost-500/50 hover:text-frost-400"
+				class="btn-secondary flex w-full items-center justify-center gap-2 rounded-2xl py-2 text-[10px] font-bold tracking-widest text-muted uppercase transition-all hover:border-frost-500/50 hover:text-frost-400"
 			>
 				<PlusIcon size={14} />
 				Add Asset
@@ -173,7 +173,7 @@
 
 				<button
 					onclick={() => (selectedIndex = i)}
-					class="group flex w-full items-center gap-3 rounded-xl p-3 text-left transition-all
+					class="group flex w-full items-center gap-3 rounded-full p-3 text-left transition-all
                         {selectedIndex === i
 						? 'border-frost-500/20 bg-frost-500/10 text-frost-400'
 						: 'text-muted hover:bg-panel'}"
@@ -205,21 +205,21 @@
 				<div class="flex min-w-0 flex-1 items-center gap-2">
 					<button
 						onclick={editAsset}
-						class="rounded-lg border border-border bg-panel p-2 text-muted transition-all hover:text-red-400"
+						class="btn-secondary rounded-2xl p-2 text-muted transition-all hover:text-red-400"
 						title="Delete Asset"
 					>
 						<Save size={16} />
 					</button>
 					<button
 						onclick={() => openEdit(currentAsset)}
-						class="rounded-lg border border-border bg-panel p-2 text-muted transition-all hover:text-frost-400"
+						class="btn-secondary rounded-2xl p-2 text-muted transition-all hover:text-frost-400"
 						title="Upload Replacement"
 					>
 						<UploadIcon size={16} />
 					</button>
 					<button
 						onclick={() => deleteAsset(currentAsset.ID, selectedIndex)}
-						class="rounded-lg border border-border bg-panel p-2 text-muted transition-all hover:text-red-400"
+						class="btn-secondary rounded-2xl p-2 text-muted transition-all hover:text-red-400"
 						title="Delete Asset"
 					>
 						<Trash2Icon size={16} />
@@ -461,14 +461,14 @@
 			<div class="flex gap-3 border-t border-border bg-panel/30 p-6">
 				<button
 					onclick={() => (isUploadOpen = false)}
-					class="flex-1 rounded-xl border border-border bg-panel py-3 text-xs font-bold text-muted"
+					class="btn-secondary flex-1 rounded-2xl py-3 text-xs font-bold text-muted"
 				>
 					Cancel
 				</button>
 				<button
 					onclick={handleUpload}
 					disabled={!uploadFile || isUploading}
-					class="flex flex-2 items-center justify-center gap-2 rounded-xl bg-frost-500 py-3 text-xs font-black tracking-widest text-background uppercase disabled:opacity-50"
+					class="btn-frost flex flex-2 items-center justify-center gap-2 rounded-full py-3 text-xs font-black tracking-widest text-foreground uppercase disabled:opacity-50"
 				>
 					{#if isUploading}
 						<LoaderIcon size={16} class="animate-spin" />

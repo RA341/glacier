@@ -102,7 +102,7 @@
 			<p class="font-bold text-red-400">{gameRpc.error}</p>
 			<button
 				onclick={() => gameRpc.runner()}
-				class="rounded-xl border border-border bg-panel px-6 py-2 text-xs font-bold uppercase"
+				class="btn-secondary rounded-2xl px-6 py-2 text-xs font-bold uppercase"
 			>
 				Retry
 			</button>
@@ -126,7 +126,7 @@
 				<button
 					onclick={handleSave}
 					disabled={isSaving}
-					class="flex items-center gap-2 rounded-xl bg-frost-500 px-8 py-2.5 text-sm font-bold text-background shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-400 active:scale-95 disabled:opacity-50"
+					class="btn-frost flex items-center gap-2 rounded-full px-8 py-2.5 text-sm font-bold text-foreground shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-500 hover:text-background active:scale-95 disabled:opacity-50"
 				>
 					{#if isSaving}
 						<LoaderIcon size={18} class="animate-spin" />
@@ -139,7 +139,7 @@
 
 				<button
 					onclick={() => deleteGame()}
-					class="flex items-center gap-2 rounded-xl border border-border bg-red-600 px-6 py-2 text-sm font-bold transition-all hover:border-frost-500"
+					class="flex items-center gap-2 rounded-full border border-border bg-red-600 px-6 py-2 text-sm font-bold transition-all hover:border-frost-500"
 				>
 					<Trash2 size={16} />
 					Delete
@@ -151,7 +151,7 @@
 			{#each tabs as tab}
 				<button
 					onclick={() => handleTabChange(tab.id)}
-					class="flex items-center gap-2 rounded-xl px-6 py-2 text-sm font-bold transition-all
+					class="flex items-center gap-2 rounded-full px-6 py-2 text-sm font-bold transition-all
                     {activeTab === tab.id
 						? 'bg-surface text-frost-400 shadow-md'
 						: 'text-muted hover:text-foreground'}"

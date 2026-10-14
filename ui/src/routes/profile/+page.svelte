@@ -93,7 +93,7 @@
 			<FingerprintPattern size={28} />
 		</div>
 		<div>
-			<h1 class="text-3xl font-bold tracking-tight text-foreground">My Profile</h1>
+			<h1 class="headline-xl text-foreground">My Profile</h1>
 			<p class="text-sm text-muted">Manage your account</p>
 		</div>
 	</header>
@@ -157,7 +157,7 @@
 								<input
 									type="text"
 									bind:value={newUsername}
-									class="w-full rounded-2xl border border-border bg-panel py-4 pr-4 pl-12 text-sm font-bold transition-all outline-none focus:border-frost-500"
+									class="w-full rounded-[0.75rem] border border-border bg-panel py-4 pr-4 pl-12 text-sm font-bold transition-all outline-none focus:border-frost-500"
 								/>
 							</div>
 						</div>
@@ -166,7 +166,7 @@
 							<button
 								onclick={handleUpdateUsername}
 								disabled={isUpdatingUsername || newUsername === user.user?.user?.Username}
-								class="flex items-center gap-2 rounded-xl border border-border bg-panel px-8 py-3 text-xs font-bold text-foreground transition-all hover:border-frost-500 disabled:opacity-30"
+								class="btn-secondary flex items-center gap-2 rounded-2xl px-8 py-3 text-xs font-bold text-foreground transition-all hover:border-frost-500 disabled:opacity-30"
 							>
 								{#if isUpdatingUsername}
 									<LoaderIcon size={14} class="animate-spin" />
@@ -199,7 +199,7 @@
 									type="password"
 									bind:value={newPassword}
 									placeholder="••••••••"
-									class="w-full rounded-2xl border border-border bg-panel py-4 pr-4 pl-12 text-sm transition-all outline-none focus:border-frost-500"
+									class="w-full rounded-[0.75rem] border border-border bg-panel py-4 pr-4 pl-12 text-sm transition-all outline-none focus:border-frost-500"
 								/>
 							</div>
 						</div>
@@ -217,7 +217,7 @@
 									type="password"
 									bind:value={confirmPassword}
 									placeholder="••••••••"
-									class="w-full rounded-2xl border border-border bg-panel py-4 pr-4 pl-12 text-sm transition-all outline-none focus:border-frost-500"
+									class="w-full rounded-[0.75rem] border border-border bg-panel py-4 pr-4 pl-12 text-sm transition-all outline-none focus:border-frost-500"
 								/>
 							</div>
 						</div>
@@ -225,7 +225,7 @@
 						<button
 							onclick={handleUpdatePassword}
 							disabled={isUpdatingPassword || !newPassword}
-							class="flex w-full items-center justify-center gap-2 rounded-2xl bg-frost-500 py-4 font-bold text-background shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-400 disabled:opacity-30"
+							class="btn-frost flex w-full items-center justify-center gap-2 rounded-full py-4 font-bold text-foreground shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-500 hover:text-background disabled:opacity-30"
 						>
 							{#if isUpdatingPassword}
 								<LoaderIcon size={20} class="animate-spin" />

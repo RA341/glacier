@@ -58,9 +58,9 @@
 			<button
 				onclick={() => setLimit(p)}
 				disabled={isUpdating}
-				class="rounded-lg px-4 py-1.5 text-[11px] font-bold transition-all
+				class="rounded-full px-4 py-1.5 text-[11px] font-bold transition-all
                 {activeLimit === p
-					? 'bg-frost-500 text-background shadow-lg shadow-frost-500/20'
+					? 'btn-frost text-foreground shadow-lg shadow-frost-500/20'
 					: 'text-muted hover:bg-panel hover:text-foreground'}"
 			>
 				{p}M
@@ -70,9 +70,9 @@
 		<button
 			onclick={() => setLimit(0)}
 			disabled={isUpdating}
-			class="rounded-lg px-4 py-1.5 text-[11px] font-bold transition-all
+			class="rounded-full px-4 py-1.5 text-[11px] font-bold transition-all
             {activeLimit === 0
-				? 'bg-frost-500 text-background shadow-lg shadow-frost-500/20'
+				? 'btn-frost text-foreground shadow-lg shadow-frost-500/20'
 				: 'text-muted hover:bg-panel hover:text-amber-400'}"
 			title="Remove Limit"
 		>
@@ -95,7 +95,7 @@
 		<button
 			onclick={() => customValue && setLimit(customValue)}
 			disabled={!customValue || isUpdating}
-			class="absolute top-1.5 right-1.5 bottom-1.5 rounded-lg border border-border bg-panel px-2 text-muted transition-all hover:text-frost-400 disabled:opacity-0"
+			class="btn-secondary absolute top-1.5 right-1.5 bottom-1.5 rounded-2xl px-2 text-muted transition-all hover:text-frost-400 disabled:opacity-0"
 		>
 			<CheckIcon size={14} />
 		</button>

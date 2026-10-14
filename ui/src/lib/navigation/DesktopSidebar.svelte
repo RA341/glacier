@@ -7,7 +7,7 @@
 </script>
 
 <aside
-	class="hidden h-full w-16 shrink-0 flex-col items-center border-r border-border bg-surface py-6 md:flex"
+	class="hidden h-full w-16 shrink-0 flex-col items-center border-r border-border bg-surface/80 py-6 backdrop-blur-md md:flex"
 >
 	<!-- Logo Area -->
 	<div class="mb-8 flex items-center justify-center">
@@ -23,10 +23,10 @@
 				title={link.label}
 				aria-label={link.label}
 				aria-current={active ? 'page' : undefined}
-				class="group relative flex h-10 w-10 items-center justify-center rounded-xl transition-all
+				class="group relative flex h-10 w-10 items-center justify-center rounded-full transition-all
             duration-300
             {active
-					? 'bg-frost-500/10 text-frost-400 shadow-frost'
+					? 'border border-frost-500/40 bg-frost-500/15 text-frost-300 shadow-frost-glow-sm'
 					: 'text-muted hover:bg-panel hover:text-frost-400'}"
 			>
 				<link.icon
@@ -48,10 +48,10 @@
 				title={link.label}
 				aria-label={link.label}
 				aria-current={active ? 'page' : undefined}
-				class="group relative flex h-10 w-10 items-center justify-center rounded-xl transition-all
+				class="group relative flex h-10 w-10 items-center justify-center rounded-full transition-all
             duration-300
             {active
-					? 'bg-frost-500/10 text-frost-400 shadow-frost'
+					? 'border border-frost-500/40 bg-frost-500/15 text-frost-300 shadow-frost-glow-sm'
 					: 'text-muted hover:bg-panel hover:text-frost-400'}"
 			>
 				<link.icon size={22} strokeWidth={2} />

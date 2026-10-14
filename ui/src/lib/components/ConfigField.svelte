@@ -113,7 +113,7 @@
 								type="number"
 								bind:value={item.Value}
 								disabled={item.EnvSet}
-								class="w-full rounded-lg border border-border bg-panel px-3 py-2 text-sm transition-colors outline-none focus:border-frost-500 disabled:cursor-not-allowed"
+								class="w-full rounded-[0.75rem] border border-border bg-panel px-3 py-2 text-sm transition-colors outline-none focus:border-frost-500 disabled:cursor-not-allowed"
 							/>
 						{:else if item.IsSecret}
 							<div class="relative flex-1">
@@ -121,7 +121,7 @@
 									type={visibleSecrets[key] ? 'text' : 'password'}
 									bind:value={item.Value}
 									disabled={item.EnvSet}
-									class="w-full rounded-lg border border-border bg-panel py-2 pr-10 pl-3 text-sm transition-colors outline-none focus:border-frost-500 disabled:cursor-not-allowed"
+									class="w-full rounded-[0.75rem] border border-border bg-panel py-2 pr-10 pl-3 text-sm transition-colors outline-none focus:border-frost-500 disabled:cursor-not-allowed"
 								/>
 								<button
 									type="button"
@@ -142,14 +142,14 @@
 								disabled={item.EnvSet}
 								oninput={(e) =>
 									(item.Value = e.currentTarget.value.split(',').map((s) => s.trim()))}
-								class="w-full rounded-lg border border-border bg-panel px-3 py-2 font-mono text-sm transition-colors outline-none focus:border-frost-500 disabled:cursor-not-allowed"
+								class="w-full rounded-[0.75rem] border border-border bg-panel px-3 py-2 font-mono text-sm transition-colors outline-none focus:border-frost-500 disabled:cursor-not-allowed"
 							/>
 						{:else}
 							<input
 								type="text"
 								bind:value={item.Value}
 								disabled={item.EnvSet}
-								class="w-full rounded-lg border border-border bg-panel px-3 py-2 text-sm transition-colors outline-none focus:border-frost-500 disabled:cursor-not-allowed"
+								class="w-full rounded-[0.75rem] border border-border bg-panel px-3 py-2 text-sm transition-colors outline-none focus:border-frost-500 disabled:cursor-not-allowed"
 							/>
 						{/if}
 					</div>

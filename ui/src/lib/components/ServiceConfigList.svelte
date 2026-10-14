@@ -64,7 +64,7 @@
 		<div class="flex items-center gap-3">
 			<button
 				onclick={refresh}
-				class="rounded-xl border border-border bg-panel p-2.5 text-muted transition-all hover:text-frost-400 active:scale-95"
+				class="btn-secondary rounded-2xl p-2.5 text-muted transition-all hover:text-frost-400 active:scale-95"
 				title="Refresh List"
 			>
 				<RefreshCcw size={18} class={listRpc.loading ? 'animate-spin' : ''} />
@@ -72,7 +72,7 @@
 
 			<button
 				onclick={() => (isOpen = true)}
-				class="flex items-center gap-2 rounded-xl bg-frost-500 px-6 py-2.5 text-sm font-bold text-background shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-400 active:scale-95"
+				class="btn-frost flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-bold text-foreground shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-500 hover:text-background active:scale-95"
 			>
 				<PlusIcon size={18} />
 				Add {ServiceType}
@@ -126,13 +126,13 @@
 								<div class="flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
 									<button
 										onclick={() => openEdit(client)}
-										class="rounded-lg p-2 text-muted transition-all hover:bg-frost-500/10 hover:text-frost-400"
+										class="rounded-full p-2 text-muted transition-all hover:bg-frost-500/10 hover:text-frost-400"
 									>
 										<Edit3Icon size={16} />
 									</button>
 									<button
 										onclick={() => deleteClient(client)}
-										class="rounded-lg p-2 text-muted transition-all hover:bg-red-500/10 hover:text-red-400"
+										class="rounded-full p-2 text-muted transition-all hover:bg-red-500/10 hover:text-red-400"
 									>
 										<Trash2Icon size={16} />
 									</button>

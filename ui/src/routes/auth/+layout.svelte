@@ -72,13 +72,13 @@
 		class="absolute top-[-10%] left-[-10%] h-[40%] w-[40%] rounded-full bg-frost-500/10 blur-[120px]"
 	></div>
 	<div
-		class="bg-frost-900/20 absolute right-[-10%] bottom-[-10%] h-[40%] w-[40%] rounded-full blur-[120px]"
+		class="absolute right-[-10%] bottom-[-10%] h-[40%] w-[40%] rounded-full bg-frost-900/20 blur-[120px]"
 	></div>
 
 	<div class="z-10 w-full max-w-110" transition:fly={{ y: 20, duration: 600 }}>
 		<div class="mb-8 flex flex-col items-center gap-3">
 			<img src="/favicon.svg" alt="logo" height="60" width="60" class="drop-shadow-2xl" />
-			<h1 class="text-3xl font-black tracking-tighter text-foreground uppercase">{appName}</h1>
+			<h1 class="headline-xler text-foreground uppercase">{appName}</h1>
 			<p class="text-center text-xs font-bold tracking-[0.2em] text-frost-50/50 uppercase">
 				<span class="font-black text-frost-500">COLD</span> Storage for your games
 			</p>
@@ -126,7 +126,7 @@
 									type="url"
 									bind:value={glacierUrlInput}
 									placeholder="glacier.yourdomain.com"
-									class="w-full rounded-2xl border border-border bg-panel py-3.5 pr-4 pl-12 text-sm transition-all outline-none focus:border-frost-500"
+									class="w-full rounded-[0.75rem] border border-border bg-panel py-3.5 pr-4 pl-12 text-sm transition-all outline-none focus:border-frost-500"
 									onkeydown={(e) => {
 										if (e.key === 'Enter' && glacierUrlInput && !isSettingUrl) {
 											handleSetUrl();
@@ -139,7 +139,7 @@
 						<button
 							onclick={handleSetUrl}
 							disabled={isSettingUrl || !glacierUrlInput}
-							class="flex w-full items-center justify-center gap-2 rounded-2xl bg-frost-500 py-4 font-bold text-background shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-400 active:scale-[0.98] disabled:opacity-50"
+							class="btn-frost flex w-full items-center justify-center gap-2 rounded-full py-4 font-bold text-foreground shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-500 hover:text-background active:scale-[0.98] disabled:opacity-50"
 						>
 							{#if isSettingUrl}
 								<LoaderIcon size={20} class="animate-spin" />

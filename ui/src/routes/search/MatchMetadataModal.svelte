@@ -122,7 +122,7 @@
 
 		<!-- Content Container -->
 		<div
-			class="relative flex h-212.5 w-full max-w-7xl flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-2xl"
+			class="relative flex h-212.5 w-full max-w-7xl flex-col overflow-hidden rounded-[2rem] border border-border bg-surface shadow-2xl"
 			transition:fly={{ y: 20, duration: 300 }}
 		>
 			<!-- HEADER -->
@@ -165,7 +165,7 @@
 								onclick={search}
 								onkeydown={handleKeyDown}
 								disabled={rpc.loading}
-								class="absolute top-1.5 right-1.5 bottom-1.5 flex w-10 items-center justify-center rounded-lg border border-border bg-frost-500 text-muted shadow-sm transition-all hover:border-frost-500/50 hover:text-frost-500 active:scale-95 disabled:opacity-50"
+								class="btn-frost absolute top-1.5 right-1.5 bottom-1.5 flex w-10 items-center justify-center rounded-full border border-border text-muted shadow-sm transition-all hover:border-frost-500/50 hover:text-frost-500 active:scale-95 disabled:opacity-50"
 								title="Search"
 							>
 								{#if rpc.loading}
@@ -234,8 +234,8 @@
 										<div class="mt-auto flex justify-end">
 											<button
 												onclick={() => setMetadata(item, isMatched)}
-												class="rounded-lg px-5 py-1.5 text-xs font-bold transition-all {isMatched
-													? 'bg-frost-500 text-background'
+												class="rounded-full px-5 py-1.5 text-xs font-bold transition-all {isMatched
+													? 'btn-frost text-foreground'
 													: 'border border-border bg-panel hover:border-frost-500'}"
 											>
 												{isMatched ? 'Matched' : 'Match'}
@@ -434,13 +434,13 @@
 			<div class="flex items-center justify-end gap-3 border-t border-border bg-panel/20 p-5">
 				<button
 					onclick={() => (isOpen = false)}
-					class="rounded-xl border border-border px-8 py-2.5 text-sm font-bold transition-all hover:bg-panel"
+					class="rounded-full border border-border px-8 py-2.5 text-sm font-bold transition-all hover:bg-panel"
 				>
 					Cancel
 				</button>
 				<button
 					onclick={handleAdd}
-					class={`rounded-xl px-10 py-2.5 ${downloadUrl ? 'bg-frost-500' : 'bg-frost-600'} text-sm
+					class={`rounded-full px-10 py-2.5 ${downloadUrl ? 'bg-frost-500' : 'bg-frost-600'} text-sm
                             font-bold text-background
                             shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-400 active:scale-95`}
 				>

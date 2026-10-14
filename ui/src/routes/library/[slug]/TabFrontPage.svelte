@@ -35,7 +35,7 @@
 
 	<aside class="space-y-6">
 		<div
-			class="space-y-6 rounded-3xl border border-border border-white/10 bg-surface/40 p-6 shadow-sm backdrop-blur-xl"
+			class="space-y-6 rounded-3xl border border-border border-white/10 bg-surface/80 p-6 shadow-sm backdrop-blur-md"
 		>
 			<div class="space-y-1">
 				<span

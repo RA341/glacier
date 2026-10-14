@@ -12,7 +12,7 @@
 
 	let { children } = $props();
 
-	let isNotAuth = !page.url.pathname.startsWith('/auth')
+	let isNotAuth = !page.url.pathname.startsWith('/auth');
 </script>
 
 <svelte:head>
@@ -49,7 +49,7 @@
 	}
 
 	::-webkit-scrollbar-thumb {
-		background: var(--border);
+		background: var(--color-border);
 		border-radius: 10px;
 	}
 

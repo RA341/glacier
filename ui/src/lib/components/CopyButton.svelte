@@ -32,7 +32,7 @@
 >
 	<!-- The Code Block -->
 	<code
-		class="rounded border border-zinc-200 bg-zinc-100 px-1.5 py-0.5 font-mono text-[12px] text-zinc-700 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
+		class="rounded-full border border-border bg-panel px-2 py-1 font-hud text-xs text-muted hover:border-frost-400/40 hover:text-frost-300"
 	>
 		{#if label}<span class="mr-1 font-sans opacity-50">{label}:</span>{/if}{value}
 	</code>

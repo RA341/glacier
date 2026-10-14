@@ -22,7 +22,7 @@
 	onclick={logout}
 	title="Logout"
 	aria-label="Logout"
-	class="flex h-11 w-11 items-center justify-center rounded-xl text-muted transition-colors hover:bg-panel hover:text-foreground"
+	class="flex h-11 w-11 items-center justify-center rounded-full text-muted transition-colors hover:bg-panel hover:text-foreground"
 >
 	<LogOutIcon size={22} strokeWidth={2} />
 </button>

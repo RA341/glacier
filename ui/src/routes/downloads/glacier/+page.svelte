@@ -57,7 +57,7 @@
 		<button
 			onclick={trigger}
 			disabled={libRpc.loading}
-			class="flex items-center gap-2 rounded-xl border border-border bg-panel p-2 px-4 text-xs font-bold text-muted transition-all hover:border-frost-500/50 hover:text-frost-400 active:scale-95 disabled:opacity-50"
+			class="btn-secondary flex items-center gap-2 rounded-2xl p-2 px-4 text-xs font-bold text-muted transition-all hover:border-frost-500/50 hover:text-frost-400 active:scale-95 disabled:opacity-50"
 		>
 			<RefreshCcwDot size={14} class={libRpc.loading ? 'animate-spin text-frost-500' : ''} />
 			Check Status

@@ -242,9 +242,7 @@
 						>
 							/mnt/storage/games/...
 						</div>
-						<button
-							class="rounded-xl border border-border bg-panel p-2.5 transition-colors hover:text-frost-400"
-						>
+						<button class="btn-secondary rounded-2xl p-2.5 transition-colors hover:text-frost-400">
 							<FolderOpenIcon size={20} />
 						</button>
 					</div>

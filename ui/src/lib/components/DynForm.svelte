@@ -57,11 +57,11 @@
 							<input
 								disabled
 								value={k}
-								class="flex-1 rounded-lg border border-border/50 bg-panel/40 px-3 py-2 font-mono text-xs text-muted"
+								class="flex-1 rounded-[0.75rem] border border-border/50 bg-panel/40 px-3 py-2 font-mono text-xs text-muted"
 							/>
 							<input
 								bind:value={formData[field.InsertKey][k]}
-								class="flex-1 rounded-lg border border-border bg-panel px-3 py-2 text-xs outline-none focus:border-frost-500"
+								class="flex-1 rounded-[0.75rem] border border-border bg-panel px-3 py-2 text-xs outline-none focus:border-frost-500"
 							/>
 							<button
 								onclick={() => removeMapEntry(field.InsertKey, k)}
@@ -75,16 +75,16 @@
 						<input
 							bind:value={tempInputs[`${field.InsertKey}_key`]}
 							placeholder="Key"
-							class="flex-1 rounded-lg border border-border bg-surface px-3 py-2 text-xs outline-none focus:border-frost-500"
+							class="flex-1 rounded-[0.75rem] border border-border bg-surface px-3 py-2 text-xs outline-none focus:border-frost-500"
 						/>
 						<input
 							bind:value={tempInputs[`${field.InsertKey}_val`]}
 							placeholder="Value"
-							class="flex-1 rounded-lg border border-border bg-surface px-3 py-2 text-xs outline-none focus:border-frost-500"
+							class="flex-1 rounded-[0.75rem] border border-border bg-surface px-3 py-2 text-xs outline-none focus:border-frost-500"
 						/>
 						<button
 							onclick={() => addMapEntry(field.InsertKey)}
-							class="rounded-lg bg-frost-500 p-2 text-background hover:bg-frost-400"
+							class="btn-frost rounded-full p-2 text-foreground hover:bg-frost-500 hover:text-background"
 						>
 							<PlusIcon size={16} />
 						</button>
@@ -96,7 +96,7 @@
 						<div class="flex gap-2">
 							<input
 								bind:value={formData[field.InsertKey][i]}
-								class="flex-1 rounded-lg border border-border bg-panel px-3 py-2 text-xs outline-none focus:border-frost-500"
+								class="flex-1 rounded-[0.75rem] border border-border bg-panel px-3 py-2 text-xs outline-none focus:border-frost-500"
 							/>
 							<button
 								onclick={() => removeArrayItem(field.InsertKey, i)}
@@ -110,11 +110,11 @@
 						<input
 							bind:value={tempInputs[`${field.InsertKey}_val`]}
 							placeholder={`Add new ${field.Name}...`}
-							class="flex-1 rounded-lg border border-border bg-surface px-3 py-2 text-xs outline-none focus:border-frost-500"
+							class="flex-1 rounded-[0.75rem] border border-border bg-surface px-3 py-2 text-xs outline-none focus:border-frost-500"
 						/>
 						<button
 							onclick={() => addArrayItem(field.InsertKey)}
-							class="rounded-lg bg-frost-500 p-2 text-background hover:bg-frost-400"
+							class="btn-frost rounded-full p-2 text-foreground hover:bg-frost-500 hover:text-background"
 						>
 							<PlusIcon size={16} />
 						</button>

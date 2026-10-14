@@ -57,7 +57,7 @@
 					{#if dialogManager.active.variant === 'confirm'}
 						<button
 							onclick={() => dialogManager.active?.resolve(false)}
-							class="flex-1 rounded-xl border border-border bg-panel py-3 text-sm font-bold text-muted transition-all hover:text-foreground"
+							class="btn-secondary flex-1 rounded-2xl py-3 text-sm font-bold text-muted transition-all hover:text-foreground"
 						>
 							Cancel
 						</button>
@@ -65,7 +65,7 @@
 
 					<button
 						onclick={() => dialogManager.active?.resolve(true)}
-						class="flex-2 rounded-xl bg-frost-500 py-3 text-sm font-black tracking-widest text-background uppercase shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-400 active:scale-95"
+						class="btn-frost flex-2 rounded-full py-3 text-sm font-black tracking-widest text-foreground uppercase shadow-lg shadow-frost-500/20 transition-all hover:bg-frost-500 hover:text-background active:scale-95"
 					>
 						Confirm
 					</button>
